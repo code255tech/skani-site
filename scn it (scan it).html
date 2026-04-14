@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScanIt | Product Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #690A92;
+            --secondary: #c43ee2;
+            --dark-bg: #260234;
+            --card-dark: #350a45;
+            --light-bg: #fcfaff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+
+        .dark { background-color: var(--dark-bg); color: white; }
+        .light { background-color: var(--light-bg); color: var(--dark-bg); }
+
+        .glass { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+
+        .screen {
+            display: none;
+            animation: slideIn 0.3s ease-out forwards;
+        }
+
+        .screen.active { display: block; }
+
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .demo-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: black;
+            animation: zoomIn 0.3s ease-out forwards;
+        }
+
+        .demo-overlay.active { display: flex; }
+
+        .gradient-text {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            box-shadow: 0 10px 15px -3px rgba(105, 10, 146, 0.3);
+        }
+
+        .theme-card { transition: all 0.2s ease; }
+        .theme-card:active { transform: scale(0.96); }
+    </style>
+</head>
+<body class="dark">
+
+    <!-- Header -->
+    <header id="main-header" class="fixed top-0 w-full z-50 flex items-center justify-between px-5 h-16 glass border-b border-white/5 transition-colors">
+        <div class="flex items-center gap-3">
+            <button id="back-btn" class="hidden p-1">
+                <i class="fa-solid fa-arrow-left text-lg"></i>
+            </button>
+            <div id="logo-container" class="w-8 h-8 bg-gradient-to-tr from-[#690A92] to-[#c43ee2] rounded-lg flex items-center justify-center shadow-lg">
+                <span class="text-sm font-bold text-white">S</span>
+            </div>
+            <span class="font-bold text-lg tracking-tight">ScanIt</span>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-full bg-white/10 transition-all active:scale-90">
+            <i id="theme-icon" class="fa-solid fa-sun text-sm"></i>
+        </button>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-md mx-auto relative min-h-screen">
+        
+        <!-- HOME SCREEN -->
+        <section id="screen-home" class="screen active pt-24 pb-32 px-6">
+            <div class="mb-10">
+                <span class="text-4xl">Hello 👋</span>
+                <h2 class="text-4xl font-black mt-2 leading-tight">
+                    Just <span class="gradient-text">Scan</span> It.
+                </h2>
+                <p class="text-lg opacity-70 mt-4 font-medium">One scan is all your customer needs.</p>
+            </div>
+
+            <!-- Main Navigation Grid -->
+            <div class="grid grid-cols-1 gap-4 mb-8">
+                <button onclick="navTo('demo')" class="flex items-center justify-between p-5 rounded-3xl btn-primary text-white transition-all active:scale-[0.98] text-left">
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 rounded-2xl bg-white/20">
+                            <i class="fa-solid fa-play text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">Explore Demo</h3>
+                            <p class="text-xs text-purple-100">See it in action</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right opacity-60"></i>
+                </button>
+
+                <button onclick="navTo('cases')" class="flex items-center justify-between p-5 rounded-3xl border border-white/5 bg-[#350a45] transition-all active:scale-[0.98] text-left theme-card">
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 rounded-2xl bg-white/5 icon-bg">
+                            <i class="fa-solid fa-briefcase text-xl text-[#c43ee2]"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">Use Cases</h3>
+                            <p class="text-xs opacity-70">Who is it for?</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right opacity-40"></i>
+                </button>
+
+                <button onclick="navTo('pricing')" class="flex items-center justify-between p-5 rounded-3xl border border-white/5 bg-[#350a45] transition-all active:scale-[0.98] text-left theme-card">
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 rounded-2xl bg-white/5 icon-bg">
+                            <i class="fa-solid fa-credit-card text-xl text-[#c43ee2]"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">Pricing</h3>
+                            <p class="text-xs opacity-70">Simple investment</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right opacity-40"></i>
+                </button>
+            </div>
+
+            <!-- 2x2 Grid Structure -->
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <button onclick="navTo('why')" class="flex flex-col gap-3 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card text-left">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                        <i class="fa-solid fa-brain text-[#c43ee2]"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm">Why ScanIt</h4>
+                        <p class="text-[10px] opacity-50">See the value</p>
+                    </div>
+                </button>
+
+                <button onclick="navTo('about')" class="flex flex-col gap-3 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card text-left">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                        <i class="fa-solid fa-book-open text-[#c43ee2]"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm">About ScanIt</h4>
+                        <p class="text-[10px] opacity-50">How it works</p>
+                    </div>
+                </button>
+
+                <button onclick="window.open('https://code255.tech', '_blank')" class="flex flex-col gap-3 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card text-left">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                        <i class="fa-solid fa-globe text-[#c43ee2]"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm">Our Website</h4>
+                        <p class="text-[10px] opacity-50">Explore Code255</p>
+                    </div>
+                </button>
+
+                <button onclick="navTo('contact')" class="flex flex-col gap-3 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card text-left">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                        <i class="fa-solid fa-phone text-[#c43ee2]"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm">Contact Us</h4>
+                        <p class="text-[10px] opacity-50">Let's talk</p>
+                    </div>
+                </button>
+            </div>
+
+            <button onclick="navTo('faq')" class="w-full flex items-center justify-center gap-2 p-4 rounded-2xl border-2 border-dashed border-white/10 opacity-50 theme-border-dash">
+                <i class="fa-solid fa-circle-question"></i>
+                <span class="font-bold text-sm uppercase tracking-widest">FAQ</span>
+            </button>
+        </section>
+
+        <!-- WHY SCANIT SCREEN -->
+        <section id="screen-why" class="screen pt-24 pb-32 px-6">
+            <h2 class="text-3xl font-bold mb-6">👉 Why ScanIt</h2>
+            <div class="space-y-4 mb-8">
+                <div class="flex gap-4 items-start">
+                    <i class="fa-solid fa-bolt text-[#c43ee2] mt-1"></i>
+                    <p class="font-medium">Everything in one place</p>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <i class="fa-solid fa-bolt text-[#c43ee2] mt-1"></i>
+                    <p class="font-medium">Faster access for customers</p>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <i class="fa-solid fa-bolt text-[#c43ee2] mt-1"></i>
+                    <p class="font-medium">No apps required</p>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <i class="fa-solid fa-bolt text-[#c43ee2] mt-1"></i>
+                    <p class="font-medium">Clean, modern experience</p>
+                </div>
+            </div>
+
+            <div class="rounded-3xl border border-white/10 overflow-hidden theme-border-solid">
+                <div class="p-4 bg-red-500/10 border-b border-white/5">
+                    <h4 class="text-red-500 font-bold text-xs uppercase mb-2">Before</h4>
+                    <ul class="text-xs space-y-1 opacity-70">
+                        <li>• Information scattered</li>
+                        <li>• Slow communication</li>
+                        <li>• Basic experience</li>
+                    </ul>
+                </div>
+                <div class="p-4 bg-green-500/10">
+                    <h4 class="text-green-500 font-bold text-xs uppercase mb-2">After</h4>
+                    <ul class="text-xs space-y-1 opacity-70">
+                        <li>• One scan access</li>
+                        <li>• Instant interaction</li>
+                        <li>• Premium feel</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button onclick="navTo('pricing')" class="btn-primary mt-8 w-full p-5 text-white rounded-2xl font-bold active:scale-95 transition-transform">
+                👉 Get ScanIt
+            </button>
+        </section>
+
+        <!-- ABOUT SCREEN -->
+        <section id="screen-about" class="screen pt-24 pb-32 px-6">
+            <h2 class="text-3xl font-bold mb-6">👉 About ScanIt</h2>
+            <p class="text-lg leading-relaxed opacity-80 mb-8">
+                ScanIt is a smart QR system that connects everything your business offers into <span class="text-[#c43ee2] font-bold">one simple experience.</span>
+            </p>
+            
+            <div class="space-y-4 mb-10">
+                <div class="flex gap-3 items-center text-sm font-medium">
+                    <i class="fa-solid fa-circle-check text-green-500"></i>
+                    <span>Works with your existing tools</span>
+                </div>
+                <div class="flex gap-3 items-center text-sm font-medium">
+                    <i class="fa-solid fa-circle-check text-green-500"></i>
+                    <span>Fully customizable</span>
+                </div>
+                <div class="flex gap-3 items-center text-sm font-medium">
+                    <i class="fa-solid fa-circle-check text-green-500"></i>
+                    <span>Built for any business</span>
+                </div>
+                <div class="flex gap-3 items-center text-sm font-medium">
+                    <i class="fa-solid fa-circle-check text-green-500"></i>
+                    <span>Easy for customers to use</span>
+                </div>
+            </div>
+
+            <h4 class="font-bold text-xs uppercase opacity-40 mb-4 tracking-widest">How it works</h4>
+            <div class="flex justify-between items-center px-4 mb-12">
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-12 h-12 rounded-full bg-[#c43ee2]/10 flex items-center justify-center font-bold">1</div>
+                    <span class="text-[10px] font-bold uppercase">Scan</span>
+                </div>
+                <div class="h-[2px] flex-1 bg-white/5 mx-2"></div>
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-12 h-12 rounded-full bg-[#c43ee2]/10 flex items-center justify-center font-bold">2</div>
+                    <span class="text-[10px] font-bold uppercase">Access</span>
+                </div>
+                <div class="h-[2px] flex-1 bg-white/5 mx-2"></div>
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-12 h-12 rounded-full bg-[#c43ee2]/10 flex items-center justify-center font-bold">3</div>
+                    <span class="text-[10px] font-bold uppercase">Action</span>
+                </div>
+            </div>
+
+            <button onclick="navTo('demo')" class="btn-primary w-full p-5 text-white rounded-2xl font-bold active:scale-95 transition-transform">
+                👉 See Demo
+            </button>
+        </section>
+
+        <!-- CONTACT SCREEN -->
+        <section id="screen-contact" class="screen pt-24 pb-32 px-6">
+            <h2 class="text-3xl font-bold mb-2">Let's talk</h2>
+            <p class="opacity-60 mb-8">Choose your preferred way to reach us.</p>
+            
+            <div class="grid grid-cols-1 gap-4">
+                <button onclick="window.open('https://wa.me/255XXXXXXXXX', '_blank')" class="flex items-center gap-4 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
+                    <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-500">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    </div>
+                    <span class="font-bold">WhatsApp</span>
+                </button>
+                <button onclick="window.open('tel:+255XXXXXXXXX')" class="flex items-center gap-4 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                        <i class="fa-solid fa-phone text-xl"></i>
+                    </div>
+                    <span class="font-bold">Normal Call</span>
+                </button>
+                <button onclick="window.open('https://instagram.com/code255', '_blank')" class="flex items-center gap-4 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
+                    <div class="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center text-pink-500">
+                        <i class="fa-brands fa-instagram text-2xl"></i>
+                    </div>
+                    <span class="font-bold">Instagram</span>
+                </button>
+                <button onclick="window.open('mailto:hello@code255.tech')" class="flex items-center gap-4 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-[#c43ee2]">
+                        <i class="fa-solid fa-envelope text-xl"></i>
+                    </div>
+                    <span class="font-bold">Email</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- DEMO SELECTION SCREEN -->
+        <section id="screen-demo" class="screen pt-24 pb-32 px-6">
+            <h2 class="text-3xl font-bold mb-2">Explore Demo</h2>
+            <p class="opacity-60 mb-8">Select a mode to see how ScanIt adapts.</p>
+            <div class="space-y-4">
+                <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/Restaurant_Sample.html', '_blank')" class="w-full flex items-center gap-4 p-6 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
+                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-orange-500 text-white shadow-lg">
+                        <i class="fa-solid fa-utensils text-2xl"></i>
+                    </div>
+                    <div class="text-left">
+                        <h4 class="font-bold text-lg">Restaurant</h4>
+                        <p class="text-xs opacity-50">Tap to simulate scan</p>
+                    </div>
+                </button>
+                <button onclick="openDemo('Hotel', 'fa-hotel', 'blue')" class="w-full flex items-center gap-4 p-6 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
+                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-blue-500 text-white shadow-lg">
+                        <i class="fa-solid fa-hotel text-2xl"></i>
+                    </div>
+                    <div class="text-left">
+                        <h4 class="font-bold text-lg">Hotel / BnB</h4>
+                        <p class="text-xs opacity-50">Tap to simulate scan</p>
+                    </div>
+                </button>
+                <button onclick="openDemo('Business', 'fa-building', 'purple')" class="w-full flex items-center gap-4 p-6 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
+                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-purple-500 text-white shadow-lg">
+                        <i class="fa-solid fa-building text-2xl"></i>
+                    </div>
+                    <div class="text-left">
+                        <h4 class="font-bold text-lg">Business</h4>
+                        <p class="text-xs opacity-50">Tap to simulate scan</p>
+                    </div>
+                </button>
+            </div>
+        </section>
+
+        <!-- PRICING SCREEN -->
+        <section id="screen-pricing" class="screen pt-24 pb-32 px-6">
+            <h2 class="text-3xl font-bold mb-6">Simple Investment</h2>
+            <div class="p-8 rounded-[40px] border-2 border-[#c43ee2]/30 bg-[#350a45] theme-pricing-card text-center mb-8">
+                <p class="text-sm font-bold uppercase tracking-widest opacity-60 mb-2">Starts from</p>
+                <div class="flex items-center justify-center gap-1 mb-6">
+                    <span class="text-2xl font-bold opacity-60">TZS</span>
+                    <span class="text-5xl font-black text-[#c43ee2]">25k</span>
+                    <span class="text-lg opacity-60">/mo</span>
+                </div>
+                <div class="space-y-3 text-left mb-8">
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-check text-[#c43ee2]"></i><span class="text-sm font-medium">Smart QR System</span></div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-check text-[#c43ee2]"></i><span class="text-sm font-medium">Hosted Experience</span></div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-check text-[#c43ee2]"></i><span class="text-sm font-medium">Real-time Updates</span></div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-check text-[#c43ee2]"></i><span class="text-sm font-medium">Priority Support</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CASES SCREEN -->
+        <section id="screen-cases" class="screen pt-24 pb-32 px-6">
+            <h2 class="text-3xl font-bold mb-6">Use Cases</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="p-6 rounded-3xl flex flex-col items-center gap-3 border border-white/5 bg-white/5 theme-card-lite">
+                    <i class="fa-solid fa-utensils text-3xl text-[#c43ee2]"></i>
+                    <span class="text-sm font-bold text-center">Restaurants</span>
+                </div>
+                <div class="p-6 rounded-3xl flex flex-col items-center gap-3 border border-white/5 bg-white/5 theme-card-lite">
+                    <i class="fa-solid fa-hotel text-3xl text-[#c43ee2]"></i>
+                    <span class="text-sm font-bold text-center">Hotels</span>
+                </div>
+                <div class="p-6 rounded-3xl flex flex-col items-center gap-3 border border-white/5 bg-white/5 theme-card-lite">
+                    <i class="fa-solid fa-building text-3xl text-[#c43ee2]"></i>
+                    <span class="text-sm font-bold text-center">Offices</span>
+                </div>
+                <div class="p-6 rounded-3xl flex flex-col items-center gap-3 border border-white/5 bg-white/5 theme-card-lite">
+                    <i class="fa-solid fa-users text-3xl text-[#c43ee2]"></i>
+                    <span class="text-sm font-bold text-center">Events</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ SCREEN -->
+        <section id="screen-faq" class="screen pt-24 pb-32 px-6 text-center">
+            <h2 class="text-3xl font-bold mb-6">FAQ</h2>
+            <div class="space-y-4 text-left">
+                <div class="p-5 rounded-2xl bg-white/5 theme-card-lite">
+                    <h4 class="font-bold mb-2">Is there a contract?</h4>
+                    <p class="text-sm opacity-60">Nope. Cancel anytime.</p>
+                </div>
+                <div class="p-5 rounded-2xl bg-white/5 theme-card-lite">
+                    <h4 class="font-bold mb-2">Can I use my own QR?</h4>
+                    <p class="text-sm opacity-60">Yes, we provide the URL to link it.</p>
+                </div>
+                <div class="p-5 rounded-2xl bg-white/5 theme-card-lite">
+                    <h4 class="font-bold mb-2">Who updates the data?</h4>
+                    <p class="text-sm opacity-60">You can, or we can manage it for you.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Bar -->
+    <nav class="fixed bottom-6 left-0 w-full px-5 z-50">
+        <div class="max-w-xs mx-auto flex items-center justify-between p-2 rounded-full shadow-2xl glass border border-white/10 bg-purple-900/40 theme-nav transition-all">
+            <button onclick="window.open('https://wa.me/255XXXXXXXXX', '_blank')" class="flex items-center gap-2 px-5 py-3 rounded-full text-sm font-bold text-green-500 active:scale-95 transition-transform">
+                <i class="fa-brands fa-whatsapp text-xl"></i>
+                <span>WhatsApp</span>
+            </button>
+            <button onclick="navTo('pricing')" class="btn-primary flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white active:scale-95 transition-transform shadow-lg">
+                <i class="fa-solid fa-rocket"></i>
+                <span>Get ScanIt</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Demo Simulation Overlay -->
+    <div id="demo-overlay" class="demo-overlay flex-col items-center justify-center p-10 text-center text-white">
+        <div class="absolute top-6 right-6">
+            <button onclick="closeDemo()" class="p-3 bg-white/10 backdrop-blur-md rounded-full text-white active:scale-90 transition-transform">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+        </div>
+        <i id="demo-icon" class="fa-solid fa-utensils text-6xl mb-6 text-[#c43ee2]"></i>
+        <h3 id="demo-title" class="text-3xl font-bold mb-2">Restaurant Mode</h3>
+        <p id="demo-desc" class="opacity-60 mb-8">Simulating the scan experience...</p>
+        <div class="w-full bg-white/10 rounded-3xl p-6 text-left border border-white/10">
+            <div class="h-4 w-2/3 bg-white/20 rounded mb-4"></div>
+            <div class="h-4 w-full bg-white/10 rounded mb-2"></div>
+            <div class="h-4 w-full bg-white/10 rounded mb-2"></div>
+            <div class="grid grid-cols-2 gap-4 mt-6">
+                <div class="h-20 bg-[#c43ee2]/20 rounded-2xl border border-[#c43ee2]/30"></div>
+                <div class="h-20 bg-white/5 rounded-2xl"></div>
+            </div>
+        </div>
+        <p class="mt-8 text-sm italic opacity-40">Interactive UI Mockup</p>
+    </div>
+
+    <script>
+        const body = document.body;
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const backBtn = document.getElementById('back-btn');
+        const logoContainer = document.getElementById('logo-container');
+        const header = document.getElementById('main-header');
+        
+        let isDarkMode = true;
+
+        themeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                body.classList.remove('light'); body.classList.add('dark');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                header.classList.replace('bg-white/80', 'bg-[#260234]/80');
+                header.classList.replace('border-purple-100', 'border-white/5');
+                updateThemeClasses(true);
+            } else {
+                body.classList.remove('dark'); body.classList.add('light');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                header.classList.replace('bg-[#260234]/80', 'bg-white/80');
+                header.classList.replace('border-white/5', 'border-purple-100');
+                updateThemeClasses(false);
+            }
+        });
+
+        function updateThemeClasses(isDark) {
+            const cards = document.querySelectorAll('.theme-card');
+            const icons = document.querySelectorAll('.icon-bg');
+            const borderDash = document.querySelectorAll('.theme-border-dash');
+            const nav = document.querySelector('.theme-nav');
+            const liteCards = document.querySelectorAll('.theme-card-lite');
+            const pricing = document.querySelector('.theme-pricing-card');
+            const solidBorders = document.querySelectorAll('.theme-border-solid');
+
+            if (isDark) {
+                cards.forEach(c => { c.classList.replace('bg-white', 'bg-[#350a45]'); c.classList.replace('border-purple-100', 'border-white/5'); });
+                icons.forEach(i => i.classList.replace('bg-purple-50', 'bg-white/5'));
+                borderDash.forEach(b => b.classList.replace('border-purple-200', 'border-white/10'));
+                solidBorders.forEach(b => b.classList.replace('border-purple-100', 'border-white/10'));
+                nav.classList.replace('bg-white/90', 'bg-purple-900/40');
+                nav.classList.replace('border-purple-100', 'border-white/10');
+                liteCards.forEach(c => c.classList.replace('bg-white', 'bg-white/5'));
+                if(pricing) { pricing.classList.replace('bg-white', 'bg-[#350a45]'); pricing.classList.replace('border-purple-100', 'border-[#c43ee2]/30'); }
+            } else {
+                cards.forEach(c => { c.classList.replace('bg-[#350a45]', 'bg-white'); c.classList.replace('border-white/5', 'border-purple-100'); });
+                icons.forEach(i => i.classList.replace('bg-white/5', 'bg-purple-50'));
+                borderDash.forEach(b => b.classList.replace('border-white/10', 'border-purple-200'));
+                solidBorders.forEach(b => b.classList.replace('border-white/10', 'border-purple-100'));
+                nav.classList.replace('bg-purple-900/40', 'bg-white/90');
+                nav.classList.replace('border-white/10', 'border-purple-100');
+                liteCards.forEach(c => c.classList.replace('bg-white/5', 'bg-white'));
+                if(pricing) { pricing.classList.replace('bg-[#350a45]', 'bg-white'); pricing.classList.replace('border-[#c43ee2]/30', 'border-purple-100'); }
+            }
+        }
+
+        function navTo(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`screen-${screenId}`).classList.add('active');
+            backBtn.classList.toggle('hidden', screenId === 'home');
+            logoContainer.classList.toggle('hidden', screenId !== 'home');
+            window.scrollTo(0, 0);
+        }
+
+        backBtn.addEventListener('click', () => navTo('home'));
+
+        function openDemo(title, iconClass, colorName) {
+            document.getElementById('demo-title').innerText = `${title} Mode`;
+            document.getElementById('demo-desc').innerText = `Simulating the ${title.toLowerCase()} scan experience...`;
+            document.getElementById('demo-icon').className = `fa-solid ${iconClass} text-6xl mb-6 text-[#c43ee2]`;
+            document.getElementById('demo-overlay').classList.add('active');
+        }
+
+        function closeDemo() { document.getElementById('demo-overlay').classList.remove('active'); }
+    </script>
+</body>
+</html>

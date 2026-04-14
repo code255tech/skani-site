@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>The Backyard | Scan It</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 
+                            primary: '#CE5522',
+                            secondary: '#FF824D',
+                            dark: '#05161A',
+                            accent: '#0D2B33',
+                            light: '#FBFFFF'
+                        }
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                        '5xl': '3rem',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sab: env(safe-area-inset-bottom);
+        }
+
+        body { 
+            background-color: #FBFFFF; 
+            color: #05161A; 
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        
+        .dark body { 
+            background-color: #05161A; 
+            color: #FBFFFF;
+        }
+
+        /* Glassmorphism Classes */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .dark .glass {
+            background: rgba(13, 43, 51, 0.4);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Sophisticated Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            filter: blur(10px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0px);
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(135deg, #CE5522 0%, #FF824D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Modal Logic */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(0px);
+            pointer-events: none;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            backdrop-filter: blur(24px);
+            pointer-events: auto;
+        }
+        .modal-content {
+            transform: scale(0.9) translateY(40px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            width: 100%;
+            max-width: 28rem;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        /* Enhanced Carousel */
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1.25rem;
+            padding: 1rem 1.5rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .carousel-container::-webkit-scrollbar { display: none; }
+        
+        .carousel-card {
+            flex: 0 0 85%;
+            scroll-snap-align: center;
+            border-radius: 2.5rem;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        .dark .carousel-card { border: 1px solid rgba(255, 255, 255, 0.05); }
+        .carousel-card:active { transform: scale(0.97); }
+
+        .tap-scale { transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .tap-scale:active { transform: scale(0.92); }
+        
+        .grid-action-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 0.5rem;
+            border-radius: 2rem;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-action-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            transition: 0.6s;
+        }
+        .grid-action-card:hover::after { transform: translateX(100%); }
+
+        .order-glow {
+            box-shadow: 0 20px 40px -10px rgba(206, 85, 34, 0.5);
+        }
+
+        input[type="date"], input[type="time"], input[type="text"], input[type="number"], input[type="tel"] {
+            -webkit-appearance: none;
+            appearance: none;
+        }
+    </style>
+</head>
+<body class="transition-colors duration-700">
+
+    <div class="min-h-screen bg-brand-light dark:bg-brand-dark pb-48">
+        <div class="max-w-md mx-auto relative">
+            
+            <!-- DECORATIVE ELEMENTS -->
+            <div class="fixed top-[-10%] left-[-10%] w-[50%] h-[30%] bg-brand-primary/10 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[30%] bg-brand-secondary/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <!-- HEADER -->
+            <header class="px-6 py-6 flex items-center justify-between sticky top-0 bg-brand-light/40 dark:bg-brand-dark/40 backdrop-blur-2xl z-50 border-b border-black/[0.03] dark:border-white/[0.03] pt-[calc(1.5rem+env(safe-area-inset-top))]">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-xl shadow-brand-primary/30 animate-float">
+                        <i class="fa-solid fa-burger text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-base font-black dark:text-white uppercase tracking-tighter leading-none italic">The Backyard</h1>
+                        <div class="flex items-center gap-2 mt-1.5">
+                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                            <p class="text-[9px] text-brand-primary uppercase tracking-[0.25em] font-black">Open Air Vibes</p>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="toggleTheme()" class="w-12 h-12 flex items-center justify-center rounded-2xl glass text-zinc-800 dark:text-brand-primary shadow-sm active:scale-90 transition-all border-none">
+                    <i id="theme-icon" class="fa-solid fa-sun text-lg"></i>
+                </button>
+            </header>
+
+            <!-- 1. WELCOME SECTION -->
+            <section class="px-8 py-14 reveal">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-brand-primary/10 text-brand-primary text-[10px] font-black uppercase tracking-[0.2em] rounded-full mb-6 border border-brand-primary/20 backdrop-blur-sm">
+                    <i class="fa-solid fa-fire-flame-curved animate-pulse"></i>
+                    Experience First
+                </div>
+                <h2 class="text-5xl font-black text-brand-dark dark:text-white leading-[0.9] tracking-tighter">
+                    Welcome to <br><span class="text-gradient italic">The Backyard</span>
+                </h2>
+                <p class="text-zinc-500 dark:text-zinc-400 mt-6 text-base font-medium leading-relaxed max-w-[280px]">
+                    Good food, great cocktails, and open-air vibes — everything in one scan.
+                </p>
+            </section>
+
+            <!-- 2. PRIMARY GRID (2x3) -->
+            <section class="px-6 grid grid-cols-3 gap-4">
+                <button onclick="navigateTo('#')" class="reveal grid-action-card tap-scale bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-2xl shadow-brand-primary/20 group border-none">
+                    <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-book-open text-xl"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest">Menu</span>
+                </button>
+                
+                <button onclick="navigateTo('tel:0766525354')" class="reveal grid-action-card tap-scale bg-zinc-900 dark:bg-white text-white dark:text-brand-dark shadow-xl border-none">
+                    <div class="w-10 h-10 rounded-full bg-white/10 dark:bg-black/5 flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-phone text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest">Call</span>
+                </button>
+
+                <button onclick="navigateTo('https://maps.google.com')" class="reveal grid-action-card tap-scale glass">
+                    <div class="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center mb-3 text-brand-primary">
+                        <i class="fa-regular fa-map text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest dark:text-white">Find Us</span>
+                </button>
+
+                <button onclick="openModal('hours-modal')" class="reveal grid-action-card tap-scale glass">
+                    <div class="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center mb-3 text-brand-primary">
+                        <i class="fa-regular fa-clock text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest dark:text-white">Hours</span>
+                </button>
+
+                <button onclick="navigateTo('https://255virtualtours.infinityhomes.co.tz/scan%20Landing%20Page.html')" class="reveal grid-action-card tap-scale glass">
+                    <div class="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center mb-3 text-brand-primary">
+                        <i class="fa-solid fa-globe text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest dark:text-white text-center px-1">Website</span>
+                </button>
+
+                <button onclick="navigateTo('https://kuulastudio.com/post/7qzpN/collection/7lP9q')" class="reveal grid-action-card tap-scale glass">
+                    <div class="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center mb-3 text-brand-primary">
+                        <i class="fa-solid fa-vr-cardboard text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest dark:text-white">Tour</span>
+                </button>
+            </section>
+
+            <!-- 2.5 BOOK A TABLE SECTION -->
+            <section class="px-6 mt-12 reveal">
+                <div class="flex items-end justify-between mb-6 px-2">
+                    <div class="space-y-1">
+                        <h3 class="text-2xl font-black dark:text-white uppercase tracking-tighter italic leading-none">Book a Table 🍽️🔥</h3>
+                        <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Reserve your spot at The Backyard in seconds</p>
+                    </div>
+                </div>
+
+                <!-- Radius increased as requested -->
+                <button onclick="openModal('booking-modal')" class="w-full glass p-8 rounded-[4rem] flex items-center justify-between tap-scale group overflow-hidden relative">
+                    <div class="relative z-10 flex flex-col items-start text-left">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fa-solid fa-utensils text-brand-primary text-xl"></i>
+                            <span class="font-black text-lg dark:text-white uppercase tracking-tighter">Book a Table</span>
+                        </div>
+                        <p class="text-zinc-500 dark:text-zinc-400 text-xs font-medium mb-4">“Secure your seat before you arrive”</p>
+                        <span class="bg-brand-primary text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-full">👉 Tap to reserve</span>
+                    </div>
+                    <div class="absolute -right-4 -bottom-4 opacity-5 pointer-events-none rotate-12">
+                        <i class="fa-solid fa-calendar-check text-[140px]"></i>
+                    </div>
+                </button>
+            </section>
+
+            <!-- 3. WHAT TO EXPECT -->
+            <section class="mt-16 reveal">
+                <div class="px-8 flex items-end justify-between mb-4">
+                    <h3 class="text-2xl font-black dark:text-white uppercase tracking-tighter italic leading-none">What to Expect 🔥</h3>
+                    <div class="flex gap-1">
+                        <div class="w-8 h-1 bg-brand-primary rounded-full"></div>
+                        <div class="w-2 h-1 bg-zinc-300 dark:bg-zinc-700 rounded-full"></div>
+                    </div>
+                </div>
+                
+                <div class="carousel-container" id="vibe-carousel">
+                    <!-- Card 1 -->
+                    <div class="carousel-card glass border-l-4 border-brand-primary">
+                        <div class="w-14 h-14 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mb-6 text-3xl shadow-lg">🍸</div>
+                        <h4 class="text-xl font-black dark:text-white uppercase tracking-tighter italic">Great Cocktails</h4>
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-2 font-medium leading-relaxed">Signature drinks crafted for your night</p>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="carousel-card glass border-l-4 border-zinc-900 dark:border-white">
+                        <div class="w-14 h-14 bg-zinc-900 dark:bg-white rounded-2xl flex items-center justify-center mb-6 text-3xl shadow-lg">🌿</div>
+                        <h4 class="text-xl font-black dark:text-white uppercase tracking-tighter italic">Outdoor Seating</h4>
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-2 font-medium leading-relaxed">Relax in a vibrant open-air setting</p>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="carousel-card glass border-l-4 border-green-500">
+                        <div class="w-14 h-14 bg-green-500/10 rounded-2xl flex items-center justify-center mb-6 text-3xl">🌱</div>
+                        <h4 class="text-xl font-black dark:text-white uppercase tracking-tighter italic">Vegan Options</h4>
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-2 font-medium leading-relaxed">Fresh and inclusive food choices</p>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="carousel-card glass border-l-4 border-brand-secondary">
+                        <div class="w-14 h-14 bg-brand-secondary/20 rounded-2xl flex items-center justify-center mb-6 text-3xl">🔥</div>
+                        <h4 class="text-xl font-black dark:text-white uppercase tracking-tighter italic">Night Vibes</h4>
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-2 font-medium leading-relaxed">Music, energy, and unforgettable evenings</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. SOCIAL SECTION -->
+            <section class="px-6 mt-16">
+                <div class="flex items-center gap-4 mb-8 reveal">
+                    <div class="h-[1px] flex-1 bg-gradient-to-r from-transparent to-zinc-200 dark:to-zinc-800"></div>
+                    <h3 class="text-sm font-black text-zinc-400 uppercase tracking-[0.3em] whitespace-nowrap">Connect With Us</h3>
+                    <div class="h-[1px] flex-1 bg-gradient-to-l from-transparent to-zinc-200 dark:to-zinc-800"></div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <a href="https://wa.me/255766525354" class="reveal tap-scale glass p-7 rounded-[2.5rem] flex flex-col items-center group">
+                        <div class="w-14 h-14 rounded-2xl bg-[#25D366]/10 flex items-center justify-center mb-4 transition-transform group-hover:rotate-12 border-none">
+                            <i class="fa-brands fa-whatsapp text-[#25D366] text-3xl"></i>
+                        </div>
+                        <span class="font-black text-xs uppercase tracking-widest dark:text-white">WhatsApp</span>
+                    </a>
+                    <a href="https://www.instagram.com/thebackyardtz" class="reveal tap-scale glass p-7 rounded-[2.5rem] flex flex-col items-center group">
+                        <div class="w-14 h-14 rounded-2xl bg-[#E4405F]/10 flex items-center justify-center mb-4 transition-transform group-hover:-rotate-12 border-none">
+                            <i class="fa-brands fa-instagram text-[#E4405F] text-3xl"></i>
+                        </div>
+                        <span class="font-black text-xs uppercase tracking-widest dark:text-white">Instagram</span>
+                    </a>
+                    <a href="#" class="reveal tap-scale glass p-7 rounded-[2.5rem] flex flex-col items-center opacity-40 grayscale group cursor-not-allowed">
+                        <div class="w-14 h-14 rounded-2xl bg-zinc-500/10 flex items-center justify-center mb-4 border-none">
+                            <i class="fa-brands fa-tiktok text-zinc-400 text-3xl"></i>
+                        </div>
+                        <span class="font-black text-xs uppercase tracking-widest dark:text-white">TikTok</span>
+                    </a>
+                    <a href="#" class="reveal tap-scale glass p-7 rounded-[2.5rem] flex flex-col items-center opacity-40 grayscale group cursor-not-allowed">
+                        <div class="w-14 h-14 rounded-2xl bg-zinc-500/10 flex items-center justify-center mb-4 border-none">
+                            <i class="fa-brands fa-snapchat text-zinc-400 text-3xl"></i>
+                        </div>
+                        <span class="font-black text-xs uppercase tracking-widest dark:text-white">Snapchat</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 5. NEED HELP SECTION -->
+            <section class="px-6 mt-20 text-center reveal">
+                <div class="glass p-8 rounded-[3rem] relative overflow-hidden">
+                    <div class="absolute -top-10 -left-10 w-24 h-24 bg-brand-primary/10 rounded-full blur-2xl"></div>
+                    <p class="text-[10px] font-black text-brand-primary uppercase tracking-[0.4em] mb-4">Support Hub</p>
+                    <h4 class="text-xl font-black dark:text-white mb-6 tracking-tighter italic">Got Questions?</h4>
+                    <button onclick="openModal('help-modal')" class="w-full bg-brand-dark dark:bg-white text-white dark:text-brand-dark py-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em] tap-scale flex items-center justify-center gap-3 shadow-xl border-none">
+                        <i class="fa-solid fa-circle-question text-brand-primary"></i> Need Help?
+                    </button>
+                </div>
+            </section>
+
+            <!-- FOOTER INFO -->
+            <footer class="mt-16 text-center reveal pb-10">
+                <p class="text-[10px] font-black text-zinc-400 dark:text-zinc-600 uppercase tracking-[0.5em]">The Backyard &copy; 2026</p>
+            </footer>
+
+            <!-- STICKY BOTTOM NAV -->
+            <nav class="fixed bottom-0 left-0 right-0 z-[60] p-6 pb-[calc(2rem+env(safe-area-inset-bottom))] pointer-events-none">
+                <div class="max-w-md mx-auto bg-brand-dark/90 dark:bg-brand-light/90 backdrop-blur-3xl rounded-[2.5rem] p-2.5 flex items-center justify-between pointer-events-auto shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] border border-white/10 dark:border-black/5">
+                    <button onclick="navigateTo('https://wa.me/255766525354')" class="w-14 h-14 flex items-center justify-center text-white dark:text-brand-dark tap-scale rounded-full bg-white/5 dark:bg-black/5 border-none">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    </button>
+                    
+                    <!-- Updated destination as requested -->
+                    <button onclick="navigateTo('https://play.google.com/store/apps/details?id=com.app.uengage.burger53')" class="flex-1 mx-3 bg-gradient-to-r from-brand-primary to-brand-secondary order-glow text-white font-black text-xs uppercase tracking-[0.15em] py-4.5 rounded-full tap-scale flex items-center justify-center gap-3 h-14 italic shadow-lg border-none shadow-brand-primary/20">
+                        <i class="fa-solid fa-calendar-check"></i> Book a Table
+                    </button>
+                    
+                    <button onclick="navigateTo('https://www.instagram.com/thebackyardtz')" class="w-14 h-14 flex items-center justify-center text-white dark:text-brand-dark tap-scale rounded-full bg-white/5 dark:bg-black/5 border-none">
+                        <i class="fa-brands fa-instagram text-2xl"></i>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- MODALS -->
+            
+            <!-- 1. BOOKING MODAL -->
+            <div id="booking-modal" class="modal-overlay">
+                <div class="absolute inset-0 bg-brand-dark/80 backdrop-blur-xl" onclick="closeModal('booking-modal')"></div>
+                <div class="modal-content glass rounded-[3rem] p-8 relative overflow-hidden sm:rounded-[3.5rem] sm:p-10">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand-primary/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                    <button onclick="closeModal('booking-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center glass rounded-full dark:text-white tap-scale border-none z-10"><i class="fa-solid fa-xmark"></i></button>
+                    
+                    <div class="w-16 h-16 bg-brand-primary/10 rounded-2xl flex items-center justify-center text-brand-primary mb-6 animate-float">
+                        <i class="fa-solid fa-utensils text-3xl"></i>
+                    </div>
+                    
+                    <h3 class="text-3xl font-black dark:text-white mb-2 tracking-tighter uppercase italic leading-none">Instant Booking</h3>
+                    <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest mb-8">Via WhatsApp Redirection</p>
+                    
+                    <form id="booking-form" class="space-y-4">
+                        <div>
+                            <label class="block text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-2 ml-1">Full Name</label>
+                            <input type="text" id="b-name" required placeholder="John Doe" class="w-full bg-white/50 dark:bg-black/20 border border-zinc-200 dark:border-white/5 rounded-2xl p-4 text-sm font-bold dark:text-white focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-2 ml-1">Phone Number</label>
+                            <input type="tel" id="b-phone" required placeholder="07XX XXX XXX" class="w-full bg-white/50 dark:bg-black/20 border border-zinc-200 dark:border-white/5 rounded-2xl p-4 text-sm font-bold dark:text-white focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-2 ml-1">Date</label>
+                                <input type="date" id="b-date" required class="w-full bg-white/50 dark:bg-black/20 border border-zinc-200 dark:border-white/5 rounded-2xl p-4 text-sm font-bold dark:text-white focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-2 ml-1">Time</label>
+                                <input type="time" id="b-time" required class="w-full bg-white/50 dark:bg-black/20 border border-zinc-200 dark:border-white/5 rounded-2xl p-4 text-sm font-bold dark:text-white focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-2 ml-1">Number of People</label>
+                            <input type="number" id="b-people" required min="1" placeholder="2" class="w-full bg-white/50 dark:bg-black/20 border border-zinc-200 dark:border-white/5 rounded-2xl p-4 text-sm font-bold dark:text-white focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all">
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-brand-primary text-white py-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em] tap-scale flex items-center justify-center gap-3 shadow-xl shadow-brand-primary/20 mt-4 border-none">
+                            <i class="fa-brands fa-whatsapp text-lg"></i> Confirm on WhatsApp
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 2. HOURS MODAL -->
+            <div id="hours-modal" class="modal-overlay">
+                <div class="absolute inset-0 bg-brand-dark/80 backdrop-blur-xl" onclick="closeModal('hours-modal')"></div>
+                <div class="modal-content glass rounded-[3.5rem] p-10 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand-primary/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                    <button onclick="closeModal('hours-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center glass rounded-full dark:text-white tap-scale border-none"><i class="fa-solid fa-xmark"></i></button>
+                    
+                    <div class="w-16 h-16 bg-brand-primary/10 rounded-2xl flex items-center justify-center text-brand-primary mb-8 animate-float">
+                        <i class="fa-regular fa-clock text-3xl"></i>
+                    </div>
+                    
+                    <h3 class="text-3xl font-black dark:text-white mb-2 tracking-tighter uppercase italic leading-none">Opening Hours</h3>
+                    <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest mb-8">Plan your visit</p>
+                    
+                    <div class="bg-brand-primary/5 dark:bg-white/5 p-8 rounded-3xl border border-brand-primary/10 text-center">
+                        <p class="text-brand-primary font-black uppercase text-[10px] tracking-[0.3em] mb-4 italic">Available Every Day</p>
+                        <div class="flex items-center justify-center gap-4">
+                            <span class="text-3xl font-black dark:text-white tabular-nums tracking-tighter">11:00</span>
+                            <span class="text-zinc-400 font-black tracking-widest uppercase text-xs">AM</span>
+                            <span class="text-brand-primary/50 text-2xl font-light">|</span>
+                            <span class="text-3xl font-black dark:text-white tabular-nums tracking-tighter">11:00</span>
+                            <span class="text-zinc-400 font-black tracking-widest uppercase text-xs">PM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. HELP MODAL -->
+            <div id="help-modal" class="modal-overlay">
+                <div class="absolute inset-0 bg-brand-dark/80 backdrop-blur-xl" onclick="closeModal('help-modal')"></div>
+                <div class="modal-content glass rounded-[3.5rem] p-10 relative overflow-hidden">
+                    <button onclick="closeModal('help-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center glass rounded-full dark:text-white tap-scale border-none"><i class="fa-solid fa-xmark"></i></button>
+                    
+                    <div class="w-16 h-16 bg-brand-primary/10 rounded-2xl flex items-center justify-center text-brand-primary mb-8 animate-float">
+                        <i class="fa-solid fa-headset text-3xl"></i>
+                    </div>
+
+                    <h3 class="text-3xl font-black dark:text-white mb-2 tracking-tighter uppercase italic leading-none">Assistance</h3>
+                    <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest mb-10">We're here for you</p>
+                    
+                    <div class="space-y-4">
+                        <button onclick="navigateTo('tel:0766525354')" class="w-full glass p-6 rounded-2xl flex items-center justify-between group tap-scale border-none">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-brand-primary/10 flex items-center justify-center text-brand-primary text-xl transition-transform group-hover:scale-110">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                                <span class="font-black dark:text-white uppercase text-xs tracking-widest italic">Voice Call</span>
+                            </div>
+                            <i class="fa-solid fa-arrow-right-long text-zinc-300 dark:text-zinc-700"></i>
+                        </button>
+                        
+                        <button onclick="navigateTo('https://wa.me/255766525354')" class="w-full glass p-6 rounded-2xl flex items-center justify-between group tap-scale border-none">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center text-green-500 text-xl transition-transform group-hover:scale-110">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </div>
+                                <span class="font-black dark:text-white uppercase text-xs tracking-widest italic">WhatsApp Chat</span>
+                            </div>
+                            <i class="fa-solid fa-arrow-right-long text-zinc-300 dark:text-zinc-700"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Scroll Animation Observer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => { 
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                } 
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Smooth Auto-scroll Carousel
+        const carousel = document.getElementById('vibe-carousel');
+        let scrollDirection = 1;
+        
+        function autoScroll() {
+            if (!carousel) return;
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            if (carousel.scrollLeft >= maxScroll - 10) scrollDirection = -1;
+            else if (carousel.scrollLeft <= 0) scrollDirection = 1;
+            
+            carousel.scrollBy({ left: scrollDirection * 250, behavior: 'smooth' });
+        }
+        
+        let carouselInterval = setInterval(autoScroll, 5000);
+        carousel.addEventListener('touchstart', () => clearInterval(carouselInterval));
+        carousel.addEventListener('mousedown', () => clearInterval(carouselInterval));
+
+        // Theme Toggle
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            
+            icon.style.transform = 'scale(0) rotate(180deg)';
+            icon.style.opacity = '0';
+            
+            setTimeout(() => {
+                icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+                icon.style.transform = 'scale(1) rotate(0deg)';
+                icon.style.opacity = '1';
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            }, 250);
+        }
+
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('theme-icon').className = 'fa-solid fa-moon';
+        }
+
+        // Navigation
+        function navigateTo(url) { 
+            if (url === '#') return;
+            setTimeout(() => { window.location.href = url; }, 150);
+        }
+
+        // Modal Logic
+        function openModal(id) { 
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.add('active'); 
+                document.body.style.overflow = 'hidden'; 
+                if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(10);
+            }
+        }
+
+        function closeModal(id) { 
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.remove('active'); 
+                document.body.style.overflow = ''; 
+            }
+        }
+        
+        // Booking System Logic (WhatsApp flow for the card)
+        document.getElementById('booking-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('b-name').value;
+            const phone = document.getElementById('b-phone').value;
+            const date = document.getElementById('b-date').value;
+            const time = document.getElementById('b-time').value;
+            const people = document.getElementById('b-people').value;
+            
+            const message = `Hello Backyard 🍔🔥\n\nI would like to book a table.\n\nName: ${name}\nPhone: ${phone}\nDate: ${date}\nTime: ${time}\nNumber of People: ${people}`;
+            
+            const whatsappUrl = `https://wa.me/255766525354?text=${encodeURIComponent(message)}`;
+            
+            window.open(whatsappUrl, '_blank');
+            closeModal('booking-modal');
+            this.reset();
+        });
+
+        document.addEventListener('keydown', (e) => { 
+            if (e.key === 'Escape') { 
+                const active = document.querySelector('.modal-overlay.active'); 
+                if (active) closeModal(active.id); 
+            } 
+        });
+
+        function updateSafeArea() {
+            const doc = document.documentElement;
+            doc.style.setProperty('--sat', 'env(safe-area-inset-top)');
+            doc.style.setProperty('--sab', 'env(safe-area-inset-bottom)');
+        }
+        window.addEventListener('resize', updateSafeArea);
+        updateSafeArea();
+    </script>
+</body>
+</html>

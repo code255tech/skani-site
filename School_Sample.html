@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScanIt | Digital School Companion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1E3A8A; /* Academic Navy */
+            --secondary: #F59E0B; /* Knowledge Gold */
+            --accent: #3B82F6;
+            --dark-bg: #0F172A;
+            --card-dark: #1E293B;
+            --light-bg: #F8FAFC;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: background-color 0.4s ease;
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+
+        .dark { background-color: var(--dark-bg); color: #F1F5F9; }
+        .light { background-color: var(--light-bg); color: #0F172A; }
+
+        .glass { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .screen.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bento-card {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+        .bento-card:active { transform: scale(0.96); }
+        
+        .dark .bento-card { background: var(--card-dark); }
+        .light .bento-card { background: white; border-color: rgba(30, 58, 138, 0.08); box-shadow: 0 4px 12px rgba(30, 58, 138, 0.03); }
+
+        .service-pill {
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .service-pill:active { background: var(--secondary); color: white; }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            width: 100%;
+            max-width: 480px;
+            border-radius: 32px 32px 0 0;
+            animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalSlideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .icon-square {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        input, select, textarea {
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            color: white !important;
+        }
+        .light input, .light select, .light textarea {
+            background: #F1F5F9 !important;
+            border: 1px solid #E2E8F0 !important;
+            color: black !important;
+        }
+    </style>
+</head>
+<body class="dark">
+
+    <header class="fixed top-0 w-full z-50 h-16 px-6 flex items-center justify-between glass border-b border-white/5" id="nav-header">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-gradient-to-tr from-[#1E3A8A] to-[#3B82F6] rounded-lg flex items-center justify-center shadow-lg shadow-blue-900/20">
+                <i class="fa-solid fa-graduation-cap text-white text-[10px]"></i>
+            </div>
+            <h1 class="font-black text-sm tracking-wider uppercase">Excel Academy</h1>
+        </div>
+        <button id="theme-toggle" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center border border-white/10 active:scale-90 transition-all">
+            <i id="theme-icon" class="fa-solid fa-moon text-xs"></i>
+        </button>
+    </header>
+
+    <main class="max-w-md mx-auto pt-20 pb-40 px-5">
+        
+        <!-- Welcome Banner -->
+        <div class="mb-6 p-6 rounded-[32px] bg-gradient-to-br from-[#1E293B] to-[#0F172A] border border-white/10 text-white relative overflow-hidden">
+            <div class="relative z-10">
+                <h2 class="text-xl font-black mb-1">Welcome 👋</h2>
+                <p class="text-[13px] opacity-70 leading-snug">Explore our school, learning programs, and everything you need in one place.</p>
+            </div>
+            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-[#F59E0B] blur-[60px] opacity-10"></div>
+        </div>
+
+        <!-- PRIMARY GRID -->
+        <div id="screen-main" class="screen active">
+            
+            <!-- Announcements Section (BIG UPGRADE) -->
+            <div class="mb-6 overflow-hidden">
+                <div class="flex items-center justify-between mb-3 px-1">
+                    <h3 class="text-[10px] font-black uppercase tracking-widest opacity-40">Latest News</h3>
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                </div>
+                <div class="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
+                    <div class="min-w-[240px] p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex gap-3">
+                        <i class="fa-solid fa-calendar-check text-blue-400 mt-1"></i>
+                        <div>
+                            <p class="text-[11px] font-bold">Mid-Term Exams</p>
+                            <p class="text-[10px] opacity-60">Starting next Monday. Check schedule.</p>
+                        </div>
+                    </div>
+                    <div class="min-w-[240px] p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 flex gap-3">
+                        <i class="fa-solid fa-star text-yellow-400 mt-1"></i>
+                        <div>
+                            <p class="text-[11px] font-bold">Annual Sports Day</p>
+                            <p class="text-[10px] opacity-60">Join us this Friday at 9:00 AM.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-6 gap-3 mb-8">
+                
+                <!-- 🏫 About School -->
+                <button onclick="showModal('about')" class="bento-card col-span-4 p-5 rounded-[28px] flex flex-col text-left theme-card">
+                    <div class="icon-square bg-blue-500/10 text-blue-400">
+                        <i class="fa-solid fa-school"></i>
+                    </div>
+                    <span class="font-black text-sm mb-1">About School</span>
+                    <span class="text-[10px] opacity-50 font-bold uppercase tracking-tight">Mission • History • Vision</span>
+                </button>
+
+                <!-- 📚 Programs -->
+                <button onclick="showModal('programs')" class="bento-card col-span-2 p-5 rounded-[28px] flex flex-col items-center justify-center text-center theme-card">
+                    <div class="icon-square mb-2 bg-amber-500/10 text-amber-500">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <span class="font-black text-[12px]">Programs</span>
+                </button>
+
+                <!-- 🧑‍🏫 Teachers -->
+                <button onclick="showModal('teachers')" class="bento-card col-span-2 p-4 rounded-[26px] flex flex-col items-center text-center theme-card">
+                    <div class="icon-square bg-indigo-500/10 text-indigo-400">
+                        <i class="fa-solid fa-chalkboard-user text-sm"></i>
+                    </div>
+                    <span class="font-bold text-[11px]">Teachers</span>
+                </button>
+
+                <!-- 🎥 Virtual Tour -->
+                <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/bobo-play-learn/', '_blank')" class="bento-card col-span-2 p-4 rounded-[26px] flex flex-col items-center text-center theme-card">
+                    <div class="icon-square bg-emerald-500/10 text-emerald-400">
+                        <i class="fa-solid fa-vr-cardboard text-sm"></i>
+                    </div>
+                    <span class="font-bold text-[11px]">360° Tour</span>
+                </button>
+
+                <!-- 🌐 Website -->
+                <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/scan%20Landing%20Page.html', '_blank')" class="bento-card col-span-2 p-4 rounded-[26px] flex flex-col items-center text-center theme-card">
+                    <div class="icon-square bg-slate-500/10 text-slate-400">
+                        <i class="fa-solid fa-globe text-sm"></i>
+                    </div>
+                    <span class="font-bold text-[11px]">Website</span>
+                </button>
+
+                <!-- 🗓️ Admissions (MAIN CONVERSION) -->
+                <button onclick="showModal('admissions')" class="bento-card col-span-6 p-5 rounded-[32px] flex items-center justify-between bg-gradient-to-r from-blue-600 to-indigo-700 text-white border-none shadow-xl shadow-blue-900/20">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-file-signature"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="font-black text-sm uppercase tracking-wider">Admissions 2024</p>
+                            <p class="text-[10px] opacity-80 font-bold">Apply now for the next intake</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs opacity-50"></i>
+                </button>
+            </div>
+
+            <!-- Contact & Location -->
+            <div class="mb-10">
+                <h3 class="font-black text-xs uppercase tracking-widest opacity-40 mb-4 px-1">Location & Contact</h3>
+                <div class="space-y-3">
+                    <button onclick="showModal('location')" class="w-full flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 theme-card">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-location-dot text-red-400"></i>
+                            <span class="text-xs font-bold">Mikocheni B, Dar es Salaam</span>
+                        </div>
+                        <span class="text-[10px] font-black text-blue-400 uppercase">View Map</span>
+                    </button>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="window.open('https://wa.me/255757249910', '_blank')" class="flex items-center justify-center gap-2 p-4 rounded-2xl bg-green-500/10 border border-green-500/20 text-green-500 font-black text-xs active:scale-95 transition-all">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            Admin Desk
+                        </button>
+                        <button onclick="window.location.href='tel:+255757249910'" class="flex items-center justify-center gap-2 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-500 font-black text-xs active:scale-95 transition-all">
+                            <i class="fa-solid fa-phone-volume text-base"></i>
+                            Call Office
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-6 left-0 w-full px-6 z-40">
+        <div class="max-w-xs mx-auto flex items-center gap-2 p-1.5 rounded-full shadow-2xl glass border border-white/10 bg-black/60 theme-nav">
+            <button onclick="showModal('admissions')" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 h-12 rounded-full text-white font-black text-[11px] flex items-center justify-center gap-2 active:scale-95 transition-all">
+                <i class="fa-solid fa-paper-plane text-xs"></i>
+                Apply Today
+            </button>
+        </div>
+    </nav>
+
+    <!-- 🏫 ABOUT SCHOOL MODAL -->
+    <div id="modal-about" class="modal-overlay" onclick="closeModal('about')">
+        <div class="modal-content bg-[#0F172A] h-[85vh] flex flex-col theme-bg overflow-hidden" onclick="event.stopPropagation()">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                <h3 class="text-lg font-black uppercase tracking-tighter">About Excel Academy</h3>
+                <button onclick="closeModal('about')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-6 hide-scrollbar pb-10">
+                <div class="p-5 rounded-2xl bg-blue-500/5 border border-blue-500/10">
+                    <h4 class="text-[10px] font-black text-blue-400 uppercase mb-2 tracking-widest">Our Mission</h4>
+                    <p class="text-sm leading-relaxed opacity-80 italic">"To nurture innovative thinkers and compassionate leaders through a holistic education system."</p>
+                </div>
+                <div>
+                    <h4 class="text-[10px] font-black text-amber-400 uppercase mb-3 tracking-widest">History & Vision</h4>
+                    <p class="text-sm leading-relaxed opacity-70 mb-4">Founded in 2005, Excel Academy has grown from a small learning center to a leading institution known for academic excellence and sports achievement.</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/5 text-center">
+                            <p class="text-xl font-black text-blue-400">98%</p>
+                            <p class="text-[10px] uppercase opacity-50 font-bold">Pass Rate</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/5 text-center">
+                            <p class="text-xl font-black text-amber-400">20+</p>
+                            <p class="text-[10px] uppercase opacity-50 font-bold">Years Experience</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📚 PROGRAMS MODAL -->
+    <div id="modal-programs" class="modal-overlay" onclick="closeModal('programs')">
+        <div class="modal-content bg-[#0F172A] h-[90vh] flex flex-col theme-bg overflow-hidden" onclick="event.stopPropagation()">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                <h3 class="text-lg font-black uppercase tracking-tighter">Academic Programs</h3>
+                <button onclick="closeModal('programs')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-4 hide-scrollbar pb-20">
+                <!-- Kindergarten -->
+                <div class="p-5 rounded-3xl bg-white/5 border border-white/5 flex justify-between items-center group active:bg-blue-600/10 transition-colors">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-pink-500/10 text-pink-500 flex items-center justify-center text-xl">🎨</div>
+                        <div>
+                            <h4 class="font-black text-sm">Kindergarten</h4>
+                            <p class="text-[10px] opacity-50">Ages 3 - 5 Years</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] opacity-20"></i>
+                </div>
+                <!-- Primary -->
+                <div class="p-5 rounded-3xl bg-white/5 border border-white/5 flex justify-between items-center group active:bg-blue-600/10 transition-colors">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-xl">📖</div>
+                        <div>
+                            <h4 class="font-black text-sm">Primary Education</h4>
+                            <p class="text-[10px] opacity-50">Standard 1 - 7</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] opacity-20"></i>
+                </div>
+                <!-- Secondary -->
+                <div class="p-5 rounded-3xl bg-white/5 border border-white/5 flex justify-between items-center group active:bg-blue-600/10 transition-colors">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl">🔬</div>
+                        <div>
+                            <h4 class="font-black text-sm">Secondary School</h4>
+                            <p class="text-[10px] opacity-50">Form 1 - 6</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] opacity-20"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🧑‍🏫 TEACHERS MODAL -->
+    <div id="modal-teachers" class="modal-overlay" onclick="closeModal('teachers')">
+        <div class="modal-content bg-[#0F172A] h-[85vh] flex flex-col theme-bg overflow-hidden" onclick="event.stopPropagation()">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                <h3 class="text-lg font-black uppercase tracking-tighter">Our Educators</h3>
+                <button onclick="closeModal('teachers')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-4 hide-scrollbar">
+                <!-- Teacher Card -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 flex gap-4 items-center">
+                    <div class="w-16 h-16 rounded-2xl bg-blue-500/20 flex items-center justify-center text-2xl font-black text-blue-400">JS</div>
+                    <div class="flex-1">
+                        <h4 class="font-black text-sm">John Smith</h4>
+                        <p class="text-[10px] text-blue-400 font-black uppercase mb-1">Physics Specialist</p>
+                        <p class="text-[10px] opacity-60">12 Years experience in advanced science.</p>
+                    </div>
+                    <button onclick="window.open('https://wa.me/255757249910?text=I would like to contact Teacher John Smith', '_blank')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-envelope text-xs opacity-40"></i></button>
+                </div>
+                <!-- Teacher Card 2 -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 flex gap-4 items-center">
+                    <div class="w-16 h-16 rounded-2xl bg-amber-500/20 flex items-center justify-center text-2xl font-black text-amber-400">AK</div>
+                    <div class="flex-1">
+                        <h4 class="font-black text-sm">Amina Khamis</h4>
+                        <p class="text-[10px] text-amber-400 font-black uppercase mb-1">English Literature</p>
+                        <p class="text-[10px] opacity-60">Passionate about storytelling and languages.</p>
+                    </div>
+                    <button onclick="window.open('https://wa.me/255757249910?text=I would like to contact Teacher Amina Khamis', '_blank')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-envelope text-xs opacity-40"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🗓️ ADMISSIONS FORM MODAL -->
+    <div id="modal-admissions" class="modal-overlay" onclick="closeModal('admissions')">
+        <div class="modal-content bg-[#0F172A] p-8 theme-card overflow-y-auto max-h-[90vh]" onclick="event.stopPropagation()">
+            <h3 class="text-2xl font-black mb-1">Admissions</h3>
+            <p class="text-[10px] opacity-40 font-bold uppercase tracking-widest mb-6">Start your journey with us</p>
+            
+            <form id="admissionForm" class="space-y-4 pb-10">
+                <div>
+                    <label class="block text-[10px] uppercase font-black opacity-40 mb-1 ml-1">Student Full Name</label>
+                    <input type="text" id="studentName" required placeholder="Name of student" class="w-full p-4 rounded-2xl outline-none focus:border-blue-500/50 transition-all">
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase font-black opacity-40 mb-1 ml-1">Parent/Guardian Name</label>
+                    <input type="text" id="parentName" required placeholder="Name of parent" class="w-full p-4 rounded-2xl outline-none focus:border-blue-500/50 transition-all">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] uppercase font-black opacity-40 mb-1 ml-1">Applying Grade</label>
+                        <select id="grade" class="w-full p-4 rounded-2xl outline-none focus:border-blue-500/50 transition-all appearance-none">
+                            <option>Kindergarten</option>
+                            <option>Primary 1-7</option>
+                            <option>Form 1-4</option>
+                            <option>A-Level</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-black opacity-40 mb-1 ml-1">Phone Number</label>
+                        <input type="tel" id="parentPhone" required placeholder="07XXXXXXXX" class="w-full p-4 rounded-2xl outline-none focus:border-blue-500/50 transition-all">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase font-black opacity-40 mb-1 ml-1">Additional Notes</label>
+                    <textarea id="notes" rows="2" placeholder="Special requirements..." class="w-full p-4 rounded-2xl outline-none focus:border-blue-500/50 transition-all"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black mt-4 shadow-xl shadow-blue-900/20 active:scale-95 transition-all">
+                    Submit Application via WhatsApp
+                </button>
+                <button type="button" onclick="closeModal('admissions')" class="w-full text-[10px] uppercase font-black opacity-30 mt-2">Cancel Application</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 📍 LOCATION MODAL -->
+    <div id="modal-location" class="modal-overlay" onclick="closeModal('location')">
+        <div class="modal-content bg-[#0F172A] p-8 theme-card text-center" onclick="event.stopPropagation()">
+            <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center text-red-500 mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-location-crosshairs"></i>
+            </div>
+            <h3 class="text-xl font-black mb-2">Find Us</h3>
+            <p class="text-sm opacity-60 mb-6">Mikocheni B, Old Bagamoyo Road<br>Dar es Salaam, Tanzania</p>
+            <div class="space-y-3">
+                <button onclick="window.open('https://maps.google.com', '_blank')" class="w-full bg-white/5 p-4 rounded-2xl font-black text-xs uppercase border border-white/5 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-directions text-blue-400"></i> Open in Maps
+                </button>
+                <button onclick="closeModal('location')" class="w-full p-4 text-[10px] font-black opacity-30 uppercase">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const body = document.body;
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const navHeader = document.getElementById('nav-header');
+        let isDarkMode = true;
+
+        themeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                body.classList.replace('light', 'dark');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                navHeader.classList.replace('bg-white/80', 'bg-black/80');
+                updateThemeElements(true);
+            } else {
+                body.classList.replace('dark', 'light');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                navHeader.classList.replace('bg-black/80', 'bg-white/80');
+                updateThemeElements(false);
+            }
+        });
+
+        function updateThemeElements(isDark) {
+            const cards = document.querySelectorAll('.theme-card');
+            if (isDark) {
+                cards.forEach(c => { 
+                    if(c.classList.contains('bg-white')) c.classList.replace('bg-white', 'bg-[#1E293B]'); 
+                    if(c.classList.contains('border-blue-100')) c.classList.replace('border-blue-100', 'border-white/10'); 
+                });
+            } else {
+                cards.forEach(c => { 
+                    if(c.classList.contains('bg-[#1E293B]')) c.classList.replace('bg-[#1E293B]', 'bg-white'); 
+                    if(c.classList.contains('border-white/10')) c.classList.replace('border-white/10', 'border-blue-100'); 
+                });
+            }
+        }
+
+        function showModal(id) {
+            document.getElementById(`modal-${id}`).classList.add('active');
+            body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(`modal-${id}`).classList.remove('active');
+            body.style.overflow = 'auto';
+        }
+
+        // Admissions Logic
+        document.getElementById('admissionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const sName = document.getElementById('studentName').value;
+            const pName = document.getElementById('parentName').value;
+            const grade = document.getElementById('grade').value;
+            const phone = document.getElementById('parentPhone').value;
+            const notes = document.getElementById('notes').value;
+
+            const message = `🎓 ADMISSION REQUEST\n\nStudent: ${sName}\nParent: ${pName}\nGrade: ${grade}\nPhone: ${phone}\nNotes: ${notes}`;
+            window.open(`https://wa.me/255757249910?text=${encodeURIComponent(message)}`, '_blank');
+            closeModal('admissions');
+        });
+    </script>
+</body>
+</html>

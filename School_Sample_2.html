@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScanIt | School Companion Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0F172A;
+            --accent: #1E40AF;
+            --gold: #B45309;
+            --glass-white: rgba(255, 255, 255, 0.03);
+            --border-white: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+
+        .dark { background-color: #020617; color: #F1F5F9; }
+        .light { background-color: #F8FAFC; color: #0F172A; }
+
+        .glass { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+        
+        .bento-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-white);
+            cursor: pointer;
+        }
+        .bento-card:active { transform: scale(0.97); }
+        
+        .dark .bento-card { background: #0F172A; }
+        .light .bento-card { background: white; border-color: #E2E8F0; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 32px 32px 0 0;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .service-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="dark">
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-50 h-16 px-6 flex items-center justify-between glass border-b border-white/5" id="nav-header">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
+                <i class="fa-solid fa-graduation-cap text-white text-sm"></i>
+            </div>
+            <div>
+                <h1 class="font-black text-sm tracking-tighter uppercase leading-none">Excel Academy</h1>
+                <p class="text-[9px] opacity-40 font-bold uppercase tracking-widest mt-1">Nurturing Excellence</p>
+            </div>
+        </div>
+        <button id="theme-toggle" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+            <i id="theme-icon" class="fa-solid fa-moon text-xs"></i>
+        </button>
+    </header>
+
+    <main class="max-w-md mx-auto pt-24 pb-32 px-5">
+        
+        <!-- Welcome Section -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-black mb-2 tracking-tight">Welcome 👋</h2>
+            <p class="text-sm opacity-60 leading-relaxed">Your digital gateway to everything happening at our learning center.</p>
+        </section>
+
+        <!-- PRIMARY GRID (MAIN CONTROL) -->
+        <div class="grid grid-cols-4 gap-3 mb-8">
+            <!-- 🏫 About Us -->
+            <button onclick="showModal('about')" class="bento-card col-span-2 p-5 rounded-[28px] flex flex-col items-start gap-4">
+                <div class="service-icon bg-blue-500/10 text-blue-400"><i class="fa-solid fa-school"></i></div>
+                <div class="text-left">
+                    <p class="font-black text-sm">About Us</p>
+                    <p class="text-[10px] opacity-40 font-bold uppercase tracking-tight">Mission & History</p>
+                </div>
+            </button>
+
+            <!-- 📚 Programs -->
+            <button onclick="showModal('programs')" class="bento-card col-span-2 p-5 rounded-[28px] flex flex-col items-start gap-4">
+                <div class="service-icon bg-amber-500/10 text-amber-500"><i class="fa-solid fa-book-open"></i></div>
+                <div class="text-left">
+                    <p class="font-black text-sm">Programs</p>
+                    <p class="text-[10px] opacity-40 font-bold uppercase tracking-tight">K-12 & Courses</p>
+                </div>
+            </button>
+
+            <!-- 🧑‍🏫 Staff -->
+            <button onclick="showModal('teachers')" class="bento-card col-span-1 p-4 rounded-[24px] flex flex-col items-center gap-2">
+                <div class="service-icon bg-indigo-500/10 text-indigo-400"><i class="fa-solid fa-users"></i></div>
+                <span class="text-[10px] font-black uppercase">Staff</span>
+            </button>
+
+            <!-- 🎥 Tour -->
+            <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/bobo-play-learn/', '_blank')" class="bento-card col-span-1 p-4 rounded-[24px] flex flex-col items-center gap-2">
+                <div class="service-icon bg-emerald-500/10 text-emerald-400"><i class="fa-solid fa-vr-cardboard"></i></div>
+                <span class="text-[10px] font-black uppercase">Tour</span>
+            </button>
+
+            <!-- 🌐 Website -->
+            <button onclick="window.open('https://google.com', '_blank')" class="bento-card col-span-1 p-4 rounded-[24px] flex flex-col items-center gap-2">
+                <div class="service-icon bg-slate-500/10 text-slate-400"><i class="fa-solid fa-globe"></i></div>
+                <span class="text-[10px] font-black uppercase">Web</span>
+            </button>
+
+            <!-- 📍 Map -->
+            <button onclick="showModal('location')" class="bento-card col-span-1 p-4 rounded-[24px] flex flex-col items-center gap-2">
+                <div class="service-icon bg-red-500/10 text-red-400"><i class="fa-solid fa-map-pin"></i></div>
+                <span class="text-[10px] font-black uppercase">Map</span>
+            </button>
+
+            <!-- 🗓️ ADMISSIONS PORTAL (UPDATED) -->
+            <button onclick="window.open('https://www.bethlehemstar.ac.tz/admissions/form', '_blank')" class="bento-card col-span-4 p-5 rounded-[32px] flex items-center justify-between bg-gradient-to-r from-blue-700 to-indigo-800 text-white border-none shadow-xl shadow-blue-900/20">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center"><i class="fa-solid fa-file-pen"></i></div>
+                    <div class="text-left">
+                        <p class="font-black text-sm uppercase">Admission</p>
+                        <p class="text-[10px] opacity-70">Enroll for Academic Year 2026</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-50"></i>
+            </button>
+        </div>
+
+        <!-- NEW SERVICES SECTION -->
+        <section class="mb-8">
+            <h3 class="text-[10px] font-black uppercase tracking-widest opacity-40 mb-4 px-1">Parent & Student Services</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="showModal('fees')" class="bento-card p-4 rounded-3xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-green-500/10 text-green-500 flex items-center justify-center"><i class="fa-solid fa-wallet text-sm"></i></div>
+                    <div class="text-left">
+                        <p class="font-black text-[12px]">Fees Info</p>
+                        <p class="text-[9px] opacity-40 font-bold uppercase">Finance</p>
+                    </div>
+                </button>
+                <button onclick="showModal('transport')" class="bento-card p-4 rounded-3xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-bus text-sm"></i></div>
+                    <div class="text-left">
+                        <p class="font-black text-[12px]">Transport</p>
+                        <p class="text-[9px] opacity-40 font-bold uppercase">Bus Routes</p>
+                    </div>
+                </button>
+                <button onclick="showModal('canteen')" class="bento-card p-4 rounded-3xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-500 flex items-center justify-center"><i class="fa-solid fa-utensils text-sm"></i></div>
+                    <div class="text-left">
+                        <p class="font-black text-[12px]">Canteen</p>
+                        <p class="text-[9px] opacity-40 font-bold uppercase">Weekly Menu</p>
+                    </div>
+                </button>
+                <button onclick="showModal('faq')" class="bento-card p-4 rounded-3xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center"><i class="fa-solid fa-circle-question text-sm"></i></div>
+                    <div class="text-left">
+                        <p class="font-black text-[12px]">Help & FAQ</p>
+                        <p class="text-[9px] opacity-40 font-bold uppercase">Rules</p>
+                    </div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Announcements / News -->
+        <section class="mb-10">
+            <h3 class="text-[10px] font-black uppercase tracking-widest opacity-40 mb-4 px-1">Announcements</h3>
+            <div class="space-y-3">
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 flex gap-4">
+                    <div class="text-blue-400 pt-1"><i class="fa-solid fa-bullhorn"></i></div>
+                    <div>
+                        <p class="text-xs font-black">Parent-Teacher Meeting</p>
+                        <p class="text-[10px] opacity-50 mt-1">Scheduled for this Saturday at 10:00 AM in the main hall.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="mb-10">
+            <h3 class="text-[10px] font-black uppercase tracking-widest opacity-40 mb-4 px-1">What Parents Say</h3>
+            <div class="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+                <div class="min-w-[280px] p-5 rounded-3xl bg-amber-500/5 border border-amber-500/10">
+                    <div class="flex gap-1 text-amber-500 text-[10px] mb-3">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-xs italic opacity-80 leading-relaxed">"The holistic approach here is unmatched. My daughter has grown so much in her confidence and academic performance."</p>
+                    <p class="text-[10px] font-black mt-4 uppercase opacity-40">— Sarah J., Parent</p>
+                </div>
+                <div class="min-w-[280px] p-5 rounded-3xl bg-blue-500/5 border border-blue-500/10">
+                    <div class="flex gap-1 text-blue-500 text-[10px] mb-3">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-xs italic opacity-80 leading-relaxed">"Excellent science facilities and the teachers are truly dedicated to the students' individual needs."</p>
+                    <p class="text-[10px] font-black mt-4 uppercase opacity-40">— David K., Alumni Parent</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Action Bar -->
+    <div class="fixed bottom-6 left-0 w-full px-6 z-40">
+        <div class="max-w-xs mx-auto flex items-center gap-3 p-2 rounded-full glass border border-white/10 bg-black/80 shadow-2xl">
+            <button onclick="window.open('https://wa.me/255757249910', '_blank')" class="flex-1 bg-green-600 h-12 rounded-full text-white flex items-center justify-center gap-2 font-black text-[11px] uppercase tracking-wider active:scale-95 transition-all">
+                <i class="fa-brands fa-whatsapp text-lg"></i> Contact Us
+            </button>
+            <button onclick="window.location.href='tel:+255757249910'" class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white active:scale-90 transition-all">
+                <i class="fa-solid fa-phone"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+
+    <!-- About Modal -->
+    <div id="modal-about" class="modal-overlay" onclick="closeModal('about')">
+        <div class="modal-content bg-[#0F172A] max-h-[85vh] flex flex-col theme-bg" onclick="event.stopPropagation()">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                <h3 class="font-black text-lg">About Us</h3>
+                <button onclick="closeModal('about')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-6 hide-scrollbar">
+                <p class="text-sm opacity-70 leading-relaxed">Excel Academy is a center of academic excellence dedicated to nurturing the next generation of leaders through innovative teaching methods and a values-based curriculum.</p>
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-2">Our Mission</p>
+                    <p class="text-xs">To provide a stimulating learning environment where students are challenged to reach their full potential.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Programs Modal -->
+    <div id="modal-programs" class="modal-overlay" onclick="closeModal('programs')">
+        <div class="modal-content bg-[#0F172A] max-h-[85vh] flex flex-col theme-bg" onclick="event.stopPropagation()">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                <h3 class="font-black text-lg">Academic Programs</h3>
+                <button onclick="closeModal('programs')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-4 hide-scrollbar pb-10">
+                <div class="p-4 rounded-2xl border border-white/5">
+                    <p class="font-black text-sm">Kindergarten</p>
+                    <p class="text-[10px] opacity-50 italic">Playgroup, Lower & Upper KG</p>
+                </div>
+                <div class="p-4 rounded-2xl border border-white/5">
+                    <p class="font-black text-sm">Primary School</p>
+                    <p class="text-[10px] opacity-50 italic">Grade 1 - Grade 7</p>
+                </div>
+                <div class="p-4 rounded-2xl border border-white/5">
+                    <p class="font-black text-sm">Secondary School</p>
+                    <p class="text-[10px] opacity-50 italic">Form 1 - Form 4 (O-Level)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teachers/Staff Modal -->
+    <div id="modal-teachers" class="modal-overlay" onclick="closeModal('teachers')">
+        <div class="modal-content bg-[#0F172A] max-h-[85vh] flex flex-col theme-bg" onclick="event.stopPropagation()">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                <h3 class="font-black text-lg">Our Staff</h3>
+                <button onclick="closeModal('teachers')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-4 hide-scrollbar">
+                <div class="p-4 rounded-2xl bg-white/5 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-black">JD</div>
+                    <div>
+                        <p class="text-sm font-black">Jane Doe</p>
+                        <p class="text-[10px] opacity-50">Head of School</p>
+                    </div>
+                </div>
+                <div class="p-4 rounded-2xl bg-white/5 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500 font-black">MK</div>
+                    <div>
+                        <p class="text-sm font-black">Michael King</p>
+                        <p class="text-[10px] opacity-50">Head of Science Dept</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Location Modal -->
+    <div id="modal-location" class="modal-overlay" onclick="closeModal('location')">
+        <div class="modal-content bg-[#0F172A] p-8 theme-bg text-center" onclick="event.stopPropagation()">
+            <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center text-red-500 mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-location-crosshairs"></i>
+            </div>
+            <h3 class="text-xl font-black mb-2">Find Us</h3>
+            <p class="text-sm opacity-60 mb-6">Mikocheni B, Old Bagamoyo Road<br>Dar es Salaam, Tanzania</p>
+            <button onclick="window.open('https://maps.google.com', '_blank')" class="w-full bg-blue-600 text-white p-4 rounded-2xl font-black text-xs uppercase shadow-xl shadow-blue-900/20 mb-3">Open in Google Maps</button>
+            <button onclick="closeModal('location')" class="w-full p-4 text-[10px] font-black opacity-30 uppercase">Close</button>
+        </div>
+    </div>
+
+    <!-- Fees Modal -->
+    <div id="modal-fees" class="modal-overlay" onclick="closeModal('fees')">
+        <div class="modal-content bg-[#0F172A] max-h-[85vh] flex flex-col theme-bg" onclick="event.stopPropagation()">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                <h3 class="font-black text-lg">Fee Information</h3>
+                <button onclick="closeModal('fees')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-6 hide-scrollbar">
+                <div class="space-y-3">
+                    <h4 class="text-[10px] font-black uppercase text-amber-500 tracking-widest">Fee Structure (Per Term)</h4>
+                    <div class="p-4 rounded-2xl bg-white/5 border border-white/5 flex justify-between">
+                        <span class="text-sm">Kindergarten</span>
+                        <span class="font-black text-sm">850,000 TZS</span>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-white/5 border border-white/5 flex justify-between">
+                        <span class="text-sm">Primary (1-7)</span>
+                        <span class="font-black text-sm">1,200,000 TZS</span>
+                    </div>
+                </div>
+                <div class="p-5 rounded-3xl bg-blue-500/10 border border-blue-500/20">
+                    <h4 class="text-[10px] font-black uppercase text-blue-400 mb-3 tracking-widest">Bank Details</h4>
+                    <div class="text-sm space-y-1">
+                        <p class="opacity-40 uppercase text-[9px]">Bank Name</p>
+                        <p class="font-bold mb-2">NMB Bank PLC</p>
+                        <p class="opacity-40 uppercase text-[9px]">Account Number</p>
+                        <p class="font-bold mb-2">2211 0000 4433 1</p>
+                        <p class="opacity-40 uppercase text-[9px]">Account Name</p>
+                        <p class="font-bold">Excel Academy Ltd</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transport Modal -->
+    <div id="modal-transport" class="modal-overlay" onclick="closeModal('transport')">
+        <div class="modal-content bg-[#0F172A] p-8 theme-bg" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-black text-lg">School Transport</h3>
+                <button onclick="closeModal('transport')" class="opacity-40"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div class="flex gap-4 p-4 rounded-2xl bg-white/5">
+                    <i class="fa-solid fa-map-location-dot text-orange-400 text-xl"></i>
+                    <div>
+                        <p class="text-sm font-bold">Route A: Mikocheni/Mbezi</p>
+                        <p class="text-[10px] opacity-50 italic">Pick up: 6:30 AM • Drop off: 4:00 PM</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 p-4 rounded-2xl bg-white/5">
+                    <i class="fa-solid fa-map-location-dot text-orange-400 text-xl"></i>
+                    <div>
+                        <p class="text-sm font-bold">Route B: Sinza/Kijitonyama</p>
+                        <p class="text-[10px] opacity-50 italic">Pick up: 6:45 AM • Drop off: 3:45 PM</p>
+                    </div>
+                </div>
+                <button onclick="window.location.href='tel:+255757249910'" class="w-full bg-orange-500/10 text-orange-500 py-4 rounded-2xl font-black text-xs uppercase">Contact Transport Head</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Canteen Modal -->
+    <div id="modal-canteen" class="modal-overlay" onclick="closeModal('canteen')">
+        <div class="modal-content bg-[#0F172A] p-8 theme-bg" onclick="event.stopPropagation()">
+            <h3 class="font-black text-lg mb-4">Weekly Menu 🍽️</h3>
+            <div class="space-y-3">
+                <div class="p-4 rounded-2xl border border-white/5">
+                    <p class="text-[10px] font-black text-pink-500 uppercase">Monday</p>
+                    <p class="text-sm">Rice with Beans, Steamed Spinach & Fruit</p>
+                </div>
+                <div class="p-4 rounded-2xl border border-white/5">
+                    <p class="text-[10px] font-black text-pink-500 uppercase">Tuesday</p>
+                    <p class="text-sm">Beef Stew with Ugali & Traditional Greens</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Modal -->
+    <div id="modal-faq" class="modal-overlay" onclick="closeModal('faq')">
+        <div class="modal-content bg-[#0F172A] p-8 theme-bg max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <h3 class="font-black text-lg mb-6">Frequently Asked Questions</h3>
+            <div class="space-y-6">
+                <div>
+                    <p class="text-sm font-black mb-2">What is the school starting age?</p>
+                    <p class="text-xs opacity-60">We admit children into Kindergarten from age 3. Primary starts at age 6.</p>
+                </div>
+                <div>
+                    <p class="text-sm font-black mb-2">Is there a school uniform?</p>
+                    <p class="text-xs opacity-60">Yes, the school uniform is mandatory. It can be purchased at the school admin office.</p>
+                </div>
+                <div>
+                    <p class="text-sm font-black mb-2">How can I pay school fees?</p>
+                    <p class="text-xs opacity-60">We accept bank transfers, NMB Wakala, or cheque. Cash is not accepted at the school office for security reasons.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const body = document.body;
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        let isDarkMode = true;
+
+        themeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                body.classList.replace('light', 'dark');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                body.classList.replace('dark', 'light');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            }
+        });
+
+        function showModal(id) {
+            const modal = document.getElementById(`modal-${id}`);
+            if (modal) {
+                modal.classList.add('active');
+                body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(`modal-${id}`);
+            if (modal) {
+                modal.classList.remove('active');
+                body.style.overflow = 'auto';
+            }
+        }
+    </script>
+</body>
+</html>

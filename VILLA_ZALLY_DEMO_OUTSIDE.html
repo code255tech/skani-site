@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Villa Zally | Luxury Private Stay</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        zally: { 
+                            gold: '#C5A358',
+                            dark: '#0A0F0D',
+                            sage: '#2D3A30',
+                            cream: '#F4F1EA',
+                            accent: '#1E2923'
+                        }
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                        '5xl': '3.5rem',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            background-color: #F4F1EA; 
+            color: #0A0F0D; 
+            font-family: 'Inter', -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .dark body { background-color: #0A0F0D; color: #F4F1EA; }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .glass {
+            background: rgba(30, 41, 35, 0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .text-gold {
+            background: linear-gradient(135deg, #C5A358 0%, #E8D3A3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            scrollbar-width: none;
+        }
+        .carousel-container::-webkit-scrollbar { display: none; }
+        
+        .carousel-card {
+            flex: 0 0 80%;
+            scroll-snap-align: center;
+            border-radius: 2.5rem;
+            padding: 1.5rem;
+        }
+
+        /* Gallery specific size adjustment */
+        .gallery-card {
+            flex: 0 0 75%;
+            scroll-snap-align: center;
+            aspect-ratio: 4/5;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            backdrop-filter: blur(12px);
+        }
+        .modal-content {
+            transform: translateY(20px);
+            transition: 0.4s ease;
+            width: 100%;
+            max-width: 28rem;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .tap-scale:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="pb-32">
+
+    <div class="max-w-md mx-auto relative min-h-screen">
+        
+        <!-- HERO HEADER -->
+        <header class="relative h-[60vh] overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover" alt="Villa Zally">
+            <div class="absolute inset-0 bg-gradient-to-t from-zally-dark via-zally-dark/20 to-transparent"></div>
+            
+            <div class="absolute top-0 left-0 right-0 p-6 flex justify-between items-center pt-[calc(1.5rem+env(safe-area-inset-top))]">
+                <div class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
+                    <span class="text-white text-[10px] font-black tracking-[0.3em] uppercase">Private Estate</span>
+                </div>
+                <button onclick="toggleTheme()" class="w-10 h-10 glass rounded-full flex items-center justify-center text-white border-none">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+
+            <div class="absolute bottom-10 left-8 right-8">
+                <h1 class="text-5xl font-black text-white tracking-tighter leading-none italic mb-2">Villa Zally</h1>
+                <p class="text-white/80 text-sm font-medium leading-relaxed max-w-[240px]">Luxury, privacy, and unforgettable moments — all in one place.</p>
+            </div>
+        </header>
+
+        <!-- 2. PRIMARY GRID (2x3) -->
+        <section class="px-6 -mt-8 relative z-10 grid grid-cols-3 gap-3">
+            <button onclick="openModal('about-modal')" class="reveal glass p-5 rounded-3xl flex flex-col items-center justify-center tap-scale">
+                <i class="fa-solid fa-house-chimney text-zally-gold text-xl mb-2"></i>
+                <span class="text-[9px] font-black uppercase tracking-widest dark:text-white">About</span>
+            </button>
+            <button onclick="openModal('included-modal')" class="reveal glass p-5 rounded-3xl flex flex-col items-center justify-center tap-scale">
+                <i class="fa-solid fa-bed text-zally-gold text-xl mb-2"></i>
+                <span class="text-[9px] font-black uppercase tracking-widest dark:text-white text-center">Included</span>
+            </button>
+            <button onclick="openModal('rates-modal')" class="reveal glass p-5 rounded-3xl flex flex-col items-center justify-center tap-scale">
+                <i class="fa-solid fa-dollar-sign text-zally-gold text-xl mb-2"></i>
+                <span class="text-[9px] font-black uppercase tracking-widest dark:text-white">Rates</span>
+            </button>
+            <button onclick="openModal('booking-modal')" class="reveal bg-zally-gold p-5 rounded-3xl flex flex-col items-center justify-center tap-scale text-white shadow-lg shadow-zally-gold/20">
+                <i class="fa-solid fa-calendar-check text-xl mb-2"></i>
+                <span class="text-[9px] font-black uppercase tracking-widest">Book</span>
+            </button>
+            <button onclick="window.location.href='https://255virtualtours.infinityhomes.co.tz/havana-mikocheni/'" class="reveal glass p-5 rounded-3xl flex flex-col items-center justify-center tap-scale">
+                <i class="fa-solid fa-vr-cardboard text-zally-gold text-xl mb-2"></i>
+                <span class="text-[9px] font-black uppercase tracking-widest dark:text-white">Tour</span>
+            </button>
+            <button onclick="window.location.href='https://maps.app.goo.gl/mth871nTTrBUyX6Y9'" class="reveal glass p-5 rounded-3xl flex flex-col items-center justify-center tap-scale">
+                <i class="fa-solid fa-location-dot text-zally-gold text-xl mb-2"></i>
+                <span class="text-[9px] font-black uppercase tracking-widest dark:text-white">Map</span>
+            </button>
+        </section>
+
+        <!-- 4. EXPERIENCE SLIDER -->
+        <section class="mt-12 reveal">
+            <div class="px-8 flex items-center justify-between mb-4">
+                <h3 class="text-xl font-black dark:text-white uppercase tracking-tighter italic">What You'll Love ✨</h3>
+            </div>
+            <div class="carousel-container" id="vibe-carousel">
+                <div class="carousel-card glass border-l-4 border-zally-gold">
+                    <span class="text-3xl mb-4 block">🏊</span>
+                    <h4 class="font-black dark:text-white uppercase text-sm mb-1">Private Pool</h4>
+                    <p class="text-xs text-zinc-500 font-medium">Enjoy exclusive access anytime</p>
+                </div>
+                <div class="carousel-card glass border-l-4 border-green-600">
+                    <span class="text-3xl mb-4 block">🌿</span>
+                    <h4 class="font-black dark:text-white uppercase text-sm mb-1">Peaceful Vibes</h4>
+                    <p class="text-xs text-zinc-500 font-medium">Calm, secure, and relaxing environment</p>
+                </div>
+                <div class="carousel-card glass border-l-4 border-zally-gold">
+                    <span class="text-3xl mb-4 block">🌇</span>
+                    <h4 class="font-black dark:text-white uppercase text-sm mb-1">Terrace Dining</h4>
+                    <p class="text-xs text-zinc-500 font-medium">Perfect for sunsets & gatherings</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. GALLERY PREVIEW (SLIDER) -->
+        <section class="mt-12 reveal">
+            <h3 class="text-xl font-black dark:text-white uppercase tracking-tighter italic mb-6 px-8">Inside Villa Zally</h3>
+            <div class="carousel-container">
+                <div class="gallery-card rounded-[2.5rem] overflow-hidden glass p-1">
+                    <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover rounded-[2.2rem]">
+                </div>
+                <div class="gallery-card rounded-[2.5rem] overflow-hidden glass p-1">
+                    <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover rounded-[2.2rem]">
+                </div>
+                <div class="gallery-card rounded-[2.5rem] overflow-hidden glass p-1">
+                    <img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover rounded-[2.2rem]">
+                </div>
+                <div class="gallery-card rounded-[2.5rem] overflow-hidden glass p-1">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover rounded-[2.2rem]">
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. QUICK FAQ -->
+        <section class="px-6 mt-12 reveal">
+            <h3 class="text-xl font-black dark:text-white uppercase tracking-tighter italic mb-6 px-2">Quick Questions</h3>
+            <div class="space-y-3">
+                <div class="glass p-5 rounded-2xl">
+                    <h4 class="text-xs font-black uppercase tracking-widest text-zally-gold mb-1">How much per night?</h4>
+                    <p class="text-sm font-medium dark:text-zinc-300">$400 per night (+ $200 security deposit)</p>
+                </div>
+                <div class="glass p-5 rounded-2xl">
+                    <h4 class="text-xs font-black uppercase tracking-widest text-zally-gold mb-1">Is food included?</h4>
+                    <p class="text-sm font-medium dark:text-zinc-300">No — fully equipped indoor & outdoor kitchens available.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. SOCIAL CONTACT -->
+        <section class="px-6 mt-12 reveal pb-12">
+            <div class="glass p-8 rounded-[3rem] text-center">
+                <p class="text-[9px] font-black text-zally-gold uppercase tracking-[0.4em] mb-4">Get In Touch</p>
+                <div class="flex justify-center gap-6">
+                    <a href="https://wa.me/255714483828" class="w-14 h-14 glass rounded-2xl flex items-center justify-center text-2xl text-green-500 tap-scale border-none">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                    <a href="https://www.instagram.com/villa.zally/" class="w-14 h-14 glass rounded-2xl flex items-center justify-center text-2xl text-[#E4405F] tap-scale border-none">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="mailto:hello@villazally.com" class="w-14 h-14 glass rounded-2xl flex items-center justify-center text-2xl text-zally-gold tap-scale border-none">
+                        <i class="fa-solid fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- STICKY NAV -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-6 pb-[calc(2rem+env(safe-area-inset-bottom))]">
+            <div class="max-w-md mx-auto glass dark:bg-zally-dark/90 backdrop-blur-2xl rounded-[2.5rem] p-2 flex items-center justify-between shadow-2xl border border-white/10">
+                <button onclick="window.location.href='https://wa.me/255714483828'" class="w-12 h-12 flex items-center justify-center text-green-500 tap-scale rounded-full">
+                    <i class="fa-brands fa-whatsapp text-xl"></i>
+                </button>
+                <button onclick="openModal('booking-modal')" class="flex-1 mx-3 bg-zally-gold text-white font-black text-xs uppercase tracking-widest py-4 rounded-full shadow-lg shadow-zally-gold/30 tap-scale border-none italic">
+                    Book Now
+                </button>
+                <button onclick="window.location.href='https://www.instagram.com/villa.zally/'" class="w-12 h-12 flex items-center justify-center text-[#E4405F] tap-scale rounded-full">
+                    <i class="fa-brands fa-instagram text-xl"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- MODALS -->
+
+        <!-- ABOUT MODAL -->
+        <div id="about-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('about-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-6">About Villa Zally</h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-4">
+                        <i class="fa-solid fa-check-circle text-zally-gold mt-1"></i>
+                        <span class="text-sm font-medium dark:text-zinc-300">3 Spacious master bedrooms</span>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <i class="fa-solid fa-check-circle text-zally-gold mt-1"></i>
+                        <span class="text-sm font-medium dark:text-zinc-300">Private swimming pool</span>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <i class="fa-solid fa-check-circle text-zally-gold mt-1"></i>
+                        <span class="text-sm font-medium dark:text-zinc-300">Indoor & outdoor kitchens</span>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <i class="fa-solid fa-check-circle text-zally-gold mt-1"></i>
+                        <span class="text-sm font-medium dark:text-zinc-300">Private garden & terrace</span>
+                    </li>
+                </ul>
+                <button onclick="closeModal('about-modal')" class="w-full bg-zally-gold text-white mt-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border-none">Close</button>
+            </div>
+        </div>
+
+        <!-- RATES MODAL -->
+        <div id="rates-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('rates-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative max-h-[80vh] overflow-y-auto">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-2">Rates & Events</h3>
+                <p class="text-[10px] font-black text-zally-gold uppercase tracking-widest mb-6">Transparent Pricing</p>
+                
+                <div class="bg-zally-gold/5 p-6 rounded-3xl mb-6 border border-zally-gold/20 text-center">
+                    <p class="text-xs font-black uppercase text-zinc-400 mb-1">Standard Stay</p>
+                    <h4 class="text-4xl font-black text-zally-gold tracking-tighter italic">$400 <span class="text-sm uppercase not-italic">/ Night</span></h4>
+                    <p class="text-[10px] font-bold text-zinc-500 mt-2">Security Deposit: $200</p>
+                </div>
+
+                <h5 class="text-[10px] font-black uppercase tracking-widest mb-4">Event Surcharges</h5>
+                <div class="space-y-2">
+                    <div class="flex justify-between p-4 glass rounded-xl text-xs font-bold uppercase tracking-wider">
+                        <span>Up to 15 Guests</span>
+                        <span class="text-zally-gold">+$100</span>
+                    </div>
+                    <div class="flex justify-between p-4 glass rounded-xl text-xs font-bold uppercase tracking-wider">
+                        <span>Up to 30 Guests</span>
+                        <span class="text-zally-gold">+$150</span>
+                    </div>
+                    <div class="flex justify-between p-4 glass rounded-xl text-xs font-bold uppercase tracking-wider">
+                        <span>Up to 100 Guests</span>
+                        <span class="text-zally-gold">+$400</span>
+                    </div>
+                </div>
+                <p class="text-[9px] text-zinc-500 font-medium italic mt-4 text-center">"Accommodation fee applies for all events"</p>
+            </div>
+        </div>
+
+        <!-- INCLUDED MODAL -->
+        <div id="included-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('included-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-6">What's Included</h3>
+                <div class="grid grid-cols-2 gap-3 text-center">
+                    <div class="p-4 bg-white/5 rounded-2xl">
+                        <i class="fa-solid fa-couch text-zally-gold mb-2"></i>
+                        <p class="text-[9px] font-black uppercase tracking-widest leading-tight">Fully Furnished</p>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-2xl">
+                        <i class="fa-solid fa-person-swimming text-zally-gold mb-2"></i>
+                        <p class="text-[9px] font-black uppercase tracking-widest leading-tight">Private Pool</p>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-2xl">
+                        <i class="fa-solid fa-wifi text-zally-gold mb-2"></i>
+                        <p class="text-[9px] font-black uppercase tracking-widest leading-tight">High Speed WiFi</p>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-2xl">
+                        <i class="fa-solid fa-broom text-zally-gold mb-2"></i>
+                        <p class="text-[9px] font-black uppercase tracking-widest leading-tight">Housekeeping</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOOKING MODAL -->
+        <div id="booking-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('booking-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <button onclick="closeModal('booking-modal')" class="absolute top-6 right-6 w-10 h-10 glass rounded-full border-none"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-2">Book Your Stay</h3>
+                <p class="text-[10px] font-black text-zally-gold uppercase tracking-widest mb-8">Secure Your Dates</p>
+                
+                <form id="booking-form" class="space-y-4">
+                    <input type="text" id="name" required placeholder="Full Name" class="w-full glass bg-transparent border-none rounded-2xl p-4 text-sm font-bold dark:text-white outline-none">
+                    <input type="text" id="dates" required placeholder="Dates (e.g. Dec 12 - 15)" class="w-full glass bg-transparent border-none rounded-2xl p-4 text-sm font-bold dark:text-white outline-none">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="number" id="guests" required placeholder="Guests" class="w-full glass bg-transparent border-none rounded-2xl p-4 text-sm font-bold dark:text-white outline-none">
+                        <input type="tel" id="phone" required placeholder="Phone" class="w-full glass bg-transparent border-none rounded-2xl p-4 text-sm font-bold dark:text-white outline-none">
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-zally-gold text-white py-5 rounded-2xl font-black uppercase text-xs tracking-widest tap-scale flex items-center justify-center gap-3 shadow-xl border-none">
+                        <i class="fa-brands fa-whatsapp"></i> Reserve via WhatsApp
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Scroll Reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Auto-Carousel
+        const carousel = document.getElementById('vibe-carousel');
+        setInterval(() => {
+            if (!carousel) return;
+            if (carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth) carousel.scrollLeft = 0;
+            else carousel.scrollBy({ left: 200, behavior: 'smooth' });
+        }, 4000);
+
+        // Theme Toggle
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.getElementById('theme-icon').className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        // Modals
+        function openModal(id) { 
+            document.getElementById(id).classList.add('active'); 
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            document.body.style.overflow = '';
+        }
+
+        // Booking
+        document.getElementById('booking-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const text = `Hello Villa Zally 🌿\n\nI would like to make a booking.\n\nName: ${document.getElementById('name').value}\nDates: ${document.getElementById('dates').value}\nGuests: ${document.getElementById('guests').value}\nPhone: ${document.getElementById('phone').value}`;
+            window.location.href = `https://wa.me/255714483828?text=${encodeURIComponent(text)}`;
+        });
+    </script>
+</body>
+</html>

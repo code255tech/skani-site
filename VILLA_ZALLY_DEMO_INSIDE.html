@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Villa Zally | In-Stay Assistant</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        zally: { 
+                            gold: '#C5A358',
+                            dark: '#0A0F0D',
+                            sage: '#2D3A30',
+                            cream: '#F4F1EA',
+                            accent: '#1E2923'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            background-color: #0A0F0D; 
+            color: #F4F1EA; 
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-family: 'Inter', -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .dark body { background-color: #0A0F0D; color: #F4F1EA; }
+        html:not(.dark) body { background-color: #F4F1EA; color: #0A0F0D; }
+
+        .glass {
+            background: rgba(30, 41, 35, 0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: background 0.3s ease;
+        }
+        html:not(.dark) .glass {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            scrollbar-width: none;
+        }
+        .carousel-container::-webkit-scrollbar { display: none; }
+        
+        .carousel-card {
+            flex: 0 0 75%;
+            scroll-snap-align: center;
+            border-radius: 2rem;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            background: rgba(0,0,0,0.8);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            backdrop-filter: blur(12px);
+        }
+        .modal-content {
+            transform: translateY(20px);
+            transition: 0.3s ease;
+            width: 100%;
+            max-width: 28rem;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .tap-scale:active { transform: scale(0.96); transition: 0.1s; }
+        
+        .nav-blur {
+            background: rgba(10, 15, 13, 0.8);
+            backdrop-filter: blur(15px);
+        }
+        html:not(.dark) .nav-blur {
+            background: rgba(244, 241, 234, 0.8);
+        }
+
+        .text-adaptive { color: #F4F1EA; }
+        html:not(.dark) .text-adaptive { color: #0A0F0D; }
+        
+        .subtext-adaptive { color: #a1a1aa; }
+        html:not(.dark) .subtext-adaptive { color: #71717a; }
+    </style>
+</head>
+<body class="pb-32">
+
+    <div class="max-w-md mx-auto relative min-h-screen">
+        
+        <!-- TOP BRANDING & TOGGLE -->
+        <div class="px-8 pt-6 flex justify-between items-center reveal">
+            <div>
+                <h2 class="text-xl font-black tracking-tighter italic text-zally-gold leading-none">Villa Zally</h2>
+                <p class="text-[9px] font-black tracking-[0.3em] opacity-60 uppercase">Kigamboni Villa</p>
+            </div>
+            <button onclick="toggleTheme()" class="w-10 h-10 rounded-full glass flex items-center justify-center tap-scale">
+                <i id="theme-icon" class="fa-solid fa-moon text-zally-gold"></i>
+            </button>
+        </div>
+
+        <!-- 1. WELCOME -->
+        <header class="p-8 pt-10 reveal">
+            <div class="inline-block bg-zally-gold/20 text-zally-gold px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+                Guest Assistant
+            </div>
+            <h1 class="text-4xl font-black text-adaptive tracking-tighter leading-tight italic">Welcome to <br>Villa Zally 🌿</h1>
+            <p class="subtext-adaptive text-sm mt-3 font-medium leading-relaxed">Relax, enjoy your stay — everything you need is right here.</p>
+        </header>
+
+        <!-- 2. PRIMARY GRID (2x3) -->
+        <section class="px-6 grid grid-cols-2 gap-3 reveal">
+            <!-- Row 1 -->
+            <button onclick="openModal('wifi-modal')" class="glass p-6 rounded-[2.5rem] flex flex-col items-center justify-center tap-scale border-l-4 border-zally-gold">
+                <i class="fa-solid fa-wifi text-zally-gold text-2xl mb-3"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest text-adaptive">WiFi</span>
+            </button>
+            <button onclick="openModal('rules-modal')" class="glass p-6 rounded-[2.5rem] flex flex-col items-center justify-center tap-scale">
+                <i class="fa-solid fa-scroll subtext-adaptive text-2xl mb-3"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest text-adaptive">House Rules</span>
+            </button>
+            
+            <!-- Row 2 -->
+            <button onclick="openModal('emergency-modal')" class="glass p-6 rounded-[2.5rem] flex flex-col items-center justify-center tap-scale">
+                <i class="fa-solid fa-circle-exclamation text-red-500 text-2xl mb-3"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest text-adaptive text-center leading-tight">Emergency</span>
+            </button>
+            <button onclick="scrollToSection('how-it-works')" class="glass p-6 rounded-[2.5rem] flex flex-col items-center justify-center tap-scale bg-white/5">
+                <i class="fa-solid fa-gears text-zally-gold text-2xl mb-3"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest text-adaptive text-center leading-tight">How Things Work</span>
+            </button>
+            
+            <!-- Row 3 -->
+            <button onclick="window.location.href='https://255virtualtours.infinityhomes.co.tz/havana-mikocheni/'" class="glass p-6 rounded-[2.5rem] flex flex-col items-center justify-center tap-scale">
+                <i class="fa-solid fa-vr-cardboard subtext-adaptive text-2xl mb-3"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest text-adaptive text-center leading-tight">Virtual Tour</span>
+            </button>
+            <button onclick="window.location.href='https://www.google.com/search?q=VILLA+ZALLY+Reviews'" class="glass p-6 rounded-[2.5rem] flex flex-col items-center justify-center tap-scale">
+                <i class="fa-solid fa-star text-zally-gold text-2xl mb-3"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest text-adaptive text-center leading-tight">Leave Review</span>
+            </button>
+        </section>
+
+        <!-- 4. HOW THINGS WORK SECTION -->
+        <section id="how-it-works" class="mt-16 reveal">
+            <div class="px-8 mb-6">
+                <h3 class="text-2xl font-black text-adaptive uppercase tracking-tighter italic">How Things Work</h3>
+                <p class="subtext-adaptive text-xs font-medium uppercase tracking-widest">Villa Guide</p>
+            </div>
+            
+            <div class="px-6 grid grid-cols-2 gap-3">
+                <button onclick="openDetail('kitchen')" class="glass p-6 rounded-3xl text-left tap-scale">
+                    <span class="text-2xl mb-3 block">🍽️</span>
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-adaptive">Kitchen Basics</h4>
+                </button>
+                <button onclick="openDetail('microwave')" class="glass p-6 rounded-3xl text-left tap-scale">
+                    <span class="text-2xl mb-3 block">🔥</span>
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-adaptive">Microwave</h4>
+                </button>
+                <button onclick="openDetail('washing')" class="glass p-6 rounded-3xl text-left tap-scale">
+                    <span class="text-2xl mb-3 block">🧺</span>
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-adaptive">Washing Machine</h4>
+                </button>
+                <button onclick="openDetail('pool')" class="glass p-6 rounded-3xl text-left tap-scale">
+                    <span class="text-2xl mb-3 block">🏊</span>
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-adaptive">Pool Usage</h4>
+                </button>
+                <button onclick="openDetail('electricity')" class="glass p-6 rounded-3xl text-left tap-scale">
+                    <span class="text-2xl mb-3 block">💡</span>
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-adaptive">Electricity</h4>
+                </button>
+            </div>
+        </section>
+
+        <!-- 5. NEARBY PLACES -->
+        <section class="mt-16 reveal">
+            <div class="px-8 mb-4">
+                <h3 class="text-2xl font-black text-adaptive uppercase tracking-tighter italic">Nearby Places</h3>
+                <p class="subtext-adaptive text-xs font-medium uppercase tracking-widest">Explore Dar</p>
+            </div>
+            
+            <div class="carousel-container">
+                <!-- Beaches -->
+                <div class="carousel-card glass p-6 min-w-[280px]">
+                    <span class="text-3xl mb-4 block">🏖️</span>
+                    <h4 class="text-lg font-black text-adaptive mb-1 italic">Beaches</h4>
+                    <p class="text-xs subtext-adaptive mb-4 font-medium">Kigamboni & Mbezi Beach areas</p>
+                    <button onclick="window.location.href='https://maps.google.com/?q=Beaches+near+Mikocheni'" class="w-full bg-white/10 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-zally-gold border-none">Open in Maps</button>
+                </div>
+                <!-- Restaurants -->
+                <div class="carousel-card glass p-6 min-w-[280px]">
+                    <span class="text-3xl mb-4 block">🍽️</span>
+                    <h4 class="text-lg font-black text-adaptive mb-1 italic">Restaurants</h4>
+                    <p class="text-xs subtext-adaptive mb-4 font-medium">Top local & international dining</p>
+                    <button onclick="window.location.href='https://maps.google.com/?q=Restaurants+near+Mikocheni'" class="w-full bg-white/10 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-zally-gold border-none">Open in Maps</button>
+                </div>
+                <!-- Supermarkets -->
+                <div class="carousel-card glass p-6 min-w-[280px]">
+                    <span class="text-3xl mb-4 block">🛒</span>
+                    <h4 class="text-lg font-black text-adaptive mb-1 italic">Supermarkets</h4>
+                    <p class="text-xs subtext-adaptive mb-4 font-medium">Village Walk & Shoppers Plaza</p>
+                    <button onclick="window.location.href='https://maps.google.com/?q=Supermarkets+near+Mikocheni'" class="w-full bg-white/10 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-zally-gold border-none">Open in Maps</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. HOUSE GUIDELINES -->
+        <section class="px-6 mt-16 reveal">
+            <h3 class="text-xl font-black text-adaptive uppercase tracking-tighter italic mb-6 px-2">House Guidelines</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="glass p-6 rounded-[2rem] border-t-2 border-green-500/50">
+                    <h4 class="text-green-500 text-[10px] font-black uppercase tracking-widest mb-4 italic underline">Do</h4>
+                    <ul class="text-[11px] font-bold subtext-adaptive space-y-3">
+                        <li>✓ Keep villa clean</li>
+                        <li>✓ Supervise kids</li>
+                        <li>✓ Respect property</li>
+                    </ul>
+                </div>
+                <div class="glass p-6 rounded-[2rem] border-t-2 border-red-500/50">
+                    <h4 class="text-red-500 text-[10px] font-black uppercase tracking-widest mb-4 italic underline">Don't</h4>
+                    <ul class="text-[11px] font-bold subtext-adaptive space-y-3">
+                        <li>✕ No parties</li>
+                        <li>✕ No alcohol</li>
+                        <li>✕ No smoking</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. IMPORTANT INFO -->
+        <section class="px-6 mt-8 reveal">
+            <div class="bg-zally-gold/10 p-6 rounded-[2rem] border border-zally-gold/20">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fa-solid fa-circle-info text-zally-gold"></i>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-zally-gold">Important Info</h4>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-xs font-bold subtext-adaptive">
+                        <span>Late Checkout</span>
+                        <span class="text-adaptive">$100/hour</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs font-bold subtext-adaptive">
+                        <span>Extra Guests</span>
+                        <span class="text-adaptive">$40/person</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs font-bold subtext-adaptive">
+                        <span>Max Occupancy</span>
+                        <span class="text-adaptive">6 Guests</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. STICKY BOTTOM BAR -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-6 pb-[calc(2rem+env(safe-area-inset-bottom))]">
+            <div class="max-w-md mx-auto nav-blur rounded-full p-2 flex items-center justify-between shadow-2xl border border-white/5">
+                <a href="tel:+255714483828" class="flex-1 bg-white/5 text-adaptive font-black text-[10px] uppercase tracking-widest py-4 rounded-full flex items-center justify-center gap-2 tap-scale">
+                    <i class="fa-solid fa-phone text-zally-gold"></i> Call Host
+                </a>
+                <div class="w-2"></div>
+                <a href="https://wa.me/255714483828" class="flex-1 bg-zally-gold text-white font-black text-[10px] uppercase tracking-widest py-4 rounded-full flex items-center justify-center gap-2 tap-scale shadow-lg shadow-zally-gold/20">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                </a>
+            </div>
+        </nav>
+
+        <!-- MODALS -->
+        <div id="wifi-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('wifi-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-10 text-center relative">
+                <div class="w-16 h-16 bg-zally-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-wifi text-zally-gold text-2xl"></i>
+                </div>
+                <p class="text-[10px] font-black subtext-adaptive uppercase tracking-[0.3em] mb-2">Network Name</p>
+                <h3 class="text-2xl font-black text-adaptive mb-8 italic">VillaZally_WiFi</h3>
+                <p class="text-[10px] font-black subtext-adaptive uppercase tracking-[0.3em] mb-2">Password</p>
+                <div class="bg-white/5 p-4 rounded-2xl font-mono text-xl text-zally-gold mb-8 flex items-center justify-center gap-3">
+                    zallyguest2024
+                    <button class="text-xs bg-white/10 p-2 rounded-lg text-white border-none"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <button onclick="closeModal('wifi-modal')" class="w-full py-4 text-xs font-black uppercase tracking-widest subtext-adaptive border-none">Close</button>
+            </div>
+        </div>
+
+        <div id="rules-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('rules-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <h3 class="text-2xl font-black text-adaptive uppercase italic tracking-tighter mb-6">House Rules</h3>
+                <ul class="space-y-6">
+                    <li class="flex items-center gap-4">
+                        <span class="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 text-xs">✕</span>
+                        <span class="text-sm font-bold subtext-adaptive">No alcohol allowed</span>
+                    </li>
+                    <li class="flex items-center gap-4">
+                        <span class="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 text-xs">✕</span>
+                        <span class="text-sm font-bold subtext-adaptive">No loud parties or music</span>
+                    </li>
+                    <li class="flex items-center gap-4">
+                        <span class="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 text-xs">✓</span>
+                        <span class="text-sm font-bold subtext-adaptive">Max 6 overnight guests</span>
+                    </li>
+                    <li class="flex items-center gap-4">
+                        <span class="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 text-xs">✓</span>
+                        <span class="text-sm font-bold subtext-adaptive">Respect the property & neighbors</span>
+                    </li>
+                </ul>
+                <button onclick="closeModal('rules-modal')" class="w-full bg-zally-gold text-white mt-10 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border-none">Got it</button>
+            </div>
+        </div>
+
+        <div id="emergency-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('emergency-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative text-center">
+                <h3 class="text-2xl font-black text-adaptive uppercase italic tracking-tighter mb-2">Emergency</h3>
+                <p class="subtext-adaptive text-xs font-medium mb-8">Need immediate assistance?</p>
+                <div class="space-y-3">
+                    <a href="tel:+255714483828" class="flex items-center justify-between p-6 bg-red-500/10 rounded-2xl border border-red-500/20 text-red-500 tap-scale">
+                        <span class="font-black uppercase text-xs">Call Host Now</span>
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
+                    <a href="https://wa.me/255714483828?text=EMERGENCY" class="flex items-center justify-between p-6 bg-green-500/10 rounded-2xl border border-green-500/20 text-green-500 tap-scale">
+                        <span class="font-black uppercase text-xs">WhatsApp Host</span>
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="detail-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('detail-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <div id="detail-content"></div>
+                <button onclick="closeModal('detail-modal')" class="w-full bg-white/10 text-adaptive mt-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border-none">Close Guide</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                html.classList.add('dark');
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
+        }
+
+        // Scroll Reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Navigation
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Modals
+        function openModal(id) { 
+            document.getElementById(id).classList.add('active'); 
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            document.body.style.overflow = '';
+        }
+
+        const details = {
+            kitchen: {
+                title: "Kitchen Basics", emoji: "🍽️",
+                steps: ["Cooking utensils are in the main drawers", "Gas shut-off is located under the sink", "Please clean after use", "Fridge settings are preset for optimal cooling"]
+            },
+            microwave: {
+                title: "How to use Microwave", emoji: "🔥",
+                steps: ["Plug in / ensure power is on at wall", "Place food inside on glass tray", "Select time using control buttons", "Press start", "Wait for beep before opening"]
+            },
+            washing: {
+                title: "Washing Machine", emoji: "🧺",
+                steps: ["Load clothes (don't overfill)", "Add detergent to the left drawer", "Select 'Quick Wash' for normal loads", "Press Start/Pause button", "Wait for unlock sound at the end"]
+            },
+            pool: {
+                title: "Pool Usage", emoji: "🏊",
+                steps: ["Strictly no diving - pool is shallow", "No glass allowed in or near the water", "Children must be supervised at all times", "Shower before entering the pool"]
+            },
+            electricity: {
+                title: "Electricity & Lights", emoji: "💡",
+                steps: ["All rooms have individual switches", "AC remotes are on the bedside tables", "Turn off lights when leaving the villa", "Luku/Meter number is available upon request"]
+            }
+        };
+
+        function openDetail(key) {
+            const data = details[key];
+            const content = `
+                <div class="text-center mb-8">
+                    <span class="text-5xl mb-4 block">${data.emoji}</span>
+                    <h3 class="text-2xl font-black text-adaptive uppercase italic tracking-tighter">${data.title}</h3>
+                </div>
+                <div class="space-y-4">
+                    ${data.steps.map((step, i) => `
+                        <div class="flex items-start gap-4">
+                            <span class="w-6 h-6 rounded-full bg-zally-gold flex-shrink-0 flex items-center justify-center text-[10px] font-black text-zally-dark">${i+1}</span>
+                            <p class="text-sm font-medium subtext-adaptive leading-snug">${step}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            document.getElementById('detail-content').innerHTML = content;
+            openModal('detail-modal');
+        }
+    </script>
+</body>
+</html>

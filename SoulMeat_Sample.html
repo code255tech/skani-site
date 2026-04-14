@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soul Meat | Digital Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        soulYellow: '#FDBD13',
+                        soulRed: '#EC011A',
+                        soulDeep: '#1A1B2E',
+                    },
+                    fontFamily: {
+                        vintage: ['Bebas Neue', 'cursive'],
+                        sans: ['Space Grotesk', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+        .dark { background-color: #1A1B2E; color: #FFFFFF; background-image: url("https://www.transparenttextures.com/patterns/dark-leather.png"); }
+        
+        /* Brutalist / Neo-Vintage UI elements */
+        .neo-card {
+            background: #252741;
+            border: 2px solid #FDBD13;
+            box-shadow: 6px 6px 0px 0px #EC011A;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .neo-card:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px 0px #EC011A;
+        }
+
+        .icon-box {
+            width: 45px;
+            height: 45px;
+            background: #FDBD13;
+            color: #1A1B2E;
+            clip-path: polygon(15% 0, 100% 0, 85% 100%, 0% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .modal-blur {
+            backdrop-filter: blur(12px);
+            background: rgba(26, 27, 46, 0.85);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(-5%); }
+            50% { transform: translateY(0); }
+        }
+        .animate-bounce-slow { animation: bounce-slow 3s infinite; }
+    </style>
+</head>
+<body class="font-sans dark">
+
+    <!-- Sticky Header -->
+    <header class="fixed top-0 w-full z-50 px-6 py-4 bg-soulDeep/90 backdrop-blur-md border-b-2 border-soulYellow/20">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-soulRed flex items-center justify-center border-2 border-soulYellow rounded-lg rotate-3 shadow-lg">
+                    <i class="fa-solid fa-fire-burner text-soulYellow text-lg"></i>
+                </div>
+                <h1 class="font-vintage text-2xl tracking-wider text-soulYellow leading-none">Soul Meat</h1>
+            </div>
+            <button onclick="showModal('hours')" class="text-soulYellow flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                <span class="text-[10px] font-bold uppercase">Status:</span>
+                <span class="text-xs font-black text-green-400">OPEN</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto pt-24 pb-36 px-6">
+        
+        <!-- Welcome Hero -->
+        <section class="mb-10 text-center">
+            <div class="inline-block border-2 border-dashed border-soulRed text-soulRed px-4 py-1 font-vintage text-lg mb-4 rotate-[-2deg]">
+                Open Air Restaurant
+            </div>
+            <h2 class="text-4xl font-vintage mb-3 tracking-wide leading-tight uppercase">
+                Welcome to <br> <span class="text-soulYellow">Soul Meat</span> 🍖🔥
+            </h2>
+            <p class="text-sm opacity-80 font-medium leading-relaxed max-w-[280px] mx-auto">
+                Great food, great vibes — everything you need is one scan away.
+            </p>
+        </section>
+
+        <!-- PRIMARY GRID (2x4 CORE) -->
+        <div class="grid grid-cols-2 gap-4 mb-12">
+            <!-- 1. Menu -->
+            <button onclick="window.open('#', '_blank')" class="neo-card p-4 rounded-xl flex flex-col items-center">
+                <div class="icon-box"><i class="fa-solid fa-book-open"></i></div>
+                <p class="font-vintage text-lg uppercase tracking-wider">📖 Menu</p>
+            </button>
+
+            <!-- 2. WhatsApp -->
+            <button onclick="window.open('https://wa.me/255XXXXXXXXX?text=Hello%20Soul%20Meat,%20I%20would%20like%20to%20make%20an%20inquiry.', '_blank')" class="neo-card p-4 rounded-xl flex flex-col items-center">
+                <div class="icon-box"><i class="fa-brands fa-whatsapp text-xl"></i></div>
+                <p class="font-vintage text-lg uppercase tracking-wider">💬 WhatsApp</p>
+            </button>
+
+            <!-- 3. Instagram -->
+            <button onclick="window.open('#', '_blank')" class="neo-card p-4 rounded-xl flex flex-col items-center">
+                <div class="icon-box"><i class="fa-brands fa-instagram text-xl"></i></div>
+                <p class="font-vintage text-lg uppercase tracking-wider">📸 Instagram</p>
+            </button>
+
+            <!-- 4. TikTok -->
+            <button onclick="window.open('#', '_blank')" class="neo-card p-4 rounded-xl flex flex-col items-center">
+                <div class="icon-box"><i class="fa-brands fa-tiktok text-xl"></i></div>
+                <p class="font-vintage text-lg uppercase tracking-wider">🎵 TikTok</p>
+            </button>
+
+            <!-- 5. Google Reviews -->
+            <button onclick="window.open('#', '_blank')" class="neo-card p-4 rounded-xl flex flex-col items-center">
+                <div class="icon-box"><i class="fa-solid fa-star text-lg"></i></div>
+                <p class="font-vintage text-lg uppercase tracking-wider">⭐ Reviews</p>
+            </button>
+
+            <!-- 6. Location -->
+            <button onclick="window.open('#', '_blank')" class="neo-card p-4 rounded-xl flex flex-col items-center">
+                <div class="icon-box"><i class="fa-solid fa-location-dot"></i></div>
+                <p class="font-vintage text-lg uppercase tracking-wider">📍 Location</p>
+            </button>
+
+            <!-- 7. Opening Hours -->
+            <button onclick="showModal('hours')" class="neo-card p-4 rounded-xl flex flex-col items-center">
+                <div class="icon-box"><i class="fa-solid fa-clock"></i></div>
+                <p class="font-vintage text-lg uppercase tracking-wider">🕒 Hours</p>
+            </button>
+
+            <!-- 8. Suggestions -->
+            <button onclick="showModal('suggestions')" class="neo-card p-4 rounded-xl flex flex-col items-center">
+                <div class="icon-box"><i class="fa-solid fa-lightbulb"></i></div>
+                <p class="font-vintage text-lg uppercase tracking-wider">💡 Suggest</p>
+            </button>
+        </div>
+
+        <!-- UPSELL SECTION 1: VIRTUAL TOUR -->
+        <section class="mb-10">
+            <div class="relative w-full h-40 rounded-2xl overflow-hidden border-2 border-soulYellow group cursor-pointer" onclick="showModal('tour')">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-700" alt="Restaurant Interior">
+                <div class="absolute inset-0 flex flex-col items-center justify-center bg-soulDeep/40">
+                    <div class="w-14 h-14 bg-soulYellow text-soulDeep rounded-full flex items-center justify-center mb-2 animate-pulse">
+                        <i class="fa-solid fa-vr-cardboard text-2xl"></i>
+                    </div>
+                    <h4 class="font-vintage text-2xl uppercase tracking-widest">Explore Our Space</h4>
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Virtual 360&deg; Experience</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- UPSELL SECTION 2: GALLERY -->
+        <section class="mb-10">
+            <h3 class="font-vintage text-2xl uppercase mb-4 flex justify-between items-center">
+                <span>The Soul Gallery</span>
+                <span class="text-[10px] bg-soulRed px-2 py-1 rounded">Vibes</span>
+            </h3>
+            <div class="flex gap-4 overflow-x-auto no-scrollbar snap-x">
+                <div class="min-w-[140px] h-48 rounded-xl bg-gray-800 snap-center border border-white/10 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover">
+                </div>
+                <div class="min-w-[140px] h-48 rounded-xl bg-gray-800 snap-center border border-white/10 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover">
+                </div>
+                <div class="min-w-[140px] h-48 rounded-xl bg-gray-800 snap-center border border-white/10 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </section>
+
+        <!-- WIFI SECTION (SMART ADDITION) -->
+        <section class="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between mb-12">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-soulYellow text-soulDeep rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-wifi text-lg"></i>
+                </div>
+                <div>
+                    <h4 class="font-vintage text-xl uppercase leading-none">Free Wi-Fi</h4>
+                    <p class="text-[10px] opacity-60 font-black uppercase tracking-wider mt-1">Pass: soulmeat2024</p>
+                </div>
+            </div>
+            <button onclick="copyToClipboard('soulmeat2024')" class="text-soulYellow border border-soulYellow/30 px-3 py-1 rounded text-xs font-bold active:bg-soulYellow active:text-soulDeep transition-colors">
+                COPY
+            </button>
+        </section>
+
+    </main>
+
+    <!-- FLOATING CONTACT -->
+    <div class="fixed bottom-8 left-0 w-full px-6 z-40">
+        <div class="max-w-md mx-auto">
+            <button onclick="window.open('https://wa.me/255XXXXXXXXX', '_blank')" class="w-full h-16 bg-soulRed rounded-2xl flex items-center justify-center gap-4 border-2 border-soulYellow shadow-[6px_6px_0px_#000] active:translate-y-1 active:shadow-none transition-all">
+                <i class="fa-brands fa-whatsapp text-2xl text-white"></i>
+                <span class="font-vintage text-2xl text-white uppercase tracking-wider mt-1">Book a Table</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL: HOURS -->
+    <div id="modal-hours" class="fixed inset-0 z-[100] hidden items-center justify-center p-6 modal-blur" onclick="closeModal('hours')">
+        <div class="w-full max-w-sm bg-soulDeep border-4 border-soulYellow rounded-[30px] p-8" onclick="event.stopPropagation()">
+            <h3 class="font-vintage text-4xl text-soulYellow mb-6 text-center underline decoration-soulRed">Opening Hours</h3>
+            <div class="space-y-4">
+                <div class="flex justify-between border-b border-white/10 pb-2">
+                    <span class="font-vintage text-xl text-white/50">MON - SUN</span>
+                    <span class="font-vintage text-xl text-white">12:00 - 00:00</span>
+                </div>
+                <div class="p-3 bg-soulYellow/10 rounded-lg text-center">
+                    <p class="text-xs font-bold text-soulYellow uppercase tracking-widest">Late Night Kitchen (Fri/Sat)</p>
+                    <p class="font-vintage text-lg text-white">Till 02:00 AM</p>
+                </div>
+            </div>
+            <button onclick="closeModal('hours')" class="mt-8 w-full py-4 bg-soulRed text-white font-vintage text-2xl rounded-xl uppercase">Got It</button>
+        </div>
+    </div>
+
+    <!-- MODAL: SUGGESTIONS -->
+    <div id="modal-suggestions" class="fixed inset-0 z-[100] hidden items-center justify-center p-6 modal-blur" onclick="closeModal('suggestions')">
+        <div class="w-full max-w-sm bg-soulDeep border-4 border-soulYellow rounded-[30px] p-8" onclick="event.stopPropagation()">
+            <h3 class="font-vintage text-3xl text-soulYellow mb-4 text-center">FEED THE PITMASTER</h3>
+            <form id="suggestionForm" class="space-y-4">
+                <textarea id="suggestText" required placeholder="Tell us how we cooked today..." rows="4" class="w-full p-4 rounded-xl bg-white/5 border border-white/20 outline-none text-white focus:border-soulYellow font-medium text-sm"></textarea>
+                <button type="submit" class="w-full py-4 bg-soulYellow text-soulDeep font-vintage text-2xl rounded-xl uppercase">Submit Feedback</button>
+            </form>
+            <div id="thankYou" class="hidden text-center py-6">
+                <div class="w-20 h-20 bg-soulYellow text-soulDeep rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">
+                    <i class="fa-solid fa-hands-praying"></i>
+                </div>
+                <h4 class="text-3xl font-vintage text-white uppercase">Thank You!</h4>
+                <p class="text-white/60 text-xs mt-2 uppercase font-bold tracking-widest">Feedback Received</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: TOUR (UPSELL DEMO) -->
+    <div id="modal-tour" class="fixed inset-0 z-[100] hidden items-center justify-center p-6 modal-blur" onclick="closeModal('tour')">
+        <div class="w-full max-w-sm bg-soulDeep border-4 border-soulRed rounded-[30px] p-8 text-center" onclick="event.stopPropagation()">
+            <h3 class="font-vintage text-4xl text-white mb-4 uppercase leading-none">The Open Air Experience</h3>
+            <div class="aspect-video bg-black rounded-xl border border-white/20 flex items-center justify-center mb-6 overflow-hidden relative">
+                <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover opacity-50 blur-[2px]">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-soulYellow text-center">
+                        <i class="fa-solid fa-lock text-3xl mb-2"></i>
+                        <p class="text-[10px] font-black uppercase tracking-widest">Premium Feature</p>
+                    </div>
+                </div>
+            </div>
+            <p class="text-white/60 text-xs mb-6 px-4">This allows customers to "walk through" the restaurant on their phone before ordering.</p>
+            <button onclick="closeModal('tour')" class="w-full py-4 bg-soulRed text-white font-vintage text-2xl rounded-xl uppercase">Close Preview</button>
+        </div>
+    </div>
+
+    <script>
+        function showModal(id) {
+            document.getElementById(`modal-${id}`).style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(`modal-${id}`).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function copyToClipboard(text) {
+            const temp = document.createElement("input");
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand("copy");
+            document.body.removeChild(temp);
+            
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "COPIED!";
+            btn.style.borderColor = "#FDBD13";
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.borderColor = "rgba(253, 189, 19, 0.3)";
+            }, 1500);
+        }
+
+        document.getElementById('suggestionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            this.style.display = 'none';
+            document.getElementById('thankYou').classList.remove('hidden');
+            setTimeout(() => {
+                closeModal('suggestions');
+                // Reset for next demo
+                setTimeout(() => {
+                    this.style.display = 'block';
+                    document.getElementById('thankYou').classList.add('hidden');
+                    document.getElementById('suggestText').value = '';
+                }, 500);
+            }, 2500);
+        });
+    </script>
+</body>
+</html>

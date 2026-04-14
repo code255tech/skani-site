@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScanIt | Bloom Hub Companion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Bloom Hub Official Palette */
+            --bloom-purple: #8D6DAC;
+            --bloom-teal: #00ABCC;
+            --bloom-yellow: #EACC55;
+            --bloom-black: #1A1819; /* Deeper Dark */
+            --bloom-gray: #231F20; /* Original Black as card bg */
+            --border-white: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+            background-color: var(--bloom-black);
+            color: #F1F5F9;
+        }
+
+        .glass { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: rgba(26, 24, 25, 0.8); }
+        
+        .bento-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-white);
+            background: var(--bloom-gray);
+            cursor: pointer;
+        }
+        .bento-card:active { transform: scale(0.97); }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(18, 16, 17, 0.98);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            width: 100%;
+            max-width: 500px;
+            background: var(--bloom-black);
+            border-top: 2px solid var(--bloom-purple);
+            border-radius: 32px 32px 0 0;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .service-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .program-tag {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-bloom-purple { background-color: var(--bloom-purple); color: white; }
+        .btn-bloom-teal { background-color: var(--bloom-teal); color: white; }
+        .btn-bloom-yellow { background-color: var(--bloom-yellow); color: var(--bloom-black); }
+
+        .learn-more-link {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-50 h-20 px-6 flex items-center justify-between glass border-b border-white/5">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-graduation-cap text-[#8D6DAC] text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-black text-base tracking-tighter uppercase leading-none" style="color: var(--bloom-teal)">Bloom Hub</h1>
+                <p class="text-[9px] opacity-60 font-bold uppercase tracking-widest mt-1">Tanzania • Kids Learning</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="window.open('https://bloomhub.co.tz/', '_blank')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                <i class="fa-solid fa-globe text-xs"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto pt-28 pb-32 px-5">
+        
+        <!-- Welcome Section -->
+        <section class="mb-8">
+            <h2 class="text-3xl font-black mb-2 tracking-tight">Welcome to <span style="color: var(--bloom-purple)">Bloom Hub</span> 👋</h2>
+            <p class="text-sm opacity-70 leading-relaxed font-medium">Where young minds explore, create, and innovate through STEM, creativity, and play.</p>
+        </section>
+
+        <!-- PRIMARY GRID (CORE EXPERIENCE) -->
+        <div class="grid grid-cols-4 gap-3 mb-10">
+            <!-- About -->
+            <button onclick="showModal('about')" class="bento-card col-span-2 p-5 rounded-[28px] flex flex-col items-start gap-4">
+                <div class="service-icon bg-purple-500/10" style="color: var(--bloom-purple)"><i class="fa-solid fa-school"></i></div>
+                <div class="text-left">
+                    <p class="font-black text-sm">About Hub</p>
+                    <p class="text-[10px] opacity-40 font-bold uppercase tracking-tight">Our Identity</p>
+                </div>
+            </button>
+
+            <!-- Programs -->
+            <button onclick="showModal('programs')" class="bento-card col-span-2 p-5 rounded-[28px] flex flex-col items-start gap-4">
+                <div class="service-icon bg-teal-500/10" style="color: var(--bloom-teal)"><i class="fa-solid fa-brain"></i></div>
+                <div class="text-left">
+                    <p class="font-black text-sm">Programs</p>
+                    <p class="text-[10px] opacity-40 font-bold uppercase tracking-tight">STEM & Arts</p>
+                </div>
+            </button>
+
+            <!-- Enroll -->
+            <button onclick="showModal('enroll')" class="col-span-4 p-5 rounded-[28px] flex items-center justify-between btn-bloom-yellow shadow-xl active:scale-95 transition-transform">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-black/10 flex items-center justify-center"><i class="fa-solid fa-calendar-check text-xl"></i></div>
+                    <div class="text-left">
+                        <p class="font-black text-sm uppercase">Enroll Now</p>
+                        <p class="text-[10px] font-bold opacity-70 uppercase">Secure a spot for your child</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right opacity-40 mr-2"></i>
+            </button>
+
+            <!-- Explore Space -->
+            <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/bobo-play-learn/', '_blank')" class="bento-card col-span-2 p-5 rounded-[28px] flex items-center gap-4 border-teal-500/20">
+                <div class="service-icon bg-teal-500/10" style="color: var(--bloom-teal)"><i class="fa-solid fa-camera-retro"></i></div>
+                <div class="text-left">
+                    <p class="font-black text-sm">Explore</p>
+                    <p class="text-[10px] opacity-40 font-bold uppercase tracking-tight">Virtual Tour</p>
+                </div>
+            </button>
+
+            <!-- Location -->
+            <button onclick="showModal('location')" class="bento-card col-span-2 p-5 rounded-[28px] flex items-center gap-4 border-purple-500/20">
+                <div class="service-icon bg-purple-500/10" style="color: var(--bloom-purple)"><i class="fa-solid fa-map-location-dot"></i></div>
+                <div class="text-left">
+                    <p class="font-black text-sm">Location</p>
+                    <p class="text-[10px] opacity-40 font-bold uppercase tracking-tight">Masaki, Dar</p>
+                </div>
+            </button>
+        </div>
+
+        <!-- PROGRAM HIGHLIGHTS -->
+        <section class="mb-10">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-5 px-1">Program Highlights</h3>
+            <div class="space-y-4">
+                <!-- Robotics -->
+                <div class="p-6 rounded-[32px] bg-white/5 border border-white/5 flex flex-col gap-4">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 rounded-2xl bg-teal-500/10 flex items-center justify-center" style="color: var(--bloom-teal)"><i class="fa-solid fa-robot text-2xl"></i></div>
+                        <div>
+                            <p class="font-black text-base">Robotics Classes</p>
+                            <p class="text-xs opacity-60">Building and programming future-ready machines.</p>
+                        </div>
+                    </div>
+                    <a href="https://bloomhub.co.tz/our-programs/" target="_blank" class="learn-more-link" style="color: var(--bloom-teal)">Learn More <i class="fa-solid fa-arrow-right-long ml-1"></i></a>
+                </div>
+
+                <!-- 3D Printing -->
+                <div class="p-6 rounded-[32px] bg-white/5 border border-white/5 flex flex-col gap-4">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center" style="color: var(--bloom-purple)"><i class="fa-solid fa-cube text-2xl"></i></div>
+                        <div>
+                            <p class="font-black text-base">3D Printing Workshops</p>
+                            <p class="text-xs opacity-60">Bringing imagination to life with modern tech.</p>
+                        </div>
+                    </div>
+                    <a href="https://bloomhub.co.tz/our-programs/" target="_blank" class="learn-more-link" style="color: var(--bloom-purple)">Learn More <i class="fa-solid fa-arrow-right-long ml-1"></i></a>
+                </div>
+
+                <!-- Photography -->
+                <div class="p-6 rounded-[32px] bg-white/5 border border-white/5 flex flex-col gap-4">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 rounded-2xl bg-yellow-500/10 flex items-center justify-center" style="color: var(--bloom-yellow)"><i class="fa-solid fa-camera text-2xl"></i></div>
+                        <div>
+                            <p class="font-black text-base">Photography Classes</p>
+                            <p class="text-xs opacity-60">Capturing the world through a creative lens.</p>
+                        </div>
+                    </div>
+                    <a href="https://bloomhub.co.tz/our-programs/" target="_blank" class="learn-more-link" style="color: var(--bloom-yellow)">Learn More <i class="fa-solid fa-arrow-right-long ml-1"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALLERY PREVIEW -->
+        <section class="mb-10">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-5 px-1">Gallery</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="aspect-square rounded-[24px] bg-white/5 border border-white/5 flex items-center justify-center">
+                    <i class="fa-solid fa-image text-white/10 text-3xl"></i>
+                </div>
+                <div class="aspect-square rounded-[24px] bg-white/5 border border-white/5 flex items-center justify-center">
+                    <i class="fa-solid fa-image text-white/10 text-3xl"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEET THE TEAM -->
+        <section class="mb-10">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-5 px-1">Meet the Mentors</h3>
+            <div class="flex gap-6 overflow-x-auto hide-scrollbar">
+                <div class="min-w-[120px] text-center">
+                    <div class="w-20 h-20 rounded-full border-2 border-[#8D6DAC]/30 p-1 mx-auto mb-3">
+                        <div class="w-full h-full rounded-full bg-white/10 flex items-center justify-center">
+                             <i class="fa-solid fa-user-tie text-xl opacity-30"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs font-black">Founder</p>
+                    <p class="text-[9px] opacity-40 font-bold uppercase tracking-widest">Visionary</p>
+                </div>
+                <div class="min-w-[120px] text-center">
+                    <div class="w-20 h-20 rounded-full border-2 border-[#00ABCC]/30 p-1 mx-auto mb-3">
+                        <div class="w-full h-full rounded-full bg-white/10 flex items-center justify-center">
+                             <i class="fa-solid fa-user-gear text-xl opacity-30"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs font-black">STEM Coach</p>
+                    <p class="text-[9px] opacity-40 font-bold uppercase tracking-widest">Expert</p>
+                </div>
+                <div class="min-w-[120px] text-center">
+                    <div class="w-20 h-20 rounded-full border-2 border-[#EACC55]/30 p-1 mx-auto mb-3">
+                        <div class="w-full h-full rounded-full bg-white/10 flex items-center justify-center">
+                             <i class="fa-solid fa-palette text-xl opacity-30"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs font-black">Creative Lead</p>
+                    <p class="text-[9px] opacity-40 font-bold uppercase tracking-widest">Arts</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIALS -->
+        <section class="mb-10">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-5 px-1">Parent Voices</h3>
+            <div class="p-8 rounded-[40px] bg-white/5 border border-white/5 relative overflow-hidden">
+                <div class="absolute -top-4 -left-4 w-16 h-16 bg-purple-500/10 rounded-full blur-2xl"></div>
+                <div class="flex gap-1 text-[#EACC55] text-[10px] mb-4">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p class="text-sm opacity-80 leading-relaxed font-medium">"Bloom Hub has been a game-changer. My child became more confident and creative after just one month in the robotics program!"</p>
+                <div class="flex items-center gap-3 mt-6">
+                    <div class="w-8 h-8 rounded-full bg-[#00ABCC]/20 flex items-center justify-center text-[10px] font-bold text-[#00ABCC]">HP</div>
+                    <p class="text-[10px] font-black uppercase opacity-40 tracking-wider">Happy Parent, Masaki</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADD A REVIEW SECTION -->
+        <section class="mb-10">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-5 px-1">Share Your Experience</h3>
+            <div class="p-8 rounded-[40px] border border-white/5 bg-white/5">
+                <p class="text-xs opacity-60 mb-6 leading-relaxed">Loved our program? We'd love to hear your feedback!</p>
+                <form id="reviewForm" class="space-y-4">
+                    <input type="text" id="reviewerName" required placeholder="Your Name" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-white outline-none focus:border-[#EACC55]/50 transition-all text-sm">
+                    <textarea id="reviewText" required placeholder="Write your review here..." rows="3" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-white outline-none focus:border-[#EACC55]/50 transition-all text-sm resize-none"></textarea>
+                    <button type="submit" class="w-full py-4 rounded-2xl btn-bloom-teal font-black text-[10px] uppercase tracking-[0.1em] shadow-lg active:scale-95 transition-all">Submit Review</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Action Bar -->
+    <div class="fixed bottom-8 left-0 w-full px-6 z-40">
+        <div class="max-w-xs mx-auto flex items-center gap-3 p-2 rounded-full glass border border-white/10 bg-black shadow-2xl">
+            <button onclick="window.open('https://wa.me/255753227064', '_blank')" class="flex-1 bg-green-600 h-14 rounded-full text-white flex items-center justify-center gap-2 font-black text-xs uppercase tracking-wider active:scale-95 transition-all">
+                <i class="fa-brands fa-whatsapp text-xl"></i> Need Help?
+            </button>
+            <button onclick="window.location.href='tel:+255753227064'" class="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white active:scale-90 transition-all">
+                <i class="fa-solid fa-phone"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+
+    <!-- About Bloom Hub -->
+    <div id="modal-about" class="modal-overlay" onclick="closeModal('about')">
+        <div class="modal-content max-h-[85vh] flex flex-col" onclick="event.stopPropagation()">
+            <div class="p-8 border-b border-white/5 flex justify-between items-center">
+                <div>
+                    <h3 class="font-black text-xl">About Bloom Hub</h3>
+                    <p class="text-[10px] opacity-40 font-bold uppercase tracking-widest mt-1">Our Identity</p>
+                </div>
+                <button onclick="closeModal('about')" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-8 space-y-8 hide-scrollbar pb-10">
+                <p class="text-sm opacity-70 leading-relaxed">Bloom Hub is a safe and engaging learning environment focusing on STEM, sports, and creative arts.</p>
+                <div class="grid gap-4">
+                    <div class="p-5 rounded-3xl bg-white/5 border border-white/5">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-bullseye text-[#8D6DAC]"></i>
+                            <p class="text-[11px] font-black uppercase tracking-widest">Our Mission</p>
+                        </div>
+                        <p class="text-xs opacity-60">To build curiosity, confidence, and future skills in the next generation.</p>
+                    </div>
+                    <div class="p-5 rounded-3xl bg-white/5 border border-white/5">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-shield-heart text-[#00ABCC]"></i>
+                            <p class="text-[11px] font-black uppercase tracking-widest">Environment</p>
+                        </div>
+                        <p class="text-xs opacity-60">Designed for kids to explore without limits in a modern, secure facility.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Programs Modal -->
+    <div id="modal-programs" class="modal-overlay" onclick="closeModal('programs')">
+        <div class="modal-content max-h-[85vh] flex flex-col" onclick="event.stopPropagation()">
+            <div class="p-8 border-b border-white/5 flex justify-between items-center">
+                <div>
+                    <h3 class="font-black text-xl">Programs</h3>
+                    <p class="text-[10px] opacity-40 font-bold uppercase tracking-widest mt-1">What we offer</p>
+                </div>
+                <button onclick="closeModal('programs')" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-8 space-y-10 hide-scrollbar pb-10">
+                
+                <!-- STEM -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-1 bg-[#00ABCC] rounded-full"></div>
+                        <h4 class="text-xs font-black uppercase tracking-[0.2em]">STEM Programs</h4>
+                    </div>
+                    <div class="grid gap-3">
+                        <div class="p-5 rounded-3xl bg-white/5 border border-white/5">
+                            <div class="flex justify-between items-start mb-2">
+                                <p class="font-black text-base">Robotics & Coding</p>
+                                <span class="program-tag bg-teal-500/20 text-teal-400">Ages 6-15</span>
+                            </div>
+                            <p class="text-xs opacity-60 leading-relaxed mb-4">Hands-on learning experience with sensors, motors, and logic.</p>
+                            <a href="https://bloomhub.co.tz/our-programs/" target="_blank" class="text-[10px] font-black uppercase tracking-widest text-[#00ABCC]">Explore More →</a>
+                        </div>
+                        <div class="p-5 rounded-3xl bg-white/5 border border-white/5">
+                            <p class="font-black text-base">3D Printing</p>
+                            <p class="text-xs opacity-60">Model and print real objects in 3D.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sports -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-1 bg-[#EACC55] rounded-full"></div>
+                        <h4 class="text-xs font-black uppercase tracking-[0.2em]">Sports & Fitness</h4>
+                    </div>
+                    <div class="p-5 rounded-3xl bg-white/5 border border-white/5">
+                        <p class="font-black text-base">Physical Training</p>
+                        <p class="text-xs opacity-60">Build strength, team work, and discipline.</p>
+                    </div>
+                </div>
+
+                <!-- Arts -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-1 bg-[#8D6DAC] rounded-full"></div>
+                        <h4 class="text-xs font-black uppercase tracking-[0.2em]">Creative & Language</h4>
+                    </div>
+                    <div class="p-5 rounded-3xl bg-white/5 border border-white/5">
+                        <p class="font-black text-base">Photography & Arabic</p>
+                        <p class="text-xs opacity-60">Exploring visual arts and linguistic skills.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Enroll Modal -->
+    <div id="modal-enroll" class="modal-overlay" onclick="closeModal('enroll')">
+        <div class="modal-content p-8" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h3 class="text-2xl font-black">Enroll Now</h3>
+                    <p class="text-[10px] opacity-40 font-bold uppercase tracking-widest mt-1">Send your details</p>
+                </div>
+                <button onclick="closeModal('enroll')" class="w-10 h-10 bg-white/5 rounded-full"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="enrollmentForm" class="space-y-4 pb-12">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black uppercase opacity-40 ml-4">Child Information</label>
+                    <input type="text" id="childName" required placeholder="Full Name" class="w-full p-5 rounded-3xl bg-white/5 border border-white/10 text-white outline-none focus:border-[#00ABCC]/50 transition-all">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" id="childAge" required placeholder="Age" class="w-full p-5 rounded-3xl bg-white/5 border border-white/10 text-white outline-none focus:border-[#00ABCC]/50 transition-all">
+                    <div class="relative">
+                        <select id="selProgram" required class="w-full p-5 rounded-3xl bg-white/5 border border-white/10 text-white outline-none appearance-none focus:border-[#00ABCC]/50 transition-all">
+                            <option value="" disabled selected>Program</option>
+                            <option>STEM</option>
+                            <option>Arts</option>
+                            <option>Sports</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 opacity-30 text-xs"></i>
+                    </div>
+                </div>
+                <div class="space-y-1 pt-2">
+                    <label class="text-[10px] font-black uppercase opacity-40 ml-4">Parent Details</label>
+                    <input type="text" id="parentName" required placeholder="Parent Full Name" class="w-full p-5 rounded-3xl bg-white/5 border border-white/10 text-white outline-none focus:border-[#8D6DAC]/50 transition-all">
+                </div>
+                <input type="tel" id="parentPhone" required placeholder="Phone Number" class="w-full p-5 rounded-3xl bg-white/5 border border-white/10 text-white outline-none focus:border-[#8D6DAC]/50 transition-all">
+                
+                <button type="submit" class="w-full btn-bloom-yellow py-5 rounded-3xl font-black mt-6 shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Send via WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Location Modal -->
+    <div id="modal-location" class="modal-overlay" onclick="closeModal('location')">
+        <div class="modal-content p-10 text-center" onclick="event.stopPropagation()">
+            <div class="w-20 h-20 bg-teal-500/10 rounded-full flex items-center justify-center text-[#00ABCC] mx-auto mb-6 text-3xl shadow-inner">
+                <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-2">Find Us</h3>
+            <p class="text-sm opacity-60 mb-8 leading-relaxed">Based in Masaki, Dar es Salaam.<br>Visit our creative learning hub!</p>
+            <button onclick="window.open('https://maps.google.com/?q=Bloom+Hub+Masaki+Dar+es+Salaam', '_blank')" class="w-full btn-bloom-teal p-5 rounded-3xl font-black text-xs uppercase shadow-xl mb-4">Open Google Maps</button>
+            <button onclick="closeModal('location')" class="w-full p-4 text-[10px] font-black opacity-30 uppercase tracking-[0.2em]">Go Back</button>
+        </div>
+    </div>
+
+    <script>
+        const body = document.body;
+
+        function showModal(id) {
+            const modal = document.getElementById(`modal-${id}`);
+            if (modal) {
+                modal.classList.add('active');
+                body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(`modal-${id}`);
+            if (modal) {
+                modal.classList.remove('active');
+                body.style.overflow = 'auto';
+            }
+        }
+
+        // Close modal on click outside content
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('active');
+                body.style.overflow = 'auto';
+            }
+        }
+
+        // Enrollment Form Submission
+        document.getElementById('enrollmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const childName = document.getElementById('childName').value;
+            const childAge = document.getElementById('childAge').value;
+            const program = document.getElementById('selProgram').value;
+            const parentName = document.getElementById('parentName').value;
+            const phone = document.getElementById('parentPhone').value;
+
+            const message = `Hello Bloom Hub, I would like to enroll my child.\n\nChild Name: ${childName}\nAge: ${childAge}\nProgram: ${program}\nParent Name: ${parentName}\nPhone: ${phone}`;
+            
+            window.open(`https://wa.me/255753227064?text=${encodeURIComponent(message)}`, '_blank');
+            closeModal('enroll');
+        });
+
+        // Review Form Submission
+        document.getElementById('reviewForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const reviewerName = document.getElementById('reviewerName').value;
+            const reviewText = document.getElementById('reviewText').value;
+
+            const message = `Hi Bloom Hub, I'd like to share a review:\n\nReviewer: ${reviewerName}\nMessage: ${reviewText}`;
+            
+            window.open(`https://wa.me/255753227064?text=${encodeURIComponent(message)}`, '_blank');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

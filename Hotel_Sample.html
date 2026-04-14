@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScanIt | Premium Hotel Concierge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #690A92;
+            --secondary: #c43ee2;
+            --dark-bg: #0a010f;
+            --card-dark: #1a0226;
+            --light-bg: #fdfbff;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: background-color 0.4s ease;
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+
+        .dark { background-color: var(--dark-bg); color: #f3f4f6; }
+        .light { background-color: var(--light-bg); color: #1a0226; }
+
+        .glass { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .screen.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bento-card {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+        .bento-card:active { transform: scale(0.96); }
+        
+        .dark .bento-card { background: var(--card-dark); }
+        .light .bento-card { background: white; border-color: rgba(105, 10, 146, 0.08); box-shadow: 0 4px 12px rgba(105, 10, 146, 0.03); }
+
+        .service-pill {
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .service-pill:active { background: var(--secondary); color: white; }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.94);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            width: 100%;
+            max-width: 480px;
+            border-radius: 32px 32px 0 0;
+            animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalSlideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .icon-square {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .amenity-grid-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        input, select {
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            color: white !important;
+        }
+        .light input, .light select {
+            background: #f3f4f6 !important;
+            border: 1px solid #e5e7eb !important;
+            color: black !important;
+        }
+    </style>
+</head>
+<body class="dark">
+
+    <header class="fixed top-0 w-full z-50 h-16 px-6 flex items-center justify-between glass border-b border-white/5" id="nav-header">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-gradient-to-tr from-[#690A92] to-[#c43ee2] rounded-lg flex items-center justify-center shadow-lg shadow-purple-900/20">
+                <i class="fa-solid fa-h text-white text-xs"></i>
+            </div>
+            <h1 class="font-black text-sm tracking-wider uppercase">Infinity Hotel</h1>
+        </div>
+        <button id="theme-toggle" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center border border-white/10 active:scale-90 transition-all">
+            <i id="theme-icon" class="fa-solid fa-moon text-xs"></i>
+        </button>
+    </header>
+
+    <main class="max-w-md mx-auto pt-20 pb-40 px-5">
+        
+        <!-- Welcome Banner -->
+        <div class="mb-6 p-6 rounded-[32px] bg-gradient-to-br from-[#1a0226] to-[#0a010f] border border-white/10 text-white relative overflow-hidden">
+            <div class="relative z-10">
+                <h2 class="text-xl font-black mb-1">Welcome 👋</h2>
+                <p class="text-[13px] opacity-70 leading-snug">Everything you need for a premium stay experience is one tap away.</p>
+            </div>
+            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-[#c43ee2] blur-[60px] opacity-20"></div>
+        </div>
+
+        <!-- PRIMARY GRID -->
+        <div id="screen-main" class="screen active">
+            <div class="grid grid-cols-6 gap-3 mb-8">
+                
+                <!-- 🏨 Rooms & Services -->
+                <button onclick="showModal('services')" class="bento-card col-span-4 p-5 rounded-[28px] flex flex-col text-left theme-card">
+                    <div class="icon-square bg-purple-500/10 text-[#c43ee2]">
+                        <i class="fa-solid fa-bell-concierge"></i>
+                    </div>
+                    <span class="font-black text-sm mb-1">Rooms & Services</span>
+                    <span class="text-[10px] opacity-50 font-bold uppercase tracking-tight">Housekeeping • Requests</span>
+                </button>
+
+                <!-- 🧩 Amenities -->
+                <button onclick="showModal('amenities')" class="bento-card col-span-2 p-5 rounded-[28px] flex flex-col items-center justify-center text-center theme-card">
+                    <div class="icon-square mb-2 bg-pink-500/10 text-pink-500">
+                        <i class="fa-solid fa-puzzle-piece"></i>
+                    </div>
+                    <span class="font-black text-[12px]">Facilities</span>
+                </button>
+
+                <!-- 📶 WiFi -->
+                <button onclick="showModal('wifi')" class="bento-card col-span-2 p-4 rounded-[26px] flex flex-col items-center text-center theme-card">
+                    <div class="icon-square bg-green-500/10 text-green-500">
+                        <i class="fa-solid fa-wifi text-sm"></i>
+                    </div>
+                    <span class="font-bold text-[11px]">WiFi</span>
+                </button>
+
+                <!-- 🎥 Virtual Tour -->
+                <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/havana-mikocheni/', '_blank')" class="bento-card col-span-2 p-4 rounded-[26px] flex flex-col items-center text-center theme-card">
+                    <div class="icon-square bg-indigo-500/10 text-indigo-400">
+                        <i class="fa-solid fa-vr-cardboard text-sm"></i>
+                    </div>
+                    <span class="font-bold text-[11px]">360° Tour</span>
+                </button>
+
+                <!-- 🌐 Hotel Website -->
+                <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/scan%20Landing%20Page.html', '_blank')" class="bento-card col-span-2 p-4 rounded-[26px] flex flex-col items-center text-center theme-card">
+                    <div class="icon-square bg-blue-500/10 text-blue-400">
+                        <i class="fa-solid fa-globe text-sm"></i>
+                    </div>
+                    <span class="font-bold text-[11px]">Website</span>
+                </button>
+
+                <!-- 🍽️ Restaurant Menu Button (Now redirects to the PDF provided) -->
+                <button onclick="window.open('https://www.ujamaaresort.org/wp-content/uploads/2018/01/Ujamaa-restaurant-menu.pdf', '_blank')" class="bento-card col-span-6 p-4 rounded-[26px] flex items-center justify-between theme-card">
+                    <div class="flex items-center gap-3">
+                        <div class="icon-square mb-0 bg-orange-500/10 text-orange-500">
+                            <i class="fa-solid fa-utensils text-sm"></i>
+                        </div>
+                        <span class="font-black text-xs uppercase tracking-wider">Restaurant Menu</span>
+                    </div>
+                    <i class="fa-solid fa-file-pdf text-[10px] opacity-30"></i>
+                </button>
+            </div>
+
+            <!-- Support Section -->
+            <div class="mb-10">
+                <h3 class="font-black text-xs uppercase tracking-widest opacity-40 mb-4">Direct Support</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="window.open('https://wa.me/255757249910', '_blank')" class="flex items-center justify-center gap-2 p-4 rounded-2xl bg-green-500/10 border border-green-500/20 text-green-500 font-black text-xs active:scale-95 transition-all">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        WhatsApp
+                    </button>
+                    <button onclick="window.location.href='tel:+255757249910'" class="flex items-center justify-center gap-2 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-500 font-black text-xs active:scale-95 transition-all">
+                        <i class="fa-solid fa-phone-volume text-base"></i>
+                        Call Desk
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-6 left-0 w-full px-6 z-40">
+        <div class="max-w-xs mx-auto flex items-center gap-2 p-1.5 rounded-full shadow-2xl glass border border-white/10 bg-black/60 theme-nav">
+            <button onclick="showModal('services')" class="flex-1 bg-gradient-to-r from-[#690A92] to-[#c43ee2] h-12 rounded-full text-white font-black text-[11px] flex items-center justify-center gap-2 active:scale-95 transition-all">
+                <i class="fa-solid fa-bolt-lightning text-xs"></i>
+                Quick Actions
+            </button>
+        </div>
+    </nav>
+
+    <!-- 🧩 AMENITIES MODAL -->
+    <div id="modal-amenities" class="modal-overlay" onclick="closeModal('amenities')">
+        <div class="modal-content bg-[#0a010f] h-[90vh] flex flex-col theme-bg overflow-hidden" onclick="event.stopPropagation()">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                <div>
+                    <h3 class="text-lg font-black uppercase tracking-tighter">Hotel Amenities</h3>
+                    <p class="text-[10px] opacity-40 font-bold uppercase tracking-widest mt-1">Explore our facilities</p>
+                </div>
+                <button onclick="closeModal('amenities')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-6 space-y-6 hide-scrollbar pb-10">
+                <!-- GYM -->
+                <div class="p-5 rounded-[28px] bg-white/5 border border-white/5">
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="amenity-grid-icon text-orange-400">🏋️</div>
+                        <div>
+                            <h4 class="font-black text-sm">Fitness Center</h4>
+                            <p class="text-[11px] opacity-60">Open daily 6AM – 10PM</p>
+                        </div>
+                    </div>
+                    <p class="text-[12px] opacity-70 mb-4 leading-relaxed">Fully equipped modern gym with cardio, weights, and yoga space.</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="showBookingForm('Gym Slot')" class="bg-orange-500/10 text-orange-400 py-3 rounded-xl text-[11px] font-black border border-orange-500/20">🗓️ Book Slot</button>
+                        <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/havana-mikocheni/', '_blank')" class="bg-white/5 py-3 rounded-xl text-[11px] font-black border border-white/5">🎥 Gym Tour</button>
+                    </div>
+                </div>
+
+                <!-- POOL -->
+                <div class="p-5 rounded-[28px] bg-white/5 border border-white/5">
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="amenity-grid-icon text-blue-400">🏊</div>
+                        <div>
+                            <h4 class="font-black text-sm">Infinity Pool</h4>
+                            <p class="text-[11px] opacity-60">Deck Level • 7AM – 8PM</p>
+                        </div>
+                    </div>
+                    <p class="text-[12px] opacity-70 mb-4 leading-relaxed">Outdoor infinity pool with lounge area and complimentary towels.</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="sendRequest('Pool Availability Inquiry')" class="bg-blue-500/10 text-blue-400 py-3 rounded-xl text-[11px] font-black border border-blue-500/20">🕒 Availability</button>
+                        <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/havana-mikocheni/', '_blank')" class="bg-white/5 py-3 rounded-xl text-[11px] font-black border border-white/5">🎥 Pool Tour</button>
+                    </div>
+                </div>
+
+                <!-- RESTAURANT -->
+                <div class="p-5 rounded-[28px] bg-white/5 border border-white/5">
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="amenity-grid-icon text-yellow-500">🍽️</div>
+                        <div>
+                            <h4 class="font-black text-sm">Main Restaurant</h4>
+                            <p class="text-[11px] opacity-60">Global & Local Cuisine</p>
+                        </div>
+                    </div>
+                    <p class="text-[12px] opacity-70 mb-4 leading-relaxed">On-site dining experience with fresh seasonal ingredients.</p>
+                    <div class="space-y-2">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="window.open('https://www.ujamaaresort.org/wp-content/uploads/2018/01/Ujamaa-restaurant-menu.pdf', '_blank')" class="bg-yellow-500/10 text-yellow-500 py-3 rounded-xl text-[11px] font-black border border-yellow-500/20">📖 View Menu</button>
+                            <button onclick="showBookingForm('Table Reservation')" class="bg-[#c43ee2]/10 text-[#c43ee2] py-3 rounded-xl text-[11px] font-black border border-[#c43ee2]/20">🪑 Reserve</button>
+                        </div>
+                        <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/havana-mikocheni/', '_blank')" class="w-full bg-white/5 py-3 rounded-xl text-[11px] font-black border border-white/5">🎥 Restaurant Tour</button>
+                    </div>
+                </div>
+
+                <!-- SPA -->
+                <div class="p-5 rounded-[28px] bg-white/5 border border-white/5">
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="amenity-grid-icon text-pink-400">🧖</div>
+                        <div>
+                            <h4 class="font-black text-sm">Zen Spa & Wellness</h4>
+                            <p class="text-[11px] opacity-60">Treatments • 9AM – 9PM</p>
+                        </div>
+                    </div>
+                    <p class="text-[12px] opacity-70 mb-4 leading-relaxed">Luxury relaxation and wellness treatments available daily.</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="showBookingForm('Spa Treatment')" class="bg-pink-500/10 text-pink-400 py-3 rounded-xl text-[11px] font-black border border-pink-500/20">💆 Book Spa</button>
+                        <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/havana-mikocheni/', '_blank')" class="bg-white/5 py-3 rounded-xl text-[11px] font-black border border-white/5">🎥 Spa Tour</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📋 BOOKING FORM MODAL (UNIVERSAL) -->
+    <div id="modal-booking" class="modal-overlay" onclick="closeModal('booking')">
+        <div class="modal-content bg-[#0a010f] p-8 theme-card" onclick="event.stopPropagation()">
+            <h3 class="text-xl font-black mb-1" id="booking-title">Book Service</h3>
+            <p class="text-[10px] opacity-40 font-bold uppercase tracking-widest mb-6">Complete the details below</p>
+            
+            <form id="bookingForm" class="space-y-4">
+                <input type="hidden" id="booking-type">
+                <div>
+                    <label class="block text-[10px] uppercase font-black opacity-40 mb-1 ml-1">Full Name</label>
+                    <input type="text" id="guestName" required placeholder="Enter your name" class="w-full p-4 rounded-2xl outline-none focus:border-[#c43ee2]/50 transition-all">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] uppercase font-black opacity-40 mb-1 ml-1">Room Number</label>
+                        <input type="text" id="roomNumber" required placeholder="e.g. 302" class="w-full p-4 rounded-2xl outline-none focus:border-[#c43ee2]/50 transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-black opacity-40 mb-1 ml-1">Date/Time</label>
+                        <input type="text" id="dateTime" required placeholder="e.g. Tomorrow 4PM" class="w-full p-4 rounded-2xl outline-none focus:border-[#c43ee2]/50 transition-all">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-[#c43ee2] text-white py-4 rounded-2xl font-black mt-4 shadow-xl shadow-purple-900/20 active:scale-95 transition-all">
+                    Confirm & Send via WhatsApp
+                </button>
+                <button type="button" onclick="closeModal('booking')" class="w-full text-[10px] uppercase font-black opacity-30 mt-2">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 📶 WiFi Modal -->
+    <div id="modal-wifi" class="modal-overlay" onclick="closeModal('wifi')">
+        <div class="modal-content bg-[#1a0226] p-8 theme-card text-center" onclick="event.stopPropagation()">
+            <div class="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center text-green-500 mx-auto mb-4">
+                <i class="fa-solid fa-wifi text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-black mb-6">Guest WiFi</h3>
+            <div class="space-y-3 text-left">
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <p class="text-[9px] uppercase opacity-40 mb-1 font-black">Network Name</p>
+                    <p class="text-sm font-bold">Infinity_Guest_5G</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 flex justify-between items-center">
+                    <div>
+                        <p class="text-[9px] uppercase opacity-40 mb-1 font-black">Password</p>
+                        <p class="text-sm font-bold font-mono">WelcomeHome2024</p>
+                    </div>
+                    <button onclick="copyToClipboard('WelcomeHome2024')" class="text-[#c43ee2] font-black text-[10px] uppercase">Copy</button>
+                </div>
+            </div>
+            <button onclick="closeModal('wifi')" class="w-full bg-white/5 p-4 rounded-2xl font-black mt-8 text-sm">Close</button>
+        </div>
+    </div>
+
+    <!-- 🏨 Rooms & Services Modal -->
+    <div id="modal-services" class="modal-overlay" onclick="closeModal('services')">
+        <div class="modal-content bg-[#0a010f] h-[85vh] flex flex-col theme-bg overflow-hidden" onclick="event.stopPropagation()">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                <h3 class="text-lg font-black uppercase tracking-tighter">Rooms & Services</h3>
+                <button onclick="closeModal('services')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-6 hide-scrollbar">
+                <div>
+                    <h4 class="text-[10px] font-black text-[#c43ee2] uppercase mb-3 tracking-widest">Housekeeping</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="sendRequest('Fresh Towels')" class="service-pill p-4 rounded-2xl bg-white/5 flex flex-col items-center gap-2">
+                            <i class="fa-solid fa-scroll text-blue-400"></i>
+                            <span class="text-[11px] font-bold">Extra Towels</span>
+                        </button>
+                        <button onclick="sendRequest('Room Cleaning')" class="service-pill p-4 rounded-2xl bg-white/5 flex flex-col items-center gap-2">
+                            <i class="fa-solid fa-broom text-green-400"></i>
+                            <span class="text-[11px] font-bold">Clean Room</span>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-[10px] font-black text-[#c43ee2] uppercase mb-3 tracking-widest">Maintenance</h4>
+                    <button onclick="sendRequest('AC Issue')" class="w-full p-4 rounded-2xl bg-white/5 flex items-center justify-between service-pill mb-2">
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-snowflake text-xs text-blue-300"></i><span class="text-xs font-bold">Air Conditioning</span></div>
+                        <i class="fa-solid fa-chevron-right text-[8px] opacity-30"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const body = document.body;
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const navHeader = document.getElementById('nav-header');
+        let isDarkMode = true;
+
+        themeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                body.classList.replace('light', 'dark');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                navHeader.classList.replace('bg-white/80', 'bg-black/80');
+                updateThemeElements(true);
+            } else {
+                body.classList.replace('dark', 'light');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                navHeader.classList.replace('bg-black/80', 'bg-white/80');
+                updateThemeElements(false);
+            }
+        });
+
+        function updateThemeElements(isDark) {
+            const cards = document.querySelectorAll('.theme-card');
+            if (isDark) {
+                cards.forEach(c => { 
+                    if(c.classList.contains('bg-white')) c.classList.replace('bg-white', 'bg-[#1a0226]'); 
+                    if(c.classList.contains('border-purple-100')) c.classList.replace('border-purple-100', 'border-white/10'); 
+                });
+            } else {
+                cards.forEach(c => { 
+                    if(c.classList.contains('bg-[#1a0226]')) c.classList.replace('bg-[#1a0226]', 'bg-white'); 
+                    if(c.classList.contains('border-white/10')) c.classList.replace('border-white/10', 'border-purple-100'); 
+                });
+            }
+        }
+
+        function showModal(id) {
+            document.getElementById(`modal-${id}`).classList.add('active');
+            body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(`modal-${id}`).classList.remove('active');
+            body.style.overflow = 'auto';
+        }
+
+        // Booking Logic
+        function showBookingForm(type) {
+            document.getElementById('booking-type').value = type;
+            document.getElementById('booking-title').innerText = type + ' Booking';
+            showModal('booking');
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const type = document.getElementById('booking-type').value;
+            const name = document.getElementById('guestName').value;
+            const room = document.getElementById('roomNumber').value;
+            const time = document.getElementById('dateTime').value;
+
+            const message = `🛎️ NEW RESERVATION\n\nService: ${type}\nGuest: ${name}\nRoom: ${room}\nTime: ${time}`;
+            window.open(`https://wa.me/255757249910?text=${encodeURIComponent(message)}`, '_blank');
+            closeModal('booking');
+        });
+
+        function sendRequest(type) {
+            const message = `Hello, I am a guest and I would like to request: ${type}.`;
+            window.open(`https://wa.me/255757249910?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function copyToClipboard(text) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            const btn = event.target;
+            const original = btn.innerText;
+            btn.innerText = 'COPIED!';
+            btn.classList.add('text-green-500');
+            setTimeout(() => {
+                btn.innerText = original;
+                btn.classList.remove('text-green-500');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

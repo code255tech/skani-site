@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScanIt by Code255 - Premium Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --brand-purple: #690A92;
+            --brand-purple-light: #9d12db;
+            --brand-dark: #0a0510;
+            --accent-cyan: #06b6d4;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--brand-dark);
+            color: #f8fafc;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem 1rem;
+            position: relative;
+            border-bottom: 1px solid rgba(105, 10, 146, 0.15);
+        }
+
+        @media (min-width: 768px) {
+            .slide {
+                padding: 4rem 2rem;
+            }
+        }
+
+        .premium-gradient {
+            background: linear-gradient(135deg, #f8fafc 0%, #690A92 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .purple-glow {
+            box-shadow: 0 0 50px -10px rgba(105, 10, 146, 0.4);
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(105, 10, 146, 0.3);
+            border-radius: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (min-width: 768px) {
+            .glass-panel {
+                border-radius: 2rem;
+            }
+        }
+
+        .glass-panel:hover {
+            background: rgba(105, 10, 146, 0.05);
+            border-color: var(--brand-purple-light);
+            transform: translateY(-5px);
+        }
+
+        .phone-mockup {
+            width: 260px;
+            height: 540px;
+            border: 10px solid #1a1a2e;
+            border-radius: 2.5rem;
+            position: relative;
+            background: #000;
+            overflow: hidden;
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(105, 10, 146, 0.2);
+        }
+
+        @media (min-width: 768px) {
+            .phone-mockup {
+                width: 300px;
+                height: 620px;
+                border-width: 12px;
+                border-radius: 3rem;
+            }
+        }
+
+        .qr-container {
+            background: transparent;
+            padding: 15px;
+            border-radius: 20px;
+            position: relative;
+            animation: qr-float 4s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            .qr-container {
+                padding: 25px;
+                border-radius: 30px;
+            }
+        }
+
+        @keyframes qr-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(105, 10, 146, 0.4);
+            transition: all 0.5s ease;
+        }
+
+        .nav-dot.active {
+            height: 32px;
+            border-radius: 10px;
+            background: var(--brand-purple-light);
+            box-shadow: 0 0 15px var(--brand-purple);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(105, 10, 146, 0.15) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(40px);
+        }
+
+        @media (min-width: 768px) {
+            .blob {
+                width: 500px;
+                height: 500px;
+                filter: blur(60px);
+            }
+        }
+        
+        i[data-lucide] {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="w-full">
+
+    <div class="blob" style="top: 10%; left: -5%;"></div>
+    <div class="blob" style="bottom: 10%; right: -5%;"></div>
+
+    <!-- Navigation Dots (Hidden on Mobile) -->
+    <nav class="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-5 items-center">
+        <a href="#page1" class="nav-dot active"></a>
+        <a href="#page2" class="nav-dot"></a>
+        <a href="#page3" class="nav-dot"></a>
+        <a href="#page4" class="nav-dot"></a>
+        <a href="#page5" class="nav-dot"></a>
+        <a href="#page7" class="nav-dot"></a>
+        <a href="#page10" class="nav-dot"></a>
+        <a href="#page11" class="nav-dot"></a>
+    </nav>
+
+    <!-- Page 1: Cover -->
+    <section id="page1" class="slide items-center text-center">
+        <div class="reveal active w-full px-4">
+            <div class="mb-6 md:mb-8 inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-full border border-[#690A92]/40 bg-[#690A92]/10 text-[#9d12db] font-bold tracking-widest text-[10px] md:text-xs uppercase">
+                <span class="w-2 h-2 rounded-full bg-[#690A92] animate-pulse"></span>
+                ScanIt by Code255
+            </div>
+            <h1 class="text-5xl md:text-9xl font-black mb-4 md:mb-6 tracking-tighter leading-tight">
+                Just <span class="premium-gradient">Scan</span> It.
+            </h1>
+            <p class="text-lg md:text-3xl text-slate-400 mb-10 md:mb-16 font-light tracking-wide max-w-2xl mx-auto">
+                One Scan is All Your Customer Needs.
+            </p>
+            
+            <div class="flex flex-col items-center gap-4">
+                <div class="qr-container purple-glow w-40 h-40 md:w-56 md:h-56">
+                    <img src="https://255virtualtours.infinityhomes.co.tz/qr%20force.png" 
+                         alt="ScanIt QR Code" 
+                         class="w-full h-full object-contain"
+                         onerror="this.parentElement.innerHTML='<svg width=\'80\' height=\'80\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'7\' height=\'7\'></rect><rect x=\'14\' y=\'3\' width=\'7\' height=\'7\'></rect><rect x=\'14\' y=\'14\' width=\'7\' height=\'7\'></rect><rect x=\'3\' y=\'14\' width=\'7\' height=\'7\'></rect></svg>'">
+                </div>
+                <div class="mt-6 md:mt-8 text-3xl md:text-4xl animate-bounce">📲</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page 2: The Problem -->
+    <section id="page2" class="slide">
+        <div class="max-w-5xl mx-auto w-full reveal px-4">
+            <div class="flex items-center gap-4 mb-8 md:mb-12">
+                <div class="w-12 md:w-16 h-px bg-[#690A92]"></div>
+                <h2 class="text-lg md:text-2xl font-bold uppercase tracking-widest text-[#9d12db]">The Friction</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-12 md:mb-16">
+                <div>
+                    <h3 class="text-3xl md:text-5xl font-bold mb-6 leading-tight">Today's customer experience is <span class="text-red-500/80 italic">fragmented.</span></h3>
+                    <p class="text-slate-400 text-base md:text-xl leading-relaxed">
+                        In a world of instant gratification, every extra click is a lost customer.
+                    </p>
+                </div>
+                <div class="space-y-4">
+                    <div class="glass-panel p-5 md:p-6 flex items-start gap-4">
+                        <i data-lucide="alert-circle" class="text-red-500 mt-1 shrink-0"></i>
+                        <p class="font-medium text-sm md:text-lg">Struggling to find menus or service details.</p>
+                    </div>
+                    <div class="glass-panel p-5 md:p-6 flex items-start gap-4">
+                        <i data-lucide="alert-circle" class="text-red-500 mt-1 shrink-0"></i>
+                        <p class="font-medium text-sm md:text-lg">Navigating 5+ platforms just to book a table.</p>
+                    </div>
+                    <div class="glass-panel p-5 md:p-6 flex items-start gap-4">
+                        <i data-lucide="alert-circle" class="text-red-500 mt-1 shrink-0"></i>
+                        <p class="font-medium text-sm md:text-lg">Outdated info on Google vs. WhatsApp.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6 md:p-8 rounded-2xl md:rounded-3xl bg-gradient-to-r from-red-500/20 to-transparent border border-red-500/20 flex items-center gap-4 md:gap-6">
+                <span class="text-2xl md:text-4xl">⚠️</span>
+                <p class="text-xs md:text-xl font-bold text-red-400 uppercase tracking-wide">Friction leads to missed revenue.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page 3: The Solution -->
+    <section id="page3" class="slide bg-[#0e071a]">
+        <div class="max-w-5xl mx-auto w-full text-center reveal px-4">
+            <h2 class="text-4xl md:text-6xl font-extrabold mb-10 md:mb-12">The <span class="text-[#9d12db]">ScanIt</span> Evolution</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <div class="glass-panel p-8 md:p-10 border-b-4 border-[#690A92]">
+                    <div class="w-14 h-14 md:w-16 md:h-16 bg-[#690A92]/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="ban" class="text-[#9d12db]"></i>
+                    </div>
+                    <h4 class="text-xl md:text-2xl font-bold mb-2">Zero Apps</h4>
+                    <p class="text-slate-500 text-sm md:text-base">No downloads. Ever.</p>
+                </div>
+                <div class="glass-panel p-8 md:p-10 border-b-4 border-[#690A92]">
+                    <div class="w-14 h-14 md:w-16 md:h-16 bg-[#690A92]/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="zap" class="text-[#9d12db]"></i>
+                    </div>
+                    <h4 class="text-xl md:text-2xl font-bold mb-2">Instant Load</h4>
+                    <p class="text-slate-500 text-sm md:text-base">Optimized for 5G speed.</p>
+                </div>
+                <div class="glass-panel p-8 md:p-10 border-b-4 border-[#690A92]">
+                    <div class="w-14 h-14 md:w-16 md:h-16 bg-[#690A92]/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="mouse-pointer-2" class="text-[#9d12db]"></i>
+                    </div>
+                    <h4 class="text-xl md:text-2xl font-bold mb-2">One Click</h4>
+                    <p class="text-slate-500 text-sm md:text-base">Action-oriented design.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page 4: How It Works -->
+    <section id="page4" class="slide">
+        <div class="max-w-6xl mx-auto w-full flex flex-col lg:flex-row items-center gap-12 md:gap-20 reveal px-4">
+            <div class="flex-1 w-full">
+                <h2 class="text-3xl md:text-5xl font-black mb-10 md:mb-12">Seamless Integration</h2>
+                <div class="space-y-8 md:space-y-12">
+                    <div class="flex gap-5 md:gap-8 group">
+                        <div class="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-[#690A92] flex items-center justify-center shrink-0 text-xl md:text-2xl font-bold shadow-lg shadow-[#690A92]/40">1</div>
+                        <div>
+                            <h3 class="text-xl md:text-2xl font-bold mb-2">Scan the Code</h3>
+                            <p class="text-slate-400 text-base md:text-lg">The journey begins with a simple camera scan.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-5 md:gap-8 group">
+                        <div class="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-[#690A92] flex items-center justify-center shrink-0 text-xl md:text-2xl font-bold shadow-lg shadow-[#690A92]/40">2</div>
+                        <div>
+                            <h3 class="text-xl md:text-2xl font-bold mb-2">Launch Interface</h3>
+                            <p class="text-slate-400 text-base md:text-lg">A premium mobile hub opens instantly in the browser.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-5 md:gap-8 group">
+                        <div class="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-[#690A92] flex items-center justify-center shrink-0 text-xl md:text-2xl font-bold shadow-lg shadow-[#690A92]/40">3</div>
+                        <div>
+                            <h3 class="text-xl md:text-2xl font-bold mb-2">Total Access</h3>
+                            <p class="text-slate-400 text-base md:text-lg">Menu, WiFi, Location, and Booking—all in one place.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="phone-mockup shrink-0 mx-auto lg:mx-0">
+                <div class="bg-[#0a0510] h-full p-5 md:p-6 flex flex-col">
+                    <div class="w-16 md:w-20 h-1 md:h-1.5 bg-slate-900 mx-auto rounded-full mb-8 md:mb-10"></div>
+                    <div class="w-full h-12 md:h-16 glass-panel border-[#690A92]/50 mb-6 md:mb-8 flex items-center justify-center font-black tracking-tighter text-[#9d12db] text-sm md:text-base">CODE255</div>
+                    
+                    <div class="space-y-3 md:space-y-4">
+                        <div class="h-12 md:h-14 bg-white/5 rounded-xl md:rounded-2xl border border-white/10 flex items-center px-4 md:px-5 gap-3 md:gap-4">
+                            <div class="w-5 h-5 md:w-6 md:h-6 rounded bg-[#690A92]/40"></div>
+                            <div class="w-24 md:w-32 h-1.5 md:h-2 bg-white/10 rounded-full"></div>
+                        </div>
+                        <div class="h-12 md:h-14 bg-white/5 rounded-xl md:rounded-2xl border border-white/10 flex items-center px-4 md:px-5 gap-3 md:gap-4">
+                            <div class="w-5 h-5 md:w-6 md:h-6 rounded bg-[#690A92]/40"></div>
+                            <div class="w-20 md:w-24 h-1.5 md:h-2 bg-white/10 rounded-full"></div>
+                        </div>
+                        <div class="h-12 md:h-14 bg-[#690A92] rounded-xl md:rounded-2xl flex items-center justify-center font-bold text-xs md:text-sm">BOOK NOW</div>
+                    </div>
+                    
+                    <div class="mt-auto pb-4 grid grid-cols-2 gap-3 md:gap-4">
+                        <div class="h-20 md:h-24 glass-panel rounded-xl md:rounded-2xl flex flex-col items-center justify-center gap-1.5 md:gap-2">
+                            <i data-lucide="wifi" class="text-[#9d12db] scale-75 md:scale-100"></i>
+                            <span class="text-[8px] md:text-[10px] font-bold">WIFI</span>
+                        </div>
+                        <div class="h-20 md:h-24 glass-panel rounded-xl md:rounded-2xl flex flex-col items-center justify-center gap-1.5 md:gap-2">
+                            <i data-lucide="map-pin" class="text-[#9d12db] scale-75 md:scale-100"></i>
+                            <span class="text-[8px] md:text-[10px] font-bold">MAPS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page 5: Industries -->
+    <section id="page5" class="slide bg-black">
+        <div class="max-w-6xl mx-auto w-full reveal px-4">
+            <h2 class="text-3xl md:text-5xl font-black mb-10 md:mb-16 text-center leading-tight">Designed for <span class="text-[#9d12db]">Your Space</span></h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10">
+                <div class="glass-panel p-6 md:p-10 border-l-4 md:border-l-8 border-[#690A92]">
+                    <div class="flex items-center gap-4 mb-5 md:mb-6">
+                        <div class="text-3xl md:text-5xl">🍽️</div>
+                        <h3 class="text-xl md:text-3xl font-bold">Fine Dining & Cafe</h3>
+                    </div>
+                    <p class="text-slate-400 mb-6 md:mb-8 text-sm md:text-lg font-medium">Turn every table into a seamless digital experience.</p>
+                    <ul class="space-y-4 md:space-y-5 text-slate-300 text-xs md:text-base">
+                        <li class="flex items-start gap-3 md:gap-4">
+                            <i data-lucide="check-circle-2" class="text-[#9d12db] mt-1 shrink-0 w-4 h-4 md:w-5 md:h-5"></i>
+                            <span>Instant digital menus & daily specials</span>
+                        </li>
+                        <li class="flex items-start gap-3 md:gap-4">
+                            <i data-lucide="check-circle-2" class="text-[#9d12db] mt-1 shrink-0 w-4 h-4 md:w-5 md:h-5"></i>
+                            <span>QR-based WiFi access (no passwords needed)</span>
+                        </li>
+                        <li class="flex items-start gap-3 md:gap-4">
+                            <i data-lucide="check-circle-2" class="text-[#9d12db] mt-1 shrink-0 w-4 h-4 md:w-5 md:h-5"></i>
+                            <span>Reservation links or booking integration</span>
+                        </li>
+                        <li class="flex items-start gap-3 md:gap-4">
+                            <i data-lucide="check-circle-2" class="text-[#9d12db] mt-1 shrink-0 w-4 h-4 md:w-5 md:h-5"></i>
+                            <span>One-tap reviews & feedback</span>
+                        </li>
+                        <li class="flex items-start gap-3 md:gap-4">
+                            <i data-lucide="check-circle-2" class="text-[#9d12db] mt-1 shrink-0 w-4 h-4 md:w-5 md:h-5"></i>
+                            <span>Website & Virtual Tour integration</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glass-panel p-6 md:p-10 border-l-4 md:border-l-8 border-[#06b6d4]">
+                    <div class="flex items-center gap-4 mb-5 md:mb-6">
+                        <div class="text-3xl md:text-5xl">🏨</div>
+                        <h3 class="text-xl md:text-3xl font-bold">Hotels & Luxury Stays</h3>
+                    </div>
+                    <p class="text-slate-400 mb-6 md:mb-8 text-sm md:text-lg font-medium">Give guests everything they need — without asking.</p>
+                    <ul class="space-y-4 md:space-y-5 text-slate-300 text-xs md:text-base">
+                        <li class="flex items-start gap-3 md:gap-4">
+                            <i data-lucide="check-circle-2" class="text-[#06b6d4] mt-1 shrink-0 w-4 h-4 md:w-5 md:h-5"></i>
+                            <span>Digital guest directory & stay information</span>
+                        </li>
+                        <li class="flex items-start gap-3 md:gap-4">
+                            <i data-lucide="check-circle-2" class="text-[#06b6d4] mt-1 shrink-0 w-4 h-4 md:w-5 md:h-5"></i>
+                            <span>QR-based WiFi access</span>
+                        </li>
+                        <li class="flex items-start gap-3 md:gap-4">
+                            <i data-lucide="check-circle-2" class="text-[#06b6d4] mt-1 shrink-0 w-4 h-4 md:w-5 md:h-5"></i>
+                            <span>Contactless check-in guides & instructions</span>
+                        </li>
+                        <li class="flex items-start gap-3 md:gap-4">
+                            <i data-lucide="check-circle-2" class="text-[#06b6d4] mt-1 shrink-0 w-4 h-4 md:w-5 md:h-5"></i>
+                            <span>Nearby attractions & recommendations</span>
+                        </li>
+                        <li class="flex items-start gap-3 md:gap-4">
+                            <i data-lucide="check-circle-2" class="text-[#06b6d4] mt-1 shrink-0 w-4 h-4 md:w-5 md:h-5"></i>
+                            <span>Website & Virtual Tour integration</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page 7: Value -->
+    <section id="page7" class="slide">
+        <div class="max-w-4xl mx-auto w-full reveal px-4">
+            <h2 class="text-2xl md:text-4xl font-bold mb-10 md:mb-16 text-center tracking-widest uppercase text-slate-500">How ScanIt Works for You</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+                <div class="flex gap-4 md:gap-6 items-center p-5 md:p-6 glass-panel">
+                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-[#690A92]/20 flex items-center justify-center shrink-0">
+                        <i data-lucide="cpu" class="text-[#9d12db]"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg md:text-xl font-bold">Smart Core</h4>
+                        <p class="text-slate-500 text-xs md:text-sm">Content managed by Code255.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 md:gap-6 items-center p-5 md:p-6 glass-panel">
+                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-[#690A92]/20 flex items-center justify-center shrink-0">
+                        <i data-lucide="palette" class="text-[#9d12db]"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg md:text-xl font-bold">Bespoke Design</h4>
+                        <p class="text-slate-500 text-xs md:text-sm">Fully branded to your identity.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 md:gap-6 items-center p-5 md:p-6 glass-panel">
+                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-[#690A92]/20 flex items-center justify-center shrink-0">
+                        <i data-lucide="link" class="text-[#9d12db]"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg md:text-xl font-bold">Full Integration</h4>
+                        <p class="text-slate-500 text-xs md:text-sm">Connect your web assets.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 md:gap-6 items-center p-5 md:p-6 glass-panel">
+                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-[#690A92]/20 flex items-center justify-center shrink-0">
+                        <i data-lucide="activity" class="text-[#9d12db]"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg md:text-xl font-bold">Managed Growth</h4>
+                        <p class="text-slate-500 text-xs md:text-sm">We handle everything for you.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 md:mt-20 p-6 md:p-10 glass-panel bg-gradient-to-br from-[#690A92]/10 to-transparent border-t-2 border-[#9d12db]">
+                <div class="flex flex-col md:flex-row items-center gap-6 md:gap-10">
+                    <div class="flex-1 text-center md:text-left">
+                        <h3 class="text-xl md:text-3xl font-bold mb-2">Member Exclusives</h3>
+                        <p class="text-slate-400 text-sm md:text-base">ScanIt clients get special access to premium upgrades.</p>
+                    </div>
+                    <div class="flex gap-3 md:gap-4">
+                        <div class="px-4 py-3 md:px-6 md:py-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 text-center flex-1">
+                            <div class="text-[#06b6d4] font-black text-lg md:text-2xl">20% OFF</div>
+                            <div class="text-[8px] md:text-[10px] uppercase font-bold text-slate-500">Virtual Tours</div>
+                        </div>
+                        <div class="px-4 py-3 md:px-6 md:py-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 text-center flex-1">
+                            <div class="text-[#06b6d4] font-black text-lg md:text-2xl">20% OFF</div>
+                            <div class="text-[8px] md:text-[10px] uppercase font-bold text-slate-500">Web Dev</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page 10: Pricing -->
+    <section id="page10" class="slide">
+        <div class="max-w-5xl mx-auto w-full text-center reveal px-4">
+            <h2 class="text-3xl md:text-5xl font-black mb-10 md:mb-12">The Investment</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-stretch">
+                <!-- Standard Plan -->
+                <div class="glass-panel p-6 md:p-12 border-white/10 flex flex-col">
+                    <p class="text-slate-500 font-bold tracking-widest uppercase text-[10px] md:text-xs mb-4">Flexible Monthly</p>
+                    <div class="flex items-center justify-center gap-2 md:gap-3 mb-6 md:mb-8">
+                        <span class="text-4xl md:text-6xl font-black">25</span>
+                        <div class="text-left">
+                            <div class="text-base md:text-lg font-bold">,000 TZS</div>
+                            <div class="text-slate-500 text-[10px] md:text-xs uppercase">/ MONTH</div>
+                        </div>
+                    </div>
+                    <div class="space-y-3 md:space-y-4 mb-8 md:mb-10 text-left text-xs md:text-sm text-slate-400">
+                        <div class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#9d12db]"></i> Managed System Hub</div>
+                        <div class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#9d12db]"></i> Regular Maintenance</div>
+                        <div class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#9d12db]"></i> Priority Support</div>
+                    </div>
+                    <button class="mt-auto w-full py-3 md:py-4 bg-white/5 border border-white/10 hover:bg-white/10 transition-all rounded-xl font-bold text-xs md:text-sm">SELECT MONTHLY</button>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="glass-panel p-6 md:p-12 border-2 border-[#690A92] purple-glow relative overflow-hidden flex flex-col bg-[#690A92]/5">
+                    <div class="absolute -right-10 top-6 md:-right-12 md:top-8 rotate-45 bg-[#9d12db] text-white px-8 md:px-12 py-1 font-black text-[8px] md:text-[10px]">PREMIUM</div>
+                    
+                    <p class="text-[#9d12db] font-bold tracking-widest uppercase text-[10px] md:text-xs mb-4">Best Value Annual</p>
+                    <div class="flex items-center justify-center gap-2 md:gap-3 mb-6 md:mb-8">
+                        <span class="text-4xl md:text-6xl font-black">250</span>
+                        <div class="text-left">
+                            <div class="text-base md:text-lg font-bold">,000 TZS</div>
+                            <div class="text-slate-500 text-[10px] md:text-xs uppercase">/ YEAR</div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3 md:space-y-4 mb-8 md:mb-10 text-left text-xs md:text-sm">
+                        <div class="flex items-center gap-3 font-bold text-[#06b6d4]"><i data-lucide="zap" class="w-4 h-4"></i> Get 2 Months FREE</div>
+                        <div class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#9d12db]"></i> Managed System Hub</div>
+                        <div class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#9d12db]"></i> Priority Support</div>
+                        <div class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#9d12db]"></i> All Future Updates</div>
+                    </div>
+                    
+                    <button class="mt-auto w-full py-3 md:py-4 bg-[#690A92] hover:bg-[#9d12db] transition-all rounded-xl font-black text-xs md:text-sm shadow-xl shadow-[#690A92]/40">SELECT ANNUAL</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page 11: CTA -->
+    <section id="page11" class="slide items-center text-center">
+        <div class="reveal px-4 w-full">
+            <h2 class="text-4xl md:text-8xl font-black mb-8 md:mb-12 leading-tight">Connect <br class="md:hidden"> <span class="premium-gradient">Everything.</span></h2>
+            
+            <div class="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-center mb-12 md:mb-20">
+                <button class="group relative w-full md:w-auto px-8 md:px-12 py-5 md:py-6 bg-white text-black font-black rounded-xl md:rounded-2xl text-lg md:text-xl overflow-hidden transition-all">
+                    <span class="relative z-10 flex items-center justify-center gap-3">
+                        <i data-lucide="message-square"></i> <a href="https://wa.me/255757249910">WHATSAPP US</a>
+                    </span>
+                    <div class="absolute inset-0 bg-[#d78df7] translate-y-full group-hover:translate-y-0 transition-transform"></div>
+                </button>
+                <!-- <button class="w-full md:w-auto px-8 md:px-12 py-5 md:py-6 border-2 border-[#690A92] text-[#9d12db] font-black rounded-xl md:rounded-2xl text-lg md:text-xl hover:bg-[#690A92] hover:text-white transition-all">
+                    VIEW DEMO
+                </button> -->
+            </div>
+            
+            <p class="text-slate-500 text-sm md:text-lg font-medium italic mb-12 md:mb-20 px-4">"ScanIt doesn't replace your systems — it connects them."</p>
+            
+            <div class="h-px w-24 md:w-32 bg-[#690A92] mx-auto mb-6 md:mb-8"></div>
+            <p class="text-[8px] md:text-xs tracking-[0.3em] md:tracking-[0.5em] text-slate-700 uppercase leading-relaxed">Powered by Code255 - Your Digital Transformation Partner © 2026</p>
+        </div>
+    </section>
+
+    <script>
+        function initApp() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                setTimeout(initApp, 100);
+                return;
+            }
+
+            const observerOptions = { threshold: 0.1 };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+            const sections = document.querySelectorAll('section');
+            const navDots = document.querySelectorAll('.nav-dot');
+
+            window.addEventListener('scroll', () => {
+                let current = "";
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (window.pageYOffset >= (sectionTop - sectionHeight / 3)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navDots.forEach(dot => {
+                    dot.classList.remove('active');
+                    if (dot.getAttribute('href').includes(current)) {
+                        dot.classList.add('active');
+                    }
+                });
+            });
+        }
+
+        window.addEventListener('load', initApp);
+    </script>
+</body>
+</html>
