@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Guest Portal | Moyo Moyo Beach Villa</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        moyo: { 
+                            gold: '#D4AF37',
+                            dark: '#0A0F0D',
+                            ocean: '#1E3D59',
+                            sand: '#F4F1EA',
+                            teal: '#438A8E'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            background-color: #F4F1EA; 
+            color: #0A0F0D; 
+            font-family: 'Inter', -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .dark body { background-color: #0A0F0D; color: #F4F1EA; }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: background 0.3s ease;
+        }
+        .dark .glass {
+            background: rgba(30, 41, 35, 0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            scrollbar-width: none;
+        }
+        .carousel-container::-webkit-scrollbar { display: none; }
+        
+        .activity-card {
+            flex: 0 0 70%;
+            scroll-snap-align: center;
+            aspect-ratio: 1/1;
+            position: relative;
+            overflow: hidden;
+            border-radius: 2rem;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            backdrop-filter: blur(12px);
+        }
+        .modal-content {
+            transform: translateY(20px);
+            transition: 0.3s ease;
+            width: 100%;
+            max-width: 28rem;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .tap-scale:active { transform: scale(0.95); }
+
+        .copy-success {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #D4AF37;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 800;
+            font-size: 0.75rem;
+            z-index: 1000;
+            display: none;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 60;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+        }
+    </style>
+</head>
+<body class="pb-32">
+
+    <div id="copy-toast" class="copy-success uppercase tracking-widest">Password Copied!</div>
+
+    <!-- THEME TOGGLE BUTTON -->
+    <button onclick="toggleTheme()" class="theme-toggle glass tap-scale shadow-lg">
+        <i id="theme-icon" class="fa-solid fa-sun text-moyo-gold text-lg"></i>
+    </button>
+
+    <div class="max-w-md mx-auto relative min-h-screen">
+        
+        <!-- WELCOME HEADER -->
+        <header class="p-8 pt-16 reveal">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-full bg-moyo-gold flex items-center justify-center text-white shadow-lg">
+                    <i class="fa-solid fa-hand-peace text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-moyo-gold">Welcome to</p>
+                    <h1 class="text-2xl font-black uppercase italic tracking-tighter leading-none dark:text-white">Moyo Moyo</h1>
+                </div>
+            </div>
+            <div class="glass p-6 rounded-[2rem]">
+                <p class="text-sm font-medium leading-relaxed opacity-80">
+                    “Welcome to Moyo Moyo Beach Villa 🌿✨ Relax, explore, and enjoy every moment — everything you need is right here.”
+                </p>
+            </div>
+        </header>
+
+        <!-- PRIMARY GUEST GRID (2x3) -->
+        <section class="px-6 grid grid-cols-2 gap-4">
+            <!-- Row 1 -->
+            <button onclick="openModal('wifi-modal')" class="reveal glass p-6 rounded-[2rem] flex flex-col items-start gap-3 tap-scale">
+                <i class="fa-solid fa-wifi text-moyo-gold text-2xl"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest dark:text-white">WiFi Access</span>
+            </button>
+            <button onclick="openModal('rules-modal')" class="reveal glass p-6 rounded-[2rem] flex flex-col items-start gap-3 tap-scale">
+                <i class="fa-solid fa-scroll text-moyo-gold text-2xl"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest dark:text-white">House Rules</span>
+            </button>
+            <!-- Row 2 -->
+            <button onclick="openModal('emergency-modal')" class="reveal glass p-6 rounded-[2rem] flex flex-col items-start gap-3 tap-scale">
+                <i class="fa-solid fa-kit-medical text-red-500 text-2xl"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest dark:text-white">Emergency</span>
+            </button>
+            <button onclick="scrollToId('how-it-works')" class="reveal glass p-6 rounded-[2rem] flex flex-col items-start gap-3 tap-scale">
+                <i class="fa-solid fa-gears text-moyo-gold text-2xl"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest dark:text-white">Manuals</span>
+            </button>
+            <!-- Row 3 -->
+            <button onclick="window.location.href='https://255virtualtours.infinityhomes.co.tz/havana-mikocheni/'" class="reveal glass p-6 rounded-[2rem] flex flex-col items-start gap-3 tap-scale">
+                <i class="fa-solid fa-video text-moyo-gold text-2xl"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest dark:text-white">Virtual Tour</span>
+            </button>
+            <button onclick="openModal('review-modal')" class="reveal glass p-6 rounded-[2rem] flex flex-col items-start gap-3 tap-scale">
+                <i class="fa-solid fa-star text-moyo-gold text-2xl"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest dark:text-white">Review Us</span>
+            </button>
+        </section>
+
+        <!-- HOW THINGS WORK SECTION -->
+        <section id="how-it-works" class="mt-16 px-6 reveal">
+            <h3 class="text-xl font-black dark:text-white uppercase tracking-tighter italic mb-6 px-2">How Things Work ⚙️</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="openManual('kitchen')" class="glass p-5 rounded-2xl flex items-center gap-3 tap-scale">
+                    <i class="fa-solid fa-utensils text-moyo-gold"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-wider">Kitchen</span>
+                </button>
+                <button onclick="openManual('microwave')" class="glass p-5 rounded-2xl flex items-center gap-3 tap-scale">
+                    <i class="fa-solid fa-fire-burner text-moyo-gold"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-wider">Microwave</span>
+                </button>
+                <button onclick="openManual('washing')" class="glass p-5 rounded-2xl flex items-center gap-3 tap-scale">
+                    <i class="fa-solid fa-soap text-moyo-gold"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-wider">Laundry</span>
+                </button>
+                <button onclick="openManual('pool')" class="glass p-5 rounded-2xl flex items-center gap-3 tap-scale">
+                    <i class="fa-solid fa-swimming-pool text-moyo-gold"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-wider">Pool</span>
+                </button>
+                <button onclick="openManual('sound')" class="glass p-5 rounded-2xl flex items-center gap-3 tap-scale">
+                    <i class="fa-solid fa-volume-high text-moyo-gold"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-wider">Sound (LG)</span>
+                </button>
+                <button onclick="openManual('ac')" class="glass p-5 rounded-2xl flex items-center gap-3 tap-scale">
+                    <i class="fa-solid fa-bolt text-moyo-gold"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-wider">AC/Power</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ACTIVITIES SLIDER -->
+        <section class="mt-16 reveal">
+            <h3 class="text-xl font-black dark:text-white uppercase tracking-tighter italic mb-4 px-8">Things To Do 🎢</h3>
+            <div class="carousel-container">
+                <div class="activity-card glass">
+                    <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=400" class="absolute inset-0 w-full h-full object-cover" alt="Football">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
+                        <span class="text-2xl mb-1">⚽</span>
+                        <h4 class="text-white font-black uppercase text-xs tracking-widest">Football Ground</h4>
+                    </div>
+                </div>
+                <div class="activity-card glass">
+                    <img src="https://a.storyblok.com/f/320069/990x450/17426742a6/standard-tennis-court-dimensions-and-sizing-guide.jpg?auto=format&fit=crop&q=80&w=400" class="absolute inset-0 w-full h-full object-cover" alt="Tennis">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
+                        <span class="text-2xl mb-1">🎾</span>
+                        <h4 class="text-white font-black uppercase text-xs tracking-widest">Tennis Court</h4>
+                    </div>
+                </div>
+                <div class="activity-card glass">
+                    <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&q=80&w=400" class="absolute inset-0 w-full h-full object-cover" alt="Pool">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
+                        <span class="text-2xl mb-1">🏊</span>
+                        <h4 class="text-white font-black uppercase text-xs tracking-widest">Swimming Pool</h4>
+                    </div>
+                </div>
+                <div class="activity-card glass">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=400" class="absolute inset-0 w-full h-full object-cover" alt="Beach">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
+                        <span class="text-2xl mb-1">🌊</span>
+                        <h4 class="text-white font-black uppercase text-xs tracking-widest">Beach Access</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPLORE NEARBY -->
+        <section class="mt-16 reveal">
+            <h3 class="text-xl font-black dark:text-white uppercase tracking-tighter italic mb-4 px-8">Explore Nearby 📍</h3>
+            <div class="carousel-container">
+                <div class="flex-none w-64 glass p-6 rounded-3xl">
+                    <span class="text-2xl mb-3 block">🏖️</span>
+                    <h4 class="font-black dark:text-white uppercase text-xs mb-2">Beaches</h4>
+                    <button onclick="window.location.href='https://www.google.com/maps/search/beaches+near+kigamboni'" class="w-full py-3 bg-moyo-gold/10 text-moyo-gold rounded-xl font-bold text-[10px] uppercase tracking-widest border-none">Open in Maps</button>
+                </div>
+                <div class="flex-none w-64 glass p-6 rounded-3xl">
+                    <span class="text-2xl mb-3 block">🍽️</span>
+                    <h4 class="font-black dark:text-white uppercase text-xs mb-2">Restaurants</h4>
+                    <button onclick="window.location.href='https://www.google.com/maps/search/restaurants+near+kigamboni'" class="w-full py-3 bg-moyo-gold/10 text-moyo-gold rounded-xl font-bold text-[10px] uppercase tracking-widest border-none">Open in Maps</button>
+                </div>
+                <div class="flex-none w-64 glass p-6 rounded-3xl">
+                    <span class="text-2xl mb-3 block">🛒</span>
+                    <h4 class="font-black dark:text-white uppercase text-xs mb-2">Supermarkets</h4>
+                    <button onclick="window.location.href='https://www.google.com/maps/search/supermarkets+near+kigamboni'" class="w-full py-3 bg-moyo-gold/10 text-moyo-gold rounded-xl font-bold text-[10px] uppercase tracking-widest border-none">Open in Maps</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- HOUSE GUIDELINES -->
+        <section class="px-6 mt-16 reveal">
+            <h3 class="text-xl font-black dark:text-white uppercase tracking-tighter italic mb-6 px-2">House Guidelines 📋</h3>
+            <div class="space-y-4">
+                <div class="bg-green-500/10 p-6 rounded-[2rem] border border-green-500/20">
+                    <h4 class="text-green-500 font-black uppercase text-[10px] tracking-widest mb-3">✅ DO</h4>
+                    <ul class="text-sm font-medium space-y-2 opacity-80">
+                        <li>• Keep spaces clean</li>
+                        <li>• Respect the environment</li>
+                        <li>• Use outdoor areas responsibly</li>
+                    </ul>
+                </div>
+                <div class="bg-red-500/10 p-6 rounded-[2rem] border border-red-500/20">
+                    <h4 class="text-red-500 font-black uppercase text-[10px] tracking-widest mb-3">❌ DON'T</h4>
+                    <ul class="text-sm font-medium space-y-2 opacity-80">
+                        <li>• No unapproved parties</li>
+                        <li>• No damage to property</li>
+                        <li>• No misuse of facilities</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- IMPORTANT INFO -->
+        <section class="px-6 mt-12 reveal mb-20">
+            <div class="glass p-6 rounded-3xl">
+                <h4 class="text-[10px] font-black uppercase tracking-widest text-moyo-gold mb-4">Important Info ⚠️</h4>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-users text-sm"></i>
+                        <span class="text-xs font-medium">Large groups (16+) allowed</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-broom text-sm"></i>
+                        <span class="text-xs font-medium">24/7 Housekeeping available</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-shield-halved text-sm"></i>
+                        <span class="text-xs font-medium">Secure & private property</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STICKY BOTTOM BAR -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+            <div class="max-w-md mx-auto glass dark:bg-moyo-dark/90 backdrop-blur-2xl rounded-[2.5rem] p-2 flex items-center justify-between shadow-2xl border border-white/10">
+                <button onclick="window.location.href='https://wa.me/255790105502'" class="flex-1 mx-2 bg-green-500 text-white font-black text-xs uppercase tracking-widest py-4 rounded-full shadow-lg tap-scale flex items-center justify-center gap-2 border-none">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp Host
+                </button>
+                <button onclick="window.location.href='tel:+255790105502'" class="w-14 h-14 flex items-center justify-center bg-moyo-gold text-white tap-scale rounded-full shadow-lg">
+                    <i class="fa-solid fa-phone text-xl"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- MODALS -->
+
+        <!-- WIFI MODAL -->
+        <div id="wifi-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/60" onclick="closeModal('wifi-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-10 relative text-center">
+                <i class="fa-solid fa-wifi text-4xl text-moyo-gold mb-6"></i>
+                <h3 class="text-2xl font-black uppercase tracking-tighter italic mb-8">WiFi Connection</h3>
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-1">Network</p>
+                        <p class="text-lg font-bold">MoyoMoyo_WiFi</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-1">Password</p>
+                        <button onclick="copyPassword('MoyoMoyoGuest2024')" class="text-xl font-black text-moyo-gold tracking-widest flex items-center justify-center gap-3 w-full border-none bg-transparent">
+                            MoyoMoyoGuest2024 <i class="fa-solid fa-copy text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <button onclick="closeModal('wifi-modal')" class="w-full bg-moyo-gold text-white mt-10 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border-none">Connected</button>
+            </div>
+        </div>
+
+        <!-- MANUAL MODAL -->
+        <div id="manual-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/60" onclick="closeModal('manual-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <div id="manual-content"></div>
+                <button onclick="closeModal('manual-modal')" class="w-full bg-moyo-gold text-white mt-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border-none">Close Manual</button>
+            </div>
+        </div>
+
+        <!-- EMERGENCY MODAL -->
+        <div id="emergency-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/60" onclick="closeModal('emergency-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-10 relative text-center">
+                <i class="fa-solid fa-triangle-exclamation text-4xl text-red-500 mb-4"></i>
+                <h3 class="text-2xl font-black uppercase tracking-tighter italic mb-2">Emergency Help</h3>
+                <p class="text-sm font-medium opacity-60 mb-8">Staff are available 24/7 for assistance.</p>
+                <div class="space-y-4">
+                    <a href="tel:+255790105502" class="w-full bg-red-500 text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest block border-none shadow-lg">Call Manager</a>
+                    <a href="https://wa.me/255790105502" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest block border-none shadow-lg">WhatsApp Staff</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- RULES MODAL -->
+        <div id="rules-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/60" onclick="closeModal('rules-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <h3 class="text-2xl font-black uppercase tracking-tighter italic mb-6">House Rules</h3>
+                <ul class="space-y-6">
+                    <li class="flex items-start gap-4">
+                        <div class="w-8 h-8 rounded-full bg-moyo-gold/20 flex items-center justify-center text-moyo-gold flex-none">1</div>
+                        <p class="text-sm font-medium leading-relaxed">No loud parties or music after 10:00 PM without prior staff approval.</p>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <div class="w-8 h-8 rounded-full bg-moyo-gold/20 flex items-center justify-center text-moyo-gold flex-none">2</div>
+                        <p class="text-sm font-medium leading-relaxed">Please respect the environment and property installations.</p>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <div class="w-8 h-8 rounded-full bg-moyo-gold/20 flex items-center justify-center text-moyo-gold flex-none">3</div>
+                        <p class="text-sm font-medium leading-relaxed">Maximum occupancy rules must be followed as per your booking.</p>
+                    </li>
+                </ul>
+                <p class="mt-8 text-[10px] font-bold opacity-40 uppercase text-center italic">Full guidelines available in the physical guest book.</p>
+            </div>
+        </div>
+
+        <!-- REVIEW MODAL -->
+        <div id="review-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/60" onclick="closeModal('review-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-10 relative text-center">
+                <span class="text-5xl mb-4 block">⭐️⭐️⭐️⭐️⭐️</span>
+                <h3 class="text-2xl font-black uppercase tracking-tighter italic mb-4">Enjoying your stay?</h3>
+                <p class="text-sm font-medium opacity-60 mb-8">We would love to hear your feedback! It helps us provide the best experience.</p>
+                <a href="#" class="w-full bg-moyo-gold text-white py-5 rounded-2xl font-black uppercase text-xs tracking-widest block border-none shadow-lg">Leave a Review</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Theme Management
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                html.classList.add('dark');
+                icon.classList.replace('fa-moon', 'fa-sun');
+            }
+        }
+
+        // Scroll Reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Navigation
+        function scrollToId(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Modals
+        function openModal(id) { 
+            document.getElementById(id).classList.add('active'); 
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            document.body.style.overflow = '';
+        }
+
+        // Manual Data
+        const manuals = {
+            microwave: `
+                <i class="fa-solid fa-fire-burner text-4xl text-moyo-gold mb-6"></i>
+                <h3 class="text-xl font-black uppercase mb-4 italic">How to Use Microwave</h3>
+                <ul class="text-sm space-y-3 font-medium opacity-80">
+                    <li>1. Plug in / ensure wall power is ON</li>
+                    <li>2. Place food inside on the turntable</li>
+                    <li>3. Select desired time using the dial/buttons</li>
+                    <li>4. Press START</li>
+                    <li>5. Wait until beep, then remove carefully</li>
+                </ul>`,
+            pool: `
+                <i class="fa-solid fa-person-swimming text-4xl text-moyo-gold mb-6"></i>
+                <h3 class="text-xl font-black uppercase mb-4 italic">Pool Usage</h3>
+                <ul class="text-sm space-y-3 font-medium opacity-80">
+                    <li>• Strictly NO DIVING into the pool</li>
+                    <li>• No glass bottles/containers near the water</li>
+                    <li>• Children must be supervised at ALL times</li>
+                    <li>• Keep the pool area clear of trash</li>
+                </ul>`,
+            sound: `
+                <i class="fa-solid fa-volume-high text-4xl text-moyo-gold mb-6"></i>
+                <h3 class="text-xl font-black uppercase mb-4 italic">LG Sound System</h3>
+                <ul class="text-sm space-y-3 font-medium opacity-80">
+                    <li>1. Power on the LG Sound System</li>
+                    <li>2. Set mode to "Bluetooth"</li>
+                    <li>3. Connect your phone via Bluetooth settings</li>
+                    <li>4. Adjust volume responsibly for neighbours</li>
+                </ul>`,
+            kitchen: `
+                <h3 class="text-xl font-black uppercase mb-4 italic">Kitchen Basics</h3>
+                <p class="text-sm opacity-80 mb-4 font-medium">The kitchen is fully equipped for your use. Gas cylinders are monitored by staff.</p>
+                <ul class="text-sm space-y-2 font-medium opacity-80">
+                    <li>• Gas stove usage (Check valve first)</li>
+                    <li>• Fridge/Freezer settings</li>
+                    <li>• Cleaning supplies under the sink</li>
+                </ul>`,
+            washing: `
+                <h3 class="text-xl font-black uppercase mb-4 italic">Laundry</h3>
+                <p class="text-sm opacity-80 mb-4 font-medium">Washing machine is located in the service area.</p>
+                <ul class="text-sm space-y-2 font-medium opacity-80">
+                    <li>• Select "Quick Wash" for light clothes</li>
+                    <li>• Detergent provided in the drawer</li>
+                    <li>• Please ask staff for drying rack</li>
+                </ul>`,
+            ac: `
+                <h3 class="text-xl font-black uppercase mb-4 italic">Electricity / AC</h3>
+                <p class="text-sm opacity-80 mb-4 font-medium">To keep the villa cool and eco-friendly:</p>
+                <ul class="text-sm space-y-2 font-medium opacity-80">
+                    <li>• Keep doors/windows closed when AC is on</li>
+                    <li>• Set AC to 23°C for optimal cooling</li>
+                    <li>• Turn off lights when leaving rooms</li>
+                </ul>`
+        };
+
+        function openManual(key) {
+            document.getElementById('manual-content').innerHTML = manuals[key];
+            openModal('manual-modal');
+        }
+
+        function copyPassword(pw) {
+            const el = document.createElement('textarea');
+            el.value = pw;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            const toast = document.getElementById('copy-toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
+    </script>
+</body>
+</html>
