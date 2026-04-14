@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Scan It | Bobo Play & Learn</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        bobo: { 
+                            orange: '#F1712B',
+                            dark: '#1A1819',
+                            cream: '#FFFDF0',
+                            blue: '#4392F1'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --bobo-orange: #F1712B;
+            --bg-main: #FFFDF0;
+            --bg-card: #FFFFFF;
+        }
+        .dark {
+            --bg-main: #1A1819;
+            --bg-card: #231F20;
+        }
+
+        body { 
+            background-color: var(--bg-main); 
+            transition: background-color 0.5s ease;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .glass {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .dark .glass {
+            background: rgba(26, 24, 25, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .bento-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .dark .bento-card { border: 1px solid rgba(255,255,255,0.05); }
+        .bento-card:active { transform: scale(0.94); }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(12px); }
+
+        .modal-content {
+            transform: translateY(100%);
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100%;
+            max-width: 480px;
+            background: var(--bg-main);
+            border-radius: 40px 40px 0 0;
+            border-top: 4px solid var(--bobo-orange);
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .pulse-orange {
+            box-shadow: 0 0 0 0 rgba(241, 113, 43, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            70% { box-shadow: 0 0 0 15px rgba(241, 113, 43, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(241, 113, 43, 0); }
+        }
+    </style>
+</head>
+<body class="pb-32 font-sans text-bobo-dark dark:text-gray-100">
+
+    <div class="max-w-md mx-auto relative min-h-screen px-6">
+        
+        <!-- HEADER -->
+        <nav class="flex items-center justify-between pt-8 pb-6 sticky top-0 z-40 bg-transparent backdrop-blur-md">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-bobo-orange flex items-center justify-center text-white shadow-lg shadow-bobo-orange/30 rotate-3">
+                    <i class="fa-solid fa-teddy-bear text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black uppercase tracking-tighter leading-none text-bobo-orange">Bobo</h1>
+                    <p class="text-[9px] font-black uppercase tracking-[0.2em] opacity-50 mt-1">Play & Learn</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="toggleTheme()" class="w-10 h-10 glass rounded-full flex items-center justify-center">
+                    <i id="theme-icon" class="fa-solid fa-moon text-bobo-orange"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 1. WELCOME -->
+        <header class="mb-10 pt-4">
+            <h2 class="text-4xl font-black tracking-tight leading-[0.9] mb-4">
+                Welcome to <br><span class="text-bobo-orange">Bobo Play & Learn</span> 🧸✨
+            </h2>
+            <p class="text-sm font-medium opacity-70 leading-relaxed max-w-[280px]">
+                A safe, fun, and engaging space where children play, learn, and grow.
+            </p>
+        </header>
+
+        <!-- 2. PRIMARY GRID (2x3) -->
+        <section class="grid grid-cols-2 gap-4 mb-12">
+            <!-- Row 1 -->
+            <button onclick="showModal('about')" class="bento-card p-6 rounded-[2.5rem] flex flex-col items-start gap-4 shadow-sm">
+                <div class="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-bobo-orange">
+                    <i class="fa-solid fa-face-smile text-2xl"></i>
+                </div>
+                <div class="text-left">
+                    <p class="font-black text-sm uppercase tracking-tight">About Bobo</p>
+                    <p class="text-[9px] opacity-40 font-bold uppercase">Our Mission</p>
+                </div>
+            </button>
+
+            <button onclick="showModal('activities')" class="bento-card p-6 rounded-[2.5rem] flex flex-col items-start gap-4 shadow-sm">
+                <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                    <i class="fa-solid fa-palette text-2xl"></i>
+                </div>
+                <div class="text-left">
+                    <p class="font-black text-sm uppercase tracking-tight">Activities</p>
+                    <p class="text-[9px] opacity-40 font-bold uppercase">Creative Play</p>
+                </div>
+            </button>
+
+            <button onclick="showModal('pricing')" class="bento-card p-6 rounded-[2.5rem] flex flex-col items-start gap-4 shadow-sm">
+                <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-500">
+                    <i class="fa-solid fa-ticket text-2xl"></i>
+                </div>
+                <div class="text-left">
+                    <p class="font-black text-sm uppercase tracking-tight">Pricing</p>
+                    <p class="text-[9px] opacity-40 font-bold uppercase">Sessions & Plans</p>
+                </div>
+            </button>
+
+            <!-- Row 2 -->
+            <button onclick="showModal('book')" class="bento-card p-6 rounded-[2.5rem] flex flex-col items-start gap-4 shadow-sm bg-bobo-orange border-none pulse-orange">
+                <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-white">
+                    <i class="fa-solid fa-calendar-check text-2xl"></i>
+                </div>
+                <div class="text-left text-white">
+                    <p class="font-black text-sm uppercase tracking-tight">Book Session</p>
+                    <p class="text-[9px] opacity-80 font-bold uppercase">Save your spot</p>
+                </div>
+            </button>
+
+            <button onclick="window.open('https://bobo.co.tz/', '_blank')" class="bento-card p-6 rounded-[2.5rem] flex flex-col items-start gap-4 shadow-sm">
+                <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500">
+                    <i class="fa-solid fa-globe text-2xl"></i>
+                </div>
+                <div class="text-left">
+                    <p class="font-black text-sm uppercase tracking-tight">Website</p>
+                    <p class="text-[9px] opacity-40 font-bold uppercase">bobo.co.tz</p>
+                </div>
+            </button>
+
+            <button onclick="showModal('location')" class="bento-card p-6 rounded-[2.5rem] flex flex-col items-start gap-4 shadow-sm">
+                <div class="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500">
+                    <i class="fa-solid fa-map-location-dot text-2xl"></i>
+                </div>
+                <div class="text-left">
+                    <p class="font-black text-sm uppercase tracking-tight">Location</p>
+                    <p class="text-[9px] opacity-40 font-bold uppercase">AliKhan, Upanga</p>
+                </div>
+            </button>
+        </section>
+
+        <!-- 9. EXPERIENCE BOBO (Virtual Tour) -->
+        <section class="mb-12">
+            <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/bobo-play-learn/', '_blank')" 
+                    class="w-full relative overflow-hidden h-48 rounded-[2.5rem] group shadow-xl">
+                <img src="https://lh3.googleusercontent.com/gps-cs-s/APNQkAECQbtSj1-p5oj7lrO8GmfqUgvCLxdcanasbCf83kFiyNkmmVQQE6g0rdv0HiuWF0Te0HpGAhbPS3W4KXkqTFqO1-Unp4cRqFU2DLoFvvYh4t3kKDXjRCPF0o5CkwFCjvhKRcLKmg=s680-w680-h510-rw?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Play Area">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-bobo-orange shadow-lg">
+                            <i class="fa-solid fa-street-view"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-black uppercase text-base tracking-tighter leading-none italic">Take a Virtual Tour</h3>
+                            <p class="text-white/60 text-[10px] font-bold uppercase tracking-widest mt-1">Experience the space 🧸</p>
+                        </div>
+                    </div>
+                </div>
+            </button>
+        </section>
+
+        <!-- 10. WHY PARENTS CHOOSE BOBO (Trust Section) -->
+        <section class="mb-12">
+            <h3 class="text-xl font-black uppercase tracking-tighter italic mb-6 px-1">Why Choose Bobo? 🧡</h3>
+            <div class="space-y-3">
+                <div class="flex items-center gap-4 p-5 rounded-3xl glass">
+                    <div class="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-bobo-orange flex-shrink-0"><i class="fa-solid fa-shield-check"></i></div>
+                    <p class="text-sm font-black uppercase tracking-tight opacity-80">Safe & secure environment</p>
+                </div>
+                <div class="flex items-center gap-4 p-5 rounded-3xl glass">
+                    <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 flex-shrink-0"><i class="fa-solid fa-user-nurse"></i></div>
+                    <p class="text-sm font-black uppercase tracking-tight opacity-80">Trained and caring staff</p>
+                </div>
+                <div class="flex items-center gap-4 p-5 rounded-3xl glass">
+                    <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 flex-shrink-0"><i class="fa-solid fa-sparkles"></i></div>
+                    <p class="text-sm font-black uppercase tracking-tight opacity-80">Clean & well-maintained</p>
+                </div>
+                <div class="flex items-center gap-4 p-5 rounded-3xl glass">
+                    <div class="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 flex-shrink-0"><i class="fa-solid fa-mug-hot"></i></div>
+                    <p class="text-sm font-black uppercase tracking-tight opacity-80">Parents can relax nearby</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11. GALLERY (Emotional Proof) -->
+        <section class="mb-12">
+            <h3 class="text-xl font-black uppercase tracking-tighter italic mb-6 px-1">Inside Bobo 📸</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="aspect-square rounded-[2rem] bg-gray-200 dark:bg-white/5 overflow-hidden shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1485546246426-74dc88dec4d9?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover" alt="Play zone">
+                </div>
+                <div class="aspect-square rounded-[2rem] bg-gray-200 dark:bg-white/5 overflow-hidden shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1545558014-8692077e9b5c?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover" alt="Art zone">
+                </div>
+            </div>
+        </section>
+
+        <!-- 12. FAQ -->
+        <section class="mb-12">
+            <h3 class="text-xl font-black uppercase tracking-tighter italic mb-6 px-1">Quick Questions ❓</h3>
+            <div class="space-y-4">
+                <details class="group glass p-6 rounded-[2rem] cursor-pointer">
+                    <summary class="list-none flex justify-between items-center font-black uppercase text-xs tracking-tight">
+                        What age is this for?
+                        <i class="fa-solid fa-plus group-open:rotate-45 transition-transform"></i>
+                    </summary>
+                    <p class="text-xs opacity-60 mt-4 leading-relaxed font-medium">Perfect for toddlers and young children who love to explore and play.</p>
+                </details>
+                <details class="group glass p-6 rounded-[2rem] cursor-pointer">
+                    <summary class="list-none flex justify-between items-center font-black uppercase text-xs tracking-tight">
+                        Is it supervised?
+                        <i class="fa-solid fa-plus group-open:rotate-45 transition-transform"></i>
+                    </summary>
+                    <p class="text-xs opacity-60 mt-4 leading-relaxed font-medium">Yes! We have trained staff available at all times to ensure a safe environment.</p>
+                </details>
+                <details class="group glass p-6 rounded-[2rem] cursor-pointer">
+                    <summary class="list-none flex justify-between items-center font-black uppercase text-xs tracking-tight">
+                        Can we host parties?
+                        <i class="fa-solid fa-plus group-open:rotate-45 transition-transform"></i>
+                    </summary>
+                    <p class="text-xs opacity-60 mt-4 leading-relaxed font-medium">Absolutely! We offer perfect packages for birthdays and special celebrations.</p>
+                </details>
+            </div>
+        </section>
+
+        <!-- 13. SOCIALS -->
+        <section class="mb-10 text-center">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 mb-6">Stay Connected</h3>
+            <div class="flex justify-center gap-6">
+                <a href="https://wa.me/255753227064" class="w-14 h-14 rounded-full glass flex items-center justify-center text-[#25D366] text-xl shadow-lg active:scale-90 transition-all"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://www.instagram.com/boboplayandlearntz/" class="w-14 h-14 rounded-full glass flex items-center justify-center text-[#E4405F] text-xl shadow-lg active:scale-90 transition-all"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="w-14 h-14 rounded-full glass flex items-center justify-center text-bobo-dark dark:text-white text-xl shadow-lg active:scale-90 transition-all"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 14. STICKY BAR -->
+    <nav class="fixed bottom-8 left-0 right-0 z-50 px-6">
+        <div class="max-w-md mx-auto glass p-2 rounded-full flex items-center gap-2 shadow-[0_20px_40px_rgba(0,0,0,0.15)] border border-white/20">
+            <button onclick="window.open('https://wa.me/255753227064', '_blank')" class="w-12 h-12 flex-shrink-0 bg-emerald-500 rounded-full text-white flex items-center justify-center active:scale-90 transition-all">
+                <i class="fa-brands fa-whatsapp text-lg"></i>
+            </button>
+            <button onclick="showModal('book')" class="flex-1 bg-bobo-orange h-12 rounded-full text-white font-black text-[11px] uppercase tracking-widest active:scale-95 transition-all">
+                Book Session Now
+            </button>
+            <button onclick="showModal('location')" class="w-12 h-12 flex-shrink-0 glass rounded-full flex items-center justify-center active:scale-90 transition-all">
+                <i class="fa-solid fa-location-dot"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MODALS -->
+    <div id="modal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-content relative" onclick="event.stopPropagation()">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full mx-auto my-4"></div>
+            <div id="modal-body" class="p-8 pt-2 overflow-y-auto max-h-[70vh] hide-scrollbar pb-10"></div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const h = document.documentElement;
+            const i = document.getElementById('theme-icon');
+            if(h.classList.contains('dark')) {
+                h.classList.replace('dark', 'light');
+                i.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                h.classList.replace('light', 'dark');
+                i.classList.replace('fa-moon', 'fa-sun');
+            }
+        }
+
+        function showModal(type) {
+            const body = document.getElementById('modal-body');
+            const modal = document.getElementById('modal');
+            let content = '';
+
+            if(type === 'about') {
+                content = `
+                    <h3 class="text-2xl font-black italic uppercase mb-6">About Bobo 🧸</h3>
+                    <div class="space-y-6">
+                        <p class="text-sm opacity-70 leading-relaxed">Bobo Play & Learn is an indoor play centre dedicated to child development through creative exploration.</p>
+                        <div class="grid gap-3">
+                            <div class="p-5 rounded-3xl bg-orange-500/5 border border-orange-500/10">
+                                <p class="text-[10px] font-black uppercase text-bobo-orange mb-1">Highlights</p>
+                                <ul class="text-xs space-y-2 font-bold opacity-80 list-none p-0">
+                                    <li>• Safe indoor play centre</li>
+                                    <li>• Learning through creative play</li>
+                                    <li>• Supervised environment</li>
+                                    <li>• Designed for child development</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if(type === 'activities') {
+                content = `
+                    <h3 class="text-2xl font-black italic uppercase mb-6 text-blue-500">Activities 🎨</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-4 rounded-3xl glass text-center flex flex-col items-center gap-2">
+                            <i class="fa-solid fa-book text-blue-500"></i>
+                            <span class="text-[10px] font-black uppercase tracking-tighter">Reading & Learning</span>
+                        </div>
+                        <div class="p-4 rounded-3xl glass text-center flex flex-col items-center gap-2">
+                            <i class="fa-solid fa-palette text-blue-500"></i>
+                            <span class="text-[10px] font-black uppercase tracking-tighter">Arts & Crafts</span>
+                        </div>
+                        <div class="p-4 rounded-3xl glass text-center flex flex-col items-center gap-2">
+                            <i class="fa-solid fa-masks-theater text-blue-500"></i>
+                            <span class="text-[10px] font-black uppercase tracking-tighter">Pretend Play</span>
+                        </div>
+                        <div class="p-4 rounded-3xl glass text-center flex flex-col items-center gap-2">
+                            <i class="fa-solid fa-shapes text-blue-500"></i>
+                            <span class="text-[10px] font-black uppercase tracking-tighter">Soft Play</span>
+                        </div>
+                    </div>
+                `;
+            } else if(type === 'pricing') {
+                content = `
+                    <h3 class="text-2xl font-black italic uppercase mb-6 text-green-500">Pricing 💰</h3>
+                    <div class="space-y-3">
+                        <div class="p-5 rounded-3xl glass flex justify-between items-center">
+                            <div><p class="font-black text-sm">Day Play</p><p class="text-[10px] opacity-40">Single Session</p></div>
+                            <div class="text-right text-bobo-orange font-black text-sm">Contact Us</div>
+                        </div>
+                        <div class="p-5 rounded-3xl glass flex justify-between items-center">
+                            <div><p class="font-black text-sm">Monthly Programs</p><p class="text-[10px] opacity-40">Regular Learning</p></div>
+                            <div class="text-right text-bobo-orange font-black text-sm">Available</div>
+                        </div>
+                        <div class="p-5 rounded-3xl glass flex justify-between items-center">
+                            <div><p class="font-black text-sm">Birthdays</p><p class="text-[10px] opacity-40">Party Packages</p></div>
+                            <div class="text-right text-bobo-orange font-black text-sm">Special Rate</div>
+                        </div>
+                    </div>
+                `;
+            } else if(type === 'location') {
+                content = `
+                    <div class="text-center">
+                        <div class="w-16 h-16 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4"><i class="fa-solid fa-location-dot"></i></div>
+                        <h3 class="text-2xl font-black italic uppercase mb-2">Find Us</h3>
+                        <p class="text-sm opacity-60 mb-8">The Backyard, 288 Aly Khan Rd,<br>Masaki, Dar es Salaam</p>
+                        <button onclick="window.open('https://maps.google.com/?q=The+Backyard+Aly+Khan+Rd+Dar+es+Salaam', '_blank')" 
+                                class="w-full bg-bobo-dark dark:bg-white dark:text-bobo-dark text-white py-5 rounded-3xl font-black text-xs uppercase tracking-widest shadow-xl active:scale-95 transition-all">
+                            Open in Maps
+                        </button>
+                    </div>
+                `;
+            } else if(type === 'book') {
+                content = `
+                    <h3 class="text-2xl font-black italic uppercase mb-2">Book a Session 📅</h3>
+                    <p class="text-[10px] font-black uppercase tracking-widest opacity-40 mb-6 italic">Secure your child's spot</p>
+                    <form id="bookingForm" class="space-y-4" onsubmit="handleBooking(event)">
+                        <input type="text" id="pName" placeholder="Parent Name" required class="w-full p-5 rounded-3xl bg-gray-100 dark:bg-white/5 border-none outline-none font-black text-sm focus:ring-2 focus:ring-bobo-orange">
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="number" id="cAge" placeholder="Child Age" required class="w-full p-5 rounded-3xl bg-gray-100 dark:bg-white/5 border-none outline-none font-black text-sm focus:ring-2 focus:ring-bobo-orange">
+                            <input type="text" id="sType" placeholder="Session Type" required class="w-full p-5 rounded-3xl bg-gray-100 dark:bg-white/5 border-none outline-none font-black text-sm focus:ring-2 focus:ring-bobo-orange">
+                        </div>
+                        <input type="date" id="bDate" required class="w-full p-5 rounded-3xl bg-gray-100 dark:bg-white/5 border-none outline-none font-black text-sm focus:ring-2 focus:ring-bobo-orange">
+                        <input type="tel" id="pPhone" placeholder="Phone Number" required class="w-full p-5 rounded-3xl bg-gray-100 dark:bg-white/5 border-none outline-none font-black text-sm focus:ring-2 focus:ring-bobo-orange">
+                        <button type="submit" class="w-full bg-bobo-orange text-white py-5 rounded-3xl font-black uppercase text-xs tracking-widest shadow-xl shadow-bobo-orange/30 active:scale-95 transition-all flex items-center justify-center gap-3">
+                            <i class="fa-brands fa-whatsapp text-lg"></i> Send via WhatsApp
+                        </button>
+                    </form>
+                `;
+            }
+
+            body.innerHTML = content;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleBooking(e) {
+            e.preventDefault();
+            const pName = document.getElementById('pName').value;
+            const cAge = document.getElementById('cAge').value;
+            const sType = document.getElementById('sType').value;
+            const bDate = document.getElementById('bDate').value;
+            const pPhone = document.getElementById('pPhone').value;
+
+            const msg = `Hello Bobo Play & Learn 🧸\n\nI would like to book a session.\n\nParent Name: ${pName}\nChild Age: ${cAge}\nSession Type: ${sType}\nDate: ${bDate}\nPhone: ${pPhone}`;
+            window.open(`https://wa.me/255753227064?text=${encodeURIComponent(msg)}`, '_blank');
+            closeModal();
+        }
+    </script>
+</body>
+</html>
