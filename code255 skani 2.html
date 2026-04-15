@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skani Code255 Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Modern high-end font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; 
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        ::-webkit-scrollbar { display: none; }
+        [x-cloak] { display: none !important; }
+        
+        .premium-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .premium-card:active { transform: scale(0.95); }
+        
+        /* Smooth transitions for screen switching */
+        .fade-enter { opacity: 0; transform: translateY(10px); }
+        .fade-enter-active { opacity: 1; transform: translateY(0); transition: all 0.3s ease-out; }
+
+        .sub-header {
+            z-index: 100 !important; /* Ensure it stays above all content including cards */
+        }
+    </style>
+</head>
+<body x-data="{ 
+    darkMode: true, 
+    activeScreen: 'home', 
+    showForm: false, 
+    selectedService: 'Skani.space',
+    activeFaq: null,
+    formData: { name: '', email: '' },
+    contact: {
+        whatsapp: '255757249910',
+        phone: '+255757249910',
+        instagram: 'code255.tech',
+        tiktok: 'code255.tech',
+        email: 'code255tech@gmail.com'
+    },
+    services: [
+        { id: 'skani', name: 'Skani.space', desc: 'One scan. Everything connected.', icon: 'zap' },
+        { id: 'vt', name: 'Virtual Tours', desc: 'Interactive 360° experiences.', icon: 'video' },
+        { id: 'web', name: 'Web Development', desc: 'High-performance websites.', icon: 'globe' },
+        { id: 'system', name: 'Custom Systems', desc: 'Built for your business.', icon: 'cpu' },
+        { id: 'dt', name: 'Digital Transformation', desc: 'Consultation & Strategy.', icon: 'brain' }
+    ],
+    solutions: [
+        { t: 'Web Development', icon: 'globe', d: 'High-performance, scalable websites tailored for your brand.', color: 'from-blue-500 to-indigo-500' },
+        { t: 'App Development', icon: 'smartphone', d: 'Native and cross-platform mobile solutions for iOS & Android.', color: 'from-purple-500 to-pink-500' },
+        { t: 'Custom Systems', icon: 'cpu', d: 'ERP, CRM, and bespoke software to streamline your operations.', color: 'from-emerald-500 to-teal-500' },
+        { t: 'Automation & AI', icon: 'bot', d: 'Smart workflows and AI integration to save time and costs.', color: 'from-orange-500 to-red-500' },
+        { t: 'Digital Transformation', icon: 'lightbulb', d: 'Strategic consulting to evolve your business for the digital age.', color: 'from-cyan-500 to-blue-500' }
+    ],
+    faqs: [
+        { q: 'What is Code255?', a: 'Code255 is a digital transformation company helping businesses grow by simplifying, innovating, and transforming their digital experiences.' },
+        { q: 'What is Skani?', a: 'Skani is a smart QR system that puts everything about your business in one place—accessible with a single scan.' },
+        { q: 'What are Virtual Tours?', a: 'Virtual Tours are interactive 360° experiences that allow people to explore your space online as if they were physically there.' },
+        { q: 'How do I get started?', a: 'Tap “Get Started”, fill the form, and we’ll reach out instantly on WhatsApp.' },
+        { q: 'What services do you offer?', a: 'Skani (QR Experiences), Virtual Tours, Web Development, Custom Systems, and Digital Transformation Consulting.' },
+        { q: 'Still have questions?', a: 'Tap WhatsApp below and chat with us directly. 💬' }
+    ],
+    initIcons() {
+        this.$nextTick(() => {
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        });
+        setTimeout(() => { if (window.lucide) window.lucide.createIcons(); }, 100);
+    },
+    submitForm() {
+        const msg = `Hi Code255 👋\nMy name is ${this.formData.name}\nI’m interested in: ${this.selectedService}\nEmail: ${this.formData.email}\nI’d like to get started.`;
+        window.open(`https://wa.me/${this.contact.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
+        this.showForm = false;
+    }
+}" x-init="initIcons(); $watch('activeScreen', () => { initIcons(); window.scrollTo(0,0); }); $watch('darkMode', () => initIcons())"
+:class="darkMode ? 'bg-[#030014] text-white' : 'bg-slate-50 text-slate-900'" class="min-h-screen transition-colors duration-500">
+
+    <!-- Ambient Background Elements -->
+    <div x-show="darkMode" class="fixed inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-600/10 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full blur-[120px]"></div>
+        <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-40 glass border-b p-4 px-6 flex justify-between items-center transition-colors"
+         :class="darkMode ? 'bg-black/40 border-white/5' : 'bg-white/80 border-slate-200'">
+        <div class="flex items-center gap-3">
+            <div class="relative group cursor-pointer" @click="activeScreen = 'home'">
+                <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl blur opacity-40"></div>
+                <div class="relative w-10 h-10 bg-black rounded-xl flex items-center justify-center font-black text-white border border-white/10 text-xl">C</div>
+            </div>
+            <span @click="activeScreen = 'home'" class="cursor-pointer font-black tracking-tighter text-2xl bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400"
+                  :class="darkMode ? 'from-white to-slate-400' : 'from-slate-900 to-slate-600'">CODE255</span>
+        </div>
+        <button @click="darkMode = !darkMode" class="p-2.5 rounded-2xl transition-all duration-300 border shadow-sm"
+                :class="darkMode ? 'bg-white/5 text-yellow-400 border-white/10' : 'bg-slate-200 text-slate-700 border-slate-300'">
+            <i :data-lucide="darkMode ? 'sun' : 'moon'" class="w-5 h-5"></i>
+        </button>
+    </nav>
+
+    <!-- Home Screen -->
+    <div x-show="activeScreen === 'home'" x-transition:enter="fade-enter-active" x-transition:enter-start="fade-enter" class="p-6 pb-52 max-w-lg mx-auto">
+        
+        <header class="py-10 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full bg-purple-500/10 text-purple-400 font-black text-[10px] border border-purple-500/20 uppercase tracking-[0.2em] shadow-lg shadow-purple-500/5">
+                <i data-lucide="sparkles" class="w-3 h-3"></i> The Digital Hub
+            </div>
+            <h1 class="text-4xl font-black mb-3 tracking-tighter leading-tight">
+                Welcome to <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400">Code255</span> 👋
+            </h1>
+            <p class="text-sm max-w-[280px] mx-auto leading-relaxed opacity-60 font-bold uppercase tracking-tight">
+                Your Digital Transformation Partner. Explore solutions built for the modern era.
+            </p>
+        </header>
+
+        <!-- Primary Grid -->
+        <div class="grid grid-cols-2 gap-4">
+            <template x-for="item in [
+                { id: 'about', label: 'About Us', color: 'from-purple-600 to-indigo-600', icon: 'info' },
+                { id: 'contact', label: 'Contact', color: 'from-blue-600 to-cyan-600', icon: 'phone' },
+                { id: 'products', label: 'Products', color: 'from-emerald-600 to-teal-600', icon: 'package' },
+                { id: 'solutions', label: 'Solutions', color: 'from-orange-600 to-red-600', icon: 'brain' }
+            ]" :key="item.id">
+                <button @click="activeScreen = item.id" class="premium-card group relative border p-8 rounded-[2.5rem] flex flex-col items-center gap-4 transition-all"
+                        :class="darkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'">
+                    <div class="p-4 rounded-2xl text-white bg-gradient-to-br shadow-xl transition-transform group-hover:scale-110" :class="item.color">
+                        <i :data-lucide="item.icon" class="w-7 h-7"></i>
+                    </div>
+                    <span class="font-black text-[10px] tracking-widest uppercase opacity-70 group-hover:opacity-100" x-text="item.label"></span>
+                </button>
+            </template>
+        </div>
+
+        <!-- Premium Services Section -->
+        <section class="mt-14">
+            <h2 class="text-sm font-black mb-6 flex items-center gap-3 tracking-[0.2em] uppercase opacity-50">
+                <div class="h-[1px] w-8 bg-purple-500"></div>
+                Premium Services
+            </h2>
+            <div class="space-y-4">
+                <template x-for="service in services" :key="service.id">
+                    <div class="premium-card border p-5 rounded-[2rem] flex items-center justify-between group transition-all"
+                         :class="darkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-slate-200 shadow-sm'">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-purple-400 transition-colors"
+                                 :class="darkMode ? 'bg-black/40 border border-white/5' : 'bg-slate-100 group-hover:bg-purple-600 group-hover:text-white'">
+                                <i :data-lucide="service.icon" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-black text-sm tracking-tight" x-text="service.name"></h3>
+                                <p class="text-[10px] opacity-40 font-black uppercase tracking-widest" x-text="service.desc"></p>
+                            </div>
+                        </div>
+                        <button @click="selectedService = service.name; showForm = true" class="bg-white/10 hover:bg-purple-600 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest px-4 py-3 rounded-xl transition-all">
+                            Get Started
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <!-- Socials Section -->
+        <section class="mt-14">
+            <h2 class="text-sm font-black mb-6 flex items-center gap-3 tracking-[0.2em] uppercase opacity-50">
+                <div class="h-[1px] w-8 bg-indigo-500"></div>
+                Connect with us
+            </h2>
+            <div class="grid grid-cols-2 gap-4">
+                <template x-for="social in [
+                    { label: 'WhatsApp', icon: 'message-circle', link: `https://wa.me/${contact.whatsapp}`, color: 'text-emerald-500 border-emerald-500/20' },
+                    { label: 'Instagram', icon: 'instagram', link: `https://instagram.com/${contact.instagram}`, color: 'text-pink-500 border-pink-500/20' },
+                    { label: 'TikTok', icon: 'video', link: `https://tiktok.com/@${contact.tiktok}`, color: 'text-slate-400 border-slate-500/20' },
+                    { label: 'Email', icon: 'mail', link: `mailto:${contact.email}`, color: 'text-blue-500 border-blue-500/20' }
+                ]" :key="social.label">
+                    <a :href="social.link" target="_blank" class="premium-card border p-6 rounded-[2.5rem] flex flex-col items-center gap-3 transition-all"
+                       :class="[darkMode ? 'bg-white/5' : 'bg-white shadow-sm', social.color]">
+                        <div class="p-3 rounded-xl bg-current/10">
+                            <i :data-lucide="social.icon" class="w-6 h-6"></i>
+                        </div>
+                        <span class="font-black text-[10px] uppercase tracking-widest" x-text="social.label"></span>
+                    </a>
+                </template>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="mt-14">
+            <h2 class="text-sm font-black mb-6 flex items-center gap-3 tracking-[0.2em] uppercase opacity-50">
+                <div class="h-[1px] w-8 bg-blue-500"></div>
+                FAQ
+            </h2>
+            <div class="space-y-3">
+                <template x-for="(faq, index) in faqs" :key="index">
+                    <div class="rounded-[2rem] border overflow-hidden transition-all"
+                         :class="darkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'">
+                        <button @click="activeFaq = (activeFaq === index ? null : index)" 
+                                class="w-full p-6 text-left flex items-center justify-between gap-4">
+                            <span class="font-black text-xs uppercase tracking-tight" x-text="faq.q"></span>
+                            <div class="p-2 rounded-xl transition-transform duration-300"
+                                 :class="[darkMode ? 'bg-white/5' : 'bg-slate-100', activeFaq === index ? 'rotate-180' : '']">
+                                <i data-lucide="chevron-down" class="w-4 h-4 opacity-50"></i>
+                            </div>
+                        </button>
+                        <div x-show="activeFaq === index" 
+                             x-collapse 
+                             x-cloak
+                             class="px-6 pb-6 text-[11px] font-black uppercase tracking-tight leading-relaxed opacity-60">
+                            <p x-text="faq.a"></p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </section>
+    </div>
+
+    <!-- Screen: About -->
+    <div x-show="activeScreen === 'about'" x-cloak x-transition:enter="fade-enter-active" x-transition:enter-start="fade-enter" class="fixed inset-0 z-50 overflow-y-auto pb-44" :class="darkMode ? 'bg-[#030014]' : 'bg-slate-50'">
+        <div class="sticky top-0 p-6 glass border-b flex items-center justify-between sub-header" :class="darkMode ? 'bg-black/20 border-white/10' : 'bg-white/80 border-slate-200'">
+            <button @click="activeScreen = 'home'" class="flex items-center gap-2 font-black text-xs uppercase tracking-widest bg-white/5 px-4 py-2.5 rounded-2xl border border-white/5 transition-all active:scale-95">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i> Back
+            </button>
+            <span class="font-black uppercase tracking-[0.2em] text-xs opacity-60">About Us</span>
+            <div class="w-16"></div>
+        </div>
+        
+        <div class="p-6 space-y-12 max-w-lg mx-auto">
+            <div class="relative aspect-[16/10] bg-[#0A001F] rounded-[3rem] p-10 flex flex-col justify-end shadow-2xl overflow-hidden border border-white/10 group">
+                <div class="absolute inset-0 bg-gradient-to-br from-purple-600/30 via-transparent to-blue-600/30 opacity-40"></div>
+                <div class="relative z-10 space-y-2">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="h-[1px] w-6 bg-purple-500"></div>
+                        <span class="text-[10px] font-black uppercase tracking-[0.4em] text-purple-400">Core Slogan</span>
+                    </div>
+                    <h2 class="text-5xl font-black text-white leading-[0.85] tracking-tighter">
+                        SIMPLIFY.<br/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400">INNOVATE.</span><br/>
+                        TRANSFORM.
+                    </h2>
+                </div>
+            </div>
+            
+            <div class="space-y-8">
+                <p class="text-xl font-black leading-tight tracking-tighter">
+                    Code255 is a modern tech powerhouse built to help businesses grow through smart digital solutions.
+                </p>
+                <div class="space-y-4">
+                    <template x-for="item in [{ text: 'Innovation-driven', icon: 'zap' }, { text: 'Built for real impact', icon: 'target' }, { text: 'Designed for Africa, ready for the world', icon: 'globe' }]">
+                        <div class="flex items-center gap-5 p-6 rounded-[2rem] border transition-all hover:bg-white/10" :class="darkMode ? 'bg-white/5 border-white/5' : 'bg-slate-100 border-slate-200'">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white shadow-xl">
+                                <i :data-lucide="item.icon" class="w-5 h-5"></i>
+                            </div>
+                            <span class="font-black text-xs uppercase tracking-tight opacity-90" x-text="item.text"></span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen: Contact -->
+    <div x-show="activeScreen === 'contact'" x-cloak x-transition:enter="fade-enter-active" x-transition:enter-start="fade-enter" class="fixed inset-0 z-50 overflow-y-auto pb-44" :class="darkMode ? 'bg-[#030014]' : 'bg-slate-50'">
+        <div class="sticky top-0 p-6 glass border-b flex items-center justify-between sub-header" :class="darkMode ? 'bg-black/20 border-white/10' : 'bg-white/80 border-slate-200'">
+            <button @click="activeScreen = 'home'" class="flex items-center gap-2 font-black text-xs uppercase tracking-widest bg-white/5 px-4 py-2.5 rounded-2xl border border-white/5 transition-all active:scale-95">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i> Back
+            </button>
+            <span class="font-black uppercase tracking-[0.2em] text-xs opacity-60">Contact Us</span>
+            <div class="w-16"></div>
+        </div>
+        <div class="p-6 space-y-8 max-w-lg mx-auto">
+            <h2 class="text-3xl font-black tracking-tighter">Let's start a project together.</h2>
+            <div class="grid grid-cols-1 gap-4">
+                <template x-for="link in [
+                    { icon: 'message-circle', label: 'Chat on WhatsApp', sub: 'Instant response', val: contact.phone, action: () => window.open(`https://wa.me/${contact.whatsapp}`, '_blank') },
+                    { icon: 'mail', label: 'Email Us', sub: 'Business inquiries', val: contact.email, action: () => window.open(`mailto:${contact.email}`, '_blank') },
+                    { icon: 'phone', label: 'Call Support', sub: 'Tanzania HQ', val: contact.phone, action: () => window.open(`tel:${contact.phone}`, '_blank') }
+                ]">
+                    <button @click="link.action()" class="premium-card p-6 rounded-[2rem] border flex items-center gap-6 text-left transition-all" :class="darkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white">
+                            <i :data-lucide="link.icon" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-widest opacity-40 mb-1" x-text="link.label"></p>
+                            <p class="font-black text-sm" x-text="link.val"></p>
+                        </div>
+                    </button>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen: Products -->
+    <div x-show="activeScreen === 'products'" x-cloak x-transition:enter="fade-enter-active" x-transition:enter-start="fade-enter" class="fixed inset-0 z-50 overflow-y-auto pb-44" :class="darkMode ? 'bg-[#030014]' : 'bg-slate-50'">
+        <div class="sticky top-0 p-6 glass border-b flex items-center justify-between sub-header" :class="darkMode ? 'bg-black/20 border-white/10' : 'bg-white/80 border-slate-200'">
+            <button @click="activeScreen = 'home'" class="flex items-center gap-2 font-black text-xs uppercase tracking-widest bg-white/5 px-4 py-2.5 rounded-2xl border border-white/5 transition-all active:scale-95">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i> Back
+            </button>
+            <span class="font-black uppercase tracking-[0.2em] text-xs opacity-60">Products</span>
+            <div class="w-16"></div>
+        </div>
+        <div class="p-6 space-y-6 max-w-lg mx-auto">
+            <template x-for="p in services">
+                <div class="p-8 rounded-[2.5rem] border relative overflow-hidden group" :class="darkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'">
+                    <div class="absolute -right-4 -top-4 opacity-5 group-hover:scale-110 transition-transform">
+                        <i :data-lucide="p.icon" class="w-32 h-32"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-6">
+                            <i :data-lucide="p.icon" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-2xl font-black tracking-tighter mb-2" x-text="p.name"></h3>
+                        <p class="text-[11px] font-black uppercase opacity-40 leading-relaxed mb-6" x-text="p.desc"></p>
+                        <button @click="selectedService = p.name; showForm = true" class="bg-white/10 border border-white/10 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest">
+                            Inquire Now
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    <!-- Screen: Solutions -->
+    <div x-show="activeScreen === 'solutions'" x-cloak x-transition:enter="fade-enter-active" x-transition:enter-start="fade-enter" class="fixed inset-0 z-50 overflow-y-auto pb-44" :class="darkMode ? 'bg-[#030014]' : 'bg-slate-50'">
+        <div class="sticky top-0 p-6 glass border-b flex items-center justify-between sub-header" :class="darkMode ? 'bg-black/20 border-white/10' : 'bg-white/80 border-slate-200'">
+            <button @click="activeScreen = 'home'" class="flex items-center gap-2 font-black text-xs uppercase tracking-widest bg-white/5 px-4 py-2.5 rounded-2xl border border-white/5 transition-all active:scale-95">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i> Back
+            </button>
+            <span class="font-black uppercase tracking-[0.2em] text-xs opacity-60">Solutions</span>
+            <div class="w-16"></div>
+        </div>
+        <div class="p-6 space-y-8 max-w-lg mx-auto">
+            <div class="space-y-2">
+                <h2 class="text-4xl font-black tracking-tighter leading-tight">Empowering Innovation.</h2>
+                <p class="text-xs font-black uppercase tracking-[0.2em] opacity-40">Explore our core technical capabilities.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 gap-6">
+                <template x-for="sol in solutions">
+                    <div class="premium-card p-1 rounded-[2.5rem] bg-gradient-to-br transition-all group overflow-hidden" :class="sol.color">
+                        <div class="p-8 rounded-[2.4rem] h-full flex flex-col justify-between" :class="darkMode ? 'bg-[#030014]' : 'bg-white'">
+                            <div class="flex justify-between items-start mb-8">
+                                <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white bg-gradient-to-br shadow-xl" :class="sol.color">
+                                    <i :data-lucide="sol.icon" class="w-6 h-6"></i>
+                                </div>
+                                <i data-lucide="arrow-up-right" class="w-5 h-5 opacity-20 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-black text-xl tracking-tight mb-2" x-text="sol.t"></h4>
+                                <p class="text-[11px] font-black uppercase opacity-40 leading-relaxed" x-text="sol.d"></p>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Custom Quote Card -->
+            <div class="mt-10 p-10 rounded-[3rem] border border-dashed text-center" :class="darkMode ? 'border-white/20' : 'border-slate-300'">
+                <p class="font-black text-sm mb-6 tracking-tight">Need a customized solution not listed here?</p>
+                <button @click="selectedService = 'Custom Solution'; showForm = true" class="px-8 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all">
+                    Consult with Experts
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Universal Sticky Footer -->
+    <footer class="fixed bottom-0 left-0 right-0 z-40 p-6 flex items-center justify-center pointer-events-none">
+        <div class="flex w-full gap-4 pointer-events-auto max-w-lg bg-black/60 glass p-3 rounded-[2.5rem] border border-white/10 shadow-2xl">
+            <a :href="`https://wa.me/${contact.whatsapp}`" target="_blank" class="flex-1 bg-white/5 text-white border border-white/10 py-4 px-6 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95">
+                <i data-lucide="message-circle" class="w-4 h-4 text-emerald-500"></i> WhatsApp
+            </a>
+            <button @click="showForm = true" class="flex-[1.4] bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 px-6 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-purple-600/30 transition-all active:scale-95">
+                <i data-lucide="zap" class="w-4 h-4"></i> Get Started
+            </button>
+        </div>
+    </footer>
+
+    <!-- Lead Form Modal -->
+    <div x-show="showForm" x-cloak x-transition.opacity class="fixed inset-0 z-[100] bg-black/80 glass flex items-end sm:items-center justify-center p-4">
+        <div @click.away="showForm = false" class="w-full max-w-md rounded-[3rem] p-10 shadow-3xl relative" :class="darkMode ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'">
+            <button @click="showForm = false" class="absolute top-8 right-8 p-3 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="text-center mb-10">
+                <div class="w-16 h-16 bg-purple-600 rounded-3xl mx-auto mb-6 flex items-center justify-center text-white shadow-2xl shadow-purple-600/40">
+                    <i data-lucide="send" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-3xl font-black tracking-tighter">Get Started 🚀</h2>
+                <p class="text-[10px] font-black opacity-40 uppercase tracking-[0.2em] mt-2">Ready to build the future?</p>
+            </div>
+            <form @submit.prevent="submitForm()" class="space-y-5">
+                <div>
+                    <label class="block text-[10px] font-black uppercase mb-2 ml-2 tracking-widest opacity-40">Full Name</label>
+                    <input required x-model="formData.name" type="text" class="w-full p-5 rounded-2xl border outline-none font-black text-sm transition-all" :class="darkMode ? 'bg-black/40 border-white/10 text-white focus:border-purple-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500'" placeholder="Enter your name">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase mb-2 ml-2 tracking-widest opacity-40">Email</label>
+                    <input required x-model="formData.email" type="email" class="w-full p-5 rounded-2xl border outline-none font-black text-sm transition-all" :class="darkMode ? 'bg-black/40 border-white/10 text-white focus:border-purple-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500'" placeholder="email@company.com">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase mb-2 ml-2 tracking-widest opacity-40">Select Service</label>
+                    <select x-model="selectedService" class="w-full p-5 rounded-2xl border outline-none font-black text-sm appearance-none" :class="darkMode ? 'bg-black/40 border-white/10 text-white focus:border-purple-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500'">
+                        <template x-for="s in services">
+                            <option :value="s.name" x-text="s.name"></option>
+                        </template>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black py-5 rounded-2xl shadow-2xl shadow-purple-600/30 text-[11px] uppercase tracking-widest mt-4 transition-all hover:scale-[1.02] active:scale-95">
+                    Send Request <i data-lucide="arrow-right" class="w-4 h-4 inline-block ml-1"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Alpine.js Collapse Plugin -->
+    <script src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js" defer></script>
+</body>
+</html>
