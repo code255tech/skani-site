@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 2. Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <iframe id="suggestion-submit-frame" name="suggestion-submit-frame" class="hidden" aria-hidden="true"></iframe>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -316,6 +317,7 @@
             </div>
         </div>
     </div>
+    <iframe id="suggestion-submit-frame" name="suggestion-submit-frame" class="hidden" aria-hidden="true"></iframe>
     <script>
         const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
         const observer = new IntersectionObserver((entries) => {
@@ -373,7 +375,8 @@
             const feedback = document.getElementById('suggestion-feedback');
             const submitBtn = document.getElementById('submit-btn');
             const suggestionText = document.getElementById('suggestion-text').value.trim();
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycbwLpG4iXUV5HEFUCm13O-laSXNqmRdAH8c-I0L6LFr-AUKBrX-Vr_4n78CFQEYos30L0A/exec';
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycby6l1_8WHArGhbuztSRW0uEhKSenlD_opoG0QaJhYo2ZJWWCpIuOsk96SV4ip_1V0u6KA/exec';
+            const submitFrame = document.getElementById('suggestion-submit-frame');
 
             if (!suggestionText) {
                 return;
@@ -383,9 +386,8 @@
             submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Sending...';
 
             try {
-                // Fire a simple GET request so Apps Script can read e.parameter.suggestion reliably.
-                const beacon = new Image();
-                beacon.src = `${scriptUrl}?suggestion=${encodeURIComponent(suggestionText)}&t=${Date.now()}`;
+                // Submit through a hidden iframe so the request works reliably from hosted pages too.
+                submitFrame.src = `${scriptUrl}?suggestion=${encodeURIComponent(suggestionText)}&t=${Date.now()}`;
 
                 // UI Transition to success message
                 form.style.opacity = '0';
