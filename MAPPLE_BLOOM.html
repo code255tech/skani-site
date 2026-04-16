@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Maple Bloom International Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        raisin: {
+                            50: '#f6f5f7',
+                            100: '#eceaef',
+                            200: '#d9d5df',
+                            800: '#2d2438',
+                            900: '#1d1626',
+                            950: '#120d1a',
+                        },
+                        magenta: {
+                            400: '#e4508f',
+                            500: '#d9267a',
+                            600: '#b91d63',
+                            700: '#95184f',
+                        },
+                        gold: {
+                            400: '#f0c05a',
+                            500: '#e6a832',
+                        }
+                    },
+                    fontFamily: { sans: ['Fredoka', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        .glass { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .screen { display: none; }
+        .screen.active { display: block; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(30px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        .nav-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #ffffff;
+            border: 2px solid #f1f5f9;
+        }
+        .dark .nav-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav-card:active { transform: scale(0.96); border-color: #d9267a; }
+
+        .drawer-up {
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        .drawer-up.active { transform: translateY(0); }
+
+        .btn-magenta {
+            background: linear-gradient(135deg, #d9267a 0%, #95184f 100%);
+            box-shadow: 0 10px 30px -10px rgba(217, 38, 122, 0.4);
+        }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Auto-scroll animation for educators */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-200px * 6)); }
+        }
+        .scroll-container {
+            display: flex;
+            width: calc(200px * 12);
+            animation: scroll 40s linear infinite;
+        }
+        .scroll-container:hover { animation-play-state: paused; }
+
+        /* Image Placeholder Style */
+        .edu-image-placeholder {
+            width: 80px;
+            height: 100px;
+            background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            margin: 0 auto 12px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(217, 38, 122, 0.1);
+        }
+        .dark .edu-image-placeholder {
+            background: linear-gradient(180deg, #2d2438 0%, #1d1626 100%);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+        }
+        .edu-image-placeholder::after {
+            content: '\f007';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 60px;
+            opacity: 0.2;
+            color: #d9267a;
+        }
+    </style>
+</head>
+<body class="bg-white text-raisin-900 dark:bg-raisin-950 dark:text-white min-h-screen font-sans">
+
+    <!-- Header -->
+    <nav class="sticky top-0 z-50 glass border-b p-4 px-6 flex justify-between items-center bg-white/90 dark:bg-raisin-950/90 border-slate-200 dark:border-white/5">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+            <div class="w-10 h-10 bg-magenta-600 rounded-xl flex items-center justify-center text-white">
+                <i class="fa-solid fa-leaf text-xl"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-sm leading-none uppercase tracking-tight">Maple Bloom</h1>
+                <p class="text-[9px] font-bold text-magenta-500 dark:text-gold-400 uppercase tracking-widest">International</p>
+            </div>
+        </div>
+        <button id="theme-toggle" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-gold-400 border border-slate-200 dark:border-white/10">
+            <i class="fa-solid fa-moon dark:hidden"></i>
+            <i class="fa-solid fa-sun hidden dark:block"></i>
+        </button>
+    </nav>
+
+    <main class="max-w-md mx-auto pb-44">
+        
+        <!-- HOME SCREEN -->
+        <div id="screen-home" class="screen active">
+            <header class="p-8 pt-10 text-left">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-magenta-500/10 text-magenta-600 dark:text-magenta-400 text-[10px] font-bold uppercase tracking-widest mb-4 border border-magenta-500/20">
+                    <i class="fa-solid fa-bolt text-[8px]"></i> British Curriculum Pathway
+                </div>
+                <h2 class="text-4xl font-bold tracking-tight mb-4 leading-tight">
+                    Welcome to <br><span class="text-magenta-500">Maple Bloom</span>
+                </h2>
+                <p class="text-slate-500 dark:text-raisin-200/60 text-sm leading-relaxed max-w-[90%]">
+                    High-quality education in a structured and nurturing environment. Excellence, discipline, and holistic growth.
+                </p>
+            </header>
+
+            <!-- 1. MAIN GRID (2x2 CORE NAVIGATION) -->
+            <div class="px-6 grid grid-cols-2 gap-4 mb-4">
+                <button onclick="navigateTo('about')" class="nav-card p-6 rounded-[2rem] flex flex-col items-start">
+                    <div class="w-12 h-12 rounded-2xl bg-magenta-500/10 text-magenta-500 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-school text-xl"></i>
+                    </div>
+                    <span class="font-bold text-[11px] uppercase tracking-wide">About School</span>
+                </button>
+
+                <button onclick="navigateTo('programs')" class="nav-card p-6 rounded-[2rem] flex flex-col items-start">
+                    <div class="w-12 h-12 rounded-2xl bg-gold-500/10 text-gold-500 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-book-open text-xl"></i>
+                    </div>
+                    <span class="font-bold text-[11px] uppercase tracking-wide">Programs</span>
+                </button>
+
+                <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/bobo-play-learn/', '_blank')" class="nav-card p-6 rounded-[2rem] flex flex-col items-start">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-vr-cardboard text-xl"></i>
+                    </div>
+                    <span class="font-bold text-[11px] uppercase tracking-wide">Virtual Tour</span>
+                </button>
+
+                <button onclick="window.open('https://www.maple-bloom.co.tz/', '_blank')" class="nav-card p-6 rounded-[2rem] flex flex-col items-start">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-globe text-xl"></i>
+                    </div>
+                    <span class="font-bold text-[11px] uppercase tracking-wide">Website</span>
+                </button>
+            </div>
+
+            <!-- 2. FEATURED ACTION (1x1 ADMISSIONS) -->
+            <div class="px-6 mb-4">
+                <button onclick="openApplyDrawer()" class="w-full btn-magenta p-8 rounded-[2.5rem] text-left relative overflow-hidden group">
+                    <div class="absolute right-[-10%] top-[-10%] opacity-20 transform rotate-12 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-graduation-cap text-[8rem] text-white"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <h3 class="text-2xl font-bold text-white mb-1 uppercase tracking-tight">Admissions 2024</h3>
+                        <p class="text-white/70 text-[10px] font-bold uppercase tracking-widest mb-6">Skani System Integrated</p>
+                        <div class="inline-flex items-center gap-2 bg-white text-magenta-700 px-5 py-2.5 rounded-xl font-bold text-[11px] uppercase shadow-lg">
+                            Apply Now <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- 3. EXPANDED GRID (2x2 FEATURES) -->
+            <div class="px-6 grid grid-cols-2 gap-4 mb-8">
+                <button onclick="navigateTo('location')" class="nav-card p-6 rounded-[2rem] flex flex-col items-start">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                    </div>
+                    <span class="font-bold text-[11px] uppercase tracking-wide">Locations</span>
+                </button>
+
+                <button onclick="window.open('https://www.google.com/search?sca_esv=4074d84388868a32&sxsrf=ANbL-n4FIf4Rs1GwqzR1kTkbTKBKUHtmKA:1776336592684&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qORbr_3xTGmAsQ9YM52bjSnDPjvXJ1buuy55lEuOA9IsdnvcIwWTTKjoaTmZSEXtkf1fKjy8dhzLy7RdSUUHqVK4uuZg3-VCw8Wv7wp4gaUKueXdB8Q%3D%3D&q=Maple+Bloom+Preschool,+Masaki+Reviews', '_blank')" class="nav-card p-6 rounded-[2rem] flex flex-col items-start">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-star text-xl"></i>
+                    </div>
+                    <span class="font-bold text-[11px] uppercase tracking-wide">Reviews</span>
+                </button>
+
+                <button onclick="window.open('https://www.instagram.com/maplebloomtz/', '_blank')" class="nav-card p-6 rounded-[2rem] flex flex-col items-start">
+                    <div class="w-12 h-12 rounded-2xl bg-pink-500/10 text-pink-500 flex items-center justify-center mb-4">
+                        <i class="fa-brands fa-instagram text-xl"></i>
+                    </div>
+                    <span class="font-bold text-[11px] uppercase tracking-wide">Instagram</span>
+                </button>
+
+                <button onclick="navigateTo('contact')" class="nav-card p-6 rounded-[2rem] flex flex-col items-start">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-500/10 text-slate-500 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-phone text-xl"></i>
+                    </div>
+                    <span class="font-bold text-[11px] uppercase tracking-wide">Contact</span>
+                </button>
+            </div>
+
+            <!-- MEET THE EDUCATORS (AUTO SLIDER) -->
+            <div class="mb-10 overflow-hidden">
+                <div class="px-8 mb-4 flex items-center justify-between">
+                    <h4 class="text-xl font-bold tracking-tight uppercase">Meet Our Educators</h4>
+                </div>
+                <div class="relative w-full">
+                    <div class="scroll-container px-8 gap-4">
+                        <!-- Initial set -->
+                        <div class="edu-card w-[200px] flex-shrink-0 bg-slate-50 dark:bg-white/5 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5 text-center">
+                            <div class="edu-image-placeholder"></div>
+                            <h5 class="font-bold text-sm">Principal</h5>
+                            <p class="text-[9px] font-bold opacity-40 uppercase mt-1">Leadership</p>
+                        </div>
+                        <div class="edu-card w-[200px] flex-shrink-0 bg-slate-50 dark:bg-white/5 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5 text-center">
+                            <div class="edu-image-placeholder"></div>
+                            <h5 class="font-bold text-sm">Academic Director</h5>
+                            <p class="text-[9px] font-bold opacity-40 uppercase mt-1">Academics</p>
+                        </div>
+                        <div class="edu-card w-[200px] flex-shrink-0 bg-slate-50 dark:bg-white/5 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5 text-center">
+                            <div class="edu-image-placeholder"></div>
+                            <h5 class="font-bold text-sm">Early Years</h5>
+                            <p class="text-[9px] font-bold opacity-40 uppercase mt-1">Teacher</p>
+                        </div>
+                        <div class="edu-card w-[200px] flex-shrink-0 bg-slate-50 dark:bg-white/5 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5 text-center">
+                            <div class="edu-image-placeholder"></div>
+                            <h5 class="font-bold text-sm">Primary Teacher</h5>
+                            <p class="text-[9px] font-bold opacity-40 uppercase mt-1">Primary</p>
+                        </div>
+                        <div class="edu-card w-[200px] flex-shrink-0 bg-slate-50 dark:bg-white/5 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5 text-center">
+                            <div class="edu-image-placeholder"></div>
+                            <h5 class="font-bold text-sm">Secondary Teacher</h5>
+                            <p class="text-[9px] font-bold opacity-40 uppercase mt-1">Secondary</p>
+                        </div>
+                        <div class="edu-card w-[200px] flex-shrink-0 bg-slate-50 dark:bg-white/5 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5 text-center">
+                            <div class="edu-image-placeholder"></div>
+                            <h5 class="font-bold text-sm">Specialist</h5>
+                            <p class="text-[9px] font-bold opacity-40 uppercase mt-1">Curriculum</p>
+                        </div>
+                        <!-- Duplicate set for infinite effect -->
+                        <div class="edu-card w-[200px] flex-shrink-0 bg-slate-50 dark:bg-white/5 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5 text-center">
+                            <div class="edu-image-placeholder"></div>
+                            <h5 class="font-bold text-sm">Principal</h5>
+                        </div>
+                        <div class="edu-card w-[200px] flex-shrink-0 bg-slate-50 dark:bg-white/5 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5 text-center">
+                            <div class="edu-image-placeholder"></div>
+                            <h5 class="font-bold text-sm">Academic Director</h5>
+                        </div>
+                        <div class="edu-card w-[200px] flex-shrink-0 bg-slate-50 dark:bg-white/5 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5 text-center">
+                            <div class="edu-image-placeholder"></div>
+                            <h5 class="font-bold text-sm">Early Years</h5>
+                        </div>
+                        <div class="edu-card w-[200px] flex-shrink-0 bg-slate-50 dark:bg-white/5 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5 text-center">
+                            <div class="edu-image-placeholder"></div>
+                            <h5 class="font-bold text-sm">Primary Teacher</h5>
+                        </div>
+                        <div class="edu-card w-[200px] flex-shrink-0 bg-slate-50 dark:bg-white/5 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5 text-center">
+                            <div class="edu-image-placeholder"></div>
+                            <h5 class="font-bold text-sm">Secondary Teacher</h5>
+                        </div>
+                        <div class="edu-card w-[200px] flex-shrink-0 bg-slate-50 dark:bg-white/5 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5 text-center">
+                            <div class="edu-image-placeholder"></div>
+                            <h5 class="font-bold text-sm">Specialist</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT SCREEN -->
+        <div id="screen-about" class="screen p-8">
+            <button onclick="navigateTo('home')" class="mb-8 w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-magenta-500">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 class="text-3xl font-bold mb-6 uppercase tracking-tight">About <span class="text-magenta-500">School</span></h2>
+            <div class="space-y-6">
+                <div class="p-6 rounded-[2rem] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                    <p class="text-sm leading-relaxed font-medium text-slate-600 dark:text-slate-300">We are Maple Bloom International School, a British curriculum school committed to delivering high-quality education in a structured and nurturing environment.</p>
+                </div>
+                <div class="p-6 rounded-[2rem] bg-magenta-500/5 border border-magenta-500/20">
+                    <h3 class="text-[10px] font-bold uppercase tracking-widest text-magenta-500 mb-2">Our Mission</h3>
+                    <p class="text-sm font-bold">To provide a strong academic foundation through the British Curriculum while developing confident, responsible, and globally minded learners.</p>
+                </div>
+                <div class="p-6 rounded-[2rem] bg-gold-500/5 border border-gold-500/20">
+                    <h3 class="text-[10px] font-bold uppercase tracking-widest text-gold-500 mb-2">Our Vision</h3>
+                    <p class="text-sm font-bold">To become a leading international school in Tanzania known for excellence, discipline, and holistic education.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROGRAMS SCREEN -->
+        <div id="screen-programs" class="screen p-8">
+            <button onclick="navigateTo('home')" class="mb-8 w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-magenta-500">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 class="text-3xl font-bold mb-4 uppercase tracking-tight">Programs & <span class="text-magenta-500">Curriculum</span></h2>
+            <p class="text-slate-500 text-sm mb-8">We provide a complete British education pathway designed for all stages of learning.</p>
+            <div class="space-y-4">
+                <div class="p-5 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-magenta-500/10 text-magenta-500 flex items-center justify-center"><i class="fa-solid fa-shapes"></i></div>
+                    <div>
+                        <h4 class="font-bold text-sm">Pre-School</h4>
+                        <p class="text-[10px] opacity-40">Early Childhood Development</p>
+                    </div>
+                </div>
+                <div class="p-5 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-gold-500/10 text-gold-500 flex items-center justify-center"><i class="fa-solid fa-book"></i></div>
+                    <div>
+                        <h4 class="font-bold text-sm">Primary School</h4>
+                        <p class="text-[10px] opacity-40">Core academic foundation</p>
+                    </div>
+                </div>
+                <div class="p-5 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div>
+                        <h4 class="font-bold text-sm">Secondary School</h4>
+                        <p class="text-[10px] opacity-40">Advanced British Curriculum</p>
+                    </div>
+                </div>
+                <div class="mt-8 p-6 rounded-[2rem] bg-raisin-900 text-white dark:bg-white dark:text-raisin-900">
+                    <h3 class="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-2">Curriculum Excellence</h3>
+                    <p class="text-sm font-bold">Pearson Accredited British Curriculum focused on academic excellence, creativity, and critical thinking.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- LOCATION SCREEN -->
+        <div id="screen-location" class="screen p-8">
+            <button onclick="navigateTo('home')" class="mb-8 w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-magenta-500">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 class="text-3xl font-bold mb-8 uppercase tracking-tight">Our <span class="text-magenta-500">Campuses</span></h2>
+            <div class="space-y-8">
+                <div>
+                    <h3 class="text-xs font-bold text-magenta-500 uppercase tracking-widest mb-4">Masaki Campus</h3>
+                    <div class="space-y-3">
+                        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                            <p class="text-[10px] font-bold uppercase opacity-40 mb-1">Preschool</p>
+                            <p class="text-sm font-bold">Haile Selassie (Next to Shoppers Plaza Masaki)</p>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                            <p class="text-[10px] font-bold uppercase opacity-40 mb-1">Primary & Secondary</p>
+                            <p class="text-sm font-bold">Uganda Avenue, Masaki</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xs font-bold text-gold-500 uppercase tracking-widest mb-4">Mbezi Beach Campus</h3>
+                    <div class="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                        <p class="text-[10px] font-bold uppercase opacity-40 mb-1">Preschool</p>
+                        <p class="text-sm font-bold">White Sands Road (Opposite White Sands Resort)</p>
+                    </div>
+                </div>
+                <button onclick="window.open('https://maps.app.goo.gl/Z5pAk6o4cQyWndcZA', '_blank')" class="w-full py-5 bg-raisin-900 text-white dark:bg-white dark:text-raisin-950 rounded-2xl font-bold text-[11px] uppercase tracking-widest shadow-xl">
+                    <i class="fa-solid fa-map-location-dot mr-2"></i> Open All in Google Maps
+                </button>
+            </div>
+        </div>
+
+        <!-- CONTACT SCREEN -->
+        <div id="screen-contact" class="screen p-8">
+            <button onclick="navigateTo('home')" class="mb-8 w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-magenta-500">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 class="text-3xl font-bold mb-4 uppercase tracking-tight">Contact <span class="text-magenta-500">Us</span></h2>
+            <p class="text-slate-500 text-sm mb-8 italic">“Reach us instantly through your preferred channel”</p>
+            
+            <div class="space-y-4">
+                <a href="https://wa.me/255753011160?text=Hello%20Maple%20Bloom,%20I%20would%20like%20to%20get%20more%20information%20about%20admissions." class="flex items-center gap-4 p-6 rounded-2xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    <div>
+                        <span class="block font-bold">WhatsApp Inquiry</span>
+                        <span class="text-[10px] font-bold uppercase opacity-60">+255 753 011 160</span>
+                    </div>
+                </a>
+                <a href="tel:+255750011160" class="flex items-center gap-4 p-6 rounded-2xl bg-blue-500/10 text-blue-600 border border-blue-500/20">
+                    <i class="fa-solid fa-phone text-2xl"></i>
+                    <div>
+                        <span class="block font-bold">Primary Contact</span>
+                        <span class="text-[10px] font-bold uppercase opacity-60">+255 750 011 160</span>
+                    </div>
+                </a>
+                <a href="mailto:hello@maple-bloom.co.tz?subject=Admission Inquiry - Maple Bloom International School" class="flex items-center gap-4 p-6 rounded-2xl bg-indigo-500/10 text-indigo-600 border border-indigo-500/20">
+                    <i class="fa-solid fa-envelope text-2xl"></i>
+                    <div>
+                        <span class="block font-bold">Email Admissions</span>
+                        <span class="text-[10px] font-bold uppercase opacity-60">hello@maple-bloom.co.tz</span>
+                    </div>
+                </a>
+                <a href="https://www.instagram.com/maplebloomtz/" target="_blank" class="flex items-center gap-4 p-6 rounded-2xl bg-pink-500/10 text-pink-600 border border-pink-500/20">
+                    <i class="fa-brands fa-instagram text-2xl"></i>
+                    <div>
+                        <span class="block font-bold">Follow Life at MBIS</span>
+                        <span class="text-[10px] font-bold uppercase opacity-60">@maplebloomtz</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Action Bar -->
+    <div class="fixed bottom-0 left-0 right-0 p-6 z-40 flex justify-center pointer-events-none">
+        <div class="w-full max-w-md bg-white/95 dark:bg-raisin-900/95 glass p-3 rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl flex gap-3 pointer-events-auto">
+            <button onclick="window.open('https://wa.me/255753011160?text=Hello%20Maple%20Bloom%20👋%20I%20would%20like%20to%20get%20more%20information%20about%20admissions.', '_blank')" class="w-14 h-14 bg-emerald-500 text-white rounded-2xl flex items-center justify-center text-xl shrink-0">
+                <i class="fa-brands fa-whatsapp"></i>
+            </button>
+            <button onclick="openApplyDrawer()" class="flex-1 btn-magenta text-white rounded-2xl font-bold text-[11px] uppercase tracking-widest">
+                Admission Hub
+            </button>
+        </div>
+    </div>
+
+    <!-- ADMISSION DRAWER -->
+    <div id="drawer-overlay" class="fixed inset-0 z-[100] bg-raisin-950/80 glass hidden transition-opacity opacity-0 pointer-events-none" onclick="closeApplyDrawer()"></div>
+    
+    <div id="drawer-apply" class="fixed bottom-0 left-0 right-0 z-[101] max-w-md mx-auto drawer-up bg-white dark:bg-raisin-900 rounded-t-[3rem] shadow-2xl border-t-4 border-magenta-500 overflow-hidden">
+        <div class="w-12 h-1 bg-slate-200 dark:bg-white/10 rounded-full mx-auto mt-4 mb-2"></div>
+        
+        <div class="p-8 pt-4 pb-12 max-h-[90vh] overflow-y-auto no-scrollbar">
+            <div class="text-center mb-8">
+                <h3 class="text-2xl font-bold mb-1 uppercase tracking-tight">Admissions Inquiry</h3>
+                <p class="text-[9px] font-bold text-magenta-500 uppercase tracking-widest">Skani Lead Capture System</p>
+            </div>
+
+            <form id="apply-form" class="space-y-4">
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold uppercase opacity-40 ml-1">Parent Full Name</label>
+                    <input type="text" id="p-name" required placeholder="John Doe" class="w-full p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-sm font-bold">
+                </div>
+                
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold uppercase opacity-40 ml-1">Child Full Name</label>
+                    <input type="text" id="c-name" required placeholder="Junior Doe" class="w-full p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-sm font-bold">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-bold uppercase opacity-40 ml-1">Child Age</label>
+                        <input type="number" id="c-age" required placeholder="Age" class="w-full p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-sm font-bold">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-bold uppercase opacity-40 ml-1">School Selection</label>
+                        <select id="level" class="w-full p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-sm font-bold appearance-none">
+                            <option value="Pre-School">Pre-School</option>
+                            <option value="Primary School">Primary School</option>
+                            <option value="Secondary School">Secondary School</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold uppercase opacity-40 ml-1">Phone Number</label>
+                    <input type="tel" id="p-phone" required placeholder="+255..." class="w-full p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-sm font-bold">
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold uppercase opacity-40 ml-1">Email (Optional)</label>
+                    <input type="email" id="p-email" placeholder="email@example.com" class="w-full p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-sm font-bold">
+                </div>
+
+                <button type="submit" class="w-full py-5 btn-magenta text-white rounded-2xl font-bold text-[11px] uppercase tracking-widest mt-4">
+                    Submit via WhatsApp
+                </button>
+                <button type="button" onclick="closeApplyDrawer()" class="w-full py-2 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+                    Back to Hub
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Navigation Logic
+        function navigateTo(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + id).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Theme Toggle
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // Bottom Sheet Handle
+        const drawer = document.getElementById('drawer-apply');
+        const overlay = document.getElementById('drawer-overlay');
+        
+        function openApplyDrawer() { 
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.style.opacity = "1";
+                overlay.style.pointerEvents = "auto";
+                drawer.classList.add('active');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeApplyDrawer() { 
+            drawer.classList.remove('active');
+            overlay.style.opacity = "0";
+            overlay.style.pointerEvents = "none";
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 400);
+            document.body.style.overflow = '';
+        }
+
+        // WhatsApp Submission Flow
+        document.getElementById('apply-form').onsubmit = (e) => {
+            e.preventDefault();
+            const parent = document.getElementById('p-name').value;
+            const child = document.getElementById('c-name').value;
+            const age = document.getElementById('c-age').value;
+            const level = document.getElementById('level').value;
+            const phone = document.getElementById('p-phone').value;
+            const email = document.getElementById('p-email').value || 'Not provided';
+
+            const msg = `Hello Maple Bloom 👋\nI would like to apply for admission.\n\n👤 Parent Name: ${parent}\n🧒 Child Name: ${child}\n🎂 Age: ${age}\n🎓 Level: ${level}\n📞 Phone: ${phone}\n📧 Email: ${email}\n\n✔ Instant admission request`;
+            
+            window.open(`https://wa.me/255753011160?text=${encodeURIComponent(msg)}`, '_blank');
+            closeApplyDrawer();
+        };
+    </script>
+</body>
+</html>
