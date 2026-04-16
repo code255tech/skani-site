@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kidz Kollege Preschool Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e', 
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#061a0d',
+                        }
+                    },
+                    fontFamily: { sans: ['Fredoka', 'sans-serif'] },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'wiggle': 'wiggle 1s ease-in-out infinite',
+                        'slide': 'slide 25s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
+                        },
+                        slide: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        .glass { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        ::-webkit-scrollbar { display: none; }
+        
+        .screen { display: none; }
+        .screen.active { display: block; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .kid-card { 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            border-bottom-width: 4px;
+        }
+        .kid-card:active { transform: translateY(2px); border-bottom-width: 0px; }
+
+        .wave-bg {
+            background-color: #22c55e;
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23000' fill-opacity='1' d='M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,149.3C672,149,768,203,864,197.3C960,192,1056,128,1152,117.3C1248,107,1344,149,1392,170.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            mask-size: cover;
+            mask-repeat: no-repeat;
+            mask-position: bottom;
+        }
+
+        /* Carousel specific styles */
+        .mentor-carousel-container {
+            overflow: hidden;
+            width: 100%;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        .mentor-track {
+            display: flex;
+            width: fit-content;
+            gap: 1.5rem;
+        }
+        .mentor-track:hover { animation-play-state: paused; }
+        
+        .mentor-img-placeholder {
+            width: 64px;
+            height: 64px;
+            border-radius: 9999px;
+            background: #e2e8f0;
+            border: 3px solid white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .dark .mentor-img-placeholder {
+            background: #1e293b;
+            border-color: #334155;
+        }
+    </style>
+</head>
+<body class="bg-brand-50 text-slate-900 dark:bg-brand-900 dark:text-white min-h-screen">
+
+    <!-- Nav -->
+    <nav class="sticky top-0 z-50 glass border-b p-4 px-6 flex justify-between items-center bg-white/80 border-brand-100 dark:bg-brand-900/80 dark:border-white/5">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+            <div class="w-10 h-10 bg-brand-500 rounded-2xl flex items-center justify-center text-white shadow-lg rotate-3">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <span class="font-bold tracking-tight text-xl uppercase text-brand-700 dark:text-brand-400">Kidz Kollege</span>
+        </div>
+        <button id="theme-toggle" class="p-2.5 rounded-2xl bg-brand-100 dark:bg-white/5 text-brand-700 dark:text-yellow-400 transition-all border-b-2 border-brand-200">
+            <i class="fa-solid fa-sun"></i>
+        </button>
+    </nav>
+
+    <main class="max-w-lg mx-auto pb-44">
+        
+        <!-- HOME SCREEN -->
+        <div id="screen-home" class="screen active">
+            <header class="relative pt-10 pb-16 px-6 text-left">
+                <div class="absolute inset-0 wave-bg -z-10 opacity-10"></div>
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full bg-brand-500 text-white font-bold text-[10px] uppercase tracking-wider animate-float">
+                    <i class="fa-solid fa-heart"></i> Building Foundation with Care
+                </div>
+                <h1 class="text-4xl font-extrabold mb-4 tracking-tight leading-tight">
+                    Welcome to <br><span class="text-brand-600 dark:text-brand-400 underline decoration-brand-300 decoration-wavy underline-offset-4">Kidz Kollege</span> 👶✨
+                </h1>
+                <p class="text-md opacity-70 font-medium leading-relaxed max-w-[280px]">
+                    Building foundation with care, play, and holistic learning.
+                </p>
+            </header>
+
+            <!-- 1. FIRST 2x2 GRID (Core School Info) -->
+            <div class="px-6 grid grid-cols-2 gap-4 mb-6">
+                <!-- About School -->
+                <button onclick="navigateTo('about')" class="kid-card p-6 rounded-[2.5rem] bg-white dark:bg-white/5 border border-brand-100 dark:border-white/10 flex flex-col items-center gap-4 text-center border-brand-200">
+                    <div class="w-16 h-16 rounded-3xl bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-inner">
+                        <i class="fa-solid fa-school text-2xl"></i>
+                    </div>
+                    <span class="font-bold text-sm text-slate-700 dark:text-slate-300">About School</span>
+                </button>
+
+                <!-- Programs -->
+                <button onclick="navigateTo('programs')" class="kid-card p-6 rounded-[2.5rem] bg-white dark:bg-white/5 border border-brand-100 dark:border-white/10 flex flex-col items-center gap-4 text-center border-brand-200">
+                    <div class="w-16 h-16 rounded-3xl bg-purple-100 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-inner">
+                        <i class="fa-solid fa-book text-2xl"></i>
+                    </div>
+                    <span class="font-bold text-sm text-slate-700 dark:text-slate-300">Programs</span>
+                </button>
+
+                <!-- Virtual Tour -->
+                <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/bobo-play-learn/', '_blank')" class="kid-card p-6 rounded-[2.5rem] bg-white dark:bg-white/5 border border-brand-100 dark:border-white/10 flex flex-col items-center gap-4 text-center border-brand-200">
+                    <div class="w-16 h-16 rounded-3xl bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center shadow-inner">
+                        <i class="fa-solid fa-eye text-2xl"></i>
+                    </div>
+                    <span class="font-bold text-sm text-slate-700 dark:text-slate-300">Virtual Tour</span>
+                </button>
+
+                <!-- Website -->
+                <button onclick="window.open('https://kidzkollege.co.tz/', '_blank')" class="kid-card p-6 rounded-[2.5rem] bg-white dark:bg-white/5 border border-brand-100 dark:border-white/10 flex flex-col items-center gap-4 text-center border-brand-200">
+                    <div class="w-16 h-16 rounded-3xl bg-yellow-100 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 flex items-center justify-center shadow-inner">
+                        <i class="fa-solid fa-globe text-2xl"></i>
+                    </div>
+                    <span class="font-bold text-sm text-slate-700 dark:text-slate-300">Website</span>
+                </button>
+            </div>
+
+            <!-- 2. FEATURED CARD (Admissions) -->
+            <div class="px-6 mb-6">
+                <button onclick="openApplyModal()" class="w-full kid-card p-8 rounded-[3rem] bg-brand-500 text-white text-left relative overflow-hidden group border-brand-600 shadow-xl shadow-brand-500/20">
+                    <div class="absolute -right-4 -top-4 w-40 h-40 bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+                    <div class="relative z-10 flex justify-between items-center">
+                        <div class="space-y-1">
+                            <h3 class="text-2xl font-black tracking-tight">Admissions / Apply</h3>
+                            <p class="text-xs font-medium opacity-90">Secure your child’s place at Kidz Kollege in just a few steps</p>
+                        </div>
+                        <i class="fa-solid fa-paper-plane text-3xl animate-wiggle"></i>
+                    </div>
+                </button>
+            </div>
+
+            <!-- 3. SECOND 2x2 GRID (Trust + Action) -->
+            <div class="px-6 grid grid-cols-2 gap-4 mb-10">
+                <!-- Location -->
+                <button onclick="window.open('https://maps.app.goo.gl/H796S8NapHofShDo6', '_blank')" class="kid-card p-6 rounded-[2.5rem] bg-white dark:bg-white/5 border border-brand-100 dark:border-white/10 flex flex-col items-center gap-4 text-center border-brand-200">
+                    <div class="w-14 h-14 rounded-2xl bg-orange-100 dark:bg-orange-500/10 text-orange-500 flex items-center justify-center">
+                        <i class="fa-solid fa-map-location-dot text-xl"></i>
+                    </div>
+                    <span class="font-bold text-[11px] uppercase tracking-wider">Location</span>
+                </button>
+
+                <!-- Reviews -->
+                <button onclick="window.open('https://www.google.com/search?q=Kidz+Kollege+Reviews', '_blank')" class="kid-card p-6 rounded-[2.5rem] bg-white dark:bg-white/5 border border-brand-100 dark:border-white/10 flex flex-col items-center gap-4 text-center border-brand-200">
+                    <div class="w-14 h-14 rounded-2xl bg-yellow-100 dark:bg-yellow-500/10 text-yellow-500 flex items-center justify-center">
+                        <i class="fa-solid fa-star text-xl"></i>
+                    </div>
+                    <span class="font-bold text-[11px] uppercase tracking-wider">Reviews</span>
+                </button>
+
+                <!-- Gallery -->
+                <button onclick="navigateTo('gallery')" class="kid-card p-6 rounded-[2.5rem] bg-white dark:bg-white/5 border border-brand-100 dark:border-white/10 flex flex-col items-center gap-4 text-center border-brand-200">
+                    <div class="w-14 h-14 rounded-2xl bg-rose-100 dark:bg-rose-500/10 text-rose-500 flex items-center justify-center">
+                        <i class="fa-solid fa-palette text-xl"></i>
+                    </div>
+                    <span class="font-bold text-[11px] uppercase tracking-wider">Gallery</span>
+                </button>
+
+                <!-- Contact -->
+                <button onclick="navigateTo('contact')" class="kid-card p-6 rounded-[2.5rem] bg-white dark:bg-white/5 border border-brand-100 dark:border-white/10 flex flex-col items-center gap-4 text-center border-brand-200">
+                    <div class="w-14 h-14 rounded-2xl bg-cyan-100 dark:bg-cyan-500/10 text-cyan-500 flex items-center justify-center">
+                        <i class="fa-solid fa-phone text-xl"></i>
+                    </div>
+                    <span class="font-bold text-[11px] uppercase tracking-wider">Contact</span>
+                </button>
+            </div>
+
+            <!-- NEW SECTION: MEET THE MENTORS -->
+            <div class="mb-10">
+                <div class="px-6 mb-4">
+                    <h2 class="text-3xl font-black tracking-tight text-slate-800 dark:text-white">Meet the Mentors</h2>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">“The people shaping your child’s foundation”</p>
+                </div>
+
+                <div class="mentor-carousel-container">
+                    <div class="mentor-track animate-slide px-6">
+                        <!-- Card: Founder -->
+                        <div class="flex-shrink-0 w-64 p-6 rounded-[2rem] bg-gradient-to-br from-purple-50 to-white dark:from-purple-900/20 dark:to-white/5 border border-purple-100 dark:border-purple-500/20 shadow-sm">
+                            <div class="mentor-img-placeholder mb-4">
+                                <i class="fa-solid fa-user text-purple-200 dark:text-purple-800 text-3xl"></i>
+                            </div>
+                            <h4 class="text-xl font-black text-purple-700 dark:text-purple-400 mb-2">Founder</h4>
+                            <p class="text-xs font-medium opacity-70 leading-relaxed text-slate-600 dark:text-slate-300">“Leads the vision of Kidz Kollege with a focus on early childhood excellence and care-driven education.”</p>
+                        </div>
+
+                        <!-- Card: Visionary -->
+                        <div class="flex-shrink-0 w-64 p-6 rounded-[2rem] bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-white/5 border border-blue-100 dark:border-blue-500/20 shadow-sm">
+                            <div class="mentor-img-placeholder mb-4">
+                                <i class="fa-solid fa-user text-blue-200 dark:text-blue-800 text-3xl"></i>
+                            </div>
+                            <h4 class="text-xl font-black text-blue-700 dark:text-blue-400 mb-2">Visionary</h4>
+                            <p class="text-xs font-medium opacity-70 leading-relaxed text-slate-600 dark:text-slate-300">“Designs the learning direction and ensures every child experiences purposeful growth.”</p>
+                        </div>
+
+                        <!-- Card: STEM Coach -->
+                        <div class="flex-shrink-0 w-64 p-6 rounded-[2rem] bg-gradient-to-br from-brand-50 to-white dark:from-brand-900/20 dark:to-white/5 border border-brand-100 dark:border-brand-500/20 shadow-sm">
+                            <div class="mentor-img-placeholder mb-4">
+                                <i class="fa-solid fa-user text-brand-200 dark:text-brand-800 text-3xl"></i>
+                            </div>
+                            <h4 class="text-xl font-black text-brand-700 dark:text-brand-400 mb-2">STEM Coach</h4>
+                            <p class="text-xs font-medium opacity-70 leading-relaxed text-slate-600 dark:text-slate-300">“Introduces early science, logic, and problem-solving through playful discovery.”</p>
+                        </div>
+
+                        <!-- Card: Expert Educator -->
+                        <div class="flex-shrink-0 w-64 p-6 rounded-[2rem] bg-gradient-to-br from-orange-50 to-white dark:from-orange-900/20 dark:to-white/5 border border-orange-100 dark:border-orange-500/20 shadow-sm">
+                            <div class="mentor-img-placeholder mb-4">
+                                <i class="fa-solid fa-user text-orange-200 dark:text-orange-800 text-3xl"></i>
+                            </div>
+                            <h4 class="text-xl font-black text-orange-700 dark:text-orange-400 mb-2">Expert Educator</h4>
+                            <p class="text-xs font-medium opacity-70 leading-relaxed text-slate-600 dark:text-slate-300">“Guides structured learning and ensures strong foundational literacy and numeracy.”</p>
+                        </div>
+
+                        <!-- Card: Creative Lead -->
+                        <div class="flex-shrink-0 w-64 p-6 rounded-[2rem] bg-gradient-to-br from-pink-50 to-white dark:from-pink-900/20 dark:to-white/5 border border-pink-100 dark:border-pink-500/20 shadow-sm">
+                            <div class="mentor-img-placeholder mb-4">
+                                <i class="fa-solid fa-user text-pink-200 dark:text-pink-800 text-3xl"></i>
+                            </div>
+                            <h4 class="text-xl font-black text-pink-700 dark:text-pink-400 mb-2">Creative Lead</h4>
+                            <p class="text-xs font-medium opacity-70 leading-relaxed text-slate-600 dark:text-slate-300">“Builds imagination through storytelling, design, and creative expression.”</p>
+                        </div>
+
+                        <!-- Card: Arts Facilitator -->
+                        <div class="flex-shrink-0 w-64 p-6 rounded-[2rem] bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/20 dark:to-white/5 border border-indigo-100 dark:border-indigo-500/20 shadow-sm">
+                            <div class="mentor-img-placeholder mb-4">
+                                <i class="fa-solid fa-user text-indigo-200 dark:text-indigo-800 text-3xl"></i>
+                            </div>
+                            <h4 class="text-xl font-black text-indigo-700 dark:text-indigo-400 mb-2">Arts Facilitator</h4>
+                            <p class="text-xs font-medium opacity-70 leading-relaxed text-slate-600 dark:text-slate-300">“Encourages self-expression through drawing, music, and hands-on creativity.”</p>
+                        </div>
+
+                        <!-- Duplicate set for infinite loop -->
+                        <div class="flex-shrink-0 w-64 p-6 rounded-[2rem] bg-gradient-to-br from-purple-50 to-white dark:from-purple-900/20 dark:to-white/5 border border-purple-100 dark:border-purple-500/20 shadow-sm">
+                            <div class="mentor-img-placeholder mb-4"><i class="fa-solid fa-user text-purple-200 dark:text-purple-800 text-3xl"></i></div>
+                            <h4 class="text-xl font-black text-purple-700 dark:text-purple-400 mb-2">Founder</h4>
+                            <p class="text-xs font-medium opacity-70 leading-relaxed text-slate-600 dark:text-slate-300">“Leads the vision of Kidz Kollege with a focus on early childhood excellence and care-driven education.”</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT SCREEN -->
+        <div id="screen-about" class="screen p-6">
+            <button onclick="navigateTo('home')" class="mb-8 flex items-center gap-2 font-bold text-xs uppercase tracking-widest bg-brand-100 dark:bg-white/5 px-5 py-3 rounded-2xl border-b-4 border-brand-200 dark:border-white/10">
+                <i class="fa-solid fa-arrow-left"></i> Home
+            </button>
+            <h2 class="text-3xl font-black tracking-tight mb-6 text-brand-700 dark:text-brand-400">About Our School</h2>
+            <div class="space-y-6">
+                <section class="bg-white dark:bg-white/5 p-8 rounded-[3rem] border-b-4 border-brand-100 dark:border-white/5">
+                    <h3 class="font-black text-brand-500 text-sm uppercase tracking-widest mb-3">Who we are</h3>
+                    <p class="text-md leading-relaxed opacity-70">Kidz Kollege is a nurturing preschool that provides a safe, caring, and engaging environment where children learn through play, exploration, and guided learning.</p>
+                </section>
+                <section class="bg-blue-50 dark:bg-blue-900/10 p-8 rounded-[3rem] border-b-4 border-blue-100 dark:border-white/5">
+                    <h3 class="font-black text-blue-500 text-sm uppercase tracking-widest mb-3">Our Mission</h3>
+                    <p class="text-md leading-relaxed opacity-70 text-blue-900 dark:text-blue-100">To build strong educational and emotional foundations for children aged 1–6 years through a balance of academics, creativity, outdoor play, and family collaboration.</p>
+                </section>
+                <section class="bg-emerald-50 dark:bg-emerald-900/10 p-8 rounded-[3rem] border-b-4 border-emerald-100 dark:border-white/5">
+                    <h3 class="font-black text-emerald-500 text-sm uppercase tracking-widest mb-3">Our Vision</h3>
+                    <p class="text-md leading-relaxed opacity-70 text-emerald-900 dark:text-emerald-100">To raise confident, curious, and independent learners who are ready for future education and life experiences.</p>
+                </section>
+                <section class="bg-pink-50 dark:bg-pink-900/10 p-8 rounded-[3rem] border-b-4 border-pink-100 dark:border-white/5">
+                    <h3 class="font-black text-pink-500 text-sm uppercase tracking-widest mb-3">What we believe in</h3>
+                    <ul class="space-y-3 mt-4">
+                        <li class="flex items-center gap-4 text-md font-medium text-pink-900 dark:text-pink-100"><span class="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-white text-[10px]"><i class="fa-solid fa-gamepad"></i></span> Learning through play</li>
+                        <li class="flex items-center gap-4 text-md font-medium text-pink-900 dark:text-pink-100"><span class="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-white text-[10px]"><i class="fa-solid fa-smile"></i></span> Emotional development</li>
+                        <li class="flex items-center gap-4 text-md font-medium text-pink-900 dark:text-pink-100"><span class="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-white text-[10px]"><i class="fa-solid fa-shield"></i></span> Safe and supportive environment</li>
+                        <li class="flex items-center gap-4 text-md font-medium text-pink-900 dark:text-pink-100"><span class="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-white text-[10px]"><i class="fa-solid fa-handshake"></i></span> Strong parent partnership</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+
+        <!-- PROGRAMS SCREEN -->
+        <div id="screen-programs" class="screen p-6">
+            <button onclick="navigateTo('home')" class="mb-8 flex items-center gap-2 font-bold text-xs uppercase tracking-widest bg-brand-100 dark:bg-white/5 px-5 py-3 rounded-2xl border-b-4 border-brand-200">
+                <i class="fa-solid fa-arrow-left"></i> Home
+            </button>
+            <h2 class="text-3xl font-black tracking-tight mb-4 text-brand-700 dark:text-brand-400">Programs & Curriculum</h2>
+            <div class="space-y-6">
+                <div class="p-8 rounded-[3rem] bg-white dark:bg-white/5 border-b-4 border-brand-100">
+                    <h3 class="font-black text-brand-500 text-sm uppercase tracking-widest mb-3">Our Curriculum</h3>
+                    <p class="text-md opacity-70 mb-6">We offer a distinctive early childhood curriculum designed to support every stage of early development.</p>
+                    
+                    <h4 class="font-bold text-xs uppercase tracking-widest mb-4 text-slate-400">What children learn</h4>
+                    <div class="grid grid-cols-1 gap-2">
+                        <div class="p-4 rounded-2xl bg-brand-50 dark:bg-white/5 font-medium text-sm flex items-center gap-3">
+                            <i class="fa-solid fa-comments text-brand-500"></i> Language & communication skills
+                        </div>
+                        <div class="p-4 rounded-2xl bg-brand-50 dark:bg-white/5 font-medium text-sm flex items-center gap-3">
+                            <i class="fa-solid fa-plus text-brand-500"></i> Early mathematics
+                        </div>
+                        <div class="p-4 rounded-2xl bg-brand-50 dark:bg-white/5 font-medium text-sm flex items-center gap-3">
+                            <i class="fa-solid fa-palette text-brand-500"></i> Creativity & art development
+                        </div>
+                        <div class="p-4 rounded-2xl bg-brand-50 dark:bg-white/5 font-medium text-sm flex items-center gap-3">
+                            <i class="fa-solid fa-heart text-brand-500"></i> Social & emotional learning
+                        </div>
+                        <div class="p-4 rounded-2xl bg-brand-50 dark:bg-white/5 font-medium text-sm flex items-center gap-3">
+                            <i class="fa-solid fa-bicycle text-brand-500"></i> Physical development through play
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-8 rounded-[3rem] bg-brand-50 dark:bg-brand-500/5 border-b-4 border-brand-100">
+                    <h4 class="font-black text-xs uppercase tracking-widest mb-4 text-brand-600">Learning approach</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm font-bold"><i class="fa-solid fa-sun text-orange-400"></i> Outdoor learning & exploration</li>
+                        <li class="flex items-center gap-3 text-sm font-bold"><i class="fa-solid fa-school text-blue-400"></i> Structured classroom activities</li>
+                        <li class="flex items-center gap-3 text-sm font-bold"><i class="fa-solid fa-puzzle-piece text-purple-400"></i> Creative play sessions</li>
+                        <li class="flex items-center gap-3 text-sm font-bold"><i class="fa-solid fa-users text-emerald-400"></i> Group collaboration activities</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- GALLERY SCREEN -->
+        <div id="screen-gallery" class="screen p-6">
+            <button onclick="navigateTo('home')" class="mb-8 flex items-center gap-2 font-bold text-xs uppercase tracking-widest bg-brand-100 dark:bg-white/5 px-5 py-3 rounded-2xl border-b-4 border-brand-200">
+                <i class="fa-solid fa-arrow-left"></i> Home
+            </button>
+            <h2 class="text-3xl font-black tracking-tight mb-8">School Gallery</h2>
+            <div class="grid grid-cols-1 gap-4">
+                <div class="p-6 rounded-[2.5rem] bg-white dark:bg-white/5 border border-brand-100 dark:border-white/10 flex items-center gap-6">
+                    <div class="w-16 h-16 rounded-3xl bg-blue-100 text-blue-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-book-open"></i></div>
+                    <span class="font-bold">Classroom learning moments</span>
+                </div>
+                <div class="p-6 rounded-[2.5rem] bg-white dark:bg-white/5 border border-brand-100 dark:border-white/10 flex items-center gap-6">
+                    <div class="w-16 h-16 rounded-3xl bg-emerald-100 text-emerald-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-child-reaching"></i></div>
+                    <span class="font-bold">Outdoor play activities</span>
+                </div>
+                <div class="p-6 rounded-[2.5rem] bg-white dark:bg-white/5 border border-brand-100 dark:border-white/10 flex items-center gap-6">
+                    <div class="w-16 h-16 rounded-3xl bg-cyan-100 text-cyan-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-person-swimming"></i></div>
+                    <span class="font-bold">Swimming pool sessions</span>
+                </div>
+                <div class="p-6 rounded-[2.5rem] bg-white dark:bg-white/5 border border-brand-100 dark:border-white/10 flex items-center gap-6">
+                    <div class="w-16 h-16 rounded-3xl bg-purple-100 text-purple-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-couch"></i></div>
+                    <span class="font-bold">Soft room exploration</span>
+                </div>
+                <div class="p-6 rounded-[2.5rem] bg-white dark:bg-white/5 border border-brand-100 dark:border-white/10 flex items-center gap-6">
+                    <div class="w-16 h-16 rounded-3xl bg-slate-100 text-slate-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-laptop"></i></div>
+                    <span class="font-bold">Computer lab introduction</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTACT SCREEN -->
+        <div id="screen-contact" class="screen p-6">
+            <button onclick="navigateTo('home')" class="mb-8 flex items-center gap-2 font-bold text-xs uppercase tracking-widest bg-brand-100 dark:bg-white/5 px-5 py-3 rounded-2xl border-b-4 border-brand-200">
+                <i class="fa-solid fa-arrow-left"></i> Home
+            </button>
+            <h2 class="text-3xl font-black tracking-tight mb-8">Contact Us</h2>
+            <div class="space-y-4">
+                <div class="p-8 rounded-[3rem] bg-white dark:bg-white/5 border-b-4 border-brand-100">
+                    <h3 class="font-bold text-[10px] uppercase tracking-widest text-slate-400 mb-4">Call / WhatsApp</h3>
+                    <div class="space-y-3">
+                        <a href="tel:+255785234357" class="flex items-center justify-between p-5 rounded-3xl bg-brand-50 dark:bg-white/5 border border-brand-100 dark:border-white/10">
+                            <span class="font-bold text-brand-700 dark:text-brand-300">+255 785 234 357</span>
+                            <i class="fa-brands fa-whatsapp text-brand-500"></i>
+                        </a>
+                        <a href="tel:+255754551188" class="flex items-center justify-between p-5 rounded-3xl bg-brand-50 dark:bg-white/5 border border-brand-100 dark:border-white/10">
+                            <span class="font-bold text-brand-700 dark:text-brand-300">+255 754 551 188</span>
+                            <i class="fa-solid fa-phone text-brand-500"></i>
+                        </a>
+                        <a href="tel:+255786763456" class="flex items-center justify-between p-5 rounded-3xl bg-brand-50 dark:bg-white/5 border border-brand-100 dark:border-white/10">
+                            <span class="font-bold text-brand-700 dark:text-brand-300">+255 786 763 456</span>
+                            <i class="fa-solid fa-phone text-brand-500"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="p-8 rounded-[3rem] bg-white dark:bg-white/5 border-b-4 border-brand-100">
+                    <h3 class="font-bold text-[10px] uppercase tracking-widest text-slate-400 mb-4">Email</h3>
+                    <a href="mailto:kidzkollegepreschool@gmail.com" class="block p-5 rounded-3xl bg-brand-50 dark:bg-white/5 border border-brand-100 font-bold text-brand-700 dark:text-brand-300 text-sm overflow-hidden text-ellipsis">
+                        kidzkollegepreschool@gmail.com
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- STICKY BOTTOM BAR -->
+    <footer class="fixed bottom-0 left-0 right-0 z-40 p-6 flex items-center justify-center pointer-events-none">
+        <div class="flex w-full gap-4 pointer-events-auto max-w-lg bg-white/90 glass p-3 rounded-[3rem] border-b-4 border-brand-200 shadow-2xl dark:bg-brand-900/90 dark:border-white/10">
+            <button onclick="window.open('https://wa.me/255785234357', '_blank')" class="flex-1 bg-white dark:bg-white/5 text-slate-700 dark:text-white border-2 border-brand-100 dark:border-white/10 py-4 rounded-3xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all">
+                <i class="fa-brands fa-whatsapp text-brand-500 text-lg"></i> WhatsApp
+            </button>
+            <button onclick="openApplyModal()" class="flex-[1.4] bg-brand-500 text-white py-4 rounded-3xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-brand-500/30 active:scale-95 transition-all border-b-4 border-brand-700">
+                <i class="fa-solid fa-rocket"></i> Apply Now
+            </button>
+        </div>
+    </footer>
+
+    <!-- ADMISSION MODAL -->
+    <div id="modal-apply" class="fixed inset-0 z-[100] bg-brand-900/80 glass flex items-end sm:items-center justify-center p-4 hidden">
+        <div class="w-full max-w-md bg-white dark:bg-[#0A1F13] rounded-[3.5rem] p-10 shadow-3xl relative animate-fade-up border-b-[8px] border-brand-500">
+            <button onclick="closeApplyModal()" class="absolute top-8 right-8 w-10 h-10 rounded-full bg-brand-50 dark:bg-white/5 flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-brand-600"></i>
+            </button>
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-brand-100 dark:bg-white/10 rounded-3xl flex items-center justify-center text-brand-600 mx-auto mb-4">
+                    <i class="fa-solid fa-pen-to-square text-2xl"></i>
+                </div>
+                <h2 class="text-3xl font-black tracking-tight text-brand-800 dark:text-white">Join Us! 📝</h2>
+                <p class="text-xs font-bold text-brand-400 mt-2">Kidz Kollege Admission Form</p>
+            </div>
+            <form id="apply-form" class="space-y-4">
+                <input type="text" id="parent-name" required placeholder="Parent Full Name" class="w-full p-4 rounded-2xl border-2 outline-none font-bold text-sm bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 focus:border-brand-400">
+                <input type="text" id="child-name" required placeholder="Child Full Name" class="w-full p-4 rounded-2xl border-2 outline-none font-bold text-sm bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 focus:border-brand-400">
+                <input type="number" id="child-age" required placeholder="Child Age" class="w-full p-4 rounded-2xl border-2 outline-none font-bold text-sm bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 focus:border-brand-400">
+                <input type="tel" id="parent-phone" required placeholder="Phone Number" class="w-full p-4 rounded-2xl border-2 outline-none font-bold text-sm bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 focus:border-brand-400">
+                <input type="email" id="parent-email" placeholder="Email (optional)" class="w-full p-4 rounded-2xl border-2 outline-none font-bold text-sm bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 focus:border-brand-400">
+                <select id="program-select" class="w-full p-4 rounded-2xl border-2 outline-none font-bold text-sm bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 focus:border-brand-400 appearance-none">
+                    <option value="Preschool (1-3 years)">Preschool (1–3 years)</option>
+                    <option value="Kindergarten (4-6 years)">Kindergarten (4–6 years)</option>
+                </select>
+                <button type="submit" class="w-full bg-brand-500 text-white font-black py-5 rounded-[2rem] shadow-xl text-xs uppercase tracking-widest mt-4 border-b-4 border-brand-700 active:translate-y-1 active:border-b-0 transition-all">
+                    Send to Admin
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const themeBtn = document.getElementById('theme-toggle');
+        themeBtn.onclick = () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            themeBtn.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+        };
+
+        function navigateTo(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + id).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        const applyModal = document.getElementById('modal-apply');
+        function openApplyModal() {
+            applyModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeApplyModal() {
+            applyModal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('apply-form').onsubmit = (e) => {
+            e.preventDefault();
+            const parent = document.getElementById('parent-name').value;
+            const child = document.getElementById('child-name').value;
+            const age = document.getElementById('child-age').value;
+            const phone = document.getElementById('parent-phone').value;
+            const program = document.getElementById('program-select').value;
+
+            const msg = `Hello Kidz Kollege 👶\nI would like to apply for admission.\n\nParent Name: ${parent}\nChild Name: ${child}\nAge: ${age}\nProgram: ${program}\nPhone: ${phone}`;
+            
+            window.open(`https://wa.me/255785234357?text=${encodeURIComponent(msg)}`, '_blank');
+            closeApplyModal();
+            e.target.reset();
+        }
+    </script>
+</body>
+</html>
