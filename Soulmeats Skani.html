@@ -376,7 +376,7 @@
 
         function handleBookingSubmit(e) {
             e.preventDefault();
-            const message = `Hello Soul Meat, I would like to book a table.\n\nName: ${document.getElementById('book-name').value}\nDate: ${document.getElementById('book-date').value}\nTime: ${document.getElementById('book-time').value}\nNumber of People: ${document.getElementById('book-people').value}`;
+            const message = `Hello SoulMeats, I would like to book a table.\n\nName: ${document.getElementById('book-name').value}\nDate: ${document.getElementById('book-date').value}\nTime: ${document.getElementById('book-time').value}\nNumber of People: ${document.getElementById('book-people').value}`;
             window.location.href = `https://wa.me/255658898989?text=${encodeURIComponent(message)}`;
             closeModal('booking-modal');
         }
