@@ -434,6 +434,565 @@
             title: 'Soulmeats Suggestions',
             eyebrow: 'Client Feedback Dashboard',
             subtitle: 'Live customer suggestions from the QR page. Open this link any time to see fresh feedback as it comes in.',
+            sheetEndpoint: 'https://script.google.com/macros/s/AKfycby6l1_8WHArGhbuztSRW0uEhKSenlD_opoG0QaJhYo2ZJWWCpIuOsk96SV4ip_1V0u6KA/exec',
+            autoRefreshMs: 45000
+        };
+
+        const apiUrl = `${dashboardConfig.sheetEndpoint}?action=list`;
+        const tableBody = document.getElementById('suggestions-body');
+        const statusText = document.getElementById('status-text');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const searchInput = document.getElementById('search-input');
+        const timeFilter = document.getElementById('time-filter');
+        const totalCount = document.getElementById('total-count');
+        const todayCount = document.getElementById('today-count');
+        const latestTime = document.getElementById('latest-time');
+        const latestNote = document.getElementById('latest-note');
+
+        let allSuggestions = [];
+        let autoRefreshHandle = null;
+
+        document.title = dashboardConfig.title;
+        document.getElementById('page-title').textContent = dashboardConfig.title;
+        document.getElementById('hero-eyebrow').textContent = dashboardConfig.eyebrow;
+        document.getElementById('page-subtitle').textContent = dashboardConfig.subtitle;
+        document.getElementById('client-chip').textContent = `Client: ${dashboardConfig.clientName}`;
+        document.getElementById('refresh-chip').textContent = `Auto refresh: every ${Math.round(dashboardConfig.autoRefreshMs / 1000)} seconds`;
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function parseDate(value) {
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? null : date;
+        }
+
+        function formatTime(value) {
+            const date = parseDate(value);
+            if (!date) {
+                return escapeHtml(value || '-');
+            }
+            return date.toLocaleString([], {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit'
+            });
+        }
+
+        function isToday(date) {
+            const now = new Date();
+            return date.getFullYear() === now.getFullYear()
+                && date.getMonth() === now.getMonth()
+                && date.getDate() === now.getDate();
+        }
+
+        function isWithinDays(date, days) {
+            const limit = new Date();
+            limit.setDate(limit.getDate() - days);
+            return date >= limit;
+        }
+
+        function getFilteredSuggestions() {
+            const query = searchInput.value.trim().toLowerCase();
+            const range = timeFilter.value;
+
+            return allSuggestions.filter((row) => {
+                const suggestionText = String(row.suggestion || '');
+                const haystack = suggestionText.toLowerCase();
+                const date = parseDate(row.time);
+
+                if (query && !haystack.includes(query)) {
+                    return false;
+                }
+
+                if (range === 'today') {
+                    return date ? isToday(date) : false;
+                }
+
+                if (range === 'week') {
+                    return date ? isWithinDays(date, 7) : false;
+                }
+
+                return true;
+            });
+        }
+
+        function renderSummary(rows) {
+            totalCount.textContent = allSuggestions.length;
+            todayCount.textContent = allSuggestions.filter((row) => {
+                const date = parseDate(row.time);
+                return date ? isToday(date) : false;
+            }).length;
+
+            if (allSuggestions.length) {
+                latestTime.textContent = formatTime(allSuggestions[0].time);
+                latestNote.textContent = 'Most recent suggestion received.';
+            } else {
+                latestTime.textContent = '-';
+                latestNote.textContent = 'Waiting for incoming suggestions.';
+            }
+
+            statusText.textContent = `Showing ${rows.length} of ${allSuggestions.length} suggestion${allSuggestions.length === 1 ? '' : 's'}.`;
+        }
+
+        function renderTable(rows) {
+            if (!rows.length) {
+                tableBody.innerHTML = '<tr><td colspan="2" class="empty">No matching suggestions found.</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = rows.map((row, index) => {
+                const date = parseDate(row.time);
+                const isRecent = index < 3;
+                const badge = isRecent ? '<span class="badge-new">New</span>' : '';
+
+                return `
+                    <tr>
+                        <td class="time-cell">${formatTime(row.time)}${badge}</td>
+                        <td class="suggestion-cell">${escapeHtml(row.suggestion || '')}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function render() {
+            const filteredRows = getFilteredSuggestions();
+            renderSummary(filteredRows);
+            renderTable(filteredRows);
+        }
+
+        function handleSuggestionsResponse(rows) {
+            allSuggestions = Array.isArray(rows) ? rows : [];
+            render();
+            refreshBtn.disabled = false;
+        }
+
+        function handleSuggestionsError() {
+            tableBody.innerHTML = '<tr><td colspan="2" class="error">Could not load suggestions. Check the Apps Script deployment and sharing settings.</td></tr>';
+            statusText.textContent = 'Could not load suggestions.';
+            totalCount.textContent = '0';
+            todayCount.textContent = '0';
+            latestTime.textContent = '-';
+            latestNote.textContent = 'Connection issue while loading suggestions.';
+            refreshBtn.disabled = false;
+        }
+
+        function loadSuggestions() {
+            statusText.textContent = 'Loading suggestions...';
+            refreshBtn.disabled = true;
+
+            const existingScript = document.getElementById('suggestions-jsonp');
+            if (existingScript) {
+                existingScript.remove();
+            }
+
+            const script = document.createElement('script');
+            script.id = 'suggestions-jsonp';
+            script.src = `${apiUrl}&callback=handleSuggestionsResponse&_=${Date.now()}`;
+            script.onerror = handleSuggestionsError;
+            document.body.appendChild(script);
+        }
+
+        window.handleSuggestionsResponse = handleSuggestionsResponse;
+
+        function startAutoRefresh() {
+            if (autoRefreshHandle) {
+                clearInterval(autoRefreshHandle);
+            }
+            autoRefreshHandle = setInterval(loadSuggestions, dashboardConfig.autoRefreshMs);
+        }
+
+        searchInput.addEventListener('input', render);
+        timeFilter.addEventListener('change', render);
+        refreshBtn.addEventListener('click', loadSuggestions);
+
+        startAutoRefresh();
+        loadSuggestions();
+    </script>
+</body>
+</html>
+            height: 220px;
+            background: radial-gradient(circle, rgba(203, 155, 24, 0.18), transparent 65%);
+            pointer-events: none;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            border-radius: 999px;
+            background: rgba(203, 155, 24, 0.12);
+            color: var(--accent-dark);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 14px 0 10px;
+            font-size: clamp(2.2rem, 5vw, 4rem);
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+        }
+
+        .subtitle {
+            max-width: 700px;
+            margin: 0;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.65;
+        }
+
+        .hero-meta {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .hero-chip {
+            padding: 10px 14px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(150, 109, 0, 0.12);
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 22px;
+        }
+
+        .summary-card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .summary-label {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .summary-value {
+            margin-top: 10px;
+            font-size: clamp(1.6rem, 4vw, 2.5rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+        }
+
+        .summary-note {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .panel {
+            margin-top: 22px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px;
+            border-bottom: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .status {
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .search-input {
+            width: min(320px, 100%);
+            padding: 13px 14px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.76);
+            color: var(--text);
+            outline: none;
+            font: inherit;
+        }
+
+        .search-input:focus {
+            border-color: rgba(203, 155, 24, 0.45);
+            box-shadow: 0 0 0 4px rgba(203, 155, 24, 0.12);
+        }
+
+        .filter-select,
+        .refresh-btn {
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 13px 14px;
+            font: inherit;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.76);
+            color: var(--text);
+        }
+
+        .refresh-btn {
+            background: #1f170b;
+            color: white;
+            cursor: pointer;
+            border-color: transparent;
+        }
+
+        .refresh-btn:hover {
+            background: #312515;
+        }
+
+        .refresh-btn:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+
+        .table-wrap {
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: rgba(31, 23, 11, 0.96);
+            color: white;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--line);
+            vertical-align: top;
+        }
+
+        th {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        td {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(203, 155, 24, 0.05);
+        }
+
+        tbody tr:hover {
+            background: rgba(203, 155, 24, 0.08);
+        }
+
+        .suggestion-cell {
+            min-width: 280px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .time-cell {
+            width: 220px;
+            white-space: nowrap;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .badge-new {
+            display: inline-flex;
+            margin-left: 8px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(30, 142, 90, 0.12);
+            color: var(--success);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .empty,
+        .error {
+            padding: 24px 18px;
+            font-size: 14px;
+        }
+
+        .empty {
+            color: var(--muted);
+        }
+
+        .error {
+            color: var(--danger);
+        }
+
+        .footer-note {
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        @media (max-width: 900px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .page {
+                padding: 18px 12px 36px;
+            }
+
+            .hero,
+            .panel,
+            .summary-card {
+                border-radius: 22px;
+            }
+
+            .hero {
+                padding: 22px 18px;
+            }
+
+            .toolbar {
+                padding: 14px;
+            }
+
+            .toolbar-group,
+            .search-input,
+            .filter-select,
+            .refresh-btn {
+                width: 100%;
+            }
+
+            th,
+            td {
+                padding: 14px 12px;
+            }
+
+            .time-cell {
+                width: 160px;
+                white-space: normal;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <section class="hero">
+            <span class="eyebrow" id="hero-eyebrow">Client Feedback Dashboard</span>
+            <h1 id="page-title">Soulmeats Suggestions</h1>
+            <p class="subtitle" id="page-subtitle">
+                Live customer suggestions from the QR page. Open this link any time to see fresh feedback as it comes in.
+            </p>
+            <div class="hero-meta">
+                <div class="hero-chip" id="client-chip">Client: Soulmeats</div>
+                <div class="hero-chip" id="refresh-chip">Auto refresh: every 45 seconds</div>
+            </div>
+        </section>
+
+        <section class="summary-grid">
+            <article class="summary-card">
+                <div class="summary-label">Total Suggestions</div>
+                <div class="summary-value" id="total-count">0</div>
+                <div class="summary-note">All saved customer suggestions currently available on this dashboard.</div>
+            </article>
+            <article class="summary-card">
+                <div class="summary-label">Today</div>
+                <div class="summary-value" id="today-count">0</div>
+                <div class="summary-note">Suggestions received today based on the browser's local date.</div>
+            </article>
+            <article class="summary-card">
+                <div class="summary-label">Latest Update</div>
+                <div class="summary-value" id="latest-time">-</div>
+                <div class="summary-note" id="latest-note">Waiting for incoming suggestions.</div>
+            </article>
+        </section>
+
+        <section class="panel">
+            <div class="toolbar">
+                <div class="toolbar-group">
+                    <input id="search-input" class="search-input" type="search" placeholder="Search suggestions..." autocomplete="off">
+                    <select id="time-filter" class="filter-select">
+                        <option value="all">All time</option>
+                        <option value="today">Today</option>
+                        <option value="week">Last 7 days</option>
+                    </select>
+                </div>
+                <div class="toolbar-group">
+                    <div class="status" id="status-text">Loading suggestions...</div>
+                    <button class="refresh-btn" id="refresh-btn" type="button">Refresh</button>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 220px;">Time</th>
+                            <th>Suggestion</th>
+                        </tr>
+                    </thead>
+                    <tbody id="suggestions-body">
+                        <tr>
+                            <td colspan="2" class="empty">Loading suggestions...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <p class="footer-note" id="footer-note">
+            Tip: to reuse this page for another client, update the config object at the top of the script with the new name, description, and Apps Script URL.
+        </p>
+    </div>
+
+    <script>
+        const dashboardConfig = {
+            clientName: 'Soulmeats',
+            title: 'Soulmeats Suggestions',
+            eyebrow: 'Client Feedback Dashboard',
+            subtitle: 'Live customer suggestions from the QR page. Open this link any time to see fresh feedback as it comes in.',
             sheetEndpoint: 'https://script.google.com/macros/s/AKfycbwLpG4iXUV5HEFUCm13O-laSXNqmRdAH8c-I0L6LFr-AUKBrX-Vr_4n78CFQEYos30L0A/exec',
             autoRefreshMs: 45000
         };
