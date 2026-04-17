@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emwani Café | Skani Pitch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&display=swap');
+
+        :root {
+            --dark-green: #042116;
+            --emerald: #0b4d36;
+            --accent-gold: #c5a059;
+            --earth-white: #fdfaf5;
+        }
+
+        body {
+            font-family: 'Space+Grotesk', sans-serif;
+            background-color: var(--earth-white);
+            color: var(--dark-green);
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Syne', sans-serif;
+        }
+
+        .african-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 50L50 0L100 50L50 100L0 50ZM50 15L85 50L50 85L15 50L50 15Z' fill='%230b4d36' fill-opacity='0.03'/%3E%3C/svg%3E");
+        }
+
+        .hero-pattern {
+            background-color: #042116;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23c5a059' fill-opacity='0.08'%3E%3Cpath fill-rule='evenodd' d='M0 0h40v40H0V0zm40 40h40v40H40V40zm0-40h2l-2 2V0zm0 4l4-4h2L40 6V4zm0 4l8-8h2L40 10V8zm0 4l12-12h2L40 14v-2zm0 4l16-16h2L40 18v-2zm0 4l20-20h2L40 22v-2zm0 4l24-24h2L40 26v-2zm0 4l28-28h2L40 30v-2zm0 4l32-32h2L40 34v-2zm0 4l36-36h2L40 38v-2zM0 40h2l-2 2v-2zm0 4l4-4h2L0 46v-2zm0 4l8-8h2L0 50v-2zm0 4l12-12h2L0 54v-2zm0 4l16-16h2L0 58v-2zm0 4l20-20h2L0 62v-2zm0 4l24-24h2L0 66v-2zm0 4l28-28h2L0 70v-2zm0 4l32-32h2L0 74v-2zm0 4l36-36h2L0 78v-2z'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .phone-mockup {
+            border: 12px solid #1a1a1a;
+            border-radius: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature-item:hover {
+            border-left-color: var(--accent-gold);
+            padding-left: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .section-divider {
+            height: 10px;
+            background-image: repeating-linear-gradient(45deg, var(--accent-gold), var(--accent-gold) 10px, transparent 10px, transparent 20px);
+            width: 100px;
+        }
+
+        /* Modal Styles */
+        #qrModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 33, 22, 0.95);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        #qrModal.active {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="african-pattern">
+
+    <!-- QR Modal -->
+    <div id="qrModal" onclick="closeModal()">
+        <div class="bg-white p-8 rounded-[40px] text-center max-w-sm w-full relative" onclick="event.stopPropagation()">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black transition-colors">
+                <i class="fa fa-times text-xl"></i>
+            </button>
+            <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-6">Emwani Experience</p>
+            <div class="bg-gray-100 p-6 rounded-3xl mb-6">
+                <img src="https://www.skani.space/emwani-cafe-qr.png" alt="QR Code" class="w-full h-auto rounded-lg shadow-inner">
+            </div>
+            <h3 class="font-black text-2xl text-[#042116] mb-1">JUST SCAN IT</h3>
+            <p class="text-xs text-[#c5a059] font-bold uppercase tracking-widest">To Launch Demo</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full p-6 flex justify-between items-center bg-white/80 backdrop-blur-md z-[100] border-b border-gray-100">
+        <div class="flex items-center">
+            <img src="https://emwanicoffee.co.tz/emwaniii.png" alt="Emwani Logo" class="h-10 w-auto">
+        </div>
+        <div class="hidden md:flex space-x-8 font-bold text-xs uppercase tracking-widest">
+            <a href="#overview" class="hover:text-[#c5a059] transition-colors">The Idea</a>
+            <a href="#access" class="hover:text-[#c5a059] transition-colors">Access</a>
+            <a href="#flow" class="hover:text-[#c5a059] transition-colors">Real Flow</a>
+            <a href="#next" class="hover:text-[#c5a059] transition-colors">Next Steps</a>
+        </div>
+        <button onclick="openModal()" class="bg-[#0b4d36] text-white px-6 py-2 rounded-full font-bold hover:bg-[#c5a059] transition-colors">
+            See Demo
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-pattern min-h-screen flex items-center text-white px-6 md:px-12 pt-32 pb-20 relative overflow-hidden">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <div>
+                    <p class="text-[#c5a059] font-bold tracking-[0.3em] uppercase mb-4">Code255 Strategy</p>
+                    <h1 class="text-6xl md:text-8xl font-black leading-[0.9] mb-6">SKANI <span class="text-[#c5a059]">+</span><br>VIRTUAL TOUR</h1>
+                    <div class="section-divider mb-6"></div>
+                    <p class="text-xl text-gray-300 max-w-md leading-relaxed">Transforming a simple QR code into a full digital experience. Emwani doesn’t just serve coffee — it delivers a modern, immersive brand story.</p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#access" class="bg-[#c5a059] text-[#042116] px-8 py-4 rounded-lg font-black uppercase tracking-wider hover:bg-white transition-all text-center">See The Tech</a>
+                    <a href="#flow" class="border border-white/30 px-8 py-4 rounded-lg font-bold hover:bg-white/10 transition-colors text-center">The Customer Journey</a>
+                </div>
+            </div>
+            
+            <div class="relative flex justify-center scale-90 md:scale-100">
+                <div class="phone-mockup w-72 h-[580px] bg-white overflow-hidden relative">
+                    <div class="h-6 w-32 bg-[#1a1a1a] absolute top-0 left-1/2 -translate-x-1/2 rounded-b-2xl z-10"></div>
+                    <div class="p-4 pt-10">
+                        <div class="text-center mb-6">
+                            <img src="https://emwanicoffee.co.tz/emwaniii.png" alt="Emwani Logo" class="w-16 mx-auto mb-2">
+                            <h3 class="font-bold text-[#042116]">Emwani Café</h3>
+                            <p class="text-[10px] text-[#c5a059] uppercase tracking-widest font-black">Heritage Experience</p>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="p-3 bg-gray-50 rounded-lg flex items-center justify-between border-l-4 border-[#0b4d36]">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa fa-coffee text-[#c5a059] text-xs"></i>
+                                    <span class="text-xs font-bold uppercase">Menu</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-[10px] text-gray-300"></i>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded-lg flex items-center justify-between border-l-4 border-[#0b4d36]">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa fa-wifi text-[#c5a059] text-xs"></i>
+                                    <span class="text-xs font-bold uppercase">WiFi Access</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-[10px] text-gray-300"></i>
+                            </div>
+                            <div class="p-3 bg-[#042116] text-white rounded-lg flex items-center justify-between shadow-xl">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa fa-vr-cardboard text-[#c5a059] text-xs"></i>
+                                    <span class="text-xs font-bold uppercase tracking-widest">Virtual Tour</span>
+                                </div>
+                                <i class="fa fa-play text-[10px] text-[#c5a059]"></i>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded-lg flex items-center justify-between border-l-4 border-[#0b4d36]">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa fa-map-marker-alt text-[#c5a059] text-xs"></i>
+                                    <span class="text-xs font-bold uppercase">Location</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-[10px] text-gray-300"></i>
+                            </div>
+                        </div>
+                        <div class="mt-8 text-center bg-gray-50 p-4 rounded-2xl border border-dashed border-gray-200">
+                            <p class="text-[9px] text-gray-400 mb-2 font-bold tracking-widest">ONE SCAN, FULL ACCESS</p>
+                            <i class="fa fa-qrcode text-5xl text-[#042116]"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- The Idea Section -->
+    <section id="overview" class="py-24 px-6 max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-16 items-center">
+            <div class="bg-[#042116] p-12 text-white rounded-3xl shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 p-4 text-[#c5a059] opacity-10">
+                    <i class="fa fa-fingerprint text-[200px]"></i>
+                </div>
+                <h2 class="text-4xl font-black mb-10 relative z-10 leading-tight">One Scan → <br><span class="text-[#c5a059]">Full Experience</span></h2>
+                
+                <p class="text-gray-400 mb-6 font-bold uppercase tracking-widest text-xs">The Problem</p>
+                <div class="space-y-4 mb-10">
+                    <p class="italic opacity-60">"Can I see the menu?"</p>
+                    <p class="italic opacity-60">"What’s the WiFi password?"</p>
+                    <p class="italic opacity-60">"Do you have Instagram?"</p>
+                </div>
+
+                <div class="p-6 bg-[#c5a059] text-[#042116] rounded-2xl">
+                    <p class="font-black text-xl uppercase italic">The Skani Solution</p>
+                    <p class="mt-2 font-medium">Customers get everything instantly. No asking. No waiting. Just immersion.</p>
+                </div>
+            </div>
+            
+            <div class="space-y-8">
+                <div class="section-divider"></div>
+                <h2 class="text-5xl font-black text-[#042116]">A Powerful Upgrade.</h2>
+                <p class="text-xl text-gray-600 leading-relaxed">Skani transforms a simple QR code into a full digital experience. When combined with a <strong>Virtual Tour</strong>, Emwani allows first-time visitors and tourists to explore the seating, design, and vibe before even visiting.</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-full bg-[#0b4d36] flex items-center justify-center text-white">
+                            <i class="fa fa-bolt"></i>
+                        </div>
+                        <span class="font-bold text-[#042116]">Speed & Efficiency</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-full bg-[#c5a059] flex items-center justify-center text-[#042116]">
+                            <i class="fa fa-gem"></i>
+                        </div>
+                        <span class="font-bold text-[#042116]">Premium Identity</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Digital Access Details -->
+    <section id="access" class="py-24 bg-white border-y border-gray-100">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="mb-16">
+                <h2 class="text-4xl md:text-6xl font-black text-[#042116] uppercase mb-4">What Customers Will Access</h2>
+                <p class="text-xl text-gray-500 max-w-2xl">A fully flexible platform. Emwani can include anything from current promotions to special event highlights.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-y-12 gap-x-12">
+                <div class="feature-item border-l-2 border-gray-100 pl-6">
+                    <h4 class="font-black text-[#c5a059] uppercase tracking-tighter text-lg mb-2">☕ The Essentials</h4>
+                    <ul class="space-y-2 text-gray-600 font-medium">
+                        <li>• Browse drinks & signature coffee</li>
+                        <li>• Instant WiFi connection</li>
+                        <li>• Café story & brand heritage</li>
+                    </ul>
+                </div>
+                <div class="feature-item border-l-2 border-gray-100 pl-6">
+                    <h4 class="font-black text-[#c5a059] uppercase tracking-tighter text-lg mb-2">📍 Engagement</h4>
+                    <ul class="space-y-2 text-gray-600 font-medium">
+                        <li>• Interactive Virtual Tour</li>
+                        <li>• Google Maps & directions</li>
+                        <li>• Trust-building customer reviews</li>
+                    </ul>
+                </div>
+                <div class="feature-item border-l-2 border-gray-100 pl-6">
+                    <h4 class="font-black text-[#c5a059] uppercase tracking-tighter text-lg mb-2">💡 Feedback Loop</h4>
+                    <ul class="space-y-2 text-gray-600 font-medium">
+                        <li>• Direct customer suggestions</li>
+                        <li>• "What they liked" insights</li>
+                        <li>• One-tap WhatsApp/Call contact</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-16 p-8 bg-gray-50 rounded-3xl border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center space-x-4">
+                    <i class="fa fa-plus-circle text-2xl text-[#c5a059]"></i>
+                    <p class="font-bold text-[#042116]">Fully Flexible: Add promotions, events, or new highlights anytime.</p>
+                </div>
+                <div class="flex space-x-2">
+                    <span class="px-3 py-1 bg-white border border-gray-200 rounded-full text-[10px] font-bold uppercase">Promotions</span>
+                    <span class="px-3 py-1 bg-white border border-gray-200 rounded-full text-[10px] font-bold uppercase">Events</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Real Flow -->
+    <section id="flow" class="py-24 bg-[#042116] text-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-4xl font-black mb-16 uppercase text-center"><span class="text-[#c5a059]">Real</span> Customer Flows</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Flow 1 -->
+                <div class="p-8 bg-white/5 rounded-3xl border border-white/10 hover:border-[#c5a059] transition-all">
+                    <div class="mb-6 flex justify-between items-start">
+                        <i class="fa fa-utensils text-3xl text-[#c5a059]"></i>
+                        <span class="text-[10px] font-black bg-white text-black px-2 py-1 rounded">IN-CAFÉ</span>
+                    </div>
+                    <p class="text-sm font-bold uppercase tracking-widest text-[#c5a059] mb-4">The Sit-Down Experience</p>
+                    <ul class="space-y-4 text-gray-400 text-sm">
+                        <li class="flex items-center space-x-3"><span class="w-1.5 h-1.5 bg-[#c5a059] rounded-full"></span><span>Customer sits & scans table QR</span></li>
+                        <li class="flex items-center space-x-3"><span class="w-1.5 h-1.5 bg-[#c5a059] rounded-full"></span><span>Instantly views menu & connects WiFi</span></li>
+                        <li class="flex items-center space-x-3"><span class="w-1.5 h-1.5 bg-[#c5a059] rounded-full"></span><span>Engages with brand story while waiting</span></li>
+                    </ul>
+                </div>
+
+                <!-- Flow 2 -->
+                <div class="p-8 bg-white/5 rounded-3xl border border-white/10 hover:border-[#c5a059] transition-all">
+                    <div class="mb-6 flex justify-between items-start">
+                        <i class="fa fa-shopping-bag text-3xl text-[#c5a059]"></i>
+                        <span class="text-[10px] font-black bg-white text-black px-2 py-1 rounded">TAKEAWAY</span>
+                    </div>
+                    <p class="text-sm font-bold uppercase tracking-widest text-[#c5a059] mb-4">The Packaging Experience</p>
+                    <ul class="space-y-4 text-gray-400 text-sm">
+                        <li class="flex items-center space-x-3"><span class="w-1.5 h-1.5 bg-[#c5a059] rounded-full"></span><span>Sees QR code on cup or takeaway bag</span></li>
+                        <li class="flex items-center space-x-3"><span class="w-1.5 h-1.5 bg-[#c5a059] rounded-full"></span><span>Scans later at home or office</span></li>
+                        <li class="flex items-center space-x-3"><span class="w-1.5 h-1.5 bg-[#c5a059] rounded-full"></span><span>Keeps Emwani connected post-visit</span></li>
+                    </ul>
+                </div>
+
+                <!-- Flow 3 -->
+                <div class="p-8 bg-white/5 rounded-3xl border border-white/10 hover:border-[#c5a059] transition-all">
+                    <div class="mb-6 flex justify-between items-start">
+                        <i class="fa fa-mobile-alt text-3xl text-[#c5a059]"></i>
+                        <span class="text-[10px] font-black bg-white text-black px-2 py-1 rounded">SOCIALS</span>
+                    </div>
+                    <p class="text-sm font-bold uppercase tracking-widest text-[#c5a059] mb-4">The Online-to-Physical</p>
+                    <ul class="space-y-4 text-gray-400 text-sm">
+                        <li class="flex items-center space-x-3"><span class="w-1.5 h-1.5 bg-[#c5a059] rounded-full"></span><span>Sees café on TikTok / Instagram</span></li>
+                        <li class="flex items-center space-x-3"><span class="w-1.5 h-1.5 bg-[#c5a059] rounded-full"></span><span>Explores via Virtual Tour</span></li>
+                        <li class="flex items-center space-x-3"><span class="w-1.5 h-1.5 bg-[#c5a059] rounded-full"></span><span>Converts viewer into a real visit</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-20 grid md:grid-cols-2 gap-8 items-center border-t border-white/10 pt-20">
+                <div class="space-y-6">
+                    <h3 class="text-3xl font-black uppercase">Where to place the QR?</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <span class="px-6 py-3 bg-white/10 rounded-xl font-bold border border-white/5 uppercase text-xs tracking-widest">📍 Tables (Primary)</span>
+                        <span class="px-6 py-3 bg-white/10 rounded-xl font-bold border border-white/5 uppercase text-xs tracking-widest">📍 Entrance</span>
+                        <span class="px-6 py-3 bg-white/10 rounded-xl font-bold border border-white/5 uppercase text-xs tracking-widest">📍 Counter</span>
+                        <span class="px-6 py-3 bg-white/10 rounded-xl font-bold border border-white/5 uppercase text-xs tracking-widest">📍 Packaging</span>
+                        <span class="px-6 py-3 bg-white/10 rounded-xl font-bold border border-white/5 uppercase text-xs tracking-widest">📍 Social Media</span>
+
+                    </div>
+                </div>
+                <div class="p-8 bg-[#c5a059] text-[#042116] rounded-3xl">
+                    <h4 class="font-black text-2xl uppercase italic mb-4">Why This Matters</h4>
+                    <p class="font-bold leading-relaxed">Today's customers expect speed, convenience, and digital access. Skani helps Emwani meet these expectations while standing out from competitors with a premium, tech-forward touch.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Next Steps -->
+    <section id="next" class="py-24 px-6 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <div class="section-divider mx-auto mb-6"></div>
+                <h2 class="text-4xl md:text-6xl font-black text-[#042116] uppercase">The Next Step</h2>
+            </div>
+            
+            <div class="space-y-12">
+                <div class="flex items-start space-x-8">
+                    <div class="text-4xl font-black text-gray-200">01</div>
+                    <div>
+                        <h4 class="text-xl font-black text-[#042116] uppercase mb-2">Custom Skani Setup</h4>
+                        <p class="text-gray-600">We configure a platform fully tailored to the Emwani brand voice and visual identity.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-8">
+                    <div class="text-4xl font-black text-gray-200">02</div>
+                    <div>
+                        <h4 class="text-xl font-black text-[#042116] uppercase mb-2">Virtual Tour Integration</h4>
+                        <p class="text-gray-600">Connect the high-end 360° visual experience directly into the Skani ecosystem.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-8">
+                    <div class="text-4xl font-black text-gray-200">03</div>
+                    <div>
+                        <h4 class="text-xl font-black text-[#042116] uppercase mb-2">Guided Placement</h4>
+                        <p class="text-gray-600 text-lg font-bold text-[#0b4d36]">We guide the physical QR placement and usage strategy to ensure maximum customer engagement.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-20 p-10 bg-gray-50 rounded-[40px] border border-gray-200 text-center">
+                <h4 class="text-xl font-black uppercase text-[#042116] mb-6">🔥 Optional Add-On: Printing Support</h4>
+                <div class="flex flex-wrap justify-center gap-4 text-xs font-black uppercase tracking-widest text-[#c5a059]">
+                    <span>Table QR Stands</span>
+                    <span class="text-gray-300">•</span>
+                    <span>Branded Stickers</span>
+                    <span class="text-gray-300">•</span>
+                    <span>Custom Posters</span>
+                </div>
+                <p class="mt-6 text-gray-500 font-medium">Full setup available if needed. We don't just provide software; we provide the complete physical ecosystem.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Closing Footer -->
+    <footer class="py-24 hero-pattern text-white text-center px-6">
+        <div class="max-w-2xl mx-auto space-y-10">
+            <h2 class="text-4xl font-black italic">"Emwani is not just a café — it’s a cultural experience."</h2>
+            <p class="text-gray-400">Skani helps bring that experience to life digitally. Stand out. Stay modern. Deliver premium.</p>
+            
+            <div class="pt-10 border-t border-white/10">
+                <p class="font-bold text-[#c5a059] uppercase tracking-[0.3em] text-xs mb-8">Ready to start?</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-6">
+                    <button onclick="openModal()" class="bg-white text-[#042116] px-10 py-5 rounded-xl font-black uppercase tracking-widest hover:bg-[#c5a059] transition-all">See Demo</button>
+                    <a href="https://wa.me/255757249910" target="_blank" class="bg-[#0b4d36] text-white px-10 py-5 rounded-xl font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all inline-block">Contact Us</a>
+                </div>
+            </div>
+            
+            <div class="mt-20">
+                <p class="text-[10px] font-black uppercase tracking-widest opacity-30">Strategy & Design by Code255</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                if(this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Modal Logic
+        const qrModal = document.getElementById('qrModal');
+        function openModal() {
+            qrModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal() {
+            qrModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>
