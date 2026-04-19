@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Zuna Skani | Inside Experience</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        zuna: { 
+                            gold: '#D4AF37',
+                            dark: '#0F1110',
+                            slate: '#1A1F1C',
+                            cream: '#FAF9F6',
+                            accent: '#262A28'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            background-color: #FAF9F6; 
+            color: #0F1110; 
+            font-family: 'Inter', -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease;
+        }
+        .dark body { background-color: #0F1110; color: #FAF9F6; }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .dark .glass {
+            background: rgba(26, 31, 28, 0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .header-glass {
+            background: rgba(250, 249, 246, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .dark .header-glass {
+            background: rgba(15, 17, 16, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            backdrop-filter: blur(12px);
+        }
+        .modal-content {
+            transform: translateY(20px);
+            transition: 0.4s ease;
+            width: 100%;
+            max-width: 28rem;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .tap-scale:active { transform: scale(0.96); }
+        ::-webkit-scrollbar { display: none; }
+        
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding: 20px 0;
+            gap: 16px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .carousel-card {
+            flex: 0 0 280px;
+            scroll-snap-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .suggestion-card {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .suggestion-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="pb-40">
+
+    <div class="max-w-md mx-auto relative min-h-screen border-x border-transparent dark:border-white/5">
+        
+        <!-- STICKY HEADER -->
+        <nav class="fixed top-0 left-0 right-0 z-[60] header-glass">
+            <div class="max-w-md mx-auto px-6 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-zuna-gold rounded-lg flex items-center justify-center text-zuna-dark shadow-md">
+                        <span class="font-black italic text-sm">Z</span>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-[0.2em] dark:text-zuna-gold">Zuna Apartments</span>
+                </div>
+                
+                <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center tap-scale hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                    <i id="theme-icon" class="fa-solid fa-moon text-zinc-500 dark:text-zuna-gold text-lg"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- WELCOME SCREEN -->
+        <header class="p-8 pt-[calc(5rem+env(safe-area-inset-top))] pb-10">
+            <div class="inline-block px-3 py-1 bg-zuna-gold/10 rounded-full border border-zuna-gold/20 mb-4">
+                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-zuna-gold">Guest Assistant</span>
+            </div>
+            <h1 class="text-4xl font-black dark:text-white tracking-tighter leading-none italic mb-4">Welcome to <br>Zuna Apartments</h1>
+            <p class="dark:text-zinc-400 text-sm font-medium leading-relaxed">
+                Enjoy your stay — everything you need is right here.
+            </p>
+        </header>
+
+        <!-- MAIN GRID (CORE ACTIONS) -->
+        <section class="px-6 grid grid-cols-2 gap-4">
+            <!-- WiFi Access -->
+            <button onclick="openModal('wifi-modal')" class="glass p-6 rounded-[2.5rem] flex flex-col items-start gap-3 tap-scale shadow-xl text-left">
+                <div class="w-10 h-10 bg-zuna-gold/10 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-wifi text-zuna-gold text-lg"></i>
+                </div>
+                <span class="text-[11px] font-black uppercase tracking-widest dark:text-white leading-tight">WiFi Access</span>
+            </button>
+            
+            <!-- House Rules -->
+            <button onclick="openModal('rules-modal')" class="glass p-6 rounded-[2.5rem] flex flex-col items-start gap-3 tap-scale shadow-xl text-left">
+                <div class="w-10 h-10 bg-zuna-gold/10 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-clipboard-list text-zuna-gold text-lg"></i>
+                </div>
+                <span class="text-[11px] font-black uppercase tracking-widest dark:text-white leading-tight">House Rules</span>
+            </button>
+
+            <!-- Menu -->
+            <button onclick="openModal('menu-modal')" class="glass p-6 rounded-[2.5rem] flex flex-col items-start gap-3 tap-scale shadow-xl text-left">
+                <div class="w-10 h-10 bg-zuna-gold/10 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-utensils text-zuna-gold text-lg"></i>
+                </div>
+                <span class="text-[11px] font-black uppercase tracking-widest dark:text-white leading-tight">Menu</span>
+            </button>
+
+            <!-- Emergency -->
+            <button onclick="openModal('emergency-modal')" class="glass p-6 rounded-[2.5rem] flex flex-col items-start gap-3 tap-scale shadow-xl border-red-500/20 text-left">
+                <div class="w-10 h-10 bg-red-500/10 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-triangle-exclamation text-red-500 text-lg"></i>
+                </div>
+                <span class="text-[11px] font-black uppercase tracking-widest text-red-500 leading-tight">Emergency</span>
+            </button>
+
+            <!-- How Things Work -->
+            <button onclick="openModal('how-to-modal')" class="col-span-2 glass p-6 rounded-[2.5rem] flex items-center justify-between tap-scale shadow-xl">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-zuna-gold/10 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-gears text-zuna-gold text-lg"></i>
+                    </div>
+                    <span class="text-[11px] font-black uppercase tracking-widest dark:text-white">How Things Work (Guide)</span>
+                </div>
+                <i class="fa-solid fa-chevron-right opacity-30"></i>
+            </button>
+        </section>
+
+        <!-- NEARBY PLACES CAROUSEL -->
+        <section class="mt-12">
+            <div class="px-8 flex items-end justify-between mb-2">
+                <div>
+                    <p class="text-[10px] font-black text-zuna-gold uppercase tracking-[0.3em] mb-1">Explore Dar</p>
+                    <h2 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter">Nearby Places</h2>
+                </div>
+                <div class="flex gap-1 mb-2">
+                    <div class="w-1.5 h-1.5 rounded-full bg-zuna-gold"></div>
+                    <div class="w-1.5 h-1.5 rounded-full bg-zinc-700/50"></div>
+                    <div class="w-1.5 h-1.5 rounded-full bg-zinc-700/50"></div>
+                </div>
+            </div>
+            
+            <div class="carousel-container px-6">
+                <!-- Restaurants -->
+                <div class="carousel-card glass p-6 rounded-[2.5rem] flex flex-col h-[320px] shadow-2xl relative group overflow-hidden border-zuna-gold/20">
+                    <div class="absolute top-4 right-6 px-3 py-1 bg-zuna-gold/20 rounded-full">
+                        <span class="text-[8px] font-black text-zuna-gold uppercase tracking-widest">Featured</span>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-orange-500/20">
+                        <i class="fa-solid fa-bowl-food text-white text-2xl"></i>
+                    </div>
+                    <h4 class="text-lg font-black uppercase tracking-tight dark:text-white mb-3 italic">Restaurants & Cafés</h4>
+                    <p class="text-xs dark:text-zinc-400 font-medium leading-relaxed mb-8">Discover the finest local dining, boutique cafés and upscale experiences within Mikocheni and Kinondoni.</p>
+                    <button onclick="window.open('https://www.google.com/maps/search/best+restaurants+near+Zuna+Apartments+Kinondoni', '_blank')" class="mt-auto w-full py-4 bg-zuna-gold text-white rounded-2xl text-[10px] font-black uppercase tracking-widest tap-scale shadow-lg shadow-zuna-gold/20">
+                        Explore Dining <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <!-- Shopping -->
+                <div class="carousel-card glass p-6 rounded-[2.5rem] flex flex-col h-[320px] shadow-2xl relative overflow-hidden">
+                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
+                        <i class="fa-solid fa-cart-shopping text-white text-2xl"></i>
+                    </div>
+                    <h4 class="text-lg font-black uppercase tracking-tight dark:text-white mb-3 italic">Retail & Shopping</h4>
+                    <p class="text-xs dark:text-zinc-400 font-medium leading-relaxed mb-8">Access Shoppers Plaza, Village Walk, and artisanal markets for all your essentials and luxury finds.</p>
+                    <button onclick="window.open('https://www.google.com/maps/search/supermarkets+near+Zuna+Apartments+Kinondoni', '_blank')" class="mt-auto w-full py-4 bg-zinc-800 dark:bg-white dark:text-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest tap-scale">
+                        Find Markets <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <!-- Beaches -->
+                <div class="carousel-card glass p-6 rounded-[2.5rem] flex flex-col h-[320px] shadow-2xl relative overflow-hidden">
+                    <div class="w-14 h-14 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/20">
+                        <i class="fa-solid fa-umbrella-beach text-white text-2xl"></i>
+                    </div>
+                    <h4 class="text-lg font-black uppercase tracking-tight dark:text-white mb-3 italic">Coastal Relax</h4>
+                    <p class="text-xs dark:text-zinc-400 font-medium leading-relaxed mb-8">Unwind at Mbezi Beach or Coco Beach. Perfect spots for a sunset walk or a weekend coastal breeze.</p>
+                    <button onclick="window.open('https://www.google.com/maps/search/beaches+near+Zuna+Apartments+Kinondoni', '_blank')" class="mt-auto w-full py-4 bg-zinc-800 dark:bg-white dark:text-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest tap-scale">
+                        Visit Coast <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <!-- Transport -->
+                <div class="carousel-card glass p-6 rounded-[2.5rem] flex flex-col h-[320px] shadow-2xl relative overflow-hidden mr-6">
+                    <div class="w-14 h-14 bg-gradient-to-br from-emerald-400 to-green-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-green-500/20">
+                        <i class="fa-solid fa-taxi text-white text-2xl"></i>
+                    </div>
+                    <h4 class="text-lg font-black uppercase tracking-tight dark:text-white mb-3 italic">City Essentials</h4>
+                    <p class="text-xs dark:text-zinc-400 font-medium leading-relaxed mb-8">Fuel stations, global banks (ATMs), and primary transport hubs are just minutes from the apartment.</p>
+                    <button onclick="window.open('https://www.google.com/maps/search/ATM+and+fuel+near+Zuna+Apartments+Kinondoni', '_blank')" class="mt-auto w-full py-4 bg-zinc-800 dark:bg-white dark:text-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest tap-scale">
+                        View Map <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECONDARY ACTIONS & SUGGESTION -->
+        <section class="px-6 mt-6 space-y-4">
+            <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/havana-mikocheni/', '_blank')" class="w-full glass p-5 rounded-3xl flex items-center justify-between tap-scale">
+                <div class="flex items-center gap-4">
+                    <i class="fa-solid fa-vr-cardboard text-zuna-gold"></i>
+                    <span class="text-[11px] font-black uppercase tracking-widest dark:text-white">Virtual Tour</span>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-40"></i>
+            </button>
+
+            <button onclick="window.open('https://www.google.com/search?q=zuna+apartment&oq=zuna', '_blank')" class="w-full glass p-5 rounded-3xl flex items-center justify-between tap-scale">
+                <div class="flex items-center gap-4">
+                    <i class="fa-solid fa-star text-zuna-gold"></i>
+                    <span class="text-[11px] font-black uppercase tracking-widest dark:text-white">Leave a Review</span>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-40"></i>
+            </button>
+            
+            <!-- ENHANCED SUGGESTION SECTION -->
+            <button onclick="openModal('suggestion-modal')" class="w-full suggestion-card p-6 rounded-[2.5rem] flex items-center justify-between tap-scale shadow-2xl">
+                <div class="flex items-center gap-5">
+                    <div class="w-12 h-12 bg-zuna-gold rounded-full flex items-center justify-center shadow-lg shadow-zuna-gold/30">
+                        <i class="fa-solid fa-lightbulb text-white text-xl animate-pulse"></i>
+                    </div>
+                    <div class="text-left">
+                        <span class="block text-[11px] font-black uppercase tracking-[0.2em] text-zuna-gold mb-0.5">Share Your Idea</span>
+                        <span class="block text-sm font-bold dark:text-white">Leave a Suggestion</span>
+                    </div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                    <i class="fa-solid fa-plus text-zuna-gold"></i>
+                </div>
+            </button>
+        </section>
+
+        <!-- GUEST INFORMATION GRID -->
+        <section class="px-6 mt-10 grid grid-cols-2 gap-4">
+            <!-- Check-in / Check-out -->
+            <button onclick="openModal('check-in-modal')" class="glass p-6 rounded-[2.5rem] flex flex-col items-start gap-3 tap-scale shadow-xl text-left border-zuna-gold/20">
+                <div class="w-10 h-10 bg-zuna-gold/10 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-clock text-zuna-gold text-lg"></i>
+                </div>
+                <span class="text-[10px] font-black uppercase tracking-widest dark:text-white leading-tight">Check-In / Out Info</span>
+            </button>
+
+            <!-- Access & Keys -->
+            <button onclick="openModal('keys-modal')" class="glass p-6 rounded-[2.5rem] flex flex-col items-start gap-3 tap-scale shadow-xl text-left">
+                <div class="w-10 h-10 bg-zuna-gold/10 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-key text-zuna-gold text-lg"></i>
+                </div>
+                <span class="text-[10px] font-black uppercase tracking-widest dark:text-white leading-tight">Access & Keys</span>
+            </button>
+
+            <!-- Bills & Charges -->
+            <button onclick="openModal('bills-modal')" class="glass p-6 rounded-[2.5rem] flex flex-col items-start gap-3 tap-scale shadow-xl text-left">
+                <div class="w-10 h-10 bg-zuna-gold/10 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-file-invoice-dollar text-zuna-gold text-lg"></i>
+                </div>
+                <span class="text-[10px] font-black uppercase tracking-widest dark:text-white leading-tight">Bills & Charges</span>
+            </button>
+
+            <!-- Request Services -->
+            <button onclick="openModal('services-modal')" class="glass p-6 rounded-[2.5rem] flex flex-col items-start gap-3 tap-scale shadow-xl text-left bg-zuna-gold/5 border-zuna-gold/30">
+                <div class="w-10 h-10 bg-zuna-gold/20 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-bell text-zuna-gold text-lg"></i>
+                </div>
+                <span class="text-[10px] font-black uppercase tracking-widest dark:text-white leading-tight">Request Services</span>
+            </button>
+
+            <!-- Amenities Guide -->
+            <button onclick="openModal('amenities-modal')" class="col-span-2 glass p-6 rounded-[2.5rem] flex items-center justify-between tap-scale shadow-xl">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-zuna-gold/10 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-gem text-zuna-gold text-lg"></i>
+                    </div>
+                    <span class="text-[11px] font-black uppercase tracking-widest dark:text-white">Amenities Guide</span>
+                </div>
+                <i class="fa-solid fa-chevron-right opacity-30"></i>
+            </button>
+        </section>
+
+        <!-- CONNECT WITH US -->
+        <section class="px-6 mt-12 pb-24">
+            <h3 class="text-xs font-black dark:text-zuna-gold uppercase tracking-[0.4em] mb-6 text-center">Connect With Us</h3>
+            <div class="grid grid-cols-4 gap-4">
+                <a href="https://wa.me/255717193703?text=Hello%20Zuna%20Apartments%2C%20I%20need%20assistance%20%2F%20booking%20support." target="_blank" class="glass h-14 rounded-2xl flex items-center justify-center text-xl text-green-500 tap-scale border-none shadow-lg">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+                <a href="tel:0717193703" target="_blank" class="glass h-14 rounded-2xl flex items-center justify-center text-xl text-blue-500 tap-scale border-none shadow-lg">
+                    <i class="fa-solid fa-phone"></i>
+                </a>
+                <a href="https://www.instagram.com/zunaapartment/" target="_blank" class="glass h-14 rounded-2xl flex items-center justify-center text-xl text-[#E4405F] tap-scale border-none shadow-lg">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="mailto:info@zunaapartments.com" target="_blank" class="glass h-14 rounded-2xl flex items-center justify-center text-xl text-zuna-gold tap-scale border-none shadow-lg">
+                    <i class="fa-solid fa-envelope"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- STICKY BOTTOM BAR -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-6 pb-[calc(2rem+env(safe-area-inset-bottom))]">
+            <div class="max-w-md mx-auto glass dark:bg-zuna-dark/95 backdrop-blur-2xl rounded-[2.5rem] p-2 flex items-center justify-between shadow-2xl border border-white/10">
+                <a href="tel:0717193703" class="w-14 h-14 flex items-center justify-center dark:text-white tap-scale rounded-full">
+                    <i class="fa-solid fa-phone-volume text-xl"></i>
+                </a>
+                <button onclick="window.open('https://wa.me/255717193703?text=Hello%20Zuna%20Apartments%2C%20I%20need%20assistance.', '_blank')" class="flex-1 mx-3 bg-zuna-gold text-white font-black text-[10px] uppercase tracking-widest py-4 rounded-full shadow-lg shadow-zuna-gold/30 tap-scale border-none italic">
+                    WhatsApp Host
+                </button>
+                <div class="w-14 h-14 flex items-center justify-center">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- MODALS -->
+
+        <!-- WIFI MODAL -->
+        <div id="wifi-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('wifi-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-6">WiFi Access</h3>
+                <div class="space-y-4">
+                    <div class="p-5 bg-white/5 rounded-3xl border border-white/10">
+                        <p class="text-[9px] font-black uppercase text-zuna-gold tracking-widest mb-1">Network Name</p>
+                        <p class="font-bold dark:text-white">Zuna_Apartments</p>
+                    </div>
+                    <div class="p-5 bg-white/5 rounded-3xl border border-white/10 relative group">
+                        <p class="text-[9px] font-black uppercase text-zuna-gold tracking-widest mb-1">Password</p>
+                        <div class="flex items-center justify-between">
+                            <p id="wifi-password" class="font-bold dark:text-white tracking-widest">Zuna Skani pass</p>
+                            <button onclick="copyPassword()" class="w-10 h-10 bg-zuna-gold text-white rounded-xl flex items-center justify-center tap-scale shadow-lg shadow-zuna-gold/20">
+                                <i id="copy-icon" class="fa-solid fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest text-center mt-6">Connect instantly without asking</p>
+            </div>
+        </div>
+
+        <!-- RULES MODAL -->
+        <div id="rules-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('rules-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative max-h-[85vh] overflow-y-auto">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-6">House Rules</h3>
+                <div class="space-y-5">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-4 bg-white/5 rounded-2xl"><p class="text-[8px] uppercase font-black text-zuna-gold">Check-in</p><p class="text-xs font-bold dark:text-white">From 11:00</p></div>
+                        <div class="p-4 bg-white/5 rounded-2xl"><p class="text-[8px] uppercase font-black text-zuna-gold">Check-out</p><p class="text-xs font-bold dark:text-white">Until 11:00</p></div>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3 text-sm font-medium dark:text-zinc-300"><i class="fa-solid fa-volume-xmark text-zuna-gold mt-1"></i> No loud music or parties</li>
+                        <li class="flex items-start gap-3 text-sm font-medium dark:text-zinc-300"><i class="fa-solid fa-people-roof text-zuna-gold mt-1"></i> Respect neighbors & property</li>
+                        <li class="flex items-start gap-3 text-sm font-medium dark:text-zinc-300"><i class="fa-solid fa-ban-smoking text-zuna-gold mt-1"></i> No smoking inside rooms</li>
+                        <li class="flex items-start gap-3 text-sm font-medium dark:text-zinc-300"><i class="fa-solid fa-broom text-zuna-gold mt-1"></i> Maintain cleanliness during stay</li>
+                    </ul>
+                </div>
+                <button onclick="closeModal('rules-modal')" class="w-full bg-zuna-gold text-white mt-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border-none">I Understand</button>
+            </div>
+        </div>
+
+        <!-- MENU MODAL -->
+        <div id="menu-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('menu-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-6">Menu & Dining</h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
+                        <h4 class="text-xs font-black uppercase dark:text-white mb-1">🍳 Breakfast</h4>
+                        <p class="text-xs text-zinc-400">Available daily. Ask staff for today's options.</p>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
+                        <h4 class="text-xs font-black uppercase dark:text-white mb-1">🍹 Drinks</h4>
+                        <p class="text-xs text-zinc-400">Fresh juices, water, and sodas available.</p>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
+                        <h4 class="text-xs font-black uppercase dark:text-white mb-1">🛎️ Room Service</h4>
+                        <p class="text-xs text-zinc-400">Dial the host for in-room meal delivery.</p>
+                    </div>
+                </div>
+                <p class="text-[9px] text-zuna-gold font-black uppercase text-center mt-6">Restaurant timings apply</p>
+            </div>
+        </div>
+
+        <!-- EMERGENCY MODAL -->
+        <div id="emergency-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal('emergency-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative text-center">
+                <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-phone-volume text-2xl text-red-500 animate-bounce"></i>
+                </div>
+                <h3 class="text-2xl font-black text-red-500 uppercase italic tracking-tighter mb-2">Emergency Help</h3>
+                <p class="text-[10px] font-black dark:text-zinc-400 uppercase tracking-widest mb-8">Press only in case of urgent assistance</p>
+                <div class="space-y-4">
+                    <a href="tel:0717193703" class="w-full py-5 bg-red-500 text-white rounded-2xl font-black uppercase text-sm tracking-widest tap-scale flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-phone"></i> Call Emergency
+                    </a>
+                    <a href="https://wa.me/255717193703?text=URGENT%3A%20I%20need%20immediate%20assistance%20in%20my%20room." target="_blank" class="w-full py-5 glass dark:text-white rounded-2xl font-black uppercase text-sm tracking-widest tap-scale flex items-center justify-center gap-3 border-none">
+                        <i class="fa-brands fa-whatsapp"></i> WhatsApp Help
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- HOW THINGS WORK MODAL -->
+        <div id="how-to-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('how-to-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative max-h-[85vh] overflow-y-auto">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-6">Room Guide</h3>
+                
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-zuna-gold mb-3">🍽️ Kitchen</h4>
+                        <p class="text-sm dark:text-zinc-300 leading-relaxed">Plates, cups, and glasses are inside the upper cupboards above the sink. The gas/stove is ready to use (turn knob to ignite). Please wash dishes after use.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-zuna-gold mb-3">🔥 Microwave</h4>
+                        <p class="text-sm dark:text-zinc-300 leading-relaxed">Place food inside a microwave-safe container. Set time using dial/buttons and press start. Wait before opening (hot steam warning).</p>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-zuna-gold mb-3">🧺 Laundry</h4>
+                        <p class="text-sm dark:text-zinc-300 leading-relaxed">Washing machine located in laundry area. Load clothes (do not overfill), add detergent in slot, select quick wash mode, and press start.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-zuna-gold mb-3">💡 Electricity & AC</h4>
+                        <p class="text-sm dark:text-zinc-300 leading-relaxed">Light switches are near the entrance. The AC remote is in the room. Please turn off both when leaving the room.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-zuna-gold mb-3">🚿 Bathroom</h4>
+                        <p class="text-sm dark:text-zinc-300 leading-relaxed">Hot water is available (turn the heater switch on if needed). Please conserve water.</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('how-to-modal')" class="w-full bg-zuna-gold text-white mt-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border-none">Close Guide</button>
+            </div>
+        </div>
+
+        <!-- SUGGESTION MODAL -->
+        <div id="suggestion-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('suggestion-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-2">Suggestions</h3>
+                <p class="text-[10px] font-black text-zuna-gold uppercase tracking-widest mb-8">Help us improve</p>
+                <form id="suggestion-form" class="space-y-4">
+                    <input type="text" id="guest_name" required placeholder="Your Name" class="w-full glass bg-transparent border-none rounded-2xl p-4 text-sm font-bold dark:text-white outline-none">
+                    <textarea id="guest_msg" required rows="4" placeholder="Your Feedback or Suggestion..." class="w-full glass bg-transparent border-none rounded-2xl p-4 text-sm font-bold dark:text-white outline-none resize-none"></textarea>
+                    <button type="submit" class="w-full bg-zuna-gold text-white py-5 rounded-2xl font-black uppercase text-xs tracking-widest tap-scale border-none shadow-xl shadow-zuna-gold/20">
+                        Submit via WhatsApp
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- CHECK-IN MODAL -->
+        <div id="check-in-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('check-in-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-6">Check-In / Out</h3>
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center border-b border-white/5 pb-4">
+                        <span class="text-xs font-black uppercase tracking-widest text-zuna-gold">Check-In</span>
+                        <span class="text-sm font-bold dark:text-white">From 11:00</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-white/5 pb-4">
+                        <span class="text-xs font-black uppercase tracking-widest text-zuna-gold">Check-Out</span>
+                        <span class="text-sm font-bold dark:text-white">Until 11:00</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-white/5 pb-4">
+                        <span class="text-xs font-black uppercase tracking-widest text-zuna-gold">Late Check-Out</span>
+                        <span class="text-sm font-bold dark:text-white">On Request</span>
+                    </div>
+                    <div class="pt-2">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-zuna-gold mb-3">Before you leave:</p>
+                        <div class="grid grid-cols-1 gap-2">
+                            <div class="flex items-center gap-3 text-sm dark:text-zinc-300 font-medium"><i class="fa-solid fa-power-off text-zuna-gold w-4"></i> Turn off AC</div>
+                            <div class="flex items-center gap-3 text-sm dark:text-zinc-300 font-medium"><i class="fa-solid fa-lock text-zuna-gold w-4"></i> Lock doors</div>
+                            <div class="flex items-center gap-3 text-sm dark:text-zinc-300 font-medium"><i class="fa-solid fa-key text-zuna-gold w-4"></i> Return keys</div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="closeModal('check-in-modal')" class="w-full bg-zuna-gold text-white mt-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border-none">Got it</button>
+            </div>
+        </div>
+
+        <!-- ACCESS & KEYS MODAL -->
+        <div id="keys-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('keys-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-6">Access & Keys</h3>
+                <div class="space-y-6">
+                    <div class="p-4 bg-white/5 rounded-2xl">
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-zuna-gold mb-2">Locking / Unlocking</h4>
+                        <p class="text-xs dark:text-zinc-300 leading-relaxed">Insert key and turn clockwise to lock. Ensure the handle clicks into place. To unlock, turn counter-clockwise.</p>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-2xl">
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-zuna-gold mb-2">Key Storage</h4>
+                        <p class="text-xs dark:text-zinc-300 leading-relaxed">Always keep your keys with you. When checking out, please leave them on the designated kitchen counter or return to the host.</p>
+                    </div>
+                    <div class="p-4 bg-red-500/10 rounded-2xl border border-red-500/20">
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-red-500 mb-2">Locked Out?</h4>
+                        <p class="text-xs dark:text-zinc-300 leading-relaxed italic">Contact the host immediately via the emergency button if you lose your keys or get locked out.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BILLS MODAL -->
+        <div id="bills-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('bills-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative text-center">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-2">Bills & Charges</h3>
+                <p class="text-[10px] font-black text-zuna-gold uppercase tracking-widest mb-8">Policy Transparency</p>
+                <div class="space-y-4 text-left">
+                    <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl">
+                        <span class="text-xs font-bold dark:text-white">Extra Guest Fee</span>
+                        <span class="text-xs font-black text-zuna-gold">Contact Host</span>
+                    </div>
+                    <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl">
+                        <span class="text-xs font-bold dark:text-white">Late Checkout Fee</span>
+                        <span class="text-xs font-black text-zuna-gold">Varies</span>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-2xl">
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-zuna-gold mb-2">Damages Policy</h4>
+                        <p class="text-[11px] dark:text-zinc-400">Guests are responsible for any damages incurred during their stay. Please report accidents early.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SERVICES MODAL -->
+        <div id="services-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('services-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-2">Request Services</h3>
+                <p class="text-[10px] font-black text-zuna-gold uppercase tracking-widest mb-8">Instant Assistance</p>
+                <div class="grid grid-cols-1 gap-3">
+                    <button onclick="requestService('Cleaning')" class="p-4 bg-white/5 rounded-2xl flex items-center justify-between tap-scale">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-broom text-zuna-gold"></i>
+                            <span class="text-sm font-bold dark:text-white">Cleaning</span>
+                        </div>
+                        <i class="fa-brands fa-whatsapp text-green-500"></i>
+                    </button>
+                    <button onclick="requestService('Laundry')" class="p-4 bg-white/5 rounded-2xl flex items-center justify-between tap-scale">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-shirt text-zuna-gold"></i>
+                            <span class="text-sm font-bold dark:text-white">Laundry</span>
+                        </div>
+                        <i class="fa-brands fa-whatsapp text-green-500"></i>
+                    </button>
+                    <button onclick="requestService('Room Service')" class="p-4 bg-white/5 rounded-2xl flex items-center justify-between tap-scale">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-tray text-zuna-gold"></i>
+                            <span class="text-sm font-bold dark:text-white">Room Service</span>
+                        </div>
+                        <i class="fa-brands fa-whatsapp text-green-500"></i>
+                    </button>
+                    <button onclick="requestService('Maintenance')" class="p-4 bg-white/5 rounded-2xl flex items-center justify-between tap-scale">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-wrench text-zuna-gold"></i>
+                            <span class="text-sm font-bold dark:text-white">Maintenance</span>
+                        </div>
+                        <i class="fa-brands fa-whatsapp text-green-500"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AMENITIES MODAL -->
+        <div id="amenities-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('amenities-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative max-h-[85vh] overflow-y-auto">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-6">Amenities Guide</h3>
+                <div class="space-y-6">
+                    <div class="border-b border-white/5 pb-4">
+                        <h4 class="text-xs font-black uppercase text-zuna-gold mb-2 flex items-center gap-2">WiFi <i class="fa-solid fa-check text-[10px]"></i></h4>
+                        <p class="text-xs dark:text-zinc-400">High-speed fiber internet. Rules: No illegal downloads.</p>
+                    </div>
+                    <div class="border-b border-white/5 pb-4">
+                        <h4 class="text-xs font-black uppercase text-zuna-gold mb-2 flex items-center gap-2">Pool <i class="fa-solid fa-check text-[10px]"></i></h4>
+                        <p class="text-xs dark:text-zinc-400">Outdoor pool available. Rules: No diving, children must be supervised.</p>
+                    </div>
+                    <div class="border-b border-white/5 pb-4">
+                        <h4 class="text-xs font-black uppercase text-zuna-gold mb-2 flex items-center gap-2">Restaurant <i class="fa-solid fa-check text-[10px]"></i></h4>
+                        <p class="text-xs dark:text-zinc-400">On-site dining. Rules: Operating hours vary by season.</p>
+                    </div>
+                    <div class="border-b border-white/5 pb-4">
+                        <h4 class="text-xs font-black uppercase text-zuna-gold mb-2 flex items-center gap-2">Spa <i class="fa-solid fa-check text-[10px]"></i></h4>
+                        <p class="text-xs dark:text-zinc-400">Relaxation services. Rules: Appointments required 24h in advance.</p>
+                    </div>
+                    <div class="pb-4">
+                        <h4 class="text-xs font-black uppercase text-zuna-gold mb-2 flex items-center gap-2">Parking <i class="fa-solid fa-check text-[10px]"></i></h4>
+                        <p class="text-xs dark:text-zinc-400">Secure parking inside the compound. Rules: One slot per apartment.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // MODAL LOGIC
+        function openModal(id) { 
+            document.getElementById(id).classList.add('active'); 
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            document.body.style.overflow = '';
+        }
+
+        // COPY PASSWORD
+        function copyPassword() {
+            const password = document.getElementById('wifi-password').innerText;
+            const el = document.createElement('textarea');
+            el.value = password;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            const icon = document.getElementById('copy-icon');
+            icon.classList.replace('fa-copy', 'fa-check');
+            setTimeout(() => {
+                icon.classList.replace('fa-check', 'fa-copy');
+            }, 2000);
+        }
+
+        // REQUEST SERVICE LOGIC
+        function requestService(type) {
+            const text = `Hi, I need ${type.toLowerCase()} for my room.`;
+            window.open(`https://wa.me/255717193703?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        // SUGGESTION FORM
+        document.getElementById('suggestion-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('guest_name').value;
+            const msg = document.getElementById('guest_msg').value;
+            const text = `Guest suggestion from Zuna Skani experience\nName: ${name}\nFeedback: ${msg}`;
+            window.open(`https://wa.me/255717193703?text=${encodeURIComponent(text)}`, '_blank');
+        });
+
+        // THEME TOGGLE LOGIC
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const htmlElement = document.documentElement;
+
+        if (localStorage.getItem('theme') === 'light') {
+            htmlElement.classList.remove('dark');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        } else {
+            htmlElement.classList.add('dark');
+            themeIcon.classList.replace('fa-sun', 'fa-moon');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlElement.classList.add('dark');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
+</body>
+</html>

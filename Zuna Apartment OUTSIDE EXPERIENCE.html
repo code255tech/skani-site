@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Zuna Apartments | Modern Living</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        zuna: { 
+                            gold: '#D4AF37',
+                            dark: '#0F1110',
+                            slate: '#1A1F1C',
+                            cream: '#FAF9F6',
+                            accent: '#262A28'
+                        }
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                        '5xl': '3.5rem',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            background-color: #FAF9F6; 
+            color: #0F1110; 
+            font-family: 'Inter', -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .dark body { background-color: #0F1110; color: #FAF9F6; }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .glass {
+            background: rgba(26, 31, 28, 0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .text-gold {
+            background: linear-gradient(135deg, #D4AF37 0%, #F5E0A3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            backdrop-filter: blur(12px);
+        }
+        .modal-content {
+            transform: translateY(20px);
+            transition: 0.4s ease;
+            width: 100%;
+            max-width: 28rem;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .tap-scale:active { transform: scale(0.96); }
+        
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="pb-32">
+
+    <div class="max-w-md mx-auto relative min-h-screen border-x border-transparent dark:border-white/5">
+        
+        <!-- HERO HEADER -->
+        <header class="relative h-[55vh] overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover" alt="Zuna Apartments">
+            <div class="absolute inset-0 bg-gradient-to-t from-zuna-dark via-zuna-dark/30 to-transparent"></div>
+            
+            <!-- GLASSMORPHISM HEADER SECTION -->
+            <div class="absolute top-0 left-0 right-0 p-4 pt-[calc(1rem+env(safe-area-inset-top))] z-20">
+                <div class="glass dark:bg-white/10 backdrop-blur-xl rounded-full px-5 py-3 flex justify-between items-center border border-white/20 shadow-2xl">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-zuna-gold rounded-lg flex items-center justify-center text-zuna-dark shadow-inner">
+                            <span class="font-black text-sm italic">Z</span>
+                        </div>
+                        <span class="text-white font-black text-xs uppercase tracking-tighter italic">Zuna Apartments</span>
+                    </div>
+                    <button onclick="toggleTheme()" class="w-9 h-9 bg-white/10 hover:bg-white/20 transition-colors rounded-full flex items-center justify-center text-white border-none">
+                        <i id="theme-icon" class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="absolute bottom-12 left-8 right-8">
+                <h1 class="text-5xl font-black text-white tracking-tighter leading-none italic mb-3">Zuna Apartments</h1>
+                <p class="text-white/90 text-sm font-medium leading-relaxed max-w-[280px]">Where Comfort Meets Modern Living. Affordable luxury designed for your lifestyle.</p>
+            </div>
+        </header>
+
+        <!-- 1. MAIN GRID (2x2 CORE) -->
+        <section class="px-6 -mt-8 relative z-10 grid grid-cols-2 gap-4">
+            <button onclick="openModal('about-modal')" class="reveal glass p-6 rounded-[2.5rem] flex flex-col items-start gap-3 tap-scale shadow-xl shadow-black/5">
+                <div class="w-10 h-10 bg-zuna-gold/10 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-building-user text-zuna-gold text-lg"></i>
+                </div>
+                <span class="text-[11px] font-black uppercase tracking-widest dark:text-white">About Us</span>
+            </button>
+            
+            <button onclick="openModal('apartments-modal')" class="reveal glass p-6 rounded-[2.5rem] flex flex-col items-start gap-3 tap-scale shadow-xl shadow-black/5">
+                <div class="w-10 h-10 bg-zuna-gold/10 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-door-open text-zuna-gold text-lg"></i>
+                </div>
+                <span class="text-[11px] font-black uppercase tracking-widest dark:text-white">Our Units</span>
+            </button>
+
+            <button onclick="window.open('https://www.airbnb.com/rooms/1110258756140226396?source_impression_id=p3_1776607239_P3iyLh3_BpAphMeG&check_in=2026-05-06&guests=1&adults=1&check_out=2026-05-07', '_blank')" class="reveal glass p-6 rounded-[2.5rem] flex flex-col items-start gap-3 tap-scale shadow-xl shadow-black/5">
+                <div class="w-10 h-10 bg-zuna-gold/10 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-globe text-zuna-gold text-lg"></i>
+                </div>
+                <span class="text-[11px] font-black uppercase tracking-widest dark:text-white">Website</span>
+            </button>
+
+            <button onclick="openModal('tour-modal')" class="reveal glass p-6 rounded-[2.5rem] flex flex-col items-start gap-3 tap-scale shadow-xl shadow-black/5">
+                <div class="w-10 h-10 bg-zuna-gold/10 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-vr-cardboard text-zuna-gold text-lg"></i>
+                </div>
+                <span class="text-[11px] font-black uppercase tracking-widest dark:text-white">Virtual Tour</span>
+            </button>
+        </section>
+
+        <!-- 2. FEATURED ACTION (ENQUIRE) -->
+        <section class="px-6 mt-4 reveal">
+            <button onclick="openModal('booking-modal')" class="w-full bg-zuna-gold p-6 rounded-[2.5rem] flex items-center justify-between tap-scale text-white shadow-2xl shadow-zuna-gold/20">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-calendar-check text-xl"></i>
+                    </div>
+                    <div class="text-left">
+                        <span class="block text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Ready to stay?</span>
+                        <span class="text-lg font-black uppercase italic tracking-tighter">Book / Enquire Now</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right opacity-50"></i>
+            </button>
+        </section>
+
+        <!-- 3. SECONDARY GRID (2x2 FEATURES) -->
+        <section class="px-6 mt-12 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-black dark:text-white uppercase tracking-tighter italic">The Zuna Experience</h3>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="window.open('https://maps.app.goo.gl/x4CYSZTEbV85ozTT9', '_blank')" class="reveal glass p-5 rounded-3xl flex items-center gap-3 tap-scale text-left">
+                    <i class="fa-solid fa-location-dot text-zuna-gold"></i>
+                    <span class="text-[10px] font-black uppercase tracking-widest dark:text-white">Location</span>
+                </button>
+                <button onclick="window.open('https://www.google.com/search?q=zuna+apartment&oq=zuna+&gs_lcrp=EgZjaHJvbWUqCAgAEEUYJxg7MggIABBFGCcYOzIGCAEQRRg5MgYIAhAjGCcyBggDEEUYOzIHCAQQABiABDIGCAUQRRg8MgYIBhBFGDwyBggHEEUYPNIBCDEwMjNqMGo0qAIAsAIB&sourceid=chrome&ie=UTF-8#sv=CAESzQEKuQEStgEKd0FNbjMteVNNdUpFYWZzZ2NyNklTMGkzaklZbjRaTEdLQ293UWxGd2JFZFlTekNkenVDV3pNdUQ4SFJmLTlKREp2M1hobVNPNkJockxZczg3anlZU0xKLXJyd2tXLWJtSXgwLW1CVVB6SWc2ZW96ZTZmVHFiX3UwEhcxdWprYVlQMkM3RC03TThQdk1fUWdBRRoiQUpLTEZtSS1VcVBRbEJkMHF6LWtEYmxTN2VDRks1YUp2URIEODA1MRoBMyoAMAA4AUAAGAAg8Y_UzQVKAhAC', '_blank')" class="reveal glass p-5 rounded-3xl flex items-center gap-3 tap-scale text-left">
+                    <i class="fa-solid fa-star text-zuna-gold"></i>
+                    <span class="text-[10px] font-black uppercase tracking-widest dark:text-white">Reviews</span>
+                </button>
+                <button onclick="window.open('https://martindavis.pixieset.com/zunaapartments/', '_blank')" class="reveal glass p-5 rounded-3xl flex items-center gap-3 tap-scale text-left">
+                    <i class="fa-solid fa-camera text-zuna-gold"></i>
+                    <span class="text-[10px] font-black uppercase tracking-widest dark:text-white">Gallery</span>
+                </button>
+                <button onclick="openModal('amenities-modal')" class="reveal glass p-5 rounded-3xl flex items-center gap-3 tap-scale text-left">
+                    <i class="fa-solid fa-wand-magic-sparkles text-zuna-gold"></i>
+                    <span class="text-[10px] font-black uppercase tracking-widest dark:text-white">Amenities</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SOCIAL CONNECT -->
+        <section class="px-6 mt-8 reveal pb-20">
+            <div class="glass p-8 rounded-[3rem] text-center border-dashed border-2 border-zuna-gold/20">
+                <p class="text-[10px] font-black text-zuna-gold uppercase tracking-[0.4em] mb-6">Connect With Us</p>
+                <div class="flex justify-center gap-6">
+                    <a href="https://wa.me/255717193703" target="_blank" class="w-14 h-14 glass rounded-2xl flex items-center justify-center text-2xl text-green-500 tap-scale border-none shadow-lg">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                    <a href="tel:+255717193703" target="_blank" class="w-14 h-14 glass rounded-2xl flex items-center justify-center text-2xl text-blue-500 tap-scale border-none shadow-lg">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
+                    <a href="https://www.instagram.com/zunaapartment/" target="_blank" class="w-14 h-14 glass rounded-2xl flex items-center justify-center text-2xl text-[#E4405F] tap-scale border-none shadow-lg">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                </div>
+                <p class="text-[10px] text-zinc-500 font-medium mt-6">Talk to us instantly or follow our updates</p>
+            </div>
+        </section>
+
+        <!-- STICKY NAV -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-6 pb-[calc(2rem+env(safe-area-inset-bottom))]">
+            <div class="max-w-md mx-auto glass dark:bg-zuna-dark/90 backdrop-blur-2xl rounded-[2.5rem] p-2 flex items-center justify-between shadow-2xl border border-white/10">
+                <button onclick="window.open('https://wa.me/255717193703', '_blank')" class="w-12 h-12 flex items-center justify-center text-green-500 tap-scale rounded-full">
+                    <i class="fa-brands fa-whatsapp text-xl"></i>
+                </button>
+                <button onclick="openModal('booking-modal')" class="flex-1 mx-3 bg-zuna-gold text-white font-black text-xs uppercase tracking-widest py-4 rounded-full shadow-lg shadow-zuna-gold/30 tap-scale border-none italic">
+                    Book Now
+                </button>
+                <button onclick="window.open('https://www.instagram.com/zunaapartment/', '_blank')" class="w-12 h-12 flex items-center justify-center text-[#E4405F] tap-scale rounded-full">
+                    <i class="fa-brands fa-instagram text-xl"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- MODALS -->
+
+        <!-- ABOUT MODAL -->
+        <div id="about-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('about-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative max-h-[85vh] overflow-y-auto">
+                <div class="w-16 h-1 bg-zuna-gold/30 rounded-full mx-auto mb-6"></div>
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-2">About Zuna</h3>
+                <p class="text-zuna-gold text-[10px] font-black uppercase tracking-widest mb-6 leading-tight">Comfort Meets Modern Living</p>
+                
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-zuna-gold mb-2">Who we are</h4>
+                        <p class="text-sm font-medium dark:text-zinc-300 leading-relaxed">Zuna Apartments is a premium furnished apartment brand located in Dar es Salaam, offering modern, comfortable, and fully serviced living spaces for short and long stays.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-zuna-gold mb-2">What we stand for</h4>
+                        <p class="text-sm font-medium dark:text-zinc-300 leading-relaxed">We combine comfort, convenience, and modern design to create a home-like experience for every guest.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-zuna-gold mb-2">What we offer</h4>
+                        <ul class="space-y-2 mt-3">
+                            <li class="flex items-center gap-3 text-xs font-bold dark:text-zinc-100"><i class="fa-solid fa-circle-check text-zuna-gold"></i> Fully furnished apartments</li>
+                            <li class="flex items-center gap-3 text-xs font-bold dark:text-zinc-100"><i class="fa-solid fa-circle-check text-zuna-gold"></i> Modern living & dining spaces</li>
+                            <li class="flex items-center gap-3 text-xs font-bold dark:text-zinc-100"><i class="fa-solid fa-circle-check text-zuna-gold"></i> Secure & peaceful environment</li>
+                            <li class="flex items-center gap-3 text-xs font-bold dark:text-zinc-100"><i class="fa-solid fa-circle-check text-zuna-gold"></i> Hotel comfort with home privacy</li>
+                        </ul>
+                    </div>
+                </div>
+                <button onclick="closeModal('about-modal')" class="w-full bg-zuna-gold text-white mt-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border-none">Close</button>
+            </div>
+        </div>
+
+        <!-- APARTMENTS MODAL (SELECTION) -->
+        <div id="apartments-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('apartments-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-6">Available Units</h3>
+                <div class="space-y-4">
+                    <button onclick="openApartmentCard('1-bed')" class="w-full glass p-5 rounded-3xl flex items-center justify-between tap-scale group">
+                        <div class="flex items-center gap-4">
+                            <span class="text-2xl">🏠</span>
+                            <div class="text-left">
+                                <span class="block text-sm font-black dark:text-white uppercase tracking-tighter">1 Bedroom</span>
+                                <span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Individuals & Couples</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-zuna-gold opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </button>
+                    <button onclick="openApartmentCard('2-bed')" class="w-full glass p-5 rounded-3xl flex items-center justify-between tap-scale group">
+                        <div class="flex items-center gap-4">
+                            <span class="text-2xl">🏡</span>
+                            <div class="text-left">
+                                <span class="block text-sm font-black dark:text-white uppercase tracking-tighter">2 Bedroom</span>
+                                <span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Families & Groups</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-zuna-gold opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </button>
+                    <button onclick="openApartmentCard('3-bed')" class="w-full glass p-5 rounded-3xl flex items-center justify-between tap-scale group">
+                        <div class="flex items-center gap-4">
+                            <span class="text-2xl">🏢</span>
+                            <div class="text-left">
+                                <span class="block text-sm font-black dark:text-white uppercase tracking-tighter">3 Bedroom</span>
+                                <span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Premium Long Stays</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-zuna-gold opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DYNAMIC APARTMENT CARDS -->
+        <div id="apt-detail-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal('apt-detail-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-1 relative overflow-hidden">
+                <div id="apt-detail-content" class="p-8">
+                </div>
+            </div>
+        </div>
+
+        <!-- AMENITIES MODAL -->
+        <div id="amenities-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('amenities-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-6 text-center">Our Amenities</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-zuna-gold/5 rounded-2xl text-center border border-zuna-gold/10">
+                        <i class="fa-solid fa-person-swimming text-zuna-gold text-xl mb-2"></i>
+                        <p class="text-[9px] font-black uppercase tracking-widest leading-tight">Swimming Pool</p>
+                    </div>
+                    <div class="p-4 bg-zuna-gold/5 rounded-2xl text-center border border-zuna-gold/10">
+                        <i class="fa-solid fa-spa text-zuna-gold text-xl mb-2"></i>
+                        <p class="text-[9px] font-black uppercase tracking-widest leading-tight">Spa & Massage</p>
+                    </div>
+                    <div class="p-4 bg-zuna-gold/5 rounded-2xl text-center border border-zuna-gold/10">
+                        <i class="fa-solid fa-utensils text-zuna-gold text-xl mb-2"></i>
+                        <p class="text-[9px] font-black uppercase tracking-widest leading-tight">On-site Restaurant</p>
+                    </div>
+                    <div class="p-4 bg-zuna-gold/5 rounded-2xl text-center border border-zuna-gold/10">
+                        <i class="fa-solid fa-wifi text-zuna-gold text-xl mb-2"></i>
+                        <p class="text-[9px] font-black uppercase tracking-widest leading-tight">Free High-Speed WiFi</p>
+                    </div>
+                    <div class="p-4 bg-zuna-gold/5 rounded-2xl text-center border border-zuna-gold/10">
+                        <i class="fa-solid fa-shield-halved text-zuna-gold text-xl mb-2"></i>
+                        <p class="text-[9px] font-black uppercase tracking-widest leading-tight">24/7 Security & Parking</p>
+                    </div>
+                    <div class="p-4 bg-zuna-gold/5 rounded-2xl text-center border border-zuna-gold/10">
+                        <i class="fa-solid fa-bolt text-zuna-gold text-xl mb-2"></i>
+                        <p class="text-[9px] font-black uppercase tracking-widest leading-tight">Standby Generator</p>
+                    </div>
+                </div>
+                <p class="text-[9px] text-zinc-500 text-center mt-6 uppercase tracking-widest">Everything designed for comfort and convenience.</p>
+            </div>
+        </div>
+
+        <!-- TOUR MODAL -->
+        <div id="tour-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('tour-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative text-center">
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-2">Explore Space</h3>
+                <p class="text-[10px] font-bold text-zuna-gold uppercase tracking-widest mb-8">Choose your apartment to explore</p>
+                
+                <div class="space-y-4">
+                    <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/havana-mikocheni/', '_blank')" class="w-full py-4 glass rounded-2xl font-black uppercase text-[11px] tracking-widest tap-scale flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-vr-cardboard"></i> Apartment Option 1
+                    </button>
+                    <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/havana-mikocheni/', '_blank')" class="w-full py-4 glass rounded-2xl font-black uppercase text-[11px] tracking-widest tap-scale flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-vr-cardboard"></i> Apartment Option 2
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOOKING MODAL -->
+        <div id="booking-modal" class="modal-overlay">
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal('booking-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-8 relative">
+                <button onclick="closeModal('booking-modal')" class="absolute top-6 right-6 w-10 h-10 glass rounded-full border-none flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-2">Book Your Stay</h3>
+                <p class="text-[10px] font-black text-zuna-gold uppercase tracking-widest mb-8">Direct Enquiry Form</p>
+                
+                <form id="booking-form" class="space-y-3">
+                    <input type="text" id="name" required placeholder="Full Name" class="w-full glass bg-transparent border-none rounded-2xl p-4 text-sm font-bold dark:text-white outline-none">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="tel" id="phone" required placeholder="Phone Number" class="w-full glass bg-transparent border-none rounded-2xl p-4 text-sm font-bold dark:text-white outline-none">
+                        <input type="email" id="email" placeholder="Email (optional)" class="w-full glass bg-transparent border-none rounded-2xl p-4 text-sm font-bold dark:text-white outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="arrival" required placeholder="Date of Arrival" class="w-full glass bg-transparent border-none rounded-2xl p-4 text-sm font-bold dark:text-white outline-none" onfocus="(this.type='date')">
+                        <input type="text" id="departure" required placeholder="Date of Departure" class="w-full glass bg-transparent border-none rounded-2xl p-4 text-sm font-bold dark:text-white outline-none" onfocus="(this.type='date')">
+                    </div>
+                    <select id="apt_type" class="w-full glass bg-transparent border-none rounded-2xl p-4 text-sm font-bold dark:text-zinc-400 outline-none appearance-none">
+                        <option value="1 Bedroom" class="bg-zuna-dark">1 Bedroom Apartment</option>
+                        <option value="2 Bedroom" class="bg-zuna-dark">2 Bedroom Apartment</option>
+                        <option value="3 Bedroom" class="bg-zuna-dark">3 Bedroom Apartment</option>
+                    </select>
+                    
+                    <button type="submit" class="w-full bg-zuna-gold text-white py-5 rounded-2xl font-black uppercase text-xs tracking-widest tap-scale flex items-center justify-center gap-3 shadow-xl border-none mt-4">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Reserve via WhatsApp
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.getElementById('theme-icon').className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('theme-icon').className = 'fa-solid fa-moon';
+        }
+
+        function openModal(id) { 
+            document.getElementById(id).classList.add('active'); 
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            document.body.style.overflow = '';
+        }
+
+        const apartmentData = {
+            '1-bed': {
+                title: '1 Bedroom Apartments',
+                desc: 'Fully furnished apartment designed for comfort and privacy.',
+                tags: ['Ideal for individuals or couples', 'Modern living space', 'Fully equipped interiors'],
+                footer: 'This will open more details about this apartment type and available units.'
+            },
+            '2-bed': {
+                title: '2 Bedroom Apartments',
+                desc: 'Spacious apartment designed for families and group stays.',
+                tags: ['Living + dining area', 'Fully furnished rooms', 'Comfortable shared space'],
+                footer: 'This will open more details about 2 bedroom units and layouts.'
+            },
+            '3-bed': {
+                title: '3 Bedroom Apartments',
+                desc: 'Premium large apartment for long stays and larger groups.',
+                tags: ['Large living space', 'Multiple bedrooms', 'Ideal for extended stays'],
+                footer: 'This will open more details about 3 bedroom luxury units.'
+            }
+        };
+
+        function openApartmentCard(type) {
+            const data = apartmentData[type];
+            const content = `
+                <h3 class="text-2xl font-black dark:text-white uppercase italic tracking-tighter mb-3">🏡 ${data.title}</h3>
+                <p class="text-sm font-medium dark:text-zinc-400 leading-relaxed mb-6">${data.desc}</p>
+                <ul class="space-y-3 mb-8">
+                    ${data.tags.map(tag => `
+                        <li class="flex items-center gap-3 text-[11px] font-black uppercase tracking-widest text-zuna-gold">
+                            <i class="fa-solid fa-check-double"></i> ${tag}
+                        </li>
+                    `).join('')}
+                </ul>
+                <div class="flex gap-3">
+                    <button onclick="openModal('booking-modal')" class="flex-1 bg-zuna-gold text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border-none">🔍 View Details</button>
+                    <button onclick="closeModal('apt-detail-modal')" class="flex-1 glass dark:text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border-none">❌ Close</button>
+                </div>
+                <p class="text-[9px] text-zinc-500 font-medium italic mt-6 text-center">"${data.footer}"</p>
+            `;
+            document.getElementById('apt-detail-content').innerHTML = content;
+            openModal('apt-detail-modal');
+        }
+
+        document.getElementById('booking-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const arrival = document.getElementById('arrival').value;
+            const departure = document.getElementById('departure').value;
+            const apt = document.getElementById('apt_type').value;
+
+            const text = `Hello Zuna Apartments, I would like to book/inquire:\nName: ${name}\nDates: ${arrival} to ${departure}\nApartment: ${apt}\nPhone: ${phone}`;
+            
+            window.open(`https://wa.me/255717193703?text=${encodeURIComponent(text)}`, '_blank');
+        });
+    </script>
+</body>
+</html>
