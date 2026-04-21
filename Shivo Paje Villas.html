@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Shivo Paje Villas | Guest Experience</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        shivo: { 
+                            clay: '#A45D41',
+                            earth: '#4A3728',
+                            sand: '#F4E9DC',
+                            terracotta: '#8B3E2F',
+                            obsidian: '#1A1614'
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Oswald', 'sans-serif'],
+                        body: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Oswald:wght@500;700&display=swap');
+        
+        body { 
+            background-color: #fcf9f7; 
+            color: #1A1614; 
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.4s ease;
+            overflow-x: hidden;
+        }
+        .dark body { background-color: #0c0a09; color: #ffffff; }
+        .oswald { font-family: 'Oswald', sans-serif; }
+
+        .hero-bg {
+            height: 50vh;
+            background: url('https://lh3.googleusercontent.com/p/AF1QipOLrxnJr1OfKOAMlehGjdPPIowwC4ZXMSnIzwHU=s680-w680-h510-rw');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(12,10,9,0) 0%, rgba(12,10,9,1) 95%);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(164, 93, 65, 0.15);
+        }
+        .dark .glass {
+            background: rgba(164, 93, 65, 0.05);
+            border: 1px solid rgba(164, 93, 65, 0.2);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            backdrop-filter: blur(12px);
+            background: rgba(12,10,9,0.95);
+        }
+        .modal-content {
+            transform: translateY(40px);
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100%;
+            max-width: 32rem;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .tap-scale:active { transform: scale(0.96); }
+        .shivo-glow { box-shadow: 0 0 25px rgba(164, 93, 65, 0.15); }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .reveal-item { animation: fadeInUp 0.6s ease forwards; opacity: 0; }
+        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #A45D41; border-radius: 10px; }
+
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 12px;
+            padding-bottom: 10px;
+        }
+        .carousel-item {
+            flex: 0 0 75%;
+            scroll-snap-align: center;
+        }
+    </style>
+</head>
+<body class="pb-32">
+
+    <div class="max-w-md mx-auto relative min-h-screen">
+        
+        <!-- TOP BAR -->
+        <nav class="fixed top-0 left-0 right-0 z-[60] bg-white/10 dark:bg-black/10 backdrop-blur-md">
+            <div class="max-w-md mx-auto px-6 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-shivo-clay rounded-lg flex items-center justify-center text-white shadow-lg shivo-glow">
+                        <i class="fa-solid fa-umbrella-beach"></i>
+                    </div>
+                    <div>
+                        <h2 class="oswald text-sm font-bold uppercase tracking-tighter dark:text-white">Shivo Villas</h2>
+                        <span class="text-[8px] font-black text-shivo-clay uppercase tracking-[0.3em]">Paje • Zanzibar</span>
+                    </div>
+                </div>
+                
+                <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center tap-scale hover:bg-white/10">
+                    <i id="theme-icon" class="fa-solid fa-moon dark:text-shivo-clay text-lg"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- HERO SECTION -->
+        <div class="hero-bg">
+            <div class="hero-overlay"></div>
+            <div class="absolute bottom-10 left-0 right-0 px-8">
+                <!-- Text colors forced to remain consistent regardless of theme -->
+                <h1 class="oswald text-5xl font-bold text-white tracking-tighter leading-[0.9] mb-4 uppercase reveal-item" style="animation-delay: 0.1s;">
+                    Relax & <br>
+                    <span class="text-shivo-clay italic">Unwind</span> 🌴
+                </h1>
+                <p class="text-[10px] font-black uppercase tracking-[0.2em] text-shivo-clay/90 mb-2 reveal-item" style="animation-delay: 0.2s;">Welcome to Shivo Paje Villas</p>
+                <div class="w-12 h-1 bg-shivo-clay rounded-full reveal-item" style="animation-delay: 0.3s;"></div>
+            </div>
+        </div>
+
+        <!-- WELCOME CARD -->
+        <header class="px-6 mb-8 reveal-item" style="animation-delay: 0.3s;">
+            <div class="relative overflow-hidden p-6 glass rounded-[2.5rem]">
+                <h3 class="oswald text-xs font-bold uppercase tracking-[0.2em] text-shivo-clay mb-2">Guest Welcome</h3>
+                <p class="text-[13px] font-medium leading-relaxed dark:text-zinc-300">
+                    “Relax, unwind, and enjoy your stay — everything you need is right here.” A private villa experience designed for comfort, space, and peace.
+                </p>
+            </div>
+        </header>
+
+        <!-- MAIN GRID (CORE) -->
+        <section class="px-6 grid grid-cols-2 gap-3 reveal-item" style="animation-delay: 0.4s;">
+            <button onclick="openModal('wifi-modal')" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left group">
+                <div class="w-10 h-10 bg-shivo-clay/10 rounded-xl flex items-center justify-center text-shivo-clay">
+                    <i class="fa-solid fa-wifi text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">WiFi Access</span>
+            </button>
+            
+            <button onclick="openModal('rules-modal')" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left group">
+                <div class="w-10 h-10 bg-shivo-clay/10 rounded-xl flex items-center justify-center text-shivo-clay">
+                    <i class="fa-solid fa-scroll text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">House Rules</span>
+            </button>
+
+            <button onclick="openModal('emergency-modal')" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left group">
+                <div class="w-10 h-10 bg-shivo-clay/10 rounded-xl flex items-center justify-center text-shivo-clay">
+                    <i class="fa-solid fa-phone-flip text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">Emergency</span>
+            </button>
+
+            <button onclick="openModal('how-works-modal')" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left group">
+                <div class="w-10 h-10 bg-shivo-clay/10 rounded-xl flex items-center justify-center text-shivo-clay">
+                    <i class="fa-solid fa-gears text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">How It Works</span>
+            </button>
+
+            <button onclick="openModal('tour-modal')" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left group">
+                <div class="w-10 h-10 bg-shivo-clay/10 rounded-xl flex items-center justify-center text-shivo-clay">
+                    <i class="fa-solid fa-vr-cardboard text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">Virtual Tour</span>
+            </button>
+
+            <a href="https://g.page/r/shivo-villas-review" target="_blank" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left group">
+                <div class="w-10 h-10 bg-shivo-clay/10 rounded-xl flex items-center justify-center text-shivo-clay">
+                    <i class="fa-solid fa-star text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">Leave Review</span>
+            </a>
+        </section>
+
+        <!-- SECONDARY GRID -->
+        <section class="px-6 mt-8 grid grid-cols-2 gap-3 reveal-item" style="animation-delay: 0.5s;">
+            <button onclick="openModal('villa-modal')" class="glass p-4 rounded-3xl flex items-center gap-3 tap-scale">
+                <i class="fa-solid fa-house-chimney text-shivo-clay"></i>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Your Villa</span>
+            </button>
+            <a href="https://maps.app.goo.gl/ZHHfC82oLRignm2A6" target="_blank" class="glass p-4 rounded-3xl flex items-center gap-3 tap-scale">
+                <i class="fa-solid fa-map-location-dot text-shivo-clay"></i>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Location</span>
+            </a>
+            <button onclick="openModal('suggest-modal')" class="glass p-4 rounded-3xl flex items-center gap-3 tap-scale">
+                <i class="fa-solid fa-lightbulb text-shivo-clay"></i>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Suggestions</span>
+            </button>
+            <a href="https://www.instagram.com/p/DWjzNXyjC3H/?hl=en" target="_blank" class="glass p-4 rounded-3xl flex items-center gap-3 tap-scale">
+                <i class="fa-brands fa-instagram text-shivo-clay"></i>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Instagram</span>
+            </a>
+        </section>
+
+        <!-- NEARBY PLACES CAROUSEL -->
+        <section class="mt-12 px-6 reveal-item" style="animation-delay: 0.6s;">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="oswald text-sm font-bold uppercase tracking-[0.2em]">Nearby Places</h3>
+                <span class="text-[8px] font-black uppercase text-zinc-500">Swipe →</span>
+            </div>
+            
+            <div class="carousel-container no-scrollbar">
+                <a href="https://www.google.com/maps/search/beaches+near+Shivo+Paje+Villas" target="_blank" class="carousel-item glass p-6 rounded-[2rem] tap-scale border-l-4 border-blue-400">
+                    <i class="fa-solid fa-umbrella-beach text-blue-400 mb-3 text-xl"></i>
+                    <span class="block oswald text-xs font-bold uppercase tracking-widest">Beaches</span>
+                    <p class="text-[9px] text-zinc-500 mt-1 uppercase">Paje & Bwejuu Coast</p>
+                </a>
+                
+                <a href="https://www.google.com/maps/search/restaurants+near+Shivo+Paje+Villas" target="_blank" class="carousel-item glass p-6 rounded-[2rem] tap-scale border-l-4 border-shivo-clay">
+                    <i class="fa-solid fa-utensils text-shivo-clay mb-3 text-xl"></i>
+                    <span class="block oswald text-xs font-bold uppercase tracking-widest">Dining</span>
+                    <p class="text-[9px] text-zinc-500 mt-1 uppercase">Paje Culinary Scene</p>
+                </a>
+
+                <a href="https://www.google.com/maps/search/supermarkets+near+Shivo+Paje+Villas" target="_blank" class="carousel-item glass p-6 rounded-[2rem] tap-scale border-l-4 border-green-500">
+                    <i class="fa-solid fa-cart-shopping text-green-500 mb-3 text-xl"></i>
+                    <span class="block oswald text-xs font-bold uppercase tracking-widest">Supplies</span>
+                    <p class="text-[9px] text-zinc-500 mt-1 uppercase">Markets & Groceries</p>
+                </a>
+
+                <a href="https://www.google.com/maps/search/things+to+do+near+Paje+Zanzibar" target="_blank" class="carousel-item glass p-6 rounded-[2rem] tap-scale border-l-4 border-purple-500">
+                    <i class="fa-solid fa-compass text-purple-500 mb-3 text-xl"></i>
+                    <span class="block oswald text-xs font-bold uppercase tracking-widest">Explore</span>
+                    <p class="text-[9px] text-zinc-500 mt-1 uppercase">Attractions & Tours</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- HOST CONNECT -->
+        <section class="px-6 mt-12 text-center reveal-item" style="animation-delay: 0.7s;">
+            <p class="oswald text-xs uppercase tracking-[0.3em] mb-6 text-zinc-500">Need anything? We're here.</p>
+            <div class="flex justify-center items-center gap-6">
+                <a href="https://wa.me/255744244244" class="w-14 h-14 glass rounded-2xl flex items-center justify-center tap-scale text-green-500 shadow-xl">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                </a>
+                <a href="tel:+255744244244" class="w-14 h-14 glass rounded-2xl flex items-center justify-center tap-scale text-shivo-clay shadow-xl">
+                    <i class="fa-solid fa-phone text-xl"></i>
+                </a>
+                <a href="https://www.instagram.com/p/DWjzNXyjC3H/?hl=en" target="_blank" class="w-14 h-14 glass rounded-2xl flex items-center justify-center tap-scale text-pink-500 shadow-xl">
+                    <i class="fa-brands fa-instagram text-2xl"></i>
+                </a>
+            </div>
+            
+            <div class="mt-12 text-[9px] font-black uppercase text-zinc-500 tracking-[0.4em] mb-20">
+                Shivo Paje Villas • Paje, Zanzibar
+            </div>
+        </section>
+
+        <!-- STICKY BOTTOM BAR -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+            <div class="max-w-md mx-auto glass dark:bg-zinc-900/90 backdrop-blur-3xl rounded-[2.5rem] p-2 flex items-center gap-3 shadow-2xl border border-shivo-clay/20">
+                <a href="tel:+255744244244" class="w-14 h-14 flex items-center justify-center text-shivo-clay tap-scale rounded-full glass border-none">
+                    <i class="fa-solid fa-phone text-xl"></i>
+                </a>
+                <a href="https://wa.me/255744244244" class="flex-1 bg-shivo-clay text-white oswald font-bold text-sm uppercase tracking-[0.2em] py-4 rounded-full shadow-lg shivo-glow tap-scale border-none flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    Message Host
+                </a>
+                <!-- Question mark replaced with Instagram link -->
+                <a href="https://www.instagram.com/p/DWjzNXyjC3H/?hl=en" target="_blank" class="w-14 h-14 flex items-center justify-center text-zinc-400 tap-scale rounded-full glass border-none">
+                    <i class="fa-brands fa-instagram text-xl"></i>
+                </a>
+            </div>
+        </nav>
+
+        <!-- MODALS -->
+
+        <!-- WIFI MODAL -->
+        <div id="wifi-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('wifi-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="p-8 text-center">
+                    <div class="w-16 h-16 bg-shivo-clay/10 rounded-full flex items-center justify-center text-shivo-clay mx-auto mb-4">
+                        <i class="fa-solid fa-wifi text-2xl"></i>
+                    </div>
+                    <h3 class="oswald text-xl font-bold uppercase mb-2">Stay Connected</h3>
+                    <div class="space-y-4 mt-6">
+                        <div class="p-4 bg-zinc-100 dark:bg-white/5 rounded-2xl">
+                            <span class="block text-[8px] font-black uppercase text-zinc-500 mb-1">Network</span>
+                            <span class="font-bold">Shivo Villas WiFi</span>
+                        </div>
+                        <button onclick="copyWifi()" class="w-full p-4 bg-zinc-100 dark:bg-white/5 rounded-2xl active:bg-shivo-clay/20 transition-colors">
+                            <span class="block text-[8px] font-black uppercase text-zinc-500 mb-1">Password (Tap to Copy)</span>
+                            <span class="font-bold">ShivoPaje2024</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RULES MODAL -->
+        <div id="rules-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('rules-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="p-8">
+                    <h3 class="oswald text-xl font-bold uppercase mb-4 text-shivo-clay">House Rules</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-4 text-sm"><span class="w-8 h-8 flex items-center justify-center bg-red-500/10 text-red-500 rounded-lg">🚭</span> No smoking inside the villa</li>
+                        <li class="flex items-center gap-4 text-sm"><span class="w-8 h-8 flex items-center justify-center bg-shivo-clay/10 text-shivo-clay rounded-lg">🎉</span> No parties or external events</li>
+                        <li class="flex items-center gap-4 text-sm"><span class="w-8 h-8 flex items-center justify-center bg-zinc-500/10 text-zinc-500 rounded-lg">🐾</span> No pets allowed</li>
+                        <li class="flex items-center gap-4 text-sm"><span class="w-8 h-8 flex items-center justify-center bg-blue-500/10 text-blue-500 rounded-lg">🤫</span> Respect quiet hours (10PM - 8AM)</li>
+                    </ul>
+                    <div class="mt-8 grid grid-cols-2 gap-4 border-t dark:border-white/10 pt-6">
+                        <div class="text-center">
+                            <span class="block text-[9px] font-black uppercase text-zinc-500">Check-in</span>
+                            <span class="font-bold text-sm">After 15:00</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-[9px] font-black uppercase text-zinc-500">Check-out</span>
+                            <span class="font-bold text-sm">Before 11:00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HOW WORKS MODAL -->
+        <div id="how-works-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('how-works-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="p-8 space-y-6">
+                    <h3 class="oswald text-xl font-bold uppercase text-shivo-clay">Villa Guide</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 bg-shivo-clay/10 rounded-xl flex items-center justify-center text-shivo-clay flex-shrink-0"><i class="fa-solid fa-kitchen-set"></i></div>
+                            <div>
+                                <h4 class="text-xs font-black uppercase">Kitchen 🍽️</h4>
+                                <p class="text-[11px] text-zinc-500">Fully equipped. Please clean after use. Dishware in cupboards.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 bg-shivo-clay/10 rounded-xl flex items-center justify-center text-shivo-clay flex-shrink-0"><i class="fa-solid fa-shirt"></i></div>
+                            <div>
+                                <h4 class="text-xs font-black uppercase">Laundry 🧺</h4>
+                                <p class="text-[11px] text-zinc-500">Washing machine available. Add detergent, select mode, and press Start.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 bg-shivo-clay/10 rounded-xl flex items-center justify-center text-shivo-clay flex-shrink-0"><i class="fa-solid fa-snowflake"></i></div>
+                            <div>
+                                <h4 class="text-xs font-black uppercase">Air Conditioning ❄️</h4>
+                                <p class="text-[11px] text-zinc-500">Use remotes provided. Please turn OFF when leaving the villa.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 bg-shivo-clay/10 rounded-xl flex items-center justify-center text-shivo-clay flex-shrink-0"><i class="fa-solid fa-swimmer"></i></div>
+                            <div>
+                                <h4 class="text-xs font-black uppercase">Private Pool 🏊</h4>
+                                <p class="text-[11px] text-zinc-500">Open all day. No glass allowed near the pool area. Supervise children.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMERGENCY MODAL -->
+        <div id="emergency-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('emergency-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="p-8 text-center">
+                    <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center text-red-500 mx-auto mb-4">
+                        <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                    </div>
+                    <h3 class="oswald text-xl font-bold uppercase mb-2">Emergency Help</h3>
+                    <p class="text-[11px] text-zinc-500 mb-6">Immediate assistance anytime during your stay.</p>
+                    <div class="grid grid-cols-1 gap-3">
+                        <a href="tel:+255744244244" class="p-4 glass rounded-2xl flex items-center justify-center gap-3 font-bold uppercase text-xs tracking-widest"><i class="fa-solid fa-phone"></i> Call Host</a>
+                        <a href="https://wa.me/255744244244" class="p-4 glass rounded-2xl flex items-center justify-center gap-3 font-bold uppercase text-xs tracking-widest"><i class="fa-brands fa-whatsapp"></i> WhatsApp Host</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOUR MODAL -->
+        <div id="tour-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('tour-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="p-6 space-y-3">
+                    <h3 class="oswald text-xl font-bold uppercase text-shivo-clay mb-4">Explore Your Space</h3>
+                    <a href="https://www.skani.space/255Apartment.html" target="_blank" class="block w-full p-6 glass rounded-2xl border-l-4 border-shivo-clay tap-scale">
+                        <span class="oswald text-xs uppercase font-bold tracking-widest italic">🏡 Villa Experience (Tour 1)</span>
+                    </a>
+                    <a href="https://www.skani.space/Havana%20Mikocheni.html" target="_blank" class="block w-full p-6 glass rounded-2xl border-l-4 border-shivo-clay tap-scale">
+                        <span class="oswald text-xs uppercase font-bold tracking-widest italic">🏡 Villa Experience (Tour 2)</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- VILLA FEATURES MODAL -->
+        <div id="villa-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('villa-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="p-8">
+                    <h3 class="oswald text-xl font-bold uppercase mb-4 text-shivo-clay">Your Private Oasis</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-4 bg-zinc-100 dark:bg-white/5 rounded-2xl text-[10px] font-bold uppercase"><i class="fa-solid fa-check text-shivo-clay mr-2"></i> Private Pool</div>
+                        <div class="p-4 bg-zinc-100 dark:bg-white/5 rounded-2xl text-[10px] font-bold uppercase"><i class="fa-solid fa-check text-shivo-clay mr-2"></i> Full Kitchen</div>
+                        <div class="p-4 bg-zinc-100 dark:bg-white/5 rounded-2xl text-[10px] font-bold uppercase"><i class="fa-solid fa-check text-shivo-clay mr-2"></i> Free WiFi</div>
+                        <div class="p-4 bg-zinc-100 dark:bg-white/5 rounded-2xl text-[10px] font-bold uppercase"><i class="fa-solid fa-check text-shivo-clay mr-2"></i> AC Units</div>
+                        <div class="p-4 bg-zinc-100 dark:bg-white/5 rounded-2xl text-[10px] font-bold uppercase col-span-2 text-center"><i class="fa-solid fa-check text-shivo-clay mr-2"></i> Outdoor Lounge Patio</div>
+                    </div>
+                    <p class="mt-6 text-[11px] text-zinc-500 italic text-center">Designed for ultimate comfort, privacy, and relaxation.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUGGESTIONS MODAL -->
+        <div id="suggest-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('suggest-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="p-8 text-center">
+                    <h3 class="oswald text-xl font-bold uppercase mb-4 text-shivo-clay">Feedback</h3>
+                    <p class="text-xs text-zinc-500 mb-6">How can we make your stay better?</p>
+                    <textarea id="suggest-text" class="w-full glass rounded-2xl p-4 text-sm dark:text-white outline-none mb-4 min-h-[100px]" placeholder="Your suggestion..."></textarea>
+                    <button onclick="sendSuggestion()" class="w-full bg-shivo-clay text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest tap-scale shivo-glow">Send to Host</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = ''; }
+
+        function copyWifi() {
+            const el = document.createElement('textarea');
+            el.value = 'ShivoPaje2024';
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="text-green-500 font-bold uppercase text-[8px]">Password Copied!</span>';
+            setTimeout(() => btn.innerHTML = originalText, 2000);
+        }
+
+        function sendSuggestion() {
+            const msg = document.getElementById('suggest-text').value;
+            if(!msg) return;
+            const text = `Hello Shivo Host, I have a suggestion regarding my stay: ${msg}`;
+            window.open(`https://wa.me/255744244244?text=${encodeURIComponent(text)}`, '_blank');
+            closeModal('suggest-modal');
+        }
+
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const htmlElement = document.documentElement;
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                htmlElement.classList.add('dark');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+
+        window.onload = () => {
+            document.querySelectorAll('.reveal-item').forEach(item => item.style.opacity = '1');
+        }
+    </script>
+</body>
+</html>
