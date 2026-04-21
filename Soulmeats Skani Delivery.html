@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>SoulMeats Setup Ready</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        yellow: { 
+                            500: '#EAB308', 
+                            600: '#CA8A04' 
+                        },
+                        brand: '#EAB308', // Primary brand color (Yellow)
+                        cream: '#FFFDF0'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sab: env(safe-area-inset-bottom);
+        }
+        body { 
+            background-color: #FFFDF0; 
+            color: #000; 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .dark body {
+            background-color: #000;
+            color: #FFFDF0;
+        }
+        .bg-cream { background-color: #FFFDF0; }
+        .tap-scale { transition: transform 0.1s ease; }
+        .tap-scale:active { transform: scale(0.96); }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card-shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .card-shimmer::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: rotate(45deg);
+            transition: 0.8s;
+        }
+        .card-shimmer:active::after { left: 100%; }
+    </style>
+</head>
+<body class="transition-colors duration-500">
+    <div class="min-h-screen pb-20">
+        <div class="max-w-md mx-auto px-6">
+            
+            <!-- 1. COMPACT HEADER -->
+            <header class="py-8 flex items-center justify-between pt-[calc(2rem+env(safe-area-inset-top))]">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-zinc-900 dark:bg-zinc-100 rounded-[1.25rem] flex items-center justify-center shadow-xl shadow-yellow-500/10 overflow-hidden">
+                        <img src="https://www.skani.space/slmtlogo.png" 
+                             class="w-full h-full object-cover"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <i class="fa-solid fa-qrcode text-brand hidden text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-black dark:text-cream leading-none tracking-tight">SoulMeats Setup Ready</h1>
+                        <p class="text-[11px] text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest mt-1.5">Your Skani is live and ready to use</p>
+                    </div>
+                </div>
+                <!-- THEME TOGGLE -->
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center tap-scale text-zinc-800 dark:text-yellow-500">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+            </header>
+
+            <!-- 2. MAIN ACTION CARD -->
+            <div class="reveal">
+                <!-- Fixed Design: Always uses Light Mode style (Cream bg, Black text) regardless of global dark mode -->
+                <div class="bg-[#FFFDF0] text-black p-7 rounded-[2.5rem] shadow-2xl border border-zinc-200">
+                    <h2 class="text-2xl font-black tracking-tighter mb-2">View Your Experience</h2>
+                    <p class="text-sm opacity-70 mb-8 font-medium leading-relaxed text-zinc-700">
+                        See exactly what your customers will see when they scan your QR.
+                    </p>
+
+                    <a href="https://app.skani.space/qr/AA309D91" target="_blank"
+                       class="w-full bg-brand text-black py-5 rounded-2xl font-black text-sm uppercase tracking-[0.15em] tap-scale shadow-lg shadow-brand/30 flex items-center justify-center">
+                        Open Live Page
+                    </a>
+                </div>
+            </div>
+
+            <!-- 3. 1x1 GRID CARDS -->
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <!-- Card 1: Your Link -->
+                <div class="reveal bg-white dark:bg-zinc-900 p-6 rounded-[2.2rem] border border-zinc-200 dark:border-zinc-800 flex flex-col justify-between" style="animation-delay: 0.1s">
+                    <div>
+                        <h3 class="text-[10px] font-black uppercase text-brand tracking-widest mb-2">Your Link</h3>
+                        <p class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 leading-tight mb-2">Use this link anywhere — it works like your QR.</p>
+                    </div>
+                    <button onclick="copyToClipboard('https://app.skani.space/qr/AA309D91', this)" 
+                            class="w-full py-4 bg-zinc-100 dark:bg-zinc-800 text-black dark:text-white rounded-xl font-black text-[10px] uppercase tracking-widest tap-scale flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-link text-[10px]"></i> Copy Link
+                    </button>
+                </div>
+
+                <!-- Card 2: All Files -->
+                <div class="reveal bg-white dark:bg-zinc-900 p-6 rounded-[2.2rem] border border-zinc-200 dark:border-zinc-800 flex flex-col justify-between" style="animation-delay: 0.2s">
+                    <div>
+                        <h3 class="text-[10px] font-black uppercase text-brand tracking-widest mb-2">All Files</h3>
+                        <p class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 leading-tight mb-2">Access all your QR assets in one place.</p>
+                    </div>
+                    <button onclick="window.open('https://drive.google.com/drive/folders/1faFlmXGNGRy-DQQlPMHq7QG407DFx30l?usp=drive_link', '_blank')" 
+                            class="w-full py-4 bg-brand/10 text-brand rounded-xl font-black text-[10px] uppercase tracking-widest tap-scale flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-folder-open text-[10px]"></i> Open Folder
+                    </button>
+                </div>
+            </div>
+
+            <!-- 4. QR FILES CARD -->
+            <div class="reveal mt-4" style="animation-delay: 0.3s">
+                <div class="bg-white dark:bg-zinc-900 p-7 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800">
+                    <h3 class="text-[10px] font-black uppercase text-zinc-400 tracking-[0.25em] mb-5">Your QR Files</h3>
+                    <div class="space-y-3">
+                        <div onclick="window.open('https://drive.google.com/file/d/1ag6LdE0L2RvpMOfn82_JVZZiD8uu-Oer/view?usp=drive_link', '_blank')" 
+                             class="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl cursor-pointer tap-scale group">
+                            <div>
+                                <span class="text-sm font-bold dark:text-white text-black dark:text-cream block">PNG <span class="text-[10px] text-zinc-400 ml-1">(Quick Use)</span></span>
+                                <span class="text-[9px] text-zinc-400 font-medium">WhatsApp & Instagram</span>
+                            </div>
+                            <i class="fa-solid fa-circle-arrow-down text-brand text-xl opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                        
+                        <div onclick="window.open('https://drive.google.com/file/d/1IFM5BYI7Fy0XHnYpuud5zVoSWLVgNiNw/view?usp=drive_link', '_blank')" 
+                             class="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl cursor-pointer tap-scale group">
+                            <div>
+                                <span class="text-sm font-bold dark:text-white text-black dark:text-cream block">SVG <span class="text-[10px] text-zinc-400 ml-1">(High Quality)</span></span>
+                                <span class="text-[9px] text-zinc-400 font-medium">Best for large scale prints</span>
+                            </div>
+                            <i class="fa-solid fa-circle-arrow-down text-brand text-xl opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+
+                        <div onclick="window.open('https://drive.google.com/file/d/18Nyl4w13LNkWtfZsey9Eb0wv_yu736QB/view?usp=drive_link', '_blank')" 
+                             class="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl cursor-pointer tap-scale group">
+                            <div>
+                                <span class="text-sm font-bold dark:text-white text-black dark:text-cream block">PDF <span class="text-[10px] text-zinc-400 ml-1">(Print Ready)</span></span>
+                                <span class="text-[9px] text-zinc-400 font-medium">For professional print shops</span>
+                            </div>
+                            <i class="fa-solid fa-circle-arrow-down text-brand text-xl opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. QUICK TIPS -->
+            <div class="reveal mt-4" style="animation-delay: 0.4s">
+                <div class="bg-white dark:bg-zinc-900 p-7 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800">
+                    <h3 class="text-[10px] font-black uppercase text-brand tracking-[0.2em] mb-5">Get the Best Results</h3>
+                    <div class="space-y-6">
+                        <!-- Tip 1 -->
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded-full bg-brand/10 text-brand flex items-center justify-center shrink-0 text-[10px] font-black">1</div>
+                            <div>
+                                <h4 class="text-xs font-black dark:text-cream text-black uppercase tracking-tighter mb-1">Place where customers pause</h4>
+                                <p class="text-[11px] text-zinc-500 font-medium leading-relaxed">Good spots: tables, entrance, cashier, waiting area. → This increases scans immediately.</p>
+                            </div>
+                        </div>
+                        <!-- Tip 2 -->
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded-full bg-brand/10 text-brand flex items-center justify-center shrink-0 text-[10px] font-black">2</div>
+                            <div>
+                                <h4 class="text-xs font-black dark:text-cream text-black uppercase tracking-tighter mb-1">Make it easy to see and scan</h4>
+                                <p class="text-[11px] text-zinc-500 font-medium leading-relaxed">Avoid: dark areas, glare (glass reflection), very small prints. → If it’s hard to scan, people won’t try again.</p>
+                            </div>
+                        </div>
+                        <!-- Tip 3 -->
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded-full bg-brand/10 text-brand flex items-center justify-center shrink-0 text-[10px] font-black">3</div>
+                            <div>
+                                <h4 class="text-xs font-black dark:text-cream text-black uppercase tracking-tighter mb-1">Add a simple instruction</h4>
+                                <p class="text-[11px] text-zinc-500 font-medium leading-relaxed">Example: “Scan to view menu” or “Scan to explore”. → People are more likely to scan when told what to expect.</p>
+                            </div>
+                        </div>
+                        <!-- Tip 4 -->
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded-full bg-brand/10 text-brand flex items-center justify-center shrink-0 text-[10px] font-black">4</div>
+                            <div>
+                                <h4 class="text-xs font-black dark:text-cream text-black uppercase tracking-tighter mb-1">Test before printing in bulk</h4>
+                                <p class="text-[11px] text-zinc-500 font-medium leading-relaxed">Scan using different phones (Android & iPhone). → Ensures everything works perfectly before spending money.</p>
+                            </div>
+                        </div>
+                        <!-- Tip 5 -->
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded-full bg-brand/10 text-brand flex items-center justify-center shrink-0 text-[10px] font-black">5</div>
+                            <div>
+                                <h4 class="text-xs font-black dark:text-cream text-black uppercase tracking-tighter mb-1">Use your link online too</h4>
+                                <p class="text-[11px] text-zinc-500 font-medium leading-relaxed">Add to Instagram bio, WhatsApp, Google Business. → More traffic beyond just physical scans.</p>
+                            </div>
+                        </div>
+                        <!-- Tip 6 -->
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded-full bg-brand/10 text-brand flex items-center justify-center shrink-0 text-[10px] font-black">6</div>
+                            <div>
+                                <h4 class="text-xs font-black dark:text-cream text-black uppercase tracking-tighter mb-1">Keep your Skani updated</h4>
+                                <p class="text-[11px] text-zinc-500 font-medium leading-relaxed">Update offers, content, or info regularly. → Fresh content keeps customers engaged.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. PRINTING SECTION -->
+            <div class="reveal mt-8" style="animation-delay: 0.5s">
+                <div class="bg-zinc-100 dark:bg-zinc-900/40 p-8 rounded-[3rem] border-2 border-dashed border-zinc-200 dark:border-zinc-800 text-center">
+                    <h3 class="text-xl font-black dark:text-cream text-black mb-3 italic tracking-tight uppercase">Need help with printing?</h3>
+                    <p class="text-xs font-bold text-zinc-500 mb-8 leading-relaxed max-w-[240px] mx-auto uppercase">Polished and durable Glass or acrylic QR boards, table stands, and branded displays.</p>
+                    <button onclick="window.open('https://wa.me/255757249910?text=Hello!%20I%20need%20help%20with%20printing%20my%20Skani%20QR%20board', '_blank')" 
+                            class="w-full bg-brand text-black py-5 rounded-2xl font-black text-sm uppercase tracking-widest tap-scale shadow-2xl">
+                        Request Printing
+                    </button>
+                </div>
+            </div>
+
+            <!-- 7. OWNER ACCESS -->
+            <div class="reveal mt-8 text-center" style="animation-delay: 0.6s">
+                <div class="inline-flex items-center px-6 py-4 bg-zinc-100 dark:bg-zinc-900 rounded-[1.5rem] border border-zinc-200 dark:border-zinc-800">
+                    <div class="text-left">
+                        <p class="text-[9px] font-black uppercase text-brand mb-1 leading-none">
+                            <i class="fa-solid fa-lock mr-1.5"></i> Owner Access
+                        </p>
+                        <p class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400">Keep this link safe. Do not display publicly.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. WANT MORE (CROSS-SELL) -->
+            <footer class="mt-16 text-center pb-12">
+                <p class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 dark:text-zinc-600 mb-6">Want More?</p>
+                <div class="flex flex-wrap justify-center gap-x-8 gap-y-4 text-[10px] font-black dark:text-zinc-500 uppercase tracking-widest">
+                    <a href="https://wa.me/255757249910?text=Hello!%20I'm%20interested%20in%20learning%20more%20about%20Virtual%20Tours%20for%20my%20business." target="_blank" class="hover:text-brand transition-colors">Virtual Tours</a>
+                    <a href="https://wa.me/255757249910?text=Hello!%20I'd%20like%20to%20inquire%20about%20Website%20Development%20services." target="_blank" class="hover:text-brand transition-colors">Websites</a>
+                    <a href="https://wa.me/255757249910?text=Hello!%20I%20would%20like%20to%20book%20a%20Consultation." target="_blank" class="hover:text-brand transition-colors">Consultation</a>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    <!-- NOTIFICATION SYSTEM -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] bg-zinc-900 text-white dark:bg-zinc-100 dark:text-black px-8 py-4 rounded-full text-xs font-black uppercase tracking-[0.2em] opacity-0 transition-all duration-300 pointer-events-none translate-y-4 shadow-2xl">
+        Link Copied!
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                html.classList.add('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        function copyToClipboard(text, btn) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                const toast = document.getElementById('toast');
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateX(-50%) translateY(0)';
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(-50%) translateY(1rem)';
+                }, 2000);
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check text-brand"></i> Copied';
+                setTimeout(() => btn.innerHTML = original, 2000);
+            } catch (err) {}
+            document.body.removeChild(textArea);
+        }
+    </script>
+</body>
+</html>
