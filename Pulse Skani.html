@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Pulse Gymnasium | Elite Performance</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        pulse: { 
+                            gold: '#D4AF37',
+                            red: '#BC0000',
+                            obsidian: '#050505',
+                            slate: '#121212',
+                            silver: '#C0C0C0'
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Oswald', 'sans-serif'],
+                        body: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Oswald:wght@500;700&display=swap');
+        
+        body { 
+            background-color: #fcfcfc; 
+            color: #050505; 
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.4s ease;
+            overflow-x: hidden;
+        }
+        .dark body { background-color: #050505; color: #ffffff; }
+        .oswald { font-family: 'Oswald', sans-serif; }
+
+        /* Hero Background Logic */
+        .hero-bg {
+            height: 55vh;
+            background: url('https://lh3.googleusercontent.com/p/AF1QipOzE8PDi-Ha50iovIZuoWoS7Z4smZKsrK395o9a=s680-w680-h510-rw');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(5,5,5,0) 0%, rgba(5,5,5,1) 95%);
+        }
+        .light .hero-overlay {
+            background: linear-gradient(to bottom, rgba(252,252,252,0) 0%, rgba(252,252,252,1) 95%);
+        }
+
+        /* Glass / Card Styles - Fixed Light Mode Borders */
+        .glass {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .dark .glass {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Modal Transitions */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            backdrop-filter: blur(12px);
+            background: rgba(0,0,0,0.92);
+        }
+        .modal-content {
+            transform: translateY(40px);
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100%;
+            max-width: 32rem;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .tap-scale:active { transform: scale(0.96); }
+        .pulse-red-glow { box-shadow: 0 0 25px rgba(188, 0, 0, 0.2); }
+        
+        /* Reveal Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .reveal-item { animation: fadeInUp 0.6s ease forwards; opacity: 0; }
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+
+        /* Custom Scrollbar for Luxury Feel */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #BC0000; border-radius: 10px; }
+    </style>
+</head>
+<body class="pb-32">
+
+    <div class="max-w-md mx-auto relative min-h-screen">
+        
+        <!-- TOP BAR -->
+        <nav class="fixed top-0 left-0 right-0 z-[60] bg-white/10 dark:bg-black/10 backdrop-blur-md">
+            <div class="max-w-md mx-auto px-6 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-pulse-red rounded-lg flex items-center justify-center text-white shadow-lg pulse-red-glow">
+                        <i class="fa-solid fa-bolt-lightning"></i>
+                    </div>
+                    <div>
+                        <h2 class="oswald text-sm font-bold uppercase tracking-tighter dark:text-white">Pulse Gymnasium</h2>
+                        <span class="text-[8px] font-black text-pulse-red uppercase tracking-[0.3em]">Luxury Boxing & Fitness</span>
+                    </div>
+                </div>
+                
+                <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center tap-scale hover:bg-white/10">
+                    <i id="theme-icon" class="fa-solid fa-moon dark:text-pulse-gold text-lg"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- HERO SECTION -->
+        <div class="hero-bg">
+            <div class="hero-overlay"></div>
+            <div class="absolute bottom-10 left-0 right-0 px-8">
+                <h1 class="oswald text-5xl font-bold dark:text-white tracking-tighter leading-[0.9] mb-4 uppercase reveal-item stagger-1">
+                    Train Like A <br>
+                    <span class="text-pulse-red italic">Champion</span> 🥊
+                </h1>
+                <p class="text-[10px] font-black uppercase tracking-[0.3em] dark:text-pulse-gold mb-2 reveal-item stagger-2">“We don’t just train champions — we make them.”</p>
+                <div class="w-12 h-1 bg-pulse-red rounded-full reveal-item stagger-3"></div>
+            </div>
+        </div>
+
+        <!-- WELCOME CONTENT -->
+        <header class="px-8 pb-10">
+            <div class="p-4 glass rounded-2xl border-l-4 border-pulse-red bg-zinc-50 dark:bg-white/5 reveal-item stagger-3">
+                <p class="text-xs font-medium dark:text-zinc-400 leading-relaxed italic">
+                    Welcome to Pulse Gymnasium. A premium fitness experience built around discipline, performance, and results.
+                </p>
+            </div>
+        </header>
+
+        <!-- MAIN GRID (2x3 CORE) -->
+        <section class="px-6 grid grid-cols-2 gap-3 reveal-item" style="animation-delay: 0.4s;">
+            <button onclick="openModal('about-modal')" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left group">
+                <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:text-pulse-red transition-colors">
+                    <i class="fa-solid fa-circle-info text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">About Pulse</span>
+            </button>
+            
+            <button onclick="openModal('schedule-modal')" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left group">
+                <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:text-pulse-red transition-colors">
+                    <i class="fa-solid fa-calendar-days text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">Schedule</span>
+            </button>
+
+            <button onclick="openModal('programs-modal')" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left group">
+                <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:text-pulse-red transition-colors">
+                    <i class="fa-solid fa-dumbbell text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">Programs</span>
+            </button>
+
+            <button onclick="openModal('coaches-modal')" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left group">
+                <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:text-pulse-red transition-colors">
+                    <i class="fa-solid fa-user-tie text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">Coaches</span>
+            </button>
+
+            <button onclick="openModal('tour-modal')" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left group">
+                <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:text-pulse-red transition-colors">
+                    <i class="fa-solid fa-vr-cardboard text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">Virtual Tour</span>
+            </button>
+
+            <button onclick="openModal('member-modal')" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left group bg-pulse-gold/5 dark:bg-pulse-gold/5 border-pulse-gold/30">
+                <div class="w-10 h-10 bg-pulse-gold/20 rounded-xl flex items-center justify-center text-pulse-gold">
+                    <i class="fa-solid fa-crown text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest text-pulse-gold">Membership</span>
+            </button>
+        </section>
+
+        <!-- JOIN ACTION -->
+        <section class="px-6 mt-6 reveal-item" style="animation-delay: 0.5s;">
+            <button onclick="openModal('join-modal')" class="w-full bg-pulse-red p-6 rounded-[2.5rem] flex items-center justify-between tap-scale shadow-2xl pulse-red-glow">
+                <div class="flex items-center gap-5">
+                    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-pulse-red shadow-lg">
+                        <i class="fa-solid fa-id-card text-xl"></i>
+                    </div>
+                    <div class="text-left">
+                        <span class="block oswald text-xl font-bold text-white uppercase italic">Join Pulse</span>
+                        <span class="block text-[9px] font-black uppercase tracking-[0.2em] text-white/60">Elite Membership Inquiry</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-white/50"></i>
+            </button>
+        </section>
+
+        <!-- SECONDARY GRID -->
+        <section class="px-6 mt-6 grid grid-cols-2 gap-3 reveal-item" style="animation-delay: 0.6s;">
+            <button onclick="openModal('facility-modal')" class="glass p-4 rounded-3xl flex items-center gap-3 tap-scale border border-black/10 dark:border-white/5">
+                <i class="fa-solid fa-basketball text-pulse-gold"></i>
+                <span class="text-[10px] font-bold uppercase tracking-wider dark:text-zinc-300">Facilities</span>
+            </button>
+            <a href="https://maps.app.goo.gl/7YVKSxKBEKKjxTub7" target="_blank" class="glass p-4 rounded-3xl flex items-center gap-3 tap-scale border border-black/10 dark:border-white/5">
+                <i class="fa-solid fa-map-pin text-pulse-red"></i>
+                <span class="text-[10px] font-bold uppercase tracking-wider dark:text-zinc-300">Location</span>
+            </a>
+            <a href="https://www.google.com/search?q=Pulse+Gymnasium+Reviews" target="_blank" class="glass p-4 rounded-3xl flex items-center gap-3 tap-scale border border-black/10 dark:border-white/5">
+                <i class="fa-solid fa-star text-yellow-500"></i>
+                <span class="text-[10px] font-bold uppercase tracking-wider dark:text-zinc-300">Reviews</span>
+            </a>
+            <a href="https://www.instagram.com/stories/highlights/17968799156225553/" target="_blank" class="glass p-4 rounded-3xl flex items-center gap-3 tap-scale border border-black/10 dark:border-white/5">
+                <i class="fa-solid fa-bolt text-pulse-gold"></i>
+                <span class="text-[10px] font-bold uppercase tracking-wider dark:text-zinc-300">Clients</span>
+            </a>
+        </section>
+
+        <!-- CONNECT WITH US SECTION -->
+        <section class="px-6 mt-12 mb-24 reveal-item" style="animation-delay: 0.7s;">
+            <div class="text-center mb-6">
+                <h3 class="oswald text-xs uppercase tracking-[0.4em] dark:text-pulse-gold">Reach Pulse Instantly</h3>
+            </div>
+            <div class="grid grid-cols-4 gap-4 px-2">
+                <a href="https://wa.me/255744244244" class="w-full aspect-square glass rounded-2xl flex items-center justify-center tap-scale border-black/5 dark:border-white/5"><i class="fa-brands fa-whatsapp text-xl text-green-500"></i></a>
+                <a href="tel:+255744244244" class="w-full aspect-square glass rounded-2xl flex items-center justify-center tap-scale border-black/5 dark:border-white/5"><i class="fa-solid fa-phone text-xl"></i></a>
+                <a href="https://www.instagram.com/pulsetanzania" target="_blank" class="w-full aspect-square glass rounded-2xl flex items-center justify-center tap-scale border-black/5 dark:border-white/5"><i class="fa-brands fa-instagram text-xl text-pink-500"></i></a>
+                <a href="https://www.tiktok.com/@pulsetanzania" target="_blank" class="w-full aspect-square glass rounded-2xl flex items-center justify-center tap-scale border-black/5 dark:border-white/5"><i class="fa-brands fa-tiktok text-xl"></i></a>
+                
+                <a href="https://www.youtube.com/channel/UCyZ_4OoOMKB6KcmZBDXDIMA" target="_blank" class="w-full aspect-square glass rounded-2xl flex items-center justify-center tap-scale border-black/5 dark:border-white/5"><i class="fa-brands fa-youtube text-xl text-red-600"></i></a>
+                <a href="https://web.facebook.com/pulsetanzania" target="_blank" class="w-full aspect-square glass rounded-2xl flex items-center justify-center tap-scale border-black/5 dark:border-white/5"><i class="fa-brands fa-facebook text-xl text-blue-600"></i></a>
+                <a href="https://pulse.co.tz" target="_blank" class="w-full aspect-square glass rounded-2xl flex items-center justify-center tap-scale border-black/5 dark:border-white/5"><i class="fa-solid fa-globe text-xl"></i></a>
+                <a href="mailto:info@pulse.co.tz" class="w-full aspect-square glass rounded-2xl flex items-center justify-center tap-scale border-black/5 dark:border-white/5"><i class="fa-solid fa-envelope text-xl"></i></a>
+            </div>
+            <div class="mt-8 text-center">
+                <p class="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Dutchess Boulevard, Dar es Salaam</p>
+            </div>
+        </section>
+
+         <!-- PERFORMANCE HUB 🔥 -->
+        <section class="px-6 mt-12 reveal-item" style="animation-delay: 0.8s;">
+            <div class="text-center mb-6">
+                <h3 class="oswald text-sm font-bold uppercase tracking-[0.3em] dark:text-white">Performance Hub 🔥</h3>
+            </div>
+            <div class="space-y-3">
+                <button onclick="openModal('workout-modal')" class="w-full glass p-6 rounded-[2rem] flex items-center justify-between tap-scale text-left">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-pulse-red/10 rounded-xl flex items-center justify-center text-pulse-red">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <div>
+                            <span class="block oswald text-sm font-bold uppercase tracking-widest">Workout Guides</span>
+                            <span class="block text-[8px] font-black uppercase text-zinc-500">Train Smarter • Correct Technique</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-zinc-600 text-xs"></i>
+                </button>
+
+                <button onclick="openModal('nutrition-modal')" class="w-full glass p-6 rounded-[2rem] flex items-center justify-between tap-scale text-left">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-pulse-gold/10 rounded-xl flex items-center justify-center text-pulse-gold">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+                        <div>
+                            <span class="block oswald text-sm font-bold uppercase tracking-widest">Nutrition & Recovery</span>
+                            <span class="block text-[8px] font-black uppercase text-zinc-500">Fuel Your Performance • Daily Basics</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-zinc-600 text-xs"></i>
+                </button>
+            </div>
+            
+            <div class="mt-8 text-center mb-24">
+                <p class="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Dutchess Boulevard, Dar es Salaam</p>
+            </div>
+        </section>
+
+        <!-- STICKY BOTTOM BAR -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+            <div class="max-w-md mx-auto glass dark:bg-black/90 backdrop-blur-3xl rounded-[2.5rem] p-2 flex items-center gap-3 shadow-2xl border border-black/10 dark:border-white/10">
+                <a href="https://wa.me/255744244244" class="w-14 h-14 flex items-center justify-center text-green-500 tap-scale rounded-full glass border-none">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                </a>
+                <button onclick="openModal('join-modal')" class="flex-1 bg-pulse-red text-white oswald font-bold text-sm uppercase tracking-[0.2em] py-4 rounded-full shadow-lg pulse-red-glow tap-scale border-none italic">
+                    Join Now
+                </button>
+                <a href="https://wa.me/255744244244" class="w-14 h-14 flex items-center justify-center text-zinc-400 tap-scale rounded-full glass border-none">
+                    <i class="fa-solid fa-comment text-xl"></i>
+                </a>
+            </div>
+        </nav>
+
+        <!-- MODALS -->
+        
+        <!-- WORKOUT MODAL -->
+        <div id="workout-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('workout-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="flex items-center justify-between p-6 border-b dark:border-white/10 border-black/5">
+                    <span class="oswald font-bold uppercase text-pulse-red tracking-widest text-sm">Train Smarter</span>
+                    <button onclick="closeModal('workout-modal')" class="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="p-4 glass rounded-2xl border-l-4 border-pulse-red">
+                        <h4 class="text-xs font-bold uppercase">🥊 Boxing Basics</h4>
+                        <p class="text-[10px] text-zinc-500 mt-1">Stance, guard, footwork, and basic combinations</p>
+                    </div>
+                    <div class="p-4 glass rounded-2xl border-l-4 border-pulse-gold">
+                        <h4 class="text-xs font-bold uppercase">💪 Strength Routines</h4>
+                        <p class="text-[10px] text-zinc-500 mt-1">Upper body, lower body, and full-body workouts</p>
+                    </div>
+                    <div class="p-4 glass rounded-2xl border-l-4 border-zinc-400">
+                        <h4 class="text-xs font-bold uppercase">🔥 Fat Burn Workouts</h4>
+                        <p class="text-[10px] text-zinc-500 mt-1">HIIT circuits designed for endurance and weight loss</p>
+                    </div>
+                    <div class="p-4 glass rounded-2xl border-l-4 border-pink-500">
+                        <h4 class="text-xs font-bold uppercase">🧘 Mobility & Stretch</h4>
+                        <p class="text-[10px] text-zinc-500 mt-1">Routines from Stretch by Pulse to improve flexibility and recovery</p>
+                    </div>
+                    <p class="text-[9px] font-black uppercase text-center text-zinc-500 py-4">💡 Designed to help members train correctly — even outside sessions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- NUTRITION MODAL -->
+        <div id="nutrition-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('nutrition-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="flex items-center justify-between p-6 border-b dark:border-white/10 border-black/5">
+                    <span class="oswald font-bold uppercase text-pulse-gold tracking-widest text-sm">Fuel Your Performance</span>
+                    <button onclick="closeModal('nutrition-modal')" class="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="p-5 glass border border-black/5 dark:border-white/10 rounded-3xl">
+                        <h4 class="oswald text-xs font-bold uppercase mb-2">🍽️ Daily Nutrition Basics</h4>
+                        <p class="text-[11px] text-zinc-500 leading-relaxed">Simple meal structure for energy, strength, and recovery</p>
+                    </div>
+                    <div class="p-5 glass border border-black/5 dark:border-white/10 rounded-3xl">
+                        <h4 class="oswald text-xs font-bold uppercase mb-2">💪 Muscle Gain Tips</h4>
+                        <p class="text-[11px] text-zinc-500 leading-relaxed">Protein intake, recovery timing, and consistency</p>
+                    </div>
+                    <div class="p-5 glass border border-black/5 dark:border-white/10 rounded-3xl">
+                        <h4 class="oswald text-xs font-bold uppercase mb-2">🔥 Fat Loss Guidelines</h4>
+                        <p class="text-[11px] text-zinc-500 leading-relaxed">Calorie awareness, clean eating, and discipline</p>
+                    </div>
+                    <div class="p-5 glass border border-black/5 dark:border-white/10 rounded-3xl">
+                        <h4 class="oswald text-xs font-bold uppercase mb-2">💧 Hydration & Recovery</h4>
+                        <p class="text-[11px] text-zinc-500 leading-relaxed">Importance of water, rest, and recovery routines</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- ABOUT MODAL -->
+        <div id="about-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('about-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 relative overflow-hidden dark:bg-zinc-900 bg-white">
+                <div class="flex items-center justify-between p-6 border-b dark:border-white/10 border-black/5">
+                    <span class="oswald font-bold uppercase text-pulse-red tracking-widest text-sm">About Pulse</span>
+                    <button onclick="closeModal('about-modal')" class="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="p-8">
+                    <h3 class="oswald text-2xl font-bold uppercase italic mb-4">Who we are</h3>
+                    <p class="text-sm dark:text-zinc-300 mb-6 leading-relaxed">Pulse Gymnasium is a <span class="text-pulse-gold font-bold">luxury boxing and fitness facility</span> designed for individuals serious about performance, discipline, and transformation.</p>
+                    
+                    <h4 class="oswald text-pulse-red uppercase tracking-widest text-xs mb-3">Our Mission</h4>
+                    <p class="text-sm dark:text-zinc-300 mb-8 italic">“To build strong, confident individuals through structured training, expert coaching, and a high-performance environment.”</p>
+                    
+                    <h4 class="oswald text-xs uppercase tracking-widest mb-4">What we offer</h4>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-4 py-2 bg-pulse-red/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-pulse-red">Boxing</span>
+                        <span class="px-4 py-2 bg-pulse-gold/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-pulse-gold">Strength Training</span>
+                        <span class="px-4 py-2 bg-white/5 rounded-xl text-[10px] font-black uppercase tracking-widest">Cardio</span>
+                        <span class="px-4 py-2 bg-white/5 rounded-xl text-[10px] font-black uppercase tracking-widest">Mobility</span>
+                        <span class="px-4 py-2 bg-white/5 rounded-xl text-[10px] font-black uppercase tracking-widest">Personal Training</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCHEDULE MODAL -->
+        <div id="schedule-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('schedule-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="flex items-center justify-between p-6 border-b dark:border-white/10 border-black/5">
+                    <span class="oswald font-bold uppercase text-pulse-red tracking-widest text-sm">Classes & Schedule</span>
+                    <button onclick="closeModal('schedule-modal')" class="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <h4 class="oswald text-xs uppercase text-zinc-500 mb-2">Weekly Classes</h4>
+                    <div class="p-4 glass rounded-2xl border-l-4 border-pulse-red">
+                        <h4 class="text-xs font-bold uppercase">🥊 Boxing Fundamentals</h4>
+                        <p class="text-[10px] text-zinc-500 mt-1">Learn stance, movement, combinations</p>
+                    </div>
+                    <div class="p-4 glass rounded-2xl border-l-4 border-pulse-gold">
+                        <h4 class="text-xs font-bold uppercase">🔥 HIIT Sessions</h4>
+                        <p class="text-[10px] text-zinc-500 mt-1">Fat burn, endurance, conditioning</p>
+                    </div>
+                    <div class="p-4 glass rounded-2xl border-l-4 border-zinc-400">
+                        <h4 class="text-xs font-bold uppercase">💪 Strength Training</h4>
+                        <p class="text-[10px] text-zinc-500 mt-1">Muscle building, power development</p>
+                    </div>
+                    <div class="p-4 glass rounded-2xl border-l-4 border-pink-500">
+                        <h4 class="text-xs font-bold uppercase">🧘 Stretch Pilates</h4>
+                        <p class="text-[10px] text-zinc-500 mt-1">Flexibility, recovery, posture (@stretchbypulse)</p>
+                    </div>
+                    
+                    <div class="pt-6 border-t dark:border-white/5 border-black/5">
+                        <div class="mb-4">
+                            <h5 class="oswald text-[10px] uppercase text-pulse-red font-bold mb-2">Schedule Example</h5>
+                            <div class="flex justify-between text-[11px] font-bold">
+                                <span>Morning Sessions</span>
+                                <span>5:30 AM – 9:00 AM</span>
+                            </div>
+                            <div class="flex justify-between text-[11px] font-bold mt-1">
+                                <span>Evening Sessions</span>
+                                <span>5:00 PM – 8:30 PM</span>
+                            </div>
+                        </div>
+                        <h5 class="oswald text-[10px] uppercase text-zinc-500 text-center mb-4">Opening Hours</h5>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 glass rounded-2xl text-center">
+                                <span class="block text-[8px] font-black text-pulse-red uppercase">Mon - Fri</span>
+                                <span class="text-sm font-bold">5 AM - 9 PM</span>
+                            </div>
+                            <div class="p-4 glass rounded-2xl text-center">
+                                <span class="block text-[8px] font-black text-pulse-red uppercase">Sat - Sun</span>
+                                <span class="text-sm font-bold">7 AM - 7 PM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROGRAMS MODAL -->
+        <div id="programs-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('programs-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="flex items-center justify-between p-6 border-b dark:border-white/10 border-black/5">
+                    <span class="oswald font-bold uppercase text-pulse-red tracking-widest text-sm">Training Programs</span>
+                    <button onclick="closeModal('programs-modal')" class="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="p-5 glass border border-black/5 dark:border-white/10 rounded-3xl">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="oswald text-lg font-bold uppercase">🔥 Weight Loss</h4>
+                            <span class="text-[8px] font-black bg-pulse-red px-2 py-1 rounded text-white">4-8 WEEKS</span>
+                        </div>
+                        <p class="text-[10px] font-black uppercase text-pulse-gold mb-1">Goal: Fat loss, stamina</p>
+                        <p class="text-[11px] text-zinc-500">Level: Beginner → Intermediate</p>
+                    </div>
+                    <div class="p-5 glass border border-black/5 dark:border-white/10 rounded-3xl">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="oswald text-lg font-bold uppercase">💪 Muscle Building</h4>
+                            <span class="text-[8px] font-black bg-pulse-gold px-2 py-1 rounded text-black">8-12 WEEKS</span>
+                        </div>
+                        <p class="text-[10px] font-black uppercase text-pulse-gold mb-1">Goal: Strength & muscle gain</p>
+                        <p class="text-[11px] text-zinc-500">Level: Intermediate → Advanced</p>
+                    </div>
+                    <div class="p-5 glass border border-black/5 dark:border-white/10 rounded-3xl">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="oswald text-lg font-bold uppercase">🥊 Boxing Performance</h4>
+                            <span class="text-[8px] font-black bg-white/10 px-2 py-1 rounded text-pulse-red">ONGOING</span>
+                        </div>
+                        <p class="text-[10px] font-black uppercase text-pulse-gold mb-1">Goal: Skill & conditioning</p>
+                        <p class="text-[11px] text-zinc-500">Level: All levels</p>
+                    </div>
+                    <div class="p-5 glass border border-black/5 dark:border-white/10 rounded-3xl">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="oswald text-lg font-bold uppercase">⚡ General Fitness</h4>
+                            <span class="text-[8px] font-black bg-zinc-700 px-2 py-1 rounded text-white">FLEXIBLE</span>
+                        </div>
+                        <p class="text-[10px] font-black uppercase text-pulse-gold mb-1">Goal: Overall health & activity</p>
+                        <p class="text-[11px] text-zinc-500">Level: Beginner</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COACHES MODAL -->
+        <div id="coaches-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('coaches-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="flex items-center justify-between p-6 border-b dark:border-white/10 border-black/5">
+                    <span class="oswald font-bold uppercase text-pulse-red tracking-widest text-sm">Coaches & Trainers</span>
+                    <button onclick="closeModal('coaches-modal')" class="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex gap-4 items-center p-4 glass rounded-2xl border-black/5 dark:border-white/5">
+                        <div class="w-14 h-14 bg-zinc-800 rounded-full flex-shrink-0 flex items-center justify-center oswald text-pulse-red font-bold">🥊</div>
+                        <div>
+                            <h4 class="text-xs font-black uppercase">Head Boxing Coach</h4>
+                            <p class="text-[9px] text-zinc-500">8+ yrs exp • Technique, sparring, fight conditioning</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-center p-4 glass rounded-2xl border-black/5 dark:border-white/5">
+                        <div class="w-14 h-14 bg-zinc-800 rounded-full flex-shrink-0 flex items-center justify-center oswald text-pulse-gold font-bold">💪</div>
+                        <div>
+                            <h4 class="text-xs font-black uppercase">Strength Coach</h4>
+                            <p class="text-[9px] text-zinc-500">6+ yrs exp • Muscle building, athletic performance</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-center p-4 glass rounded-2xl border-black/5 dark:border-white/5">
+                        <div class="w-14 h-14 bg-zinc-800 rounded-full flex-shrink-0 flex items-center justify-center oswald text-pink-500 font-bold">🧘</div>
+                        <div>
+                            <h4 class="text-xs font-black uppercase">Pilates Instructor</h4>
+                            <p class="text-[9px] text-zinc-500">Certified • Flexibility, recovery, posture</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-center p-4 glass rounded-2xl border-black/5 dark:border-white/5">
+                        <div class="w-14 h-14 bg-zinc-800 rounded-full flex-shrink-0 flex items-center justify-center oswald text-blue-400 font-bold">🏋️</div>
+                        <div>
+                            <h4 class="text-xs font-black uppercase">Personal Trainer</h4>
+                            <p class="text-[9px] text-zinc-500">Multi-discipline • Weight loss, general fitness plans</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOUR MODAL -->
+        <div id="tour-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('tour-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="flex items-center justify-between p-6 border-b dark:border-white/10 border-black/5">
+                    <span class="oswald font-bold uppercase text-pulse-red tracking-widest text-sm">Explore the Experience</span>
+                    <button onclick="closeModal('tour-modal')" class="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="p-6 space-y-3 text-center">
+                    <p class="text-[10px] font-black uppercase text-pulse-gold tracking-widest mb-4">Discover how immersive training can be</p>
+                    <a href="https://www.skani.space/gym%20demo.html" target="_blank" class="block w-full p-6 glass rounded-2xl border-l-4 border-pulse-red tap-scale text-left">
+                        <span class="oswald text-xs uppercase font-bold tracking-widest">🏋️ Gym Demo</span>
+                    </a>
+                    <a href="https://www.skani.space/Havana%20Mikocheni.html" target="_blank" class="block w-full p-6 glass rounded-2xl border-l-4 border-pulse-gold tap-scale text-left">
+                        <span class="oswald text-xs uppercase font-bold tracking-widest">🏡 Apartment Demo (Flow)</span>
+                    </a>
+                    <a href="https://www.skani.space/255Apartment.html" target="_blank" class="block w-full p-6 glass rounded-2xl border-l-4 border-blue-500 tap-scale text-left">
+                        <span class="oswald text-xs uppercase font-bold tracking-widest">🔊 Sound Feature Demo</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEMBERSHIP MODAL -->
+        <div id="member-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('member-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-0 dark:bg-zinc-900 bg-white overflow-hidden">
+                <div class="bg-pulse-gold p-8 text-center text-black">
+                    <h3 class="oswald text-4xl font-bold uppercase tracking-tighter">Elite Access</h3>
+                    <div class="mt-4 flex items-center justify-center gap-2">
+                        <span class="text-3xl font-black">350,000</span>
+                        <span class="text-[10px] font-black uppercase">TZS / Month</span>
+                    </div>
+                </div>
+                <div class="p-8 space-y-4">
+                    <div class="flex items-center gap-3 text-sm font-bold uppercase tracking-tight text-zinc-500 mb-2">Includes:</div>
+                    <div class="flex items-center gap-3 text-sm font-medium"><i class="fa-solid fa-check text-pulse-gold"></i> Full gym access</div>
+                    <div class="flex items-center gap-3 text-sm font-medium"><i class="fa-solid fa-check text-pulse-gold"></i> All group classes</div>
+                    <div class="flex items-center gap-3 text-sm font-medium"><i class="fa-solid fa-check text-pulse-gold"></i> Multi-sport courts access</div>
+                    <div class="flex items-center gap-3 text-sm font-medium"><i class="fa-solid fa-check text-pulse-gold"></i> Sauna access</div>
+                    
+                    <button onclick="openModal('join-modal'); closeModal('member-modal');" class="w-full bg-pulse-red text-white py-5 rounded-2xl font-black uppercase text-xs tracking-widest mt-6 tap-scale shadow-xl pulse-red-glow">Inquire Now</button>
+                    <button onclick="closeModal('member-modal')" class="w-full text-zinc-500 text-[10px] font-black uppercase py-2">Back to Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FACILITY MODAL -->
+        <div id="facility-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('facility-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-zinc-900 bg-white">
+                <div class="flex items-center justify-between p-6 border-b dark:border-white/10 border-black/5">
+                    <span class="oswald font-bold uppercase text-pulse-red tracking-widest text-sm">Facilities & Sports</span>
+                    <button onclick="closeModal('facility-modal')" class="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="p-6">
+                    <p class="text-[10px] font-black uppercase text-zinc-500 text-center mb-6">What You Get Access To</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-4 glass rounded-2xl text-center border-black/5 dark:border-white/5"><i class="fa-solid fa-bolt text-pulse-red block mb-2"></i><span class="text-[9px] font-black uppercase">Boxing Arena</span></div>
+                        <div class="p-4 glass rounded-2xl text-center border-black/5 dark:border-white/5"><i class="fa-solid fa-basketball text-pulse-gold block mb-2"></i><span class="text-[9px] font-black uppercase">Basketball</span></div>
+                        <div class="p-4 glass rounded-2xl text-center border-black/5 dark:border-white/5"><i class="fa-solid fa-volleyball text-blue-500 block mb-2"></i><span class="text-[9px] font-black uppercase">Volleyball</span></div>
+                        <div class="p-4 glass rounded-2xl text-center border-black/5 dark:border-white/5"><i class="fa-solid fa-futbol text-green-500 block mb-2"></i><span class="text-[9px] font-black uppercase">Futsal</span></div>
+                        <div class="p-4 glass rounded-2xl text-center border-black/5 dark:border-white/5"><i class="fa-solid fa-table-tennis-paddle-ball text-pulse-red block mb-2"></i><span class="text-[9px] font-black uppercase">Pickleball</span></div>
+                        <div class="p-4 glass rounded-2xl text-center border-black/5 dark:border-white/5"><i class="fa-solid fa-couch text-pink-500 block mb-2"></i><span class="text-[9px] font-black uppercase">Pilates Studio</span></div>
+                        <div class="p-4 glass rounded-2xl text-center border-black/5 dark:border-white/5 col-span-2"><i class="fa-solid fa-hot-tub text-pulse-gold block mb-2"></i><span class="text-[9px] font-black uppercase">Sauna</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JOIN MODAL -->
+        <div id="join-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('join-modal')"></div>
+            <div class="modal-content glass rounded-[3rem] p-0 dark:bg-zinc-900 bg-white overflow-hidden">
+                <div class="flex items-center justify-between p-6 border-b dark:border-white/10 border-black/5">
+                    <span class="oswald font-bold uppercase text-pulse-gold tracking-widest text-sm">Elite Membership Inquiry</span>
+                    <button onclick="closeModal('join-modal')" class="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form id="join-form" class="p-8 space-y-4">
+                    <div>
+                        <label class="text-[10px] font-black uppercase text-zinc-500 mb-2 block">Full Name</label>
+                        <input type="text" id="join_name" required placeholder="John Wick" class="w-full glass bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl p-4 text-sm font-bold dark:text-white outline-none focus:border-pulse-red">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black uppercase text-zinc-500 mb-2 block">Phone Number</label>
+                        <input type="tel" id="join_phone" required placeholder="+255..." class="w-full glass bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl p-4 text-sm font-bold dark:text-white outline-none focus:border-pulse-red">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black uppercase text-zinc-500 mb-2 block">Fitness Goal</label>
+                        <select id="join_goal" class="w-full glass bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl p-4 text-sm font-bold dark:text-white outline-none appearance-none">
+                            <option value="Boxing">Boxing Performance</option>
+                            <option value="Weight Loss">Weight Loss</option>
+                            <option value="Strength">Strength Training</option>
+                            <option value="General Fitness">General Fitness</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-pulse-red text-white py-5 rounded-2xl font-black uppercase text-xs tracking-widest mt-4 tap-scale shadow-xl pulse-red-glow">
+                        Send to WhatsApp
+                    </button>
+                    <p class="text-[8px] text-zinc-500 text-center uppercase tracking-widest italic mt-2">“Hello Pulse, I’d like to join the gym.”</p>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // MODAL HELPERS
+        function openModal(id) { 
+            document.getElementById(id).classList.add('active'); 
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            document.body.style.overflow = '';
+        }
+
+        // FORM SUBMISSION
+        document.getElementById('join-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('join_name').value;
+            const phone = document.getElementById('join_phone').value;
+            const goal = document.getElementById('join_goal').value;
+            const text = `Hello Pulse, I’d like to join the gym.\nName: ${name}\nPhone: ${phone}\nGoal: ${goal}`;
+            window.open(`https://wa.me/255744244244?text=${encodeURIComponent(text)}`, '_blank');
+        });
+
+        // THEME TOGGLE
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const htmlElement = document.documentElement;
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                htmlElement.classList.add('dark');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+
+        // Auto-animate items on load
+        window.onload = () => {
+            const items = document.querySelectorAll('.reveal-item');
+            items.forEach((item, index) => {
+                item.style.opacity = '1';
+            });
+        }
+    </script>
+</body>
+</html>
