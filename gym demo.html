@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gym Demo Virtual Tour</title>
+    <style>
+        /* Reset default margins and padding */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* Prevent body scrollbars */
+            background-color: #000; /* Aesthetic background while loading */
+        }
+
+        /* Container to hold the iframe */
+        .tour-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Responsive Iframe */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Optional: Loading indicator */
+        .loading-spinner {
+            position: absolute;
+            z-index: -1;
+            color: white;
+            font-family: sans-serif;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tour-container">
+        <div class="loading-spinner">Loading Tour...</div>
+        <iframe 
+            src="https://kuula.co/share/7S0Nm?logo=1&card=1&info=1&fs=1&vr=1&zoom=1&autorotate=0.08&autop=50&thumbs=1&alpha=0.67" 
+            allow="xr-spatial-tracking; gyroscope; accelerometer" 
+            allowfullscreen 
+            scrolling="no">
+        </iframe>
+    </div>
+
+    <script>
+        // Ensure the iframe maintains focus for keyboard controls if needed
+        window.addEventListener('load', () => {
+            const iframe = document.querySelector('iframe');
+            iframe.focus();
+        });
+    </script>
+</body>
+</html>
