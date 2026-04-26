@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>TSA Masaki | Premium Serviced Apartments</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        tsa: { 
+                            navy: '#0A1D37',
+                            blue: '#1E40AF',
+                            azure: '#3B82F6',
+                            sky: '#DBEAFE',
+                            obsidian: '#020617'
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Oswald', 'sans-serif'],
+                        body: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Oswald:wght@500;700&display=swap');
+        
+        body { 
+            background-color: #f8fafc; 
+            color: #0f172a; 
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.4s ease;
+            overflow-x: hidden;
+        }
+        .dark body { background-color: #020617; color: #ffffff; }
+        .oswald { font-family: 'Oswald', sans-serif; }
+
+        .hero-bg {
+            height: 55vh;
+            background: url('https://lh3.googleusercontent.com/p/AF1QipMFBYlQsvUn4SI4ZAnlpI4RGzJZTmVxzCDnMaFR=s680-w680-h510-rw');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(2,6,23,0) 0%, rgba(2,6,23,0.4) 50%, rgba(2,6,23,1) 100%);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+        }
+        .dark .glass {
+            background: rgba(30, 64, 175, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            backdrop-filter: blur(12px);
+            background: rgba(2,6,23,0.95);
+        }
+        .modal-content {
+            transform: translateY(40px);
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100%;
+            max-width: 32rem;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .tap-scale:active { transform: scale(0.96); }
+        .tsa-glow { box-shadow: 0 0 25px rgba(59, 130, 246, 0.15); }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .reveal-item { animation: fadeInUp 0.6s ease forwards; opacity: 0; }
+        
+        ::-webkit-scrollbar { width: 0px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 16px;
+            padding: 4px 0 20px 0;
+        }
+        .carousel-item {
+            flex: 0 0 85%;
+            scroll-snap-align: center;
+        }
+    </style>
+</head>
+<body class="pb-40">
+
+    <div class="max-w-md mx-auto relative min-h-screen">
+        
+        <!-- TOP BAR -->
+        <nav class="fixed top-0 left-0 right-0 z-[60] bg-white/10 dark:bg-black/10 backdrop-blur-md">
+            <div class="max-w-md mx-auto px-6 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-auto h-10 flex items-center justify-center p-1">
+                        <img src="https://www.tsamasaki.com/wp-content/uploads/2024/11/Tsamasakilogo.png" alt="TSA Logo" class="h-full object-contain brightness-0 invert">
+                    </div>
+                </div>
+                
+                <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center tap-scale hover:bg-white/10">
+                    <i id="theme-icon" class="fa-solid fa-moon dark:text-tsa-azure text-lg text-tsa-navy"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- HERO SECTION -->
+        <div class="hero-bg">
+            <div class="hero-overlay"></div>
+            <div class="absolute bottom-10 left-0 right-0 px-8">
+                <h1 class="oswald text-5xl font-bold text-white tracking-tighter leading-[0.9] mb-4 uppercase reveal-item" style="animation-delay: 0.1s;">
+                    Welcome to <br>
+                    <span class="text-tsa-azure italic">TSA</span> 🏢
+                </h1>
+                <p class="text-white/70 text-xs leading-relaxed max-w-[280px] reveal-item" style="animation-delay: 0.25s;">Experience the convenience of a hotel with the comfort of a home.</p>
+            </div>
+        </div>
+
+        <!-- MAIN CORE GRID -->
+        <section class="px-6 grid grid-cols-2 gap-3 reveal-item" style="animation-delay: 0.4s;">
+            <button onclick="openModal('about-modal')" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left">
+                <div class="w-10 h-10 bg-tsa-blue/10 rounded-xl flex items-center justify-center text-tsa-azure">
+                    <i class="fa-solid fa-building-user text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">About TSA</span>
+            </button>
+            
+            <button onclick="openModal('amenities-modal')" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left">
+                <div class="w-10 h-10 bg-tsa-blue/10 rounded-xl flex items-center justify-center text-tsa-azure">
+                    <i class="fa-solid fa-bell-concierge text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">Stay Experience</span>
+            </button>
+
+            <a href="https://www.skani.space/Havana%20Mikocheni.html" target="_blank" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left">
+                <div class="w-10 h-10 bg-tsa-blue/10 rounded-xl flex items-center justify-center text-tsa-azure">
+                    <i class="fa-solid fa-vr-cardboard text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">Virtual Tour</span>
+            </a>
+
+            <a href="https://www.tsamasaki.com/" target="_blank" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left">
+                <div class="w-10 h-10 bg-tsa-blue/10 rounded-xl flex items-center justify-center text-tsa-azure">
+                    <i class="fa-solid fa-globe text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">Website</span>
+            </a>
+
+            <a href="https://maps.app.goo.gl/b4FzJAvyAYCgbyqt9" target="_blank" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left">
+                <div class="w-10 h-10 bg-tsa-blue/10 rounded-xl flex items-center justify-center text-tsa-azure">
+                    <i class="fa-solid fa-map-location-dot text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">Location</span>
+            </a>
+
+            <a href="https://www.google.com/search?sca_esv=03ed3b38c84ec75c&sxsrf=ANbL-n621KTBg7kJpQwquXbzVKIbvXL-LA:1777199566442&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOQByi8oRz_pCYBnjK5OEZEeBsyuqCo3Bqm-3Qyu-oLkb9BFyZYFv9zhy1kAjJnVHB8JbdecqUDUMSJZoRuqY1mSFMF9t&q=TSA+Masaki+Reviews&sa=X&ved=2ahUKEwjC9OimqIuUAxUyU6QEHTG6JIcQ0bkNegQIIRAH&biw=1920&bih=957&dpr=1" target="_blank" class="glass p-5 rounded-[2rem] flex flex-col items-start gap-4 tap-scale text-left">
+                <div class="w-10 h-10 bg-tsa-blue/10 rounded-xl flex items-center justify-center text-tsa-azure">
+                    <i class="fa-solid fa-star text-xl"></i>
+                </div>
+                <span class="oswald text-xs font-bold uppercase tracking-widest">Reviews</span>
+            </a>
+        </section>
+
+        <!-- NEW BOOKING BUTTON SECTION -->
+        <section class="px-6 mt-12 reveal-item" style="animation-delay: 0.5s;">
+            <button onclick="openModal('booking-modal')" class="w-full glass p-8 rounded-[2.5rem] border-t-4 border-tsa-azure flex items-center justify-between tap-scale group">
+                <div>
+                    <h3 class="oswald text-xl font-bold uppercase mb-1">🛎️ Book Your Stay</h3>
+                    <p class="text-[10px] uppercase font-black tracking-widest text-zinc-500">Inquiry Form</p>
+                </div>
+                <div class="w-12 h-12 bg-tsa-azure rounded-full flex items-center justify-center text-white shadow-lg shadow-tsa-azure/30 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                </div>
+            </button>
+        </section>
+
+        <!-- PREMIUM AMENITIES SECTION -->
+        <section class="px-6 mt-12 reveal-item" style="animation-delay: 0.55s;">
+            <div class="mb-6">
+                <h3 class="oswald text-2xl font-bold uppercase tracking-tight">✨ Premium Amenities</h3>
+                <p class="text-[10px] font-black uppercase text-tsa-azure tracking-[0.2em] mt-1">Exclusively at TSA</p>
+            </div>
+            <div class="grid grid-cols-1 gap-4">
+                <!-- Gym -->
+                <button onclick="openModal('gym-modal')" class="glass p-6 rounded-[2.5rem] flex items-center justify-between tap-scale group border-l-4 border-tsa-azure">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-tsa-azure/10 rounded-2xl flex items-center justify-center text-tsa-azure text-xl">
+                            <i class="fa-solid fa-dumbbell"></i>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="oswald text-sm font-bold uppercase">Modern Gym</h4>
+                            <p class="text-[9px] text-zinc-500 uppercase tracking-widest">Full Equipment</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-tsa-azure/40 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+                <!-- Rooftop Pool -->
+                <button onclick="openModal('pool-modal')" class="glass p-6 rounded-[2.5rem] flex items-center justify-between tap-scale group border-l-4 border-tsa-azure">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-tsa-azure/10 rounded-2xl flex items-center justify-center text-tsa-azure text-xl">
+                            <i class="fa-solid fa-water-ladder"></i>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="oswald text-sm font-bold uppercase">Rooftop Pool</h4>
+                            <p class="text-[9px] text-zinc-500 uppercase tracking-widest">City View</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-tsa-azure/40 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- UPGRADED APARTMENTS SECTION -->
+        <section class="mt-16 reveal-item" style="animation-delay: 0.6s;">
+            <div class="px-8 mb-6">
+                <h3 class="oswald text-2xl font-bold uppercase tracking-tight">🛏️ Our Apartments</h3>
+                <p class="text-[10px] font-black uppercase text-tsa-azure tracking-[0.2em] mt-1">Choose the perfect stay</p>
+            </div>
+            
+            <div class="carousel-container no-scrollbar px-6">
+                <!-- Superior Suite -->
+                <div class="carousel-item glass p-6 rounded-[2.5rem] flex flex-col h-full border-b-4 border-tsa-azure">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="oswald text-lg font-bold uppercase">Superior Suite</h4>
+                            <div class="flex gap-2 text-[8px] font-black uppercase text-zinc-500 mt-1">
+                                <span>50m²</span> • <span>2 Guests</span>
+                            </div>
+                        </div>
+                        <span class="text-tsa-azure oswald font-bold">$110<span class="text-[10px] text-zinc-500">/NT</span></span>
+                    </div>
+                    <p class="text-[11px] text-zinc-400 leading-relaxed mb-6 flex-grow">A comfortable 1-bedroom suite featuring a separate living area, fully equipped kitchen, and high-speed WiFi.</p>
+                    <div class="space-y-2">
+                        <button onclick="bookSpecific('Superior Suite')" class="w-full py-3 bg-tsa-azure text-white rounded-xl oswald text-xs uppercase font-bold tap-scale">Book Now</button>
+                        <a href="https://www.skani.space/Havana%20Mikocheni.html" target="_blank" class="block text-center py-3 border border-tsa-azure/30 rounded-xl oswald text-[10px] uppercase font-bold tracking-widest tap-scale">Take a Tour</a>
+                    </div>
+                </div>
+
+                <!-- Superior 1-Bed -->
+                <div class="carousel-item glass p-6 rounded-[2.5rem] flex flex-col h-full border-b-4 border-tsa-azure">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="oswald text-lg font-bold uppercase">Superior 1-Bed</h4>
+                            <div class="flex gap-2 text-[8px] font-black uppercase text-zinc-500 mt-1">
+                                <span>60m²</span> • <span>2 Guests</span>
+                            </div>
+                        </div>
+                        <span class="text-tsa-azure oswald font-bold">$130<span class="text-[10px] text-zinc-500">/NT</span></span>
+                    </div>
+                    <p class="text-[11px] text-zinc-400 leading-relaxed mb-6 flex-grow">Spacious suite with in-unit laundry, work desk, and in-room safe — ideal for both short and extended stays.</p>
+                    <div class="space-y-2">
+                        <button onclick="bookSpecific('Superior 1-Bedroom Suite')" class="w-full py-3 bg-tsa-azure text-white rounded-xl oswald text-xs uppercase font-bold tap-scale">Book Now</button>
+                        <a href="https://www.skani.space/Havana%20Mikocheni.html" target="_blank" class="block text-center py-3 border border-tsa-azure/30 rounded-xl oswald text-[10px] uppercase font-bold tracking-widest tap-scale">Take a Tour</a>
+                    </div>
+                </div>
+
+                <!-- Executive Sea View -->
+                <div class="carousel-item glass p-6 rounded-[2.5rem] flex flex-col h-full border-b-4 border-tsa-azure">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="oswald text-lg font-bold uppercase">Executive Sea View</h4>
+                            <div class="flex gap-2 text-[8px] font-black uppercase text-zinc-500 mt-1">
+                                <span>70m²</span> • <span>2 Guests</span>
+                            </div>
+                        </div>
+                        <span class="text-tsa-azure oswald font-bold">$160<span class="text-[10px] text-zinc-500">/NT</span></span>
+                    </div>
+                    <p class="text-[11px] text-zinc-400 leading-relaxed mb-6 flex-grow">Enjoy stunning ocean views in a spacious, elegant suite designed for relaxation and a premium experience.</p>
+                    <div class="space-y-2">
+                        <button onclick="bookSpecific('Executive Sea View Suite')" class="w-full py-3 bg-tsa-blue text-white rounded-xl oswald text-xs uppercase font-bold tap-scale">Book Now</button>
+                        <a href="https://www.skani.space/Havana%20Mikocheni.html" target="_blank" class="block text-center py-3 border border-tsa-azure/30 rounded-xl oswald text-[10px] uppercase font-bold tracking-widest tap-scale text-tsa-azure">Take a Tour</a>
+                    </div>
+                </div>
+
+                <!-- Presidential -->
+                <div class="carousel-item glass p-6 rounded-[2.5rem] flex flex-col h-full border-b-4 border-yellow-500">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="oswald text-lg font-bold uppercase">Presidential</h4>
+                            <div class="flex gap-2 text-[8px] font-black uppercase text-zinc-500 mt-1">
+                                <span>120m²</span> • <span>4 Guests</span>
+                            </div>
+                        </div>
+                        <span class="text-yellow-500 oswald font-bold">$250<span class="text-[10px] text-zinc-500">/NT</span></span>
+                    </div>
+                    <p class="text-[11px] text-zinc-400 leading-relaxed mb-6 flex-grow">Private top-floor balcony, 2 bedrooms, and floor-to-ceiling windows. The ultimate luxury experience.</p>
+                    <div class="space-y-2">
+                        <button onclick="bookSpecific('Presidential Suite')" class="w-full py-3 bg-yellow-600 text-white rounded-xl oswald text-xs uppercase font-bold tap-scale">Book Now</button>
+                        <a href="https://www.skani.space/Havana%20Mikocheni.html" target="_blank" class="block text-center py-3 border border-yellow-500/30 rounded-xl oswald text-[10px] uppercase font-bold tracking-widest tap-scale text-yellow-500">Take a Tour</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEARBY PLACES CAROUSEL -->
+        <section class="mt-16 px-6 reveal-item" style="animation-delay: 0.8s;">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="oswald text-sm font-bold uppercase tracking-[0.2em]">Nearby Places</h3>
+                <span class="text-[8px] font-black uppercase text-zinc-500">Swipe →</span>
+            </div>
+            
+            <div class="carousel-container no-scrollbar">
+                <a href="https://www.google.com/maps/search/Cafes+near+TSA+Masaki" target="_blank" class="carousel-item glass p-6 rounded-[2rem] tap-scale border-l-4 border-amber-400">
+                    <i class="fa-solid fa-coffee text-amber-400 mb-3 text-xl"></i>
+                    <span class="block oswald text-xs font-bold uppercase tracking-widest">Cafés</span>
+                    <p class="text-[9px] text-zinc-500 mt-1 uppercase">Best Coffee in Masaki</p>
+                </a>
+                
+                <a href="https://www.google.com/maps/search/Restaurants+near+TSA+Masaki" target="_blank" class="carousel-item glass p-6 rounded-[2rem] tap-scale border-l-4 border-tsa-azure">
+                    <i class="fa-solid fa-utensils text-tsa-azure mb-3 text-xl"></i>
+                    <span class="block oswald text-xs font-bold uppercase tracking-widest">Dining</span>
+                    <p class="text-[9px] text-zinc-500 mt-1 uppercase">Fine Dining & Bars</p>
+                </a>
+
+                <a href="https://www.google.com/maps/search/Supermarkets+near+TSA+Masaki" target="_blank" class="carousel-item glass p-6 rounded-[2rem] tap-scale border-l-4 border-green-500">
+                    <i class="fa-solid fa-cart-shopping text-green-500 mb-3 text-xl"></i>
+                    <span class="block oswald text-xs font-bold uppercase tracking-widest">Supermarkets</span>
+                    <p class="text-[9px] text-zinc-500 mt-1 uppercase">Shops & Groceries</p>
+                </a>
+
+                <a href="https://www.google.com/maps/search/Epidor+Masaki" target="_blank" class="carousel-item glass p-6 rounded-[2rem] tap-scale border-l-4 border-tsa-azure">
+                    <i class="fa-solid fa-bread-slice text-tsa-azure mb-3 text-xl"></i>
+                    <span class="block oswald text-xs font-bold uppercase tracking-widest">Epidor</span>
+                    <p class="text-[9px] text-zinc-500 mt-1 uppercase">Must-visit Bakery</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- FOOTER CONNECT -->
+        <section class="px-6 mt-16 text-center reveal-item" style="animation-delay: 0.9s;">
+            <p class="oswald text-[10px] uppercase tracking-[0.3em] mb-6 text-zinc-500">Connect with us</p>
+            <div class="flex justify-center items-center gap-6">
+                <a href="https://wa.me/255755666889" target="_blank" class="w-14 h-14 glass rounded-2xl flex items-center justify-center tap-scale text-green-500">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                </a>
+                <a href="tel:+255755666889" class="w-14 h-14 glass rounded-2xl flex items-center justify-center tap-scale text-tsa-azure">
+                    <i class="fa-solid fa-phone text-xl"></i>
+                </a>
+                <a href="mailto:bookings@tsamasaki.com" class="w-14 h-14 glass rounded-2xl flex items-center justify-center tap-scale text-blue-400">
+                    <i class="fa-solid fa-envelope text-xl"></i>
+                </a>
+                <a href="https://www.instagram.com/tsamasaki/" target="_blank" class="w-14 h-14 glass rounded-2xl flex items-center justify-center tap-scale text-pink-500">
+                    <i class="fa-brands fa-instagram text-2xl"></i>
+                </a>
+            </div>
+            
+            <div class="mt-16 text-[9px] font-black uppercase text-zinc-500 tracking-[0.4em] mb-10">
+                37 Chole Road • Masaki • Dar es Salaam
+            </div>
+        </section>
+
+        <!-- STICKY BOTTOM BAR -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+            <div class="max-w-md mx-auto glass dark:bg-slate-900/90 backdrop-blur-3xl rounded-[2.5rem] p-2 flex items-center gap-3 shadow-2xl border border-tsa-azure/20">
+                <a href="https://wa.me/255755666889" target="_blank" class="w-14 h-14 flex items-center justify-center text-green-500 tap-scale rounded-full glass border-none">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                </a>
+                <button onclick="openModal('booking-modal')" class="flex-1 bg-tsa-azure text-white oswald font-bold text-sm uppercase tracking-[0.2em] py-4 rounded-full shadow-lg tsa-glow tap-scale border-none flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-calendar-check text-lg"></i>
+                    Book Stay
+                </button>
+                <a href="https://www.instagram.com/tsamasaki/" target="_blank" class="w-14 h-14 flex items-center justify-center text-pink-500 tap-scale rounded-full glass border-none">
+                    <i class="fa-brands fa-instagram text-2xl"></i>
+                </a>
+            </div>
+        </nav>
+
+        <!-- MODALS -->
+        
+        <!-- BOOKING MODAL -->
+        <div id="booking-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('booking-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-slate-900 bg-white">
+                <div class="p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="oswald text-xl font-bold uppercase text-tsa-azure">🛎️ Book Your Stay</h3>
+                        <button onclick="closeModal('booking-modal')" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-white/10 transition-colors">
+                            <i class="fa-solid fa-xmark text-lg text-zinc-400"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-4">
+                        <input type="text" id="book-name" placeholder="Full Name" class="w-full bg-white/5 border border-zinc-500/20 rounded-xl p-4 text-sm focus:border-tsa-azure outline-none dark:text-white text-tsa-navy">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="book-in" placeholder="Check-in Date" class="w-full bg-white/5 border border-zinc-500/20 rounded-xl p-4 text-sm focus:border-tsa-azure outline-none dark:text-white text-tsa-navy">
+                            <input type="text" id="book-out" placeholder="Check-out Date" class="w-full bg-white/5 border border-zinc-500/20 rounded-xl p-4 text-sm focus:border-tsa-azure outline-none dark:text-white text-tsa-navy">
+                        </div>
+                        <select id="book-type" class="w-full bg-white/5 border border-zinc-500/20 rounded-xl p-4 text-sm focus:border-tsa-azure outline-none appearance-none dark:text-white text-tsa-navy">
+                            <option value="">Select Apartment Type</option>
+                            <option value="Superior Suite">Superior Suite</option>
+                            <option value="Superior 1-Bedroom Suite">Superior 1-Bedroom Suite</option>
+                            <option value="Executive Suite">Executive Suite</option>
+                            <option value="Executive Sea View Suite">Executive Sea View Suite</option>
+                            <option value="Presidential Suite">Presidential Suite</option>
+                        </select>
+                        <button onclick="sendBooking()" class="w-full bg-tsa-azure text-white py-5 rounded-2xl oswald font-bold uppercase tracking-widest tap-scale shadow-lg tsa-glow">
+                            Request Availability
+                        </button>
+                    </div>
+                    <button onclick="closeModal('booking-modal')" class="w-full mt-6 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-tsa-azure transition-colors">
+                        ← Go Back
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT MODAL -->
+        <div id="about-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('about-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-slate-900 bg-white">
+                <div class="p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="oswald text-xl font-bold uppercase text-tsa-azure">Who We Are</h3>
+                        <button onclick="closeModal('about-modal')" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-white/10 transition-colors">
+                            <i class="fa-solid fa-xmark text-lg text-zinc-400"></i>
+                        </button>
+                    </div>
+                    <p class="text-sm leading-relaxed mb-6 text-zinc-500">TSA Masaki offers fully furnished serviced apartments designed for comfort, flexibility, and premium living in Dar es Salaam.</p>
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-4">Unique Features</h4>
+                    <div class="space-y-3 mb-8">
+                        <div class="flex gap-3 items-center text-xs font-bold"><i class="fa-solid fa-check text-green-500"></i> Hotel-level Service</div>
+                        <div class="flex gap-3 items-center text-xs font-bold"><i class="fa-solid fa-check text-green-500"></i> 24/7 Concierge</div>
+                        <div class="flex gap-3 items-center text-xs font-bold"><i class="fa-solid fa-check text-green-500"></i> Prime Masaki Location</div>
+                        <div class="flex gap-3 items-center text-xs font-bold"><i class="fa-solid fa-check text-green-500"></i> Sea View Options</div>
+                    </div>
+                    <button onclick="closeModal('about-modal')" class="w-full text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-tsa-azure transition-colors">
+                        ← Go Back
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AMENITIES MODAL -->
+        <div id="amenities-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('amenities-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-slate-900 bg-white">
+                <div class="p-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="oswald text-xl font-bold uppercase text-tsa-azure">Stay Experience</h3>
+                        <button onclick="closeModal('amenities-modal')" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-white/10 transition-colors">
+                            <i class="fa-solid fa-xmark text-lg text-zinc-400"></i>
+                        </button>
+                    </div>
+                    <p class="text-xs text-zinc-500 mb-8 italic">Fully furnished apartments with premium on-site facilities.</p>
+                    
+                    <div class="grid grid-cols-1 gap-6 mb-10">
+                        <div class="flex gap-4 items-center">
+                            <div class="w-10 h-10 bg-tsa-azure/10 rounded-xl flex items-center justify-center text-tsa-azure"><i class="fa-solid fa-van-shuttle"></i></div>
+                            <div>
+                                <span class="block text-[10px] font-black uppercase">Airport Shuttle</span>
+                                <span class="text-[10px] text-zinc-400">Convenient transport to/from JNIA</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-center">
+                            <div class="w-10 h-10 bg-tsa-azure/10 rounded-xl flex items-center justify-center text-tsa-azure"><i class="fa-solid fa-wifi"></i></div>
+                            <div>
+                                <span class="block text-[10px] font-black uppercase">Fiber WiFi</span>
+                                <span class="text-[10px] text-zinc-400">High-speed reliable internet</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-center">
+                            <div class="w-10 h-10 bg-tsa-azure/10 rounded-xl flex items-center justify-center text-tsa-azure"><i class="fa-solid fa-bread-slice"></i></div>
+                            <div>
+                                <span class="block text-[10px] font-black uppercase">Buffet Breakfast</span>
+                                <span class="text-[10px] text-zinc-400">Fresh daily morning selection</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-center">
+                            <div class="w-10 h-10 bg-tsa-azure/10 rounded-xl flex items-center justify-center text-tsa-azure"><i class="fa-solid fa-clock"></i></div>
+                            <div>
+                                <span class="block text-[10px] font-black uppercase">24/7 Concierge</span>
+                                <span class="text-[10px] text-zinc-400">Always here to assist you</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('amenities-modal')" class="w-full text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-tsa-azure transition-colors">
+                        ← Go Back
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- GYM MODAL -->
+        <div id="gym-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('gym-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-slate-900 bg-white">
+                <div class="p-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="oswald text-xl font-bold uppercase text-tsa-azure">The Gym</h3>
+                        <button onclick="closeModal('gym-modal')" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-white/10 transition-colors">
+                            <i class="fa-solid fa-xmark text-lg text-zinc-400"></i>
+                        </button>
+                    </div>
+                    <p class="text-sm leading-relaxed mb-8 text-zinc-500">Maintain your fitness routine in our state-of-the-art gym, featuring modern cardio machines, weight systems, and floor-to-ceiling windows with natural light.</p>
+                    <div class="flex flex-col gap-3 mb-8">
+                        <a href="https://www.skani.space/Havana%20Mikocheni.html" target="_blank" class="w-full bg-tsa-azure text-white py-4 rounded-xl oswald font-bold text-center uppercase tracking-widest tap-scale">Take a Tour</a>
+                        <a href="https://drive.google.com/file/d/1kLRDNXcSwpXoQMg3rE_GR9sCROfKsVt_/view?usp=drive_link" target="_blank" class="w-full border border-tsa-azure/30 py-4 rounded-xl oswald font-bold text-center uppercase tracking-widest text-tsa-azure tap-scale">Check a Video</a>
+                    </div>
+                    <button onclick="closeModal('gym-modal')" class="w-full text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-tsa-azure transition-colors">
+                        ← Go Back
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- POOL MODAL -->
+        <div id="pool-modal" class="modal-overlay">
+            <div class="absolute inset-0" onclick="closeModal('pool-modal')"></div>
+            <div class="modal-content glass rounded-[2.5rem] p-0 dark:bg-slate-900 bg-white">
+                <div class="p-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="oswald text-xl font-bold uppercase text-tsa-azure">Rooftop Pool</h3>
+                        <button onclick="closeModal('pool-modal')" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-white/10 transition-colors">
+                            <i class="fa-solid fa-xmark text-lg text-zinc-400"></i>
+                        </button>
+                    </div>
+                    <p class="text-sm leading-relaxed mb-8 text-zinc-500">Unwind at our iconic rooftop infinity pool. Experience breathtaking sunsets over the city and the Indian Ocean in a serene, private atmosphere.</p>
+                    <div class="flex flex-col gap-3 mb-8">
+                        <a href="https://www.skani.space/Havana%20Mikocheni.html" target="_blank" class="w-full bg-tsa-azure text-white py-4 rounded-xl oswald font-bold text-center uppercase tracking-widest tap-scale">Take a Tour</a>
+                        <a href="https://drive.google.com/file/d/1lKIWFVRE_tr4lrwfk6a5ZLNiG_lTwJ9x/view?usp=drive_link" target="_blank" class="w-full border border-tsa-azure/30 py-4 rounded-xl oswald font-bold text-center uppercase tracking-widest text-tsa-azure tap-scale">Check a Video</a>
+                    </div>
+                    <button onclick="closeModal('pool-modal')" class="w-full text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-tsa-azure transition-colors">
+                        ← Go Back
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openModal(id, preSelectedValue = null) { 
+            const modal = document.getElementById(id);
+            modal.classList.add('active'); 
+            document.body.style.overflow = 'hidden'; 
+            
+            // If it's the booking modal and we have a pre-selected value
+            if (id === 'booking-modal' && preSelectedValue) {
+                const selectElement = document.getElementById('book-type');
+                if (selectElement) {
+                    selectElement.value = preSelectedValue;
+                }
+            }
+        }
+
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            document.body.style.overflow = ''; 
+        }
+
+        function sendBooking() {
+            const name = document.getElementById('book-name').value;
+            const checkIn = document.getElementById('book-in').value;
+            const checkOut = document.getElementById('book-out').value;
+            const type = document.getElementById('book-type').value;
+            
+            if(!name || !checkIn) {
+                alert("Please fill in your name and check-in date.");
+                return;
+            }
+
+            const message = `Hello TSA, I’d like to book a stay. Here are my details:
+- Name: ${name}
+- Check-in: ${checkIn}
+- Check-out: ${checkOut}
+- Apartment Type: ${type}`;
+
+            window.open(`https://wa.me/255755666889?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function bookSpecific(room) {
+            // Updated to open the modal instead of direct WhatsApp
+            openModal('booking-modal', room);
+        }
+
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const htmlElement = document.documentElement;
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                htmlElement.classList.add('dark');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+
+        window.onload = () => {
+            document.querySelectorAll('.reveal-item').forEach(item => item.style.opacity = '1');
+        }
+    </script>
+</body>
+</html>
