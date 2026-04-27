@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>255 Virtual Tours | Digital Transformation</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            400: '#a78bfa',
+                            500: '#8b5cf6', // Primary Purplish
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        },
+                        night: '#05010d'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { 
+            background-color: #f5f3ff; 
+            color: #1e1b4b;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .dark body { background-color: #05010d; color: #f5f3ff; }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        .modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(0px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            backdrop-filter: blur(12px);
+        }
+        .modal-content {
+            transform: translateY(40px);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .glass-purple {
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+        }
+        .dark .glass-purple {
+            background: rgba(139, 92, 246, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+        
+        .purple-gradient {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        }
+
+        .tap-scale:active { transform: scale(0.96); transition: transform 0.1s; }
+        
+        input:focus, select:focus {
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+        }
+    </style>
+</head>
+<body class="transition-colors duration-500 pb-32">
+
+    <div class="max-w-md mx-auto min-h-screen relative">
+        
+        <!-- HEADER -->
+        <header class="px-6 py-5 flex items-center justify-between sticky top-0 bg-white/60 dark:bg-night/60 backdrop-blur-xl z-40 border-b border-brand-500/10 pt-[calc(1.25rem+env(safe-area-inset-top))]">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
+                    <i class="fa-solid fa-camera-rotate text-xs"></i>
+                </div>
+                <h1 class="text-xs font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">255 Virtual Tours</h1>
+            </div>
+            <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 tap-scale">
+                <i id="theme-icon" class="fa-solid fa-moon"></i>
+            </button>
+        </header>
+
+        <!-- WELCOME -->
+        <section class="px-7 py-10 reveal">
+            <span class="text-[10px] font-black uppercase tracking-[0.4em] text-brand-500 mb-2 block">255 Virtual Tours</span>
+            <h2 class="text-4xl font-black leading-[1] tracking-tighter mb-4">
+                Let clients walk through <span class="text-brand-500 italic">your space</span> before they arrive.
+            </h2>
+        </section>
+
+        <!-- MAIN GRID (2x2) -->
+        <section class="px-6 grid grid-cols-2 gap-3 mb-3">
+            <button onclick="openModal('modalWhat')" class="reveal tap-scale glass-purple p-6 rounded-[2.5rem] flex flex-col items-start text-left min-h-[125px] justify-between">
+                <i class="fa-solid fa-brain text-brand-500 text-2xl"></i>
+                <span class="font-black text-xs uppercase leading-tight tracking-tight">What is a<br>Virtual Tour?</span>
+            </button>
+
+            <button onclick="openModal('modalExperience')" class="reveal tap-scale bg-zinc-900 dark:bg-white dark:text-black text-white p-6 rounded-[2.5rem] flex flex-col items-start text-left min-h-[125px] justify-between shadow-xl shadow-zinc-500/10">
+                <i class="fa-solid fa-clapperboard text-brand-500 text-2xl"></i>
+                <span class="font-black text-xs uppercase leading-tight tracking-tight">Experience<br>Virtual Tours</span>
+            </button>
+
+            <button onclick="openModal('modalWhy')" class="reveal tap-scale glass-purple p-6 rounded-[2.5rem] flex flex-col items-start text-left min-h-[125px] justify-between">
+                <i class="fa-solid fa-lightbulb text-brand-500 text-2xl"></i>
+                <span class="font-black text-xs uppercase leading-tight tracking-tight">Why It<br>Matters</span>
+            </button>
+
+            <button onclick="openModal('modalGet')" class="reveal tap-scale glass-purple p-6 rounded-[2.5rem] flex flex-col items-start text-left min-h-[125px] justify-between">
+                <i class="fa-solid fa-gift text-brand-500 text-2xl"></i>
+                <span class="font-black text-xs uppercase leading-tight tracking-tight">What You<br>Get</span>
+            </button>
+        </section>
+
+        <!-- PRIMARY CTA -->
+        <section class="px-6 mb-3 reveal">
+            <button onclick="openModal('modalForm')" class="w-full purple-gradient p-8 rounded-[2.5rem] text-left text-white flex justify-between items-center group relative overflow-hidden tap-scale shadow-2xl shadow-brand-500/30">
+                <div class="relative z-10">
+                    <h3 class="text-2xl font-black italic uppercase tracking-tighter">Book Your Demo</h3>
+                    <p class="text-white/70 text-[10px] font-bold uppercase tracking-widest mt-1">Transform your business today</p>
+                </div>
+                <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </button>
+        </section>
+
+        <!-- PRICING CARD -->
+        <section class="px-6 mb-8 reveal">
+            <button onclick="openModal('modalPricing')" class="w-full bg-white dark:bg-zinc-900 border border-brand-500/20 p-6 rounded-[2.5rem] flex items-center justify-between tap-scale">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-brand-500/10 rounded-2xl flex items-center justify-center text-brand-500 text-xl">
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                    </div>
+                    <div class="text-left">
+                        <span class="block font-black text-sm uppercase tracking-tight">💰 Pricing Tiers</span>
+                        <span class="text-[10px] opacity-60 font-bold uppercase tracking-widest">Starting at $15/scene</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-brand-500/40"></i>
+            </button>
+        </section>
+
+        <!-- SECOND GRID (WHO & HOW) -->
+        <section class="px-6 grid grid-cols-2 gap-3 mb-10">
+            <button onclick="openModal('modalWho')" class="reveal tap-scale glass-purple p-6 rounded-[2rem] flex flex-col items-center gap-3 text-center">
+                <i class="fa-solid fa-house-user text-brand-500 text-lg"></i>
+                <span class="font-black text-[10px] uppercase tracking-tighter">Who it's for</span>
+            </button>
+            <button onclick="openModal('modalHow')" class="reveal tap-scale glass-purple p-6 rounded-[2rem] flex flex-col items-center gap-3 text-center">
+                <i class="fa-solid fa-gears text-brand-500 text-lg"></i>
+                <span class="font-black text-[10px] uppercase tracking-tighter">How it works</span>
+            </button>
+            <button onclick="openModal('modalBenefits')" class="reveal tap-scale glass-purple p-6 rounded-[2rem] flex flex-col items-center gap-3 text-center">
+                <i class="fa-solid fa-chart-line text-brand-500 text-lg"></i>
+                <span class="font-black text-[10px] uppercase tracking-tighter">Benefits</span>
+            </button>
+            <button onclick="openModal('modalFeatures')" class="reveal tap-scale glass-purple p-6 rounded-[2rem] flex flex-col items-center gap-3 text-center">
+                <i class="fa-solid fa-plus text-brand-500 text-lg"></i>
+                <span class="font-black text-[10px] uppercase tracking-tighter">Add-ons</span>
+            </button>
+        </section>
+
+        <!-- SOCIALS -->
+        <section class="px-6 flex justify-center gap-5 mb-20 reveal">
+            <a href="https://www.instagram.com/code255.tech/" class="w-14 h-14 bg-white dark:bg-zinc-900 rounded-3xl flex items-center justify-center text-xl shadow-sm border border-zinc-200 dark:border-zinc-800 text-brand-500 tap-scale"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@code255.tech" class="w-14 h-14 bg-white dark:bg-zinc-900 rounded-3xl flex items-center justify-center text-xl shadow-sm border border-zinc-200 dark:border-zinc-800 dark:text-white tap-scale"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="https://wa.me/255757249910" class="w-14 h-14 bg-white dark:bg-zinc-900 rounded-3xl flex items-center justify-center text-xl shadow-sm border border-zinc-200 dark:border-zinc-800 text-green-500 tap-scale"><i class="fa-brands fa-whatsapp"></i></a>
+        </section>
+
+        <!-- STICKY BOTTOM -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pointer-events-none">
+            <div class="max-w-md mx-auto bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl rounded-full p-2 flex items-center justify-between border border-brand-500/10 pointer-events-auto shadow-2xl">
+                <a href="https://wa.me/255757249910" class="w-12 h-12 flex items-center justify-center text-green-500 text-xl tap-scale">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+                <button onclick="openModal('modalForm')" class="flex-1 bg-brand-500 text-white font-black text-xs uppercase py-4 px-8 rounded-full tap-scale shadow-lg shadow-brand-500/30 mx-2">
+                    Book Demo
+                </button>
+                <a href="https://www.instagram.com/code255.tech/" class="w-12 h-12 flex items-center justify-center text-brand-500 text-xl tap-scale">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+            </div>
+        </nav>
+
+    </div>
+
+    <!-- MODAL OVERLAYS -->
+
+    <!-- What Is Modal -->
+    <div id="modalWhat" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+        <div class="absolute inset-0 bg-black/60" onclick="closeModal('modalWhat')"></div>
+        <div class="modal-content bg-white dark:bg-zinc-950 w-full max-w-sm rounded-[3rem] p-8 relative border-t-8 border-brand-500 shadow-2xl">
+            <button onclick="closeModal('modalWhat')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 rounded-full tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-black mb-4 tracking-tighter">🧠 What is it?</h3>
+            <div class="space-y-4 text-sm leading-relaxed opacity-80 font-medium">
+                <p>👉 A Virtual Tour is an <span class="text-brand-500 font-bold">interactive 360° experience</span> that lets people explore your space like they are physically there.</p>
+                <p>Instead of just viewing static photos, users move through rooms, understand layout, and feel the environment — helping them make <span class="text-brand-500 font-bold">faster decisions</span>.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Experience Modal -->
+    <div id="modalExperience" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+        <div class="absolute inset-0 bg-black/60" onclick="closeModal('modalExperience')"></div>
+        <div class="modal-content bg-white dark:bg-zinc-950 w-full max-w-sm rounded-[3rem] p-8 relative border-t-8 border-brand-500 shadow-2xl">
+            <button onclick="closeModal('modalExperience')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 rounded-full tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-black mb-6 tracking-tighter italic">🎥 Demo Gallery</h3>
+            <div class="grid grid-cols-1 gap-3">
+                <a href="https://view.kevinconsult.com/tours/EmUDoGfIe?sceneId=2z184J-SLR" target="_blank" class="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                    <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white"><i class="fa-solid fa-school-flag"></i></div>
+                    <div class="text-left"><span class="block text-xs font-black uppercase"> DIA School</span><span class="text-[9px] opacity-50 uppercase">Education Tour</span></div>
+                </a>
+                <a href="https://www.skani.space/Bobo%20VT.html" target="_blank" class="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                    <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-white"><i class="fa-solid fa-palette"></i></div>
+                    <div class="text-left"><span class="block text-xs font-black uppercase"> Play & Learn Center</span><span class="text-[9px] opacity-50 uppercase">Bobo Play Demo</span></div>
+                </a>
+                <a href="https://www.skani.space/255Apartment.html" target="_blank" class="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                    <div class="w-10 h-10 bg-brand-400 rounded-xl flex items-center justify-center text-white"><i class="fa-solid fa-building"></i></div>
+                    <div class="text-left"><span class="block text-xs font-black uppercase"> Apartment (Audio)</span><span class="text-[9px] opacity-50 uppercase">With Voice Info</span></div>
+                </a>
+                <a href="https://www.skani.space/Havana%20Mikocheni.html" target="_blank" class="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                    <div class="w-10 h-10 bg-zinc-700 rounded-xl flex items-center justify-center text-white"><i class="fa-solid fa-house"></i></div>
+                    <div class="text-left"><span class="block text-xs font-black uppercase"> Havana Mikocheni</span><span class="text-[9px] opacity-50 uppercase">Standard Walkthrough</span></div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Why Modal -->
+    <div id="modalWhy" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+        <div class="absolute inset-0 bg-black/60" onclick="closeModal('modalWhy')"></div>
+        <div class="modal-content bg-white dark:bg-zinc-950 w-full max-w-sm rounded-[3rem] p-8 relative border-t-8 border-brand-500 shadow-2xl">
+            <button onclick="closeModal('modalWhy')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 rounded-full tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-black mb-6 tracking-tighter">💡 Why It Matters</h3>
+            <div class="space-y-3">
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl flex items-center gap-3">
+                    <i class="fa-solid fa-handshake text-brand-500"></i>
+                    <span class="text-xs font-bold"> Trust experiences over photos</span>
+                </div>
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl flex items-center gap-3">
+                    <i class="fa-solid fa-bolt text-brand-500"></i>
+                    <span class="text-xs font-bold"> Clients decide way faster</span>
+                </div>
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl flex items-center gap-3">
+                    <i class="fa-solid fa-award text-brand-500"></i>
+                    <span class="text-xs font-bold"> Stand out from competition</span>
+                </div>
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl flex items-center gap-3">
+                    <i class="fa-solid fa-chart-line text-brand-500"></i>
+                    <span class="text-xs font-bold"> Drive more bookings</span>
+                </div>
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl flex items-center gap-3">
+                    <i class="fa-solid fa-bullseye text-brand-500"></i>
+                    <span class="text-xs font-bold"> Attract quality clients</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- What Get Modal -->
+    <div id="modalGet" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+        <div class="absolute inset-0 bg-black/60" onclick="closeModal('modalGet')"></div>
+        <div class="modal-content bg-white dark:bg-zinc-950 w-full max-w-sm rounded-[3rem] p-8 relative border-t-8 border-brand-500 shadow-2xl">
+            <button onclick="closeModal('modalGet')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 rounded-full tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-black mb-6 tracking-tighter uppercase italic">✨ What You Get</h3>
+            <ul class="space-y-4">
+                <li class="flex items-center gap-3 text-xs font-black uppercase tracking-tight"><i class="fa-solid fa-earth-africa text-brand-500"></i>  Immersive Coverage</li>
+                <li class="flex items-center gap-3 text-xs font-black uppercase tracking-tight"><i class="fa-solid fa-compass text-brand-500"></i>  Interactive Navigation</li>
+                <li class="flex items-center gap-3 text-xs font-black uppercase tracking-tight"><i class="fa-solid fa-location-dot text-brand-500"></i>  Rich Info Points</li>
+                <li class="flex items-center gap-3 text-xs font-black uppercase tracking-tight"><i class="fa-solid fa-brush text-brand-500"></i>  Full Branding</li>
+                <li class="flex items-center gap-3 text-xs font-black uppercase tracking-tight"><i class="fa-solid fa-bolt-lightning text-brand-500"></i>  Engagement Features</li>
+                <li class="flex items-center gap-3 text-xs font-black uppercase tracking-tight"><i class="fa-solid fa-sack-dollar text-brand-500"></i>  Conversion Tools</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Pricing Modal -->
+    <div id="modalPricing" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+        <div class="absolute inset-0 bg-black/60" onclick="closeModal('modalPricing')"></div>
+        <div class="modal-content bg-white dark:bg-zinc-950 w-full max-w-sm rounded-[3rem] p-8 relative border-t-8 border-brand-500 shadow-2xl overflow-hidden">
+            <button onclick="closeModal('modalPricing')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 rounded-full tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-black mb-1 tracking-tighter italic">💰 Pricing</h3>
+            <p class="text-[10px] text-zinc-400 font-bold uppercase mb-6 tracking-widest italic">Scene based scaling</p>
+            
+            <div class="space-y-2 mb-6">
+                <div class="flex justify-between p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl"><span class="text-[11px] font-bold uppercase">Under 10 scenes</span><span class="font-black text-brand-500">$35/sc</span></div>
+                <div class="flex justify-between p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl"><span class="text-[11px] font-bold uppercase">11 - 20 scenes</span><span class="font-black text-brand-500">$25/sc</span></div>
+                <div class="flex justify-between p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl"><span class="text-[11px] font-bold uppercase">21 - 40 scenes</span><span class="font-black text-brand-500">$20/sc</span></div>
+                <div class="flex justify-between p-4 bg-brand-500/10 rounded-2xl border-2 border-brand-500"><span class="text-[11px] font-bold uppercase">41+ scenes</span><span class="font-black text-brand-500">$15/sc</span></div>
+            </div>
+
+            <div class="bg-brand-500 p-6 rounded-[2rem] text-white">
+                <h4 class="text-xs font-black uppercase mb-1">🏠 Hosting</h4>
+                <div class="flex justify-between items-center">
+                    <span class="text-xl font-black">$100 <span class="text-xs opacity-70">/ Year</span></span>
+                    <span class="bg-white/20 px-3 py-1 rounded-full text-[9px] font-bold uppercase">🎁 6 Months Free</span>
+                </div>
+            </div>
+            <p class="mt-4 text-[9px] opacity-50 text-center font-medium">Final cost depends on size & complexity.</p>
+        </div>
+    </div>
+
+    <!-- Who For Modal -->
+    <div id="modalWho" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+        <div class="absolute inset-0 bg-black/60" onclick="closeModal('modalWho')"></div>
+        <div class="modal-content bg-white dark:bg-zinc-950 w-full max-w-sm rounded-[3rem] p-8 relative border-t-8 border-brand-500 shadow-2xl">
+            <button onclick="closeModal('modalWho')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 rounded-full tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-black mb-6 tracking-tighter italic">🏘️ Who It's For</h3>
+            <div class="grid grid-cols-2 gap-2 text-[10px] font-black uppercase text-center">
+                <div class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">Real Estate</div>
+                <div class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">Hotels & Airbnb</div>
+                <div class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">Restaurants</div>
+                <div class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">Schools</div>
+                <div class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">Offices</div>
+                <div class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">Designers</div>
+                <div class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">Event Venues</div>
+                <div class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">Gyms</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How Works Modal -->
+    <div id="modalHow" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+        <div class="absolute inset-0 bg-black/60" onclick="closeModal('modalHow')"></div>
+        <div class="modal-content bg-white dark:bg-zinc-950 w-full max-w-sm rounded-[3rem] p-8 relative border-t-8 border-brand-500 shadow-2xl">
+            <button onclick="closeModal('modalHow')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 rounded-full tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-black mb-6 tracking-tighter italic">⚙️ The Process</h3>
+            <div class="space-y-4">
+                <div class="flex gap-4">
+                    <div class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center font-black text-xs shrink-0">1</div>
+                    <p class="text-sm font-bold">📸 Capture: We scan your physical space.</p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center font-black text-xs shrink-0">2</div>
+                    <p class="text-sm font-bold">🛠️ Build: We create the digital walkthrough.</p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center font-black text-xs shrink-0">3</div>
+                    <p class="text-sm font-bold">🚀 Share: Use your link anywhere online.</p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center font-black text-xs shrink-0">4</div>
+                    <p class="text-sm font-bold">📈 Scale: Attract more serious clients.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Benefits Modal -->
+    <div id="modalBenefits" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+        <div class="absolute inset-0 bg-black/60" onclick="closeModal('modalBenefits')"></div>
+        <div class="modal-content bg-white dark:bg-zinc-950 w-full max-w-sm rounded-[3rem] p-8 relative border-t-8 border-brand-500 shadow-2xl overflow-y-auto max-h-[80vh]">
+            <button onclick="closeModal('modalBenefits')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 rounded-full tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-black mb-6 tracking-tighter italic">📈 Benefits</h3>
+            <ul class="space-y-3 text-xs font-bold leading-tight uppercase">
+                <li class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">🤝 Builds instant trust</li>
+                <li class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">✅ Increases booking confidence</li>
+                <li class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">🚗 Reduces unnecessary site visits</li>
+                <li class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">⏰ Saves time on explanations</li>
+                <li class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">🌐 24/7 Digital Sales Tool</li>
+                <li class="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl">💎 Attracts higher quality leads</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Add-ons Modal -->
+    <div id="modalFeatures" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+        <div class="absolute inset-0 bg-black/60" onclick="closeModal('modalFeatures')"></div>
+        <div class="modal-content bg-white dark:bg-zinc-950 w-full max-w-sm rounded-[3rem] p-8 relative border-t-8 border-brand-500 shadow-2xl">
+            <button onclick="closeModal('modalFeatures')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 rounded-full tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-black mb-2 tracking-tighter italic">🎛️ Extras & Add-ons</h3>
+            <p class="text-[10px] text-zinc-400 font-bold uppercase mb-6 tracking-widest italic">Enhance your tour</p>
+            <div class="space-y-3">
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs font-black uppercase">🎬 Custom Intro Screen</span>
+                        <span class="text-brand-500 font-black">$35</span>
+                    </div>
+                    <p class="text-[10px] opacity-60">Branded welcome screen for strong first impressions.</p>
+                </div>
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs font-black uppercase">🎵 Background Audio</span>
+                        <span class="text-brand-500 font-black">$30</span>
+                    </div>
+                    <p class="text-[10px] opacity-60">Ambient sound or music across the full tour.</p>
+                </div>
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs font-black uppercase">🔊 Scene Audio</span>
+                        <span class="text-brand-500 font-black">$5 /sc</span>
+                    </div>
+                    <p class="text-[10px] opacity-60">Voice explanations for specific rooms or items.</p>
+                </div>
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs font-black uppercase">🌍 Multi-language</span>
+                        <span class="text-brand-500 font-black">+30%</span>
+                    </div>
+                    <p class="text-[10px] opacity-60">Reach an international audience effortlessly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Form Modal -->
+    <div id="modalForm" class="modal-overlay fixed inset-0 z-[70] overflow-y-auto">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-xl" onclick="closeModal('modalForm')"></div>
+        <div class="modal-content relative bg-white dark:bg-zinc-950 w-full min-h-screen rounded-t-[3.5rem] p-8 pt-16 mt-10">
+            <button onclick="closeModal('modalForm')" class="absolute top-8 right-8 w-12 h-12 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-full tap-scale z-10"><i class="fa-solid fa-xmark"></i></button>
+            
+            <span class="text-brand-500 font-black uppercase text-[10px] tracking-widest block mb-2">🟢 Final Booking Step</span>
+            <h2 class="text-4xl font-black mb-8 italic tracking-tighter uppercase leading-none">Book Your<br>Demo Today</h2>
+            
+            <form onsubmit="handleFormSubmit(event)" class="space-y-8">
+                <!-- Contact Section -->
+                <div class="space-y-4">
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-zinc-400">👤 Basic Info</h4>
+                    <input type="text" id="f-name" required placeholder="Full Name" class="w-full bg-zinc-100 dark:bg-zinc-900 p-5 rounded-[1.5rem] text-sm font-bold border-2 border-transparent focus:border-brand-500 outline-none transition-all">
+                    <input type="text" id="f-biz" required placeholder="Business Name" class="w-full bg-zinc-100 dark:bg-zinc-900 p-5 rounded-[1.5rem] text-sm font-bold border-2 border-transparent focus:border-brand-500 outline-none transition-all">
+                    <select id="f-ind" class="w-full bg-zinc-100 dark:bg-zinc-900 p-5 rounded-[1.5rem] text-sm font-bold outline-none appearance-none">
+                        <option>Hotel / Villa</option>
+                        <option>Apartment</option>
+                        <option>School</option>
+                        <option>Restaurant</option>
+                        <option>Office</option>
+                        <option>Other</option>
+                    </select>
+                    <input type="text" id="f-loc" required placeholder="Location" class="w-full bg-zinc-100 dark:bg-zinc-900 p-5 rounded-[1.5rem] text-sm font-bold border-2 border-transparent focus:border-brand-500 outline-none transition-all">
+                    <input type="tel" id="f-phone" required placeholder="Phone Number" class="w-full bg-zinc-100 dark:bg-zinc-900 p-5 rounded-[1.5rem] text-sm font-bold border-2 border-transparent focus:border-brand-500 outline-none transition-all">
+                </div>
+
+                <!-- Project Section -->
+                <div class="space-y-4">
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-zinc-400">🏠 Project Details</h4>
+                    <div class="grid grid-cols-2 gap-3">
+                        <select id="f-type" class="w-full bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl text-xs font-bold">
+                            <option>Indoor</option>
+                            <option>Outdoor</option>
+                            <option>Both</option>
+                        </select>
+                        <select id="f-size" class="w-full bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl text-xs font-bold">
+                            <option>Small (<10)</option>
+                            <option>Medium (10-25)</option>
+                            <option>Large (25+)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Add-ons Multi-Select -->
+                <div class="space-y-4">
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-zinc-400">🎛️ Include Add-ons</h4>
+                    <div class="grid grid-cols-1 gap-2">
+                        <label class="flex items-center justify-between p-5 bg-zinc-100 dark:bg-zinc-900 rounded-[1.5rem] cursor-pointer has-[:checked]:bg-brand-500/10 has-[:checked]:border-brand-500 border-2 border-transparent transition-all">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-solid fa-clapperboard text-brand-500"></i>
+                                <span class="text-xs font-black uppercase">Intro Screen</span>
+                            </div>
+                            <input type="checkbox" id="e-intro" class="w-5 h-5 accent-brand-500">
+                        </label>
+                        <label class="flex items-center justify-between p-5 bg-zinc-100 dark:bg-zinc-900 rounded-[1.5rem] cursor-pointer has-[:checked]:bg-brand-500/10 has-[:checked]:border-brand-500 border-2 border-transparent transition-all">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-solid fa-music text-brand-500"></i>
+                                <span class="text-xs font-black uppercase">Background Audio</span>
+                            </div>
+                            <input type="checkbox" id="e-audio" class="w-5 h-5 accent-brand-500">
+                        </label>
+                        <label class="flex items-center justify-between p-5 bg-zinc-100 dark:bg-zinc-900 rounded-[1.5rem] cursor-pointer has-[:checked]:bg-brand-500/10 has-[:checked]:border-brand-500 border-2 border-transparent transition-all">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-solid fa-microphone-lines text-brand-500"></i>
+                                <span class="text-xs font-black uppercase">Scene Audio</span>
+                            </div>
+                            <input type="checkbox" id="e-scene" class="w-5 h-5 accent-brand-500">
+                        </label>
+                        <label class="flex items-center justify-between p-5 bg-zinc-100 dark:bg-zinc-900 rounded-[1.5rem] cursor-pointer has-[:checked]:bg-brand-500/10 has-[:checked]:border-brand-500 border-2 border-transparent transition-all">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-solid fa-language text-brand-500"></i>
+                                <span class="text-xs font-black uppercase">Multi-Language</span>
+                            </div>
+                            <input type="checkbox" id="e-lang" class="w-5 h-5 accent-brand-500">
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full purple-gradient py-7 rounded-[2rem] text-white font-black uppercase italic tracking-tighter text-2xl shadow-2xl shadow-brand-500/40 tap-scale">
+                    Send Inquiry <i class="fa-brands fa-whatsapp ml-2"></i>
+                </button>
+            </form>
+            <div class="h-24"></div>
+        </div>
+    </div>
+
+    <script>
+        // Reveal Logic
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Dark Mode Logic
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+
+        // Modal Logic
+        function openModal(id) { 
+            document.getElementById(id).classList.add('active'); 
+            document.body.style.overflow = 'hidden'; 
+        }
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            document.body.style.overflow = ''; 
+        }
+
+        // WhatsApp Form Handler
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const data = {
+                name: document.getElementById('f-name').value,
+                biz: document.getElementById('f-biz').value,
+                ind: document.getElementById('f-ind').value,
+                loc: document.getElementById('f-loc').value,
+                phone: document.getElementById('f-phone').value,
+                type: document.getElementById('f-type').value,
+                size: document.getElementById('f-size').value,
+                intro: document.getElementById('e-intro').checked ? 'Yes' : 'No',
+                audio: document.getElementById('e-audio').checked ? 'Yes' : 'No',
+                scene: document.getElementById('e-scene').checked ? 'Yes' : 'No',
+                lang: document.getElementById('e-lang').checked ? 'Yes' : 'No'
+            };
+
+            const message = `Hello 📸, I want a Virtual Tour.\n\n` +
+                `👤 Name: ${data.name}\n` +
+                `🏢 Business: ${data.biz}\n` +
+                `🏷️ Industry: ${data.ind}\n` +
+                `📍 Location: ${data.loc}\n` +
+                `📞 Phone: ${data.phone}\n` +
+                `🏠 Space Type: ${data.type}\n` +
+                `📏 Size: ${data.size}\n\n` +
+                `🎛️ Add-ons:\n` +
+                `- Intro Screen: ${data.intro}\n` +
+                `- Bg Audio: ${data.audio}\n` +
+                `- Scene Audio: ${data.scene}\n` +
+                `- Multi-language: ${data.lang}`;
+
+            const waUrl = `https://wa.me/255757249910?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
