@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Kaka's Barbecue | Skani</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            orange: '#F9A01B', // From logo yellow-orange
+                            pink: '#D81E5B',   // From logo magenta-pink
+                            dark: '#121212',
+                            accent: '#8A2BE2'  // Purple from logo
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 4s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sab: env(safe-area-inset-bottom);
+        }
+
+        body {
+            background-color: #000;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Faded placeholder for date/time until selected */
+        input[type="date"]:invalid::-webkit-datetime-edit,
+        input[type="time"]:invalid::-webkit-datetime-edit {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(0px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            backdrop-filter: blur(16px);
+        }
+        .modal-content {
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .tap-scale { transition: transform 0.1s ease; }
+        .tap-scale:active { transform: scale(0.96); }
+
+        .logo-gradient {
+            background: linear-gradient(135deg, #F9A01B 0%, #D81E5B 100%);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: rotate(45deg);
+            animation: shimmerEffect 4s infinite;
+        }
+        @keyframes shimmerEffect {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+    </style>
+</head>
+<body class="bg-black">
+
+    <div class="max-w-md mx-auto min-h-screen pb-44">
+        
+        <!-- HEADER -->
+        <header class="px-6 py-5 flex items-center justify-between sticky top-0 bg-black/80 backdrop-blur-xl z-40 border-b border-white/10 pt-[calc(1.25rem+env(safe-area-inset-top))]">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full p-0.5 logo-gradient animate-pulse-slow">
+                    <div class="w-full h-full bg-black rounded-full overflow-hidden flex items-center justify-center">
+                        <img src="https://raw.githubusercontent.com/skanishq/skani-assets/main/kakas-logo.png" alt="Kaka's BBQ" class="w-10 h-10 object-contain" onerror="this.src='https://ui-avatars.com/api/?name=K+B&background=F9A01B&color=fff'">
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-sm font-black text-white uppercase tracking-tighter leading-none">Kaka's Barbecue</h1>
+                    <p class="text-[8px] text-brand-orange uppercase tracking-[0.2em] font-black mt-1">Authentic Grill</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="window.location.href='tel:0789515152'" class="w-10 h-10 flex items-center justify-center rounded-2xl bg-zinc-900 text-white tap-scale">
+                    <i class="fa-solid fa-phone-volume text-xs"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- 1. WELCOME -->
+        <section class="px-6 py-10 reveal">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-brand-orange/10 text-brand-orange text-[10px] font-black uppercase tracking-widest rounded-full mb-4 border border-brand-orange/20">
+                <span class="w-1.5 h-1.5 bg-brand-orange rounded-full animate-pulse"></span>
+                All Natural BBQ
+            </div>
+            <h2 class="text-4xl font-black text-white leading-[0.95] tracking-tighter">
+                Welcome to <br><span class="text-brand-orange italic">Kaka’s Barbecue 🔥🍖</span>
+            </h2>
+            <p class="text-zinc-400 mt-4 text-sm font-medium leading-relaxed">
+                “Here to tantalise your taste buds with our all natural and authentic barbecue.” Smoky, juicy, and flame-grilled to perfection.
+            </p>
+        </section>
+
+        <!-- 2. MAIN GRID (2x2) -->
+        <section class="px-6 grid grid-cols-2 gap-4">
+            <button onclick="openInNewTab('https://ugc.production.linktr.ee/f9a78579-cac5-4732-9e0c-830885880fa1_MENU-LINK.pdf')" 
+                class="reveal shimmer bg-brand-orange p-6 rounded-[2rem] flex flex-col items-center justify-center text-black tap-scale shadow-lg shadow-brand-orange/20">
+                <i class="fa-solid fa-utensils text-2xl mb-2 animate-float"></i>
+                <span class="font-black text-lg tracking-tight">Menu</span>
+                <span class="text-[9px] font-bold opacity-70 uppercase tracking-tighter">Taste the Fire</span>
+            </button>
+
+            <button onclick="openModal('wifi-modal')" 
+                class="reveal glass-card p-6 rounded-[2rem] flex flex-col items-center justify-center text-white tap-scale">
+                <i class="fa-solid fa-wifi text-2xl mb-2 text-brand-pink"></i>
+                <span class="font-black text-lg tracking-tight">WiFi</span>
+                <span class="text-[9px] font-bold opacity-50 uppercase tracking-tighter">Stay Connected</span>
+            </button>
+
+            <button onclick="openInNewTab('https://www.google.com/search?q=Kaka%27s+Barbecue')" 
+                class="reveal glass-card p-6 rounded-[2rem] flex flex-col items-center justify-center text-white tap-scale border-l-brand-pink">
+                <i class="fa-solid fa-star text-2xl mb-2 text-brand-orange"></i>
+                <span class="font-black text-lg tracking-tight">Reviews</span>
+                <span class="text-[9px] font-bold opacity-50 uppercase tracking-tighter">Instant Trust</span>
+            </button>
+
+            <button onclick="openInNewTab('https://maps.app.goo.gl/HPp5AucVREGQep3Q6')" 
+                class="reveal glass-card p-6 rounded-[2rem] flex flex-col items-center justify-center text-white tap-scale">
+                <i class="fa-solid fa-location-dot text-2xl mb-2 text-brand-accent"></i>
+                <span class="font-black text-lg tracking-tight">Location</span>
+                <span class="text-[9px] font-bold opacity-50 uppercase tracking-tighter">Find Us</span>
+            </button>
+        </section>
+
+        <!-- 3. PRIMARY CTA -->
+        <section class="px-6 mt-8 reveal">
+            <button onclick="openModal('booking-modal')" 
+                class="w-full bg-white p-7 rounded-[2.5rem] text-left text-black flex justify-between items-center group overflow-hidden relative shadow-2xl tap-scale">
+                <div class="absolute inset-0 bg-brand-orange/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                <div class="relative z-10">
+                    <h3 class="text-2xl font-black italic uppercase tracking-tighter">Reserve a Table</h3>
+                    <p class="text-black/60 text-[10px] font-black uppercase tracking-wider mt-1">Book your grill spot</p>
+                </div>
+                <div class="w-12 h-12 bg-black rounded-full flex items-center justify-center text-white relative z-10 transition-transform group-hover:rotate-12">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+            </button>
+        </section>
+
+        <!-- 4. EXPERIENCE SLIDER -->
+        <section class="mt-12 overflow-hidden">
+            <h3 class="reveal px-6 text-xl font-black text-white mb-5 uppercase tracking-tighter italic">What Makes Us Special 🔥</h3>
+            <div class="flex overflow-x-auto no-scrollbar gap-4 px-6 snap-x">
+                <div class="min-w-[240px] glass-card p-6 rounded-3xl snap-center border-b-4 border-b-brand-orange">
+                    <div class="w-10 h-10 bg-brand-orange/20 rounded-xl flex items-center justify-center text-brand-orange mb-4">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <h4 class="font-black text-white text-lg">Authentic BBQ</h4>
+                    <p class="text-xs text-zinc-500 mt-1">Slow-cooked, rich, and full of smoky flavor.</p>
+                </div>
+                <div class="min-w-[240px] glass-card p-6 rounded-3xl snap-center border-b-4 border-b-brand-pink">
+                    <div class="w-10 h-10 bg-brand-pink/20 rounded-xl flex items-center justify-center text-brand-pink mb-4">
+                        <i class="fa-solid fa-leaf"></i>
+                    </div>
+                    <h4 class="font-black text-white text-lg">Fresh Ingredients</h4>
+                    <p class="text-xs text-zinc-500 mt-1">All natural, quality hand-picked meats.</p>
+                </div>
+                <div class="min-w-[240px] glass-card p-6 rounded-3xl snap-center border-b-4 border-b-brand-accent">
+                    <div class="w-10 h-10 bg-brand-accent/20 rounded-xl flex items-center justify-center text-brand-accent mb-4">
+                        <i class="fa-solid fa-moon"></i>
+                    </div>
+                    <h4 class="font-black text-white text-lg">Chill Vibes</h4>
+                    <p class="text-xs text-zinc-500 mt-1">Perfect for evenings and weekend hangouts.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. OPENING HOURS -->
+        <section class="px-6 mt-12 reveal">
+            <div class="glass-card p-8 rounded-[2.5rem] flex items-center justify-between overflow-hidden relative">
+                <div class="absolute -right-4 -bottom-4 opacity-5 text-7xl rotate-12">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-brand-orange uppercase tracking-widest text-[10px] mb-2">Opening Hours</h3>
+                    <p class="text-2xl font-black text-white tracking-tighter">Tue – Sun</p>
+                    <p class="text-sm font-bold text-zinc-400 mt-1">12 Noon – Late</p>
+                </div>
+                <div class="text-right">
+                    <div class="px-3 py-1 bg-red-500/20 text-red-500 rounded-full text-[9px] font-black uppercase mb-2">Monday Closed</div>
+                    <div class="flex gap-1 justify-end">
+                        <span class="w-1 h-4 bg-brand-orange rounded-full"></span>
+                        <span class="w-1 h-4 bg-brand-pink rounded-full"></span>
+                        <span class="w-1 h-4 bg-brand-accent rounded-full"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. SOCIAL -->
+        <section class="px-6 mt-12 mb-12 reveal">
+            <a href="https://www.instagram.com/kakasbarbecue/" class="w-full flex items-center justify-between bg-zinc-900/50 p-6 rounded-3xl border border-white/5 tap-scale group">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-500 flex items-center justify-center text-white text-2xl">
+                        <i class="fa-brands fa-instagram"></i>
+                    </div>
+                    <div>
+                        <span class="block font-black text-white">Instagram</span>
+                        <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">@kakasbarbecue</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square text-zinc-700 group-hover:text-white transition-colors"></i>
+            </a>
+        </section>
+
+        <!-- 7. SUGGESTIONS -->
+        <section class="px-6 mt-12 mb-10 reveal">
+            <div class="bg-zinc-900/30 p-8 rounded-[3rem] border border-white/5 relative overflow-hidden">
+                <div id="suggestion-feedback" class="py-10 text-center hidden animate-slide-up">
+                    <div class="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <p class="text-white font-black text-xl tracking-tighter italic">Thank you! 🙏</p>
+                    <p class="text-zinc-500 text-xs mt-2 uppercase font-bold">We value your input</p>
+                </div>
+                
+                <div id="suggestion-form-container">
+                    <h3 class="font-black text-lg text-white mb-4 tracking-tight flex items-center gap-2">
+                        <i class="fa-regular fa-comment-dots text-brand-orange"></i> Suggestions
+                    </h3>
+                    <form id="suggestion-form" onsubmit="handleSuggestion(event)" class="space-y-4">
+                        <textarea id="suggestion-text" placeholder="Tell us how we can improve..." required 
+                            class="w-full bg-black/50 border border-white/10 rounded-2xl p-4 text-sm text-white min-h-[100px] outline-none focus:border-brand-orange transition-colors"></textarea>
+                        <button type="submit" id="submit-btn" 
+                            class="w-full bg-white text-black py-4 rounded-2xl font-black text-sm uppercase tracking-widest tap-scale">
+                            Submit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. FOOTER / CONTACT -->
+        <footer class="px-6 pb-12 reveal text-center">
+            <p class="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em] mb-6">Connect With Us</p>
+            <div class="flex justify-center gap-4">
+                <a href="https://wa.me/255789515152" class="w-14 h-14 glass-card rounded-2xl flex items-center justify-center text-[#25D366] text-xl tap-scale border-b-2 border-b-[#25D366]">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+                <a href="tel:0789515152" class="w-14 h-14 glass-card rounded-2xl flex items-center justify-center text-brand-orange text-xl tap-scale border-b-2 border-b-brand-orange">
+                    <i class="fa-solid fa-phone"></i>
+                </a>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- STICKY BOTTOM BAR -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pointer-events-none">
+        <div class="max-w-md mx-auto flex items-center gap-3 pointer-events-auto">
+            <button onclick="openModal('booking-modal')" class="flex-1 bg-white text-black font-black text-xs uppercase py-5 rounded-2xl tap-scale shadow-2xl flex items-center justify-center gap-2">
+                <i class="fa-solid fa-calendar-plus text-sm"></i> Reserve Table
+            </button>
+            <button onclick="window.location.href='https://wa.me/255789515152'" class="w-16 bg-black/90 backdrop-blur-xl text-[#25D366] py-5 rounded-2xl tap-scale border border-white/10 shadow-2xl flex items-center justify-center">
+                <i class="fa-brands fa-whatsapp text-2xl"></i>
+            </button>
+        </div>
+        <div class="text-center mt-3">
+             <a href="https://www.skani.space/" class="pointer-events-auto text-[7px] font-black uppercase tracking-[0.2em] text-zinc-500 opacity-60">Powered by Skani.space</a>
+        </div>
+    </nav>
+
+    <!-- MODAL: WIFI -->
+    <div id="wifi-modal" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+        <div class="absolute inset-0 bg-black/80" onclick="closeModal('wifi-modal')"></div>
+        <div class="modal-content bg-zinc-950 w-full max-w-sm rounded-[3rem] p-10 relative border-t-8 border-brand-orange shadow-2xl">
+            <button onclick="closeModal('wifi-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-900 rounded-full text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-3xl font-black text-white mb-2 tracking-tighter italic">WiFi Access</h3>
+            <p class="text-zinc-500 text-[10px] font-black uppercase mb-8 tracking-widest">Fast & Easy Connection</p>
+            <div class="space-y-4">
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/10">
+                    <label class="text-[9px] font-black uppercase text-zinc-500 mb-1 block tracking-wider">Network Name</label>
+                    <div class="text-xl font-black text-white tracking-tight">Kakas BBQ</div>
+                </div>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/10 flex justify-between items-center">
+                    <div class="flex-1">
+                        <label class="text-[9px] font-black uppercase text-zinc-500 mb-1 block tracking-wider">Password</label>
+                        <div class="text-xl font-black text-white tracking-tight">Tap to copy 👇</div>
+                    </div>
+                </div>
+                <button id="copy-btn" onclick="copyText('ilovekakas', this)" class="w-full bg-brand-orange text-black py-5 rounded-2xl font-black text-sm uppercase tap-scale flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-copy"></i> Copy Password
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: BOOKING -->
+    <div id="booking-modal" class="modal-overlay fixed inset-0 z-[60] flex items-end sm:items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80" onclick="closeModal('booking-modal')"></div>
+        <div class="modal-content bg-zinc-950 w-full rounded-t-[3rem] sm:rounded-[3rem] p-10 relative border-t-8 border-brand-orange pb-[calc(2.5rem+env(safe-area-inset-bottom))]">
+            <div class="w-12 h-1.5 bg-zinc-800 rounded-full mx-auto mb-6 sm:hidden"></div>
+            <button onclick="closeModal('booking-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-900 rounded-full text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-3xl font-black text-white mb-6 tracking-tighter italic">Book a Table</h3>
+            <form onsubmit="handleBookingSubmit(event)" class="space-y-4">
+                <div class="space-y-1">
+                    <label class="text-[9px] font-black uppercase text-zinc-500 px-1 tracking-widest">Full Name</label>
+                    <input type="text" id="book-name" required placeholder="Enter your name" class="w-full bg-white/5 p-5 text-white text-sm font-black border border-white/5 focus:border-brand-orange outline-none rounded-2xl transition-all">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black uppercase text-zinc-500 px-1 tracking-widest">Date of Dining</label>
+                        <input type="date" id="book-date" required class="w-full bg-white/5 p-5 text-white text-sm font-black border border-white/5 focus:border-brand-orange outline-none rounded-2xl transition-all">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black uppercase text-zinc-500 px-1 tracking-widest">Time</label>
+                        <input type="time" id="book-time" required class="w-full bg-white/5 p-5 text-white text-sm font-black border border-white/5 focus:border-brand-orange outline-none rounded-2xl transition-all">
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-black uppercase text-zinc-500 px-1 tracking-widest">Number of People</label>
+                    <input type="number" id="book-people" required min="1" placeholder="Ex: 4" class="w-full bg-white/5 p-5 text-white text-sm font-black border border-white/5 focus:border-brand-orange outline-none rounded-2xl transition-all">
+                </div>
+                <button type="submit" class="w-full bg-brand-orange text-black py-6 rounded-2xl font-black text-lg tap-scale transition-all uppercase italic shadow-2xl shadow-brand-orange/20 mt-4">
+                    Request Table
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <iframe id="suggestion-submit-frame" name="suggestion-submit-frame" class="hidden" aria-hidden="true"></iframe>
+
+    <script>
+        // Intersection Observer for Reveal Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { 
+                if (entry.isIntersecting) entry.target.classList.add('visible'); 
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Navigation & Modals
+        function navigateTo(url) { window.location.href = url; }
+        function openInNewTab(url) { window.open(url, '_blank', 'noopener,noreferrer'); }
+        function openModal(id) { 
+            document.getElementById(id).classList.add('active'); 
+            document.body.style.overflow = 'hidden'; 
+        }
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            document.body.style.overflow = ''; 
+        }
+
+        // Copy Feature
+        function copyText(text, btn) {
+            const originalContent = btn.innerHTML;
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                btn.classList.replace('bg-brand-orange', 'bg-green-500');
+            } catch (err) {}
+            document.body.removeChild(textArea);
+            setTimeout(() => {
+                btn.innerHTML = originalContent;
+                btn.classList.replace('bg-green-500', 'bg-brand-orange');
+            }, 2000);
+        }
+
+        // WhatsApp Booking
+        function handleBookingSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('book-name').value;
+            const date = document.getElementById('book-date').value;
+            const time = document.getElementById('book-time').value;
+            const people = document.getElementById('book-people').value;
+            
+            const message = `Hello Kaka’s Barbecue 🔥\nI would like to reserve a table.\n\nName: ${name}\nDate: ${date}\nTime: ${time}\nNumber of People: ${people}`;
+            window.location.href = `https://wa.me/255789515152?text=${encodeURIComponent(message)}`;
+            closeModal('booking-modal');
+        }
+
+        // Suggestion Logic (Iframe Submission)
+        async function handleSuggestion(e) {
+            e.preventDefault();
+            const text = document.getElementById('suggestion-text').value;
+            const submitBtn = document.getElementById('submit-btn');
+            const formContainer = document.getElementById('suggestion-form-container');
+            const feedback = document.getElementById('suggestion-feedback');
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Sending...';
+
+            // Mock submission using the iframe pattern (updated for this demo)
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycby6l1_8WHArGhbuztSRW0uEhKSenlD_opoG0QaJhYo2ZJWWCpIuOsk96SV4ip_1V0u6KA/exec';
+            document.getElementById('suggestion-submit-frame').src = `${scriptUrl}?suggestion=${encodeURIComponent(text)}&t=${Date.now()}`;
+
+            setTimeout(() => {
+                formContainer.classList.add('hidden');
+                feedback.classList.remove('hidden');
+                
+                // Reset after 5 seconds to allow another suggestion
+                setTimeout(() => {
+                    feedback.classList.add('hidden');
+                    formContainer.classList.remove('hidden');
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Submit';
+                    e.target.reset();
+                }, 5000);
+            }, 800);
+        }
+
+        // Escape Key Modal Close
+        document.addEventListener('keydown', (e) => { 
+            if (e.key === 'Escape') { 
+                const active = document.querySelector('.modal-overlay.active'); 
+                if (active) closeModal(active.id); 
+            } 
+        });
+    </script>
+</body>
+</html>

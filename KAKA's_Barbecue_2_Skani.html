@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Kaka's Barbecue | Scani Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#FAAF28',
+                        luxury: {
+                            bg: '#080808',
+                            card: '#121212',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        sync: ['Syncopate', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@300;400;600;900&display=swap');
+
+        :root { --accent: #FAAF28; }
+        
+        /* Updated light mode background to #faf4e6 */
+        body { background-color: #faf4e6; color: #080808; overflow-x: hidden; -webkit-tap-highlight-color: transparent; transition: background-color 0.3s, color 0.3s; }
+        .dark body { background-color: #080808; color: #ffffff; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .glass {
+            background: rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 1.5rem;
+        }
+        .dark .glass {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sticky-bar {
+            background: rgba(250, 244, 230, 0.8); /* Matching the new bg color for translucency */
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(250, 175, 40, 0.2);
+        }
+        .dark .sticky-bar {
+            background: rgba(8, 8, 8, 0.8);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        input[type="date"]::before,
+        input[type="time"]::before {
+            content: attr(placeholder);
+            color: rgba(128, 128, 128, 0.5);
+            margin-right: 0.5em;
+        }
+        input[type="date"]:focus::before,
+        input[type="date"]:valid::before,
+        input[type="time"]:focus::before,
+        input[type="time"]:valid::before {
+            content: "";
+            display: none;
+        }
+    </style>
+</head>
+<body class="antialiased pb-24">
+
+    <!-- HEADER / LOGO & TOGGLE -->
+    <nav class="p-6 flex items-center justify-between sticky top-0 z-40 bg-inherit">
+        <div class="flex items-center gap-3 reveal">
+            <img src="https://www.skani.space/kakas%20bbq%20logo.jpg" alt="Kaka's BBQ" class="w-10 h-10 rounded-full border border-gold object-cover">
+            <div class="hidden sm:block">
+                <h1 class="font-sync text-[10px] font-bold tracking-[0.2em] text-gold uppercase">Kaka's BBQ</h1>
+            </div>
+        </div>
+        
+        <button onclick="toggleTheme()" class="w-10 h-10 glass flex items-center justify-center text-gold reveal">
+            <i class="fa-solid fa-moon dark:hidden"></i>
+            <i class="fa-solid fa-sun hidden dark:block"></i>
+        </button>
+    </nav>
+
+    <main class="px-6 max-w-md mx-auto">
+        
+        <!-- WELCOME SECTION -->
+        <section class="mt-4 mb-12 reveal">
+            <h2 class="text-3xl font-black italic leading-tight mb-4 uppercase tracking-tighter">
+                Welcome to <br><span class="text-gold">Kaka’s Barbecue 🔥</span>
+            </h2>
+            <p class="text-sm opacity-70 leading-relaxed font-light">
+                “Here to tantalise your taste buds with our all natural and authentic barbecue.” Smoky, juicy, and flame-grilled to perfection — everything you need is right here.
+            </p>
+        </section>
+
+        <!-- MAIN GRID (2x2) -->
+        <div class="grid grid-cols-2 gap-4 reveal">
+            <!-- MENU - PRIMARY COLOR -->
+            <a href="https://ugc.production.linktr.ee/f9a78579-cac5-4732-9e0c-830885880fa1_MENU-LINK.pdf" target="_blank"
+                class="bg-gold p-6 flex flex-col items-center justify-center text-center group active:scale-95 transition-transform rounded-[1.5rem] text-black shadow-[0_10px_20px_rgba(250,175,40,0.2)]">
+                <div class="text-2xl mb-3"><i class="fa-solid fa-utensils"></i></div>
+                <span class="font-bold text-xs uppercase tracking-widest">Menu</span>
+            </a>
+            
+            <!-- WIFI -->
+            <button onclick="openModal('wifi-modal')"
+                class="glass p-6 flex flex-col items-center justify-center text-center group active:scale-95 transition-transform">
+                <div class="text-gold text-2xl mb-3"><i class="fa-solid fa-wifi"></i></div>
+                <span class="font-bold text-xs uppercase tracking-widest">WiFi Access</span>
+            </button>
+
+            <!-- REVIEWS -->
+            <a href="https://www.google.com/search?sca_esv=09c971a9c1a6e973&sxsrf=ANbL-n5grPGa9-YarphuCpPjyXbpC8WVZg:1777473656755&q=Kaka%27s+Barbecue&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOdiAnhmzAUArlQ_u9qEcuXj65-ipD8loiwzqo-1iGqaWKQVLEe8aRGmKr_fPzEi9M6jC2UmcGu3DM_d1qK0rR4Ftq0yr&sa=X&ved=2ahUKEwjvhqKvpZOUAxVFKvsDHfxtD_8QrrQLegQIHBAA&biw=1920&bih=911&dpr=1" target="_blank"
+                class="glass p-6 flex flex-col items-center justify-center text-center group active:scale-95 transition-transform">
+                <div class="text-gold text-2xl mb-3"><i class="fa-solid fa-star"></i></div>
+                <span class="font-bold text-xs uppercase tracking-widest">Reviews</span>
+            </a>
+
+            <!-- LOCATION -->
+            <a href="https://maps.app.goo.gl/HPp5AucVREGQep3Q6" target="_blank"
+                class="glass p-6 flex flex-col items-center justify-center text-center group active:scale-95 transition-transform">
+                <div class="text-gold text-2xl mb-3"><i class="fa-solid fa-map-location-dot"></i></div>
+                <span class="font-bold text-xs uppercase tracking-widest">Location</span>
+            </a>
+        </div>
+
+        <!-- EXPERIENCE SLIDER -->
+        <section class="mt-16 reveal">
+            <h3 class="font-sync text-[10px] tracking-[0.3em] font-bold opacity-30 mb-6 uppercase">What Makes Us Special</h3>
+            <div class="flex gap-4 overflow-x-auto no-scrollbar snap-x">
+                <div class="min-w-[240px] glass p-6 snap-center border-l-2 border-l-gold">
+                    <h4 class="font-black italic text-lg uppercase mb-2">🔥 Authentic BBQ</h4>
+                    <p class="text-xs opacity-60">Slow-cooked, rich, and full of flavor for true enthusiasts.</p>
+                </div>
+                <div class="min-w-[240px] glass p-6 snap-center border-l-2 border-l-gold">
+                    <h4 class="font-black italic text-lg uppercase mb-2">🥩 Fresh Ingredients</h4>
+                    <p class="text-xs opacity-60">All natural, high-quality meats sourced daily.</p>
+                </div>
+                <div class="min-w-[240px] glass p-6 snap-center border-l-2 border-l-gold">
+                    <h4 class="font-black italic text-lg uppercase mb-2">🌙 Chill Vibes</h4>
+                    <p class="text-xs opacity-60">The perfect destination for evenings and hangouts.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- OPENING HOURS -->
+        <section class="mt-16 reveal glass p-8 text-center border-2 border-gold/10">
+            <h3 class="font-sync text-[10px] tracking-[0.3em] font-bold opacity-30 mb-6 uppercase">Opening Hours</h3>
+            <div class="space-y-2">
+                <p class="text-xl font-black italic uppercase">Tuesday – Sunday</p>
+                <p class="text-gold font-bold">12 Noon – Late</p>
+                <div class="w-12 h-[1px] bg-black/10 dark:bg-white/10 mx-auto my-4"></div>
+                <p class="text-[10px] uppercase tracking-widest opacity-40">Monday Closed</p>
+            </div>
+        </section>
+
+        <!-- SUGGESTIONS FORM -->
+        <section class="mt-16 reveal" id="suggestion-section">
+            <div id="suggestion-form-container" class="glass p-8">
+                <h3 class="font-sync text-[10px] tracking-[0.3em] font-bold opacity-30 mb-6 uppercase">Suggestions</h3>
+                <form onsubmit="handleSuggestion(event)" class="space-y-4">
+                    <textarea id="sugg-text" placeholder="Tell us how we can improve..." required
+                        class="w-full bg-transparent border-b border-black/10 dark:border-white/10 py-3 text-sm outline-none focus:border-gold transition-all min-h-[80px]"></textarea>
+                    <button type="submit" class="text-gold font-bold text-[10px] uppercase tracking-widest">Submit Feedback →</button>
+                </form>
+            </div>
+            <div id="suggestion-thanks" class="hidden glass p-12 text-center">
+                <div class="text-gold text-4xl mb-4"><i class="fa-solid fa-circle-check"></i></div>
+                <p class="font-sync text-sm font-bold uppercase tracking-widest">Thank you! 🙏</p>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section class="mt-16 reveal text-center space-y-4">
+             <h3 class="font-sync text-[10px] tracking-[0.3em] font-bold opacity-30 mb-6 uppercase">Contact Us</h3>
+             <div class="flex justify-center gap-6">
+                <a href="https://wa.me/255789515152" class="text-gold flex flex-col items-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    <span class="text-[10px] uppercase font-bold tracking-widest">WhatsApp</span>
+                </a>
+                <a href="tel:0789515152" class="text-gold flex flex-col items-center gap-2">
+                    <i class="fa-solid fa-phone text-2xl"></i>
+                    <span class="text-[10px] uppercase font-bold tracking-widest">Call</span>
+                </a>
+             </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="mt-20 mb-32 text-center opacity-30">
+            <p class="font-sync text-[8px] tracking-[0.5em] uppercase">&copy; 2026 Kaka's Barbecue</p>
+        </footer>
+    </main>
+
+    <!-- STICKY BOTTOM BAR -->
+    <div class="fixed bottom-0 left-0 right-0 z-50 px-4 pb-6 pt-4 sticky-bar">
+        <div class="max-w-md mx-auto flex items-center justify-between gap-4">
+            <a href="https://www.instagram.com/kakasbarbecue/" target="_blank" class="w-12 h-12 glass flex items-center justify-center text-xl">
+                <i class="fa-brands fa-instagram text-gold"></i>
+            </a>
+            <button onclick="openModal('booking-modal')" class="flex-1 bg-gold text-black h-12 rounded-2xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform">
+                <i class="fa-solid fa-fire"></i> Reserve Table
+            </button>
+            <a href="https://wa.me/255789515152" target="_blank" class="w-12 h-12 glass flex items-center justify-center text-xl">
+                <i class="fa-brands fa-whatsapp text-green-500"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- MODAL: WIFI -->
+    <div id="wifi-modal" class="fixed inset-0 z-[100] flex items-center justify-center px-6 invisible opacity-0 transition-all">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('wifi-modal')"></div>
+        <div class="glass w-full max-w-sm p-10 relative text-center bg-white dark:bg-luxury-card">
+            <button onclick="closeModal('wifi-modal')" class="absolute top-6 right-6 text-gold text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div class="text-gold text-4xl mb-6"><i class="fa-solid fa-wifi"></i></div>
+            <h3 class="font-sync text-sm font-bold uppercase tracking-widest mb-8">Stay Connected</h3>
+            <div class="space-y-4 mb-8">
+                <div class="text-left">
+                    <p class="text-[10px] uppercase opacity-40 font-bold tracking-widest">Network</p>
+                    <p class="text-lg font-black italic">Kakas BBQ</p>
+                </div>
+                <div class="text-left">
+                    <p class="text-[10px] uppercase opacity-40 font-bold tracking-widest">Password</p>
+                    <button onclick="copyPass('ilovekakas', this)" class="text-lg font-black italic border-b border-gold/30 w-full text-left py-1 flex justify-between items-center">
+                        <span>ilovekakas</span>
+                        <i class="fa-solid fa-copy text-sm opacity-30"></i>
+                    </button>
+                </div>
+            </div>
+            <p class="text-[10px] uppercase font-bold opacity-30">✔ Fast & easy connection</p>
+        </div>
+    </div>
+
+    <!-- MODAL: BOOKING -->
+    <div id="booking-modal" class="fixed inset-0 z-[100] flex items-end justify-center invisible opacity-0 transition-all">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('booking-modal')"></div>
+        <div class="glass w-full rounded-t-[3rem] p-10 relative translate-y-full transition-transform duration-500 max-w-md bg-white dark:bg-luxury-card">
+            <button onclick="closeModal('booking-modal')" class="absolute top-8 right-10 text-gold text-2xl"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-12 h-1 bg-black/10 dark:bg-white/10 rounded-full mx-auto mb-10"></div>
+            <h3 class="font-sync text-2xl font-bold italic mb-10 uppercase tracking-tighter">Reserve <span class="text-gold">A Table</span></h3>
+            
+            <form onsubmit="handleBooking(event)" class="space-y-8 pb-10">
+                <div>
+                    <label class="text-[10px] font-bold uppercase opacity-30 tracking-widest mb-1 block">Full Name</label>
+                    <input type="text" id="res-name" placeholder="ENTER YOUR NAME" required 
+                        class="w-full bg-transparent border-b border-black/10 dark:border-white/10 py-3 outline-none focus:border-gold transition-all text-sm font-bold uppercase">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <label class="text-[10px] font-bold uppercase opacity-30 tracking-widest mb-1 block">Date of Dining</label>
+                        <input type="date" id="res-date" placeholder="SELECT DATE" required 
+                            class="w-full bg-transparent border-b border-black/10 dark:border-white/10 py-3 outline-none focus:border-gold transition-all text-sm font-bold">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase opacity-30 tracking-widest mb-1 block">Time</label>
+                        <input type="time" id="res-time" placeholder="SELECT TIME" required 
+                            class="w-full bg-transparent border-b border-black/10 dark:border-white/10 py-3 outline-none focus:border-gold transition-all text-sm font-bold">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold uppercase opacity-30 tracking-widest mb-1 block">Number of People</label>
+                    <input type="number" id="res-guests" placeholder="HOW MANY GUESTS?" required 
+                        class="w-full bg-transparent border-b border-black/10 dark:border-white/10 py-3 outline-none focus:border-gold transition-all text-sm font-bold uppercase">
+                </div>
+                
+                <button type="submit" class="w-full bg-gold text-black py-5 rounded-2xl font-black uppercase text-sm tracking-widest shadow-lg active:scale-95 transition-transform">Confirm on WhatsApp</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        // Intersection Observer for reveal animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Modal Controls
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('invisible', 'opacity-0');
+            if(id === 'booking-modal') {
+                modal.querySelector('.glass').style.transform = 'translateY(0)';
+            }
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if(id === 'booking-modal') {
+                modal.querySelector('.glass').style.transform = 'translateY(100%)';
+            }
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('invisible');
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+
+        // Copy Feature
+        function copyPass(text, btn) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<span class="text-green-500">COPIED!</span>';
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+            }, 2000);
+        }
+
+        // Suggestion Logic
+        function handleSuggestion(e) {
+            e.preventDefault();
+            document.getElementById('suggestion-form-container').classList.add('hidden');
+            document.getElementById('suggestion-thanks').classList.remove('hidden');
+        }
+
+        // Booking Logic
+        function handleBooking(e) {
+            e.preventDefault();
+            const name = document.getElementById('res-name').value;
+            const date = document.getElementById('res-date').value;
+            const time = document.getElementById('res-time').value;
+            const guests = document.getElementById('res-guests').value;
+
+            const text = `Hello Kaka's Barbecue 🔥\nI would like to reserve a table.\n\nName: ${name}\nDate: ${date}\nTime: ${time}\nNumber of People: ${guests}`;
+            const whatsappUrl = `https://wa.me/255789515152?text=${encodeURIComponent(text)}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
