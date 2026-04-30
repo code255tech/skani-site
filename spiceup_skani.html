@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Spice Up | Spicing Up Your Day!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#E11D48',
+                            orange: '#F97316',
+                            dark: '#0F0F0F',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+
+        body { 
+            background-color: #0F0F0F; 
+            color: #F3F4F6; 
+            transition: background-color 0.4s ease;
+        }
+        .light body { background-color: #ffffff; color: #111827; }
+        
+        .glass-nav {
+            background: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .light .glass-nav { background: rgba(255, 255, 255, 0.85); }
+
+        .premium-card {
+            background: #1A1A1A;
+            border: 1px solid #262626;
+            border-radius: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .light .premium-card { background: #F9FAFB; border: 1px solid #E5E7EB; }
+
+        .action-card:active { transform: scale(0.96); }
+
+        .custom-input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #262626;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            width: 100%;
+            outline: none;
+            color: white;
+        }
+        .light .custom-input { background: white; border-color: #E5E7EB; color: black; }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #1A1A1A;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 2rem 2rem 0 0;
+            padding: 2rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+        }
+        .light .modal-content { background: white; }
+        .modal-overlay.active { display: flex; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="antialiased pb-32">
+
+    <!-- 0. HEADER -->
+    <nav class="p-4 flex items-center justify-between sticky top-0 z-50 glass-nav border-b border-white/5 light:border-gray-100">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-brand-red flex items-center justify-center shadow-lg shadow-brand-red/20">
+                <span class="text-white font-black text-sm text-white">SU</span>
+            </div>
+            <div>
+                <h1 class="font-bold text-base leading-none">Spice Up</h1>
+                <p class="text-[10px] opacity-50 uppercase tracking-wider font-semibold">Multi Cuisine Restaurant</p>
+            </div>
+        </div>
+        <button onclick="toggleTheme()" class="w-10 h-10 rounded-full border border-white/10 light:border-gray-100 flex items-center justify-center">
+            <i class="fa-solid fa-sun hidden dark:block"></i>
+            <i class="fa-solid fa-moon dark:hidden"></i>
+        </button>
+    </nav>
+
+    <main class="px-6 max-w-md mx-auto">
+        
+        <!-- 1. WELCOME -->
+        <section class="mt-10 mb-12">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-red/10 text-brand-red text-[10px] font-bold uppercase tracking-widest mb-4">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-red opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-red"></span>
+                </span>
+                Spicing Up Your Day!
+            </div>
+            <h2 class="text-4xl font-serif font-bold leading-tight mb-4">
+                Welcome to <br><span class="text-brand-red italic">Spice Up</span> 🌶️🔥
+            </h2>
+            <p class="text-sm opacity-60 leading-relaxed font-light">
+                A multi-cuisine experience in Dar es Salaam — delicious food, great taste, and a relaxed vibe.
+            </p>
+        </section>
+
+        <!-- 2. MAIN GRID (2x2) -->
+        <div class="grid grid-cols-2 gap-4">
+            <a href="https://www.thespiceup.com/menu" target="_blank" class="premium-card p-6 flex flex-col items-center justify-center text-center action-card">
+                <div class="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center text-xl mb-3">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <span class="font-bold text-xs uppercase tracking-wider">Menu</span>
+                <span class="text-[9px] opacity-40 mt-1 uppercase">Asian • Pasta</span>
+            </a>
+
+            <a href="https://wa.me/255788762551?text=Hello%20Spice%20Up%20🌶️%20I%20would%20like%20to%20place%20an%20order." target="_blank" class="premium-card p-6 flex flex-col items-center justify-center text-center action-card text-green-500">
+                <div class="w-12 h-12 rounded-2xl bg-green-500/10 text-green-500 flex items-center justify-center text-xl mb-3">
+                    <i class="fa-solid fa-truck"></i>
+                </div>
+                <span class="font-bold text-xs uppercase tracking-wider">Order Now</span>
+                <span class="text-[9px] opacity-40 mt-1 uppercase">WhatsApp</span>
+            </a>
+
+            <a href="https://www.google.com/search?q=spice+up+dar+es+salaam" target="_blank" class="premium-card p-6 flex flex-col items-center justify-center text-center action-card">
+                <div class="w-12 h-12 rounded-2xl bg-yellow-500/10 text-yellow-500 flex items-center justify-center text-xl mb-3">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <span class="font-bold text-xs uppercase tracking-wider">Reviews</span>
+                <span class="text-[9px] opacity-40 mt-1 uppercase">Trust & Feedback</span>
+            </a>
+
+            <a href="https://maps.app.goo.gl/eJV9NfTkxk5CxvVh7" target="_blank" class="premium-card p-6 flex flex-col items-center justify-center text-center action-card">
+                <div class="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-xl mb-3">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <span class="font-bold text-xs uppercase tracking-wider">Location</span>
+                <span class="text-[9px] opacity-40 mt-1 uppercase">Upanga, Maliki</span>
+            </a>
+        </div>
+
+        <!-- 3. PRIMARY CTA (RESERVATION BUTTON) -->
+        <section class="mt-8">
+            <button onclick="openModal('reserve-modal')" class="w-full py-6 bg-brand-red text-white rounded-2xl font-black uppercase text-sm tracking-[0.2em] shadow-2xl shadow-brand-red/40 active:scale-95 transition-all flex items-center justify-center gap-3 border-t border-white/20">
+                <i class="fa-solid fa-chair"></i> Reserve a Table
+            </button>
+        </section>
+
+        <!-- 4. EXPERIENCE SECTION (SLIDERS) -->
+        <section class="mt-16 overflow-hidden -mx-6">
+            <h3 class="font-serif italic text-2xl mb-6 px-6">Why Choose Spice Up</h3>
+            <div class="flex overflow-x-auto gap-4 px-6 no-scrollbar snap-x snap-mandatory">
+                <div class="shrink-0 w-[80%] snap-center premium-card p-6 border-l-4 border-brand-red">
+                    <div class="w-10 h-10 rounded-full bg-brand-red/10 flex items-center justify-center text-brand-red mb-4">
+                        <i class="fa-solid fa-plate-wheat"></i>
+                    </div>
+                    <h4 class="font-bold text-base mb-2">Multi-Cuisine Variety</h4>
+                    <p class="text-xs opacity-50 leading-relaxed">From authentic Asian specialties to comforting pasta and fresh garden salads.</p>
+                </div>
+                <div class="shrink-0 w-[80%] snap-center premium-card p-6 border-l-4 border-orange-500">
+                    <div class="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 mb-4">
+                        <i class="fa-solid fa-fire-glow"></i>
+                    </div>
+                    <h4 class="font-bold text-base mb-2">Consistent Quality</h4>
+                    <p class="text-xs opacity-50 leading-relaxed">The secret to our success is simple: great taste every single time you visit.</p>
+                </div>
+                <div class="shrink-0 w-[80%] snap-center premium-card p-6 border-l-4 border-green-500">
+                    <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mb-4">
+                        <i class="fa-solid fa-leaf"></i>
+                    </div>
+                    <h4 class="font-bold text-base mb-2">Fresh Ingredients</h4>
+                    <p class="text-xs opacity-50 leading-relaxed">Every meal is prepared with care using the freshest local ingredients.</p>
+                </div>
+                <div class="shrink-0 w-[80%] snap-center premium-card p-6 border-l-4 border-blue-500">
+                    <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mb-4">
+                        <i class="fa-solid fa-face-smile"></i>
+                    </div>
+                    <h4 class="font-bold text-base mb-2">Relax & Enjoy</h4>
+                    <p class="text-xs opacity-50 leading-relaxed">Perfect for casual dining, grabbing a drink, and unwinding with friends.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. ABOUT US BUTTON -->
+        <section class="mt-12">
+            <button onclick="openModal('about-modal')" class="w-full premium-card p-6 flex items-center justify-between action-card border-brand-red/10">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-brand-red/10 text-brand-red flex items-center justify-center">
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                    <div class="text-left">
+                        <h4 class="font-bold text-sm uppercase tracking-wider">About Spice Up</h4>
+                        <p class="text-[10px] opacity-40 uppercase">Learn our story</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right opacity-30"></i>
+            </button>
+        </section>
+
+        <!-- 6. OPENING HOURS -->
+        <section class="mt-16 text-center">
+            <div class="inline-block p-6 rounded-[2rem] bg-white/5 light:bg-gray-50 border border-dashed border-white/10 light:border-gray-200">
+                <div class="text-brand-red text-xl mb-2"><i class="fa-solid fa-clock"></i></div>
+                <h4 class="font-black text-[10px] uppercase tracking-widest opacity-40 mb-2">Service Hours</h4>
+                <p class="font-bold text-sm">Monday – Sunday</p>
+                <p class="text-xl font-serif italic mt-1 text-brand-red">12:00 PM – 12:00 AM</p>
+            </div>
+        </section>
+
+        <!-- 9. SUGGESTIONS -->
+        <section class="mt-16">
+            <div id="feedback-form-container">
+                <div class="premium-card p-8">
+                    <h4 class="text-[10px] font-black uppercase tracking-widest opacity-40 mb-6 text-center">Your Suggestions</h4>
+                    <form onsubmit="handleFeedback(event)" class="space-y-4">
+                        <textarea id="feedback-text" required placeholder="How can we make your next visit better?" class="custom-input text-sm min-h-[100px]"></textarea>
+                        <button type="submit" class="text-brand-red font-bold text-[10px] uppercase tracking-widest flex items-center justify-center w-full gap-2 py-2">
+                            Send Feedback <i class="fa-solid fa-paper-plane text-[8px]"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div id="feedback-thanks" class="hidden premium-card p-12 text-center border-green-500/20">
+                <div class="text-3xl mb-4">🙏</div>
+                <p class="font-serif italic text-lg">Thank you!</p>
+            </div>
+        </section>
+
+        <!-- 7. SOCIAL & WEB -->
+        <section class="mt-16 mb-20 text-center">
+            <div class="flex justify-center gap-6 mb-8">
+                <a href="https://www.instagram.com/spiceuptz/" target="_blank" class="w-12 h-12 rounded-2xl bg-pink-500/10 text-pink-500 flex items-center justify-center text-xl">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://www.thespiceup.com/" target="_blank" class="w-12 h-12 rounded-2xl bg-brand-red/10 text-brand-red flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-globe"></i>
+                </a>
+            </div>
+            <div class="space-y-1">
+                <p class="text-[10px] font-black uppercase tracking-[0.3em] opacity-30">Dar es Salaam, TZ</p>
+                <p class="text-[10px] font-medium opacity-40">0788 762 551 | 0748 099 103</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL: RESERVATION -->
+    <div id="reserve-modal" class="modal-overlay" onclick="closeModal('reserve-modal', event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold">Reserve a Table</h3>
+                <button onclick="closeModal('reserve-modal')" class="text-xl opacity-30"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleReservation(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 px-1">Name</label>
+                    <input type="text" id="res-name" required placeholder="Full Name" class="custom-input text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 px-1 text-white dark:text-white">Date of Dining</label>
+                        <input type="date" id="res-date" required class="custom-input text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 px-1 text-white dark:text-white">Time</label>
+                        <input type="time" id="res-time" required class="custom-input text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 px-1">Number of People</label>
+                    <select id="res-guests" class="custom-input text-sm">
+                        <option value="1">1 Person</option>
+                        <option value="2" selected>2 People</option>
+                        <option value="3">3 People</option>
+                        <option value="4">4 People</option>
+                        <option value="5+">5+ People</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full py-4 bg-brand-red text-white rounded-xl font-black uppercase text-xs tracking-widest shadow-lg mt-4">
+                    Send to WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ABOUT -->
+    <div id="about-modal" class="modal-overlay" onclick="closeModal('about-modal', event)">
+        <div class="modal-content max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold">About Spice Up</h3>
+                <button onclick="closeModal('about-modal')" class="text-xl opacity-30"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4 text-sm opacity-70 leading-relaxed">
+                <p>At Spice Up, we offer meals of excellent quality and invite you to try our delicious food.</p>
+                <p class="font-bold text-brand-red">The key to our success is simple:</p>
+                <ul class="space-y-2">
+                    <li>✔ Quality consistent food</li>
+                    <li>✔ Great taste every time</li>
+                </ul>
+                <p>We proudly serve:</p>
+                <div class="flex flex-wrap gap-2 py-2">
+                    <span class="px-3 py-1 rounded-full bg-brand-red/10 text-brand-red text-[10px] font-bold">Salads</span>
+                    <span class="px-3 py-1 rounded-full bg-brand-red/10 text-brand-red text-[10px] font-bold">Asian Dishes</span>
+                    <span class="px-3 py-1 rounded-full bg-brand-red/10 text-brand-red text-[10px] font-bold">Pasta</span>
+                </div>
+                <p class="italic">Eat delicious food. Grab a drink. Relax.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 10. STICKY BOTTOM BAR -->
+    <div class="fixed bottom-0 left-0 right-0 z-50 glass-nav border-t border-white/5 px-6 pb-10 pt-4">
+        <div class="max-w-md mx-auto flex items-center gap-3">
+            <a href="https://www.instagram.com/spiceuptz/" target="_blank" class="w-14 h-14 rounded-2xl border border-white/10 flex items-center justify-center text-2xl text-pink-500 active:scale-95 transition-transform">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://wa.me/255788762551?text=Hello%20Spice%20Up%20🌶️%20I%20would%20like%20to%20place%20an%20order." target="_blank" class="flex-1 bg-brand-red text-white h-14 rounded-2xl font-black uppercase text-[11px] tracking-[0.2em] flex items-center justify-center gap-3 shadow-xl shadow-brand-red/30 active:scale-95 transition-transform">
+                <i class="fa-solid fa-truck"></i> Order Now
+            </a>
+            <a href="https://wa.me/255788762551" target="_blank" class="w-14 h-14 rounded-2xl border border-white/10 flex items-center justify-center text-2xl text-green-500 active:scale-95 transition-transform">
+                <i class="fa-brands fa-whatsapp"></i>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            document.documentElement.classList.toggle('light');
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id, e) {
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleReservation(e) {
+            e.preventDefault();
+            const name = document.getElementById('res-name').value;
+            const date = document.getElementById('res-date').value;
+            const time = document.getElementById('res-time').value;
+            const guests = document.getElementById('res-guests').value;
+
+            const text = `Hello Spice Up 🌶️
+I would like to reserve a table.
+
+Name: ${name}
+Date: ${date}
+Time: ${time}
+Number of People: ${guests}`;
+
+            window.open(`https://wa.me/255788762551?text=${encodeURIComponent(text)}`, '_blank');
+            closeModal('reserve-modal');
+        }
+
+        function handleFeedback(e) {
+            e.preventDefault();
+            document.getElementById('feedback-form-container').classList.add('hidden');
+            document.getElementById('feedback-thanks').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
