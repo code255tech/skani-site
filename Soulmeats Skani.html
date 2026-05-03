@@ -301,7 +301,8 @@
     <div class="shutter shutter-top"></div>
     <div class="shutter shutter-bottom"></div>
 
-    <div id="main-content" class="min-h-screen bg-cream dark:bg-black pb-40" style="opacity: 0;">        <div class="text-zinc-900 dark:text-zinc-100 max-w-md mx-auto">
+    <div id="main-content" class="min-h-screen bg-cream dark:bg-black pb-40" style="opacity: 0;">
+        <div class="text-zinc-900 dark:text-zinc-100 max-w-md mx-auto">
             <!-- 1. HEADER SECTION -->
             <header class="px-6 py-5 flex items-center justify-between sticky top-0 bg-cream/80 dark:bg-black/80 backdrop-blur-xl z-40 border-b border-zinc-200 dark:border-zinc-900 pt-[calc(1.25rem+env(safe-area-inset-top))]">
                 <div class="flex items-center gap-3">
@@ -320,7 +321,7 @@
                     </div>
                 </div>
                 <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-yellow-500 shadow-inner active:scale-90 transition-all hover:rotate-12">
-                    <i id="theme-icon" class="fa-solid fa-sun"></i>
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
                 </button>
             </header>
 
@@ -337,7 +338,6 @@
 
              <!-- 3. ACTION GRID SECTION -->
             <section class="px-6 grid grid-cols-2 gap-4">
-                <!-- MENU UPDATED: NOW OPENS MODAL -->
                 <button onclick="openModal('menu-options-modal')" 
                     class="reveal tap-scale card-shimmer bg-yellow-500 p-5 rounded-3xl flex flex-col items-center justify-center text-black shadow-lg shadow-yellow-500/20">
                     <i class="fa-solid fa-utensils text-2xl mb-1 animate-float"></i>
@@ -352,8 +352,7 @@
                     <span class="text-[10px] font-bold opacity-70 dark:opacity-80 uppercase tracking-tight">Instant Connect</span>
                 </button>
 
-                <!-- REVIEWS UPDATED WITH NEW URL -->
-                <button onclick="navigateTo('https://www.google.com/search?sca_esv=9bb8411b62548352&sxsrf=ANbL-n5GF2Z5B72hAHCY_40tCIoZ4A-0Lg:1777029048240&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOfF_1TlyIVCNA33xQW1tOJvI1Ojrpqf2y4oPQRCsSYftJmJTUq4YzdX0mQTKGOSkbvnSO-3Ye_aHtBcgtvrJgUzMEhNyaPTFUk7mH--E6w0dLE0r6w%3D%3D&q=SOULMEATS+Open+Air+Restaurant+Reviews&sa=X&ved=2ahUKEwiG77OJrYaUAxW4fKQEHcY_FJIQ0bkNegQIJhAF&biw=1920&bih=957&dpr=1')" 
+                <button onclick="navigateTo('https://www.google.com/search?q=SOULMEATS+Reviews')" 
                     class="reveal tap-scale card-shimmer bg-[#EBE9D8] dark:bg-zinc-900 dark:text-white text-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-3xl flex flex-col items-center justify-center shadow-sm">
                     <i class="fa-regular fa-star text-2xl mb-1 text-zinc-900 dark:text-zinc-100"></i>
                     <span class="font-black text-lg tracking-tight">Reviews</span>
@@ -456,71 +455,53 @@
                 </div>
             </nav>
             
-            <!-- POWERED BY SKANI -->
-             <div class="fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom))] left-0 right-0 z-[51] px-6 pointer-events-none">
-                <div class="max-w-md mx-auto flex justify-end">
-                    <a href="https://www.skani.space/" 
-                       target="_blank" 
-                       rel="noopener noreferrer" 
-                       class="pointer-events-auto text-[7px] font-black uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200/70 dark:border-zinc-800 px-2 py-1 rounded-full shadow-lg opacity-60 hover:opacity-100 transition-opacity duration-300 hover:text-yellow-600 dark:hover:text-yellow-500">
-                        Powered by Skani.space
-                    </a>
-                </div>
+            <div class="fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom))] left-0 right-0 z-[51] px-6 pointer-events-none text-center">
+                <a href="https://www.skani.space/" target="_blank" class="pointer-events-auto text-[7px] font-black uppercase tracking-[0.18em] text-zinc-500 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md px-2 py-1 rounded-full shadow-lg">
+                    Powered by Skani.space
+                </a>
             </div>
 
-            <!-- MODAL SYSTEM -->
-
-             <!-- NEW MENU OPTIONS MODAL -->
+            <!-- MODALS -->
             <div id="menu-options-modal" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
                 <div class="absolute inset-0 bg-black/60" onclick="closeModal('menu-options-modal')"></div>
                 <div class="modal-content bg-cream dark:bg-zinc-950 w-full max-w-sm rounded-[3rem] p-8 relative border-t-8 border-yellow-500 shadow-2xl">
                     <button onclick="closeModal('menu-options-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
                     <h3 class="text-3xl font-black dark:text-white mb-2 tracking-tighter italic">Select Menu</h3>
-                    <p class="text-zinc-500 text-[10px] font-black uppercase mb-8 tracking-widest leading-tight">Pick your dining experience</p>
-                    
-                    <div class="space-y-4">
-                        <button onclick="openInNewTab('https://www.skani.space/SOULMEATS%20menu%20_compressed.pdf')" 
-                            class="w-full tap-scale bg-yellow-500 p-6 rounded-2xl flex items-center gap-4 text-black shadow-lg shadow-yellow-500/10">
-                            <div class="w-12 h-12 bg-black/10 rounded-xl flex items-center justify-center text-2xl">
-                                <i class="fa-solid fa-utensils"></i>
-                            </div>
+                    <div class="space-y-4 mt-8">
+                        <button onclick="openInNewTab('https://www.skani.space/SOULMEATS%20menu%20_compressed.pdf')" class="w-full tap-scale bg-yellow-500 p-6 rounded-2xl flex items-center gap-4 text-black shadow-lg">
+                            <i class="fa-solid fa-utensils text-2xl"></i>
                             <div class="text-left">
-                                <span class="block font-black text-lg leading-tight">Main Menu</span>
-                                <span class="text-[9px] font-bold uppercase opacity-70 tracking-tighter">Explore full selection</span>
+                                <span class="block font-black text-lg">Main Menu</span>
+                                <span class="text-[9px] font-bold uppercase opacity-70">Explore selection</span>
                             </div>
                         </button>
-
-                        <button onclick="openInNewTab('http://skani.space/SoulMeats%20Special%20Menu%20Offers.pdf')" 
-                            class="w-full tap-scale bg-zinc-100 dark:bg-zinc-900 p-6 rounded-2xl flex items-center gap-4 border border-zinc-200 dark:border-zinc-800">
-                            <div class="w-12 h-12 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 rounded-xl flex items-center justify-center text-2xl">
-                                <i class="fa-solid fa-fire-flame-curved"></i>
-                            </div>
+                        <button onclick="openInNewTab('http://skani.space/SoulMeats%20Special%20Menu%20Offers.pdf')" class="w-full tap-scale bg-zinc-100 dark:bg-zinc-900 p-6 rounded-2xl flex items-center gap-4 border border-zinc-200 dark:border-zinc-800">
+                            <i class="fa-solid fa-fire-flame-curved text-2xl text-yellow-500"></i>
                             <div class="text-left">
-                                <span class="block font-black text-lg leading-tight dark:text-white">Daily Offers</span>
-                                <span class="text-[9px] font-bold uppercase opacity-60 dark:text-zinc-400 tracking-tighter">Today's specials</span>
+                                <span class="block font-black text-lg dark:text-white">Daily Offers</span>
+                                <span class="text-[9px] font-bold uppercase opacity-60">Today's specials</span>
                             </div>
                         </button>
                     </div>
                 </div>
             </div>
-            
+
             <div id="wifi-modal" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
                 <div class="absolute inset-0 bg-black/60" onclick="closeModal('wifi-modal')"></div>
                 <div class="modal-content bg-cream dark:bg-zinc-950 w-full rounded-[3rem] p-10 relative border-t-8 border-yellow-500 shadow-2xl">
                     <button onclick="closeModal('wifi-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
                     <h3 class="text-3xl font-black dark:text-white mb-2 tracking-tighter">WiFi Access</h3>
-                    <p class="text-zinc-500 text-[10px] font-black uppercase mb-6 tracking-widest">Connect and enjoy</p>
                     <div class="space-y-4 mt-6">
                         <div class="bg-zinc-100 dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800">
-                            <label class="text-[10px] font-black uppercase text-zinc-400 mb-1 block tracking-wider">Network Name (SSID)</label>
+                            <label class="text-[10px] font-black uppercase text-zinc-400 mb-1 block">Network Name</label>
                             <div class="text-xl font-black dark:text-white tracking-tight">Soulmeats</div>
                         </div>
                         <div class="bg-zinc-100 dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 flex justify-between items-center">
                             <div class="flex-1">
-                                <label class="text-[10px] font-black uppercase text-zinc-400 mb-1 block tracking-wider">Password</label>
+                                <label class="text-[10px] font-black uppercase text-zinc-400 mb-1 block">Password</label>
                                 <div class="text-xl font-black dark:text-white tracking-tight">ilovesoulmeats</div>
                             </div>
-                            <button id="copy-btn" onclick="copyWifiText('ilovesoulmeats')" class="w-12 h-12 bg-yellow-500 text-black rounded-xl tap-scale transition-all flex items-center justify-center shadow-lg shadow-yellow-500/10">
+                            <button onclick="copyWifiText('ilovesoulmeats')" class="w-12 h-12 bg-yellow-500 text-black rounded-xl tap-scale transition-all flex items-center justify-center shadow-lg">
                                 <i class="fa-solid fa-copy"></i>
                             </button>
                         </div>
@@ -531,7 +512,6 @@
             <div id="booking-modal" class="modal-overlay fixed inset-0 z-[60] flex items-end sm:items-center justify-center px-4">
                 <div class="absolute inset-0 bg-black/70" onclick="closeModal('booking-modal')"></div>
                 <div class="modal-content bg-cream dark:bg-zinc-950 w-full rounded-t-[3rem] sm:rounded-[3rem] p-10 relative border-t-8 border-yellow-500 pb-[calc(2rem+env(safe-area-inset-bottom))]">
-                    <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-800 rounded-full mx-auto mb-6 sm:hidden"></div>
                     <button onclick="closeModal('booking-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
                     <h3 class="text-3xl font-black dark:text-white mb-6 tracking-tighter italic">Book a Table</h3>
                     <form onsubmit="handleBookingSubmit(event)" class="space-y-4">
@@ -541,7 +521,7 @@
                             <input type="time" id="book-time" required class="w-full bg-zinc-100 dark:bg-zinc-900 p-5 dark:text-white text-sm font-black border border-transparent focus:border-yellow-500 outline-none rounded-2xl transition-all">
                         </div>
                         <input type="number" id="book-people" required min="1" placeholder="Number of People" class="w-full bg-zinc-100 dark:bg-zinc-900 p-5 dark:text-white text-sm font-black border border-transparent focus:border-yellow-500 outline-none rounded-2xl transition-all">
-                        <button type="submit" class="w-full bg-yellow-500 text-black py-6 rounded-3xl font-black text-lg tap-scale transition-all uppercase italic shadow-xl shadow-yellow-500/20">
+                        <button type="submit" class="w-full bg-yellow-500 text-black py-6 rounded-3xl font-black text-lg tap-scale shadow-xl">
                             Request Table
                         </button>
                     </form>
@@ -549,177 +529,117 @@
             </div>
         </div>
     </div>
-    <iframe id="suggestion-submit-frame" name="suggestion-submit-frame" class="hidden" aria-hidden="true"></iframe>
+
     <script>
+        // PRELOADER LOGIC
+        window.addEventListener('load', function() {
+            const fill = document.getElementById('fill');
+            const status = document.getElementById('statusLabel');
+            const preloader = document.getElementById('skani-preloader');
+            const mainContent = document.getElementById('main-content');
+            const body = document.body;
+            
+            let progress = 0;
+            const steps = [
+                { p: 20, t: "Initializing..." },
+                { p: 45, t: "Scanning Menu..." },
+                { p: 75, t: "Lighting the Fire..." },
+                { p: 100, t: "Ready!" }
+            ];
+
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 10) + 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    finishLoading();
+                }
+                
+                fill.style.width = progress + '%';
+                const currentStep = steps.find(s => progress <= s.p) || steps[steps.length-1];
+                status.innerText = currentStep.t;
+            }, 100);
+
+            function finishLoading() {
+                setTimeout(() => {
+                    // Start shutter animation
+                    body.classList.add('closing');
+                    
+                    setTimeout(() => {
+                        // Hide preloader, show content
+                        preloader.style.display = 'none';
+                        mainContent.style.opacity = '1';
+                        body.classList.remove('closing');
+                        
+                        // Trigger reveal animations
+                        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+                    }, 800);
+                }, 500);
+            }
+        });
+
+        // REVEAL OBSERVER
         const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
         }, observerOptions);
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
+        // UI HELPERS
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
             const icon = document.getElementById('theme-icon');
-            icon.style.transform = 'scale(0) rotate(90deg)';
-            setTimeout(() => {
-                icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-                icon.style.transform = 'scale(1) rotate(0deg)';
-            }, 150);
+            icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
         }
 
-        function navigateTo(url) { window.location.href = url; }
-        function openInNewTab(url) { window.open(url, '_blank', 'noopener,noreferrer'); }
-        function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = ''; }
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function navigateTo(url) {
+            window.location.href = url;
+        }
+
+        function openInNewTab(url) {
+            window.open(url, '_blank');
+        }
 
         function copyWifiText(text) {
-            const btn = document.getElementById('copy-btn');
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            textArea.style.left = "-9999px";
-            document.body.appendChild(textArea);
-            textArea.focus(); textArea.select();
-            try {
-                document.execCommand('copy');
-                btn.innerHTML = '<i class="fa-solid fa-check scale-up"></i>';
-                btn.classList.replace('bg-yellow-500', 'bg-green-500');
-                btn.classList.add('text-white');
-            } catch (err) {}
-            document.body.removeChild(textArea);
-            setTimeout(() => {
-                btn.innerHTML = '<i class="fa-solid fa-copy"></i>';
-                btn.classList.replace('bg-green-500', 'bg-yellow-500');
-                btn.classList.remove('text-white');
-            }, 2000);
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            const btn = event.currentTarget;
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            setTimeout(() => btn.innerHTML = originalIcon, 2000);
+        }
+
+        function handleSuggestion(e) {
+            e.preventDefault();
+            document.getElementById('suggestion-form').classList.add('hidden');
+            document.getElementById('suggestion-feedback').classList.remove('hidden');
         }
 
         function handleBookingSubmit(e) {
             e.preventDefault();
-            const message = `Hello SoulMeats, I would like to book a table.\n\nName: ${document.getElementById('book-name').value}\nDate: ${document.getElementById('book-date').value}\nTime: ${document.getElementById('book-time').value}\nNumber of People: ${document.getElementById('book-people').value}`;
-            window.location.href = `https://wa.me/255658898989?text=${encodeURIComponent(message)}`;
+            const name = document.getElementById('book-name').value;
+            const date = document.getElementById('book-date').value;
+            const time = document.getElementById('book-time').value;
+            const people = document.getElementById('book-people').value;
+            
+            const message = `Hello SoulMeats! I'd like to book a table for ${people} people on ${date} at ${time}. Name: ${name}`;
+            window.open(`https://wa.me/255658898989?text=${encodeURIComponent(message)}`, '_blank');
             closeModal('booking-modal');
         }
-
-        async function handleSuggestion(e) {
-            e.preventDefault();
-            const form = document.getElementById('suggestion-form');
-            const feedback = document.getElementById('suggestion-feedback');
-            const submitBtn = document.getElementById('submit-btn');
-            const suggestionText = document.getElementById('suggestion-text').value.trim();
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycby6l1_8WHArGhbuztSRW0uEhKSenlD_opoG0QaJhYo2ZJWWCpIuOsk96SV4ip_1V0u6KA/exec';
-            const submitFrame = document.getElementById('suggestion-submit-frame');
-
-            if (!suggestionText) {
-                return;
-            }
-
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Sending...';
-
-            try {
-                // Submit through a hidden iframe so the request works reliably from hosted pages too.
-                submitFrame.src = `${scriptUrl}?suggestion=${encodeURIComponent(suggestionText)}&t=${Date.now()}`;
-
-                // UI Transition to success message
-                form.style.opacity = '0';
-                setTimeout(() => {
-                    form.classList.add('hidden');
-                    feedback.classList.remove('hidden');
-                    feedback.style.opacity = '1';
-                }, 300);
-
-                // Reset after delay
-                setTimeout(() => {
-                    feedback.classList.add('hidden');
-                    form.classList.remove('hidden');
-                    form.style.opacity = '1';
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = 'Submit';
-                    e.target.reset();
-                }, 5000);
-
-            } catch (error) {
-                console.error('Submission error:', error);
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'Error! Try again';
-                setTimeout(() => { submitBtn.innerText = 'Submit'; }, 2000);
-            }
-        }
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const active = document.querySelector('.modal-overlay.active'); if (active) closeModal(active.id); } });
     </script>
-
-    <script>
-const qrParts = document.querySelectorAll('.qr-part');
-const statusLabel = document.getElementById('statusLabel');
-const fill = document.getElementById('fill');
-const qrWrapper = document.getElementById('qrWrapper');
-const preloader = document.getElementById('skani-preloader');
-
-const clientName = "SoulMeats";
-
-let minTimeDone = false;
-let contentReady = false;
-let progress = 0;
-
-window.addEventListener('DOMContentLoaded', () => {
-  runSequence();
-});
-
-window.addEventListener('load', () => {
-  contentReady = true;
-  if (minTimeDone) finish();
-});
-
-setTimeout(() => {
-  minTimeDone = true;
-  if (contentReady) finish();
-}, 1200);
-
-async function runSequence() {
-  for (let i = 0; i < qrParts.length; i++) {
-    await new Promise(r => setTimeout(r, 100));
-    qrParts[i].classList.add('qr-animate');
-  }
-
-  qrWrapper.classList.add('scanning');
-  startProgress();
-}
-
-function startProgress() {
-  const interval = setInterval(() => {
-    progress += 6;
-
-    if (progress > 90) progress = 90;
-
-    fill.style.width = progress + '%';
-
-    if (contentReady && minTimeDone) {
-      clearInterval(interval);
-      fill.style.width = "100%";
-      completeLoading();
-    }
-  }, 120);
-}
-
-function completeLoading() {
-  statusLabel.textContent = "Ready";
-  qrWrapper.classList.remove('scanning');
-
-  setTimeout(() => {
-    preloader.classList.add('closing');
-
-    setTimeout(() => {
-      preloader.style.opacity = '0';
-      preloader.style.transition = 'opacity 0.5s ease';
-
-      setTimeout(() => {
-        preloader.remove();
-      }, 500);
-
-    }, 800);
-  }, 400);
-}
-</script>
 </body>
 </html>
