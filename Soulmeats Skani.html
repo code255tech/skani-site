@@ -123,6 +123,154 @@
     background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
 }
     </style>
+    <style>
+          /* QR Icon Animation */
+        .qr-wrapper {
+            position: relative;
+            padding: 32px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-icon {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        /* Finder Patterns (The squares in the corners) */
+        .qr-part {
+            width: 100%;
+            height: 100%;
+            border: 3px solid var(--brand-primary);
+            border-radius: 4px;
+            position: relative;
+            opacity: 0;
+            transform: scale(0.5);
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+        }
+
+        .qr-part::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: var(--brand-primary);
+            border-radius: 1px;
+        }
+
+        /* The fourth part is a "data" part (dots) to look like a real QR */
+        .qr-part.data-part {
+            border: none;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4px;
+        }
+        .qr-part.data-part::after { display: none; }
+        
+        .data-dot {
+            background: var(--brand-primary);
+            border-radius: 1px;
+        }
+
+        .qr-animate {
+            animation: qrAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes qrAppear {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Scanning Line Effect */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--brand-primary), transparent);
+            box-shadow: 0 0 20px var(--brand-primary);
+            opacity: 0;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        .scanning .scan-line {
+            animation: scanMove 2s ease-in-out infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes scanMove {
+            0% { top: 0%; opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* Text Styles */
+        .status-container {
+            height: 20px;
+            overflow: hidden;
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+
+        .loading-text {
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--accent);
+            transition: all 0.4s ease;
+        }
+
+        /* Progress Line */
+        .progress-track {
+            width: 200px;
+            height: 2px;
+            background: rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .progress-fill {
+            position: absolute;
+            height: 100%;
+            width: 0%;
+            background: var(--brand-primary);
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+            transition: width 0.4s cubic-bezier(0.1, 0.5, 0.5, 1);
+        }
+
+        /* Shutter Transition */
+        .shutter {
+            position: fixed;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: #ffffff;
+            z-index: 100;
+            transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        .shutter-top { top: 0; transform: translateY(-101%); }
+        .shutter-bottom { bottom: 0; transform: translateY(101%); }
+
+        .closing .shutter-top, .closing .shutter-bottom { transform: translateY(0); }
+    </style>
 </head>
 <body class="transition-colors duration-500">
     <!-- SKANI PRELOADER -->
