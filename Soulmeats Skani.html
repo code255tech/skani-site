@@ -37,6 +37,9 @@
         :root {
             --sat: env(safe-area-inset-top);
             --sab: env(safe-area-inset-bottom);
+            --brand-primary: #EAB308;
+            --accent: #ffffff;
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         body { 
@@ -116,14 +119,18 @@
         .tap-scale:active { transform: scale(0.95); }
 
         #skani-preloader {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
-}
-    </style>
-    <style>
-          /* QR Icon Animation */
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+
+        /* QR Icon Animation */
         .qr-wrapper {
             position: relative;
             padding: 32px;
@@ -147,16 +154,17 @@
             gap: 8px;
         }
 
-        /* Finder Patterns (The squares in the corners) */
+        /* Finder Patterns */
         .qr-part {
             width: 100%;
             height: 100%;
             border: 3px solid var(--brand-primary);
             border-radius: 4px;
             position: relative;
-            opacity: 0;
-            transform: scale(0.5);
+            opacity: 1;
+            transform: scale(1);
             box-shadow: 0 0 15px rgba(255,255,255,0.1);
+            animation: qrAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
         .qr-part::after {
@@ -170,7 +178,6 @@
             border-radius: 1px;
         }
 
-        /* The fourth part is a "data" part (dots) to look like a real QR */
         .qr-part.data-part {
             border: none;
             display: grid;
@@ -184,11 +191,8 @@
             border-radius: 1px;
         }
 
-        .qr-animate {
-            animation: qrAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
         @keyframes qrAppear {
+            from { opacity: 0; transform: scale(0.5); }
             to { opacity: 1; transform: scale(1); }
         }
 
@@ -201,14 +205,10 @@
             height: 2px;
             background: linear-gradient(90deg, transparent, var(--brand-primary), transparent);
             box-shadow: 0 0 20px var(--brand-primary);
-            opacity: 0;
+            opacity: 0.8;
             z-index: 15;
             pointer-events: none;
-        }
-
-        .scanning .scan-line {
             animation: scanMove 2s ease-in-out infinite;
-            opacity: 0.8;
         }
 
         @keyframes scanMove {
@@ -261,32 +261,26 @@
             width: 100%;
             height: 50%;
             background: #ffffff;
-            z-index: 100;
+            z-index: 10000;
             transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+            pointer-events: none;
         }
 
         .shutter-top { top: 0; transform: translateY(-101%); }
         .shutter-bottom { bottom: 0; transform: translateY(101%); }
 
-        .closing .shutter-top, .closing .shutter-bottom { transform: translateY(0); }
+        body.closing .shutter-top, body.closing .shutter-bottom { transform: translateY(0); }
     </style>
 </head>
 <body class="transition-colors duration-500">
     <!-- SKANI PRELOADER -->
-<div id="skani-preloader">
-
-    <div class="shutter shutter-top"></div>
-    <div class="shutter shutter-bottom"></div>
-
-    <div class="main-container">
+    <div id="skani-preloader">
         <div class="qr-wrapper" id="qrWrapper">
             <div class="scan-line"></div>
-
             <div class="qr-icon">
                 <div class="qr-part"></div>
                 <div class="qr-part"></div>
                 <div class="qr-part"></div>
-
                 <div class="qr-part data-part">
                     <div class="data-dot"></div>
                     <div class="data-dot"></div>
@@ -295,19 +289,19 @@
                 </div>
             </div>
         </div>
-
         <div class="status-container">
             <div id="statusLabel" class="loading-text">Initializing</div>
         </div>
-
         <div class="progress-track">
             <div class="progress-fill" id="fill"></div>
         </div>
     </div>
 
-</div>
-    <div class="min-h-screen bg-cream dark:bg-black pb-40">
-        <div class="text-zinc-900 dark:text-zinc-100 max-w-md mx-auto">
+    <!-- Shutter elements outside preloader to handle transition -->
+    <div class="shutter shutter-top"></div>
+    <div class="shutter shutter-bottom"></div>
+
+    <div id="main-content" class="min-h-screen bg-cream dark:bg-black pb-40" style="opacity: 0;">        <div class="text-zinc-900 dark:text-zinc-100 max-w-md mx-auto">
             <!-- 1. HEADER SECTION -->
             <header class="px-6 py-5 flex items-center justify-between sticky top-0 bg-cream/80 dark:bg-black/80 backdrop-blur-xl z-40 border-b border-zinc-200 dark:border-zinc-900 pt-[calc(1.25rem+env(safe-area-inset-top))]">
                 <div class="flex items-center gap-3">
