@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>🍵 THE WHISK — PREMIUM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;500;700&family=Outfit:wght@300;400;600;800&display=swap');
+
+        :root {
+            --matcha-green: #89a844;
+            --bg: #1a1f14;
+            --card: #252b1e;
+            --text: #f0f4e8;
+            --border: rgba(137, 168, 68, 0.15);
+            --header-glass: rgba(26, 31, 20, 0.7);
+            --transition-speed: 0.4s;
+        }
+
+        body:not(.light-mode) {
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        body.light-mode {
+            --bg: #fdfbf7;
+            --card: #ffffff;
+            --text: #2d3e1d;
+            --border: rgba(137, 168, 68, 0.1);
+            --header-glass: rgba(253, 251, 247, 0.7);
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            overflow-x: hidden;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        h1, h2, h3, .brand-font { font-family: 'Fredoka', sans-serif; }
+
+        /* GLASSMORPHISM HEADER */
+        header {
+            background: var(--header-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 250;
+        }
+
+        .leaf-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5c-5 0-9 4-9 9 0 7 9 16 9 16s9-9 9-16c0-5-4-9-9-9z' fill='%2389a844' fill-opacity='0.04'/%3E%3C/svg%3E");
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .whisk-card {
+            background: var(--card);
+            border-radius: 28px;
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .whisk-card:active { transform: scale(0.94); opacity: 0.9; }
+
+        .btn-green {
+            background-color: var(--matcha-green);
+            color: white;
+            border-radius: 20px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+        .btn-green:active { transform: scale(0.97); }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: var(--bg);
+            color: var(--text);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 40px 40px 0 0;
+            padding: 32px 24px 60px 24px;
+            animation: slideUp 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            max-height: 85vh;
+            overflow-y: auto;
+            border-top: 1px solid var(--border);
+            position: relative;
+        }
+
+        /* Modal UX elements */
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.5;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--card);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .dock {
+            background: var(--card);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        input, textarea {
+            background: rgba(137, 168, 68, 0.08);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 20px;
+        }
+
+        #loading {
+            background-color: #1a1f14;
+            color: #f0f4e8;
+        }
+    </style>
+</head>
+<body class="pb-36">
+
+    <div class="leaf-pattern"></div>
+
+    <!-- STARTUP LOADER -->
+    <div id="loading" class="fixed inset-0 z-[300] flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="w-20 h-20 bg-[#89a844] rounded-3xl flex items-center justify-center text-white text-3xl mb-4 animate-pulse shadow-2xl shadow-[#89a844]/40">
+            <i class="fa-solid fa-mortar-pestle"></i>
+        </div>
+        <h1 class="text-2xl font-bold tracking-[0.2em] brand-font uppercase">THE WHISK</h1>
+    </div>
+
+    <!-- HEADER WITH GLASSMORPHISM AND Z-INDEX -->
+    <header class="p-6 sticky top-0 flex justify-between items-center transition-all duration-300">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-[#89a844] rounded-xl flex items-center justify-center text-white shadow-lg shadow-[#89a844]/20">
+                <i class="fa-solid fa-mortar-pestle"></i>
+            </div>
+            <h1 class="text-xl font-bold brand-font tracking-tight">The Whisk</h1>
+        </div>
+        <button id="themeToggle" class="w-12 h-12 rounded-full flex items-center justify-center whisk-card">
+            <i class="fa-solid fa-sun text-lg" id="themeIcon"></i>
+        </button>
+    </header>
+
+    <!-- WELCOME SCREEN -->
+    <main class="px-6">
+        <section class="py-10 text-center">
+            <h2 class="text-3xl font-bold mb-4 brand-font">Welcome to <span class="text-[#89a844]">The Whisk</span> 🍵</h2>
+            <p class="text-sm opacity-70 leading-relaxed mb-8 max-w-xs mx-auto">
+                “Premium coffee & authentic matcha experience in Dar es Salaam.”
+            </p>
+            <div class="flex flex-wrap justify-center gap-3 text-[10px] font-black uppercase tracking-widest">
+                <span class="bg-[#89a844]/15 px-4 py-2 rounded-full border border-[#89a844]/30">✔ Fresh coffee</span>
+                <span class="bg-[#89a844]/15 px-4 py-2 rounded-full border border-[#89a844]/30">✔ Premium matcha</span>
+            </div>
+            <p class="mt-10 italic text-sm font-medium opacity-50">“Sip calm. Taste premium.”</p>
+        </section>
+
+        <!-- MAIN GRID -->
+        <div class="grid grid-cols-2 gap-5 mb-12">
+            <div onclick="openModal('about-modal')" class="whisk-card p-8 flex flex-col items-center gap-4">
+                <i class="fa-solid fa-brain text-2xl text-blue-400"></i>
+                <span class="font-bold text-xs uppercase tracking-widest">About Us</span>
+            </div>
+            <div onclick="openModal('menu-modal')" class="whisk-card p-8 flex flex-col items-center gap-4">
+                <i class="fa-solid fa-utensils text-2xl text-[#89a844]"></i>
+                <span class="font-bold text-xs uppercase tracking-widest">Menu</span>
+            </div>
+            <div onclick="openModal('matcha-modal')" class="whisk-card p-8 flex flex-col items-center gap-4">
+                <i class="fa-solid fa-leaf text-2xl text-[#89a844]"></i>
+                <span class="font-bold text-xs uppercase tracking-widest">Matcha</span>
+            </div>
+            <div onclick="openModal('coffee-modal')" class="whisk-card p-8 flex flex-col items-center gap-4">
+                <i class="fa-solid fa-mug-saucer text-2xl text-orange-600"></i>
+                <span class="font-bold text-xs uppercase tracking-widest">Coffee</span>
+            </div>
+           
+            <div onclick="window.open('https://maps.app.goo.gl/uXfXpXvW7G2PZ7S78', '_blank')" class="whisk-card p-8 flex flex-col items-center gap-4">
+                <i class="fa-solid fa-map-location-dot text-2xl text-red-400"></i>
+                <span class="font-bold text-xs uppercase tracking-widest">Location</span>
+            </div>
+            <div onclick="openModal('contact-modal')" class="whisk-card p-8 flex flex-col items-center gap-4">
+                <i class="fa-solid fa-paper-plane text-2xl text-emerald-400"></i>
+                <span class="font-bold text-xs uppercase tracking-widest">Contact</span>
+            </div>
+        </div>
+
+        <!-- SUGGESTION SECTION -->
+        <section class="mb-16">
+            <div class="whisk-card p-8 border-none bg-[#89a844]/5">
+                <h3 class="text-xl font-bold mb-2 brand-font">Suggestions & Feedback</h3>
+                <p class="text-xs opacity-50 mb-6 italic">“We’d love to hear from you.”</p>
+                <div id="feedback-form">
+                    <textarea id="feedbackText" rows="3" class="w-full p-5 text-sm focus:outline-none mb-4 outline-none" placeholder="Share your thoughts..."></textarea>
+                    <button onclick="submitFeedback()" class="w-full btn-green py-5 text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3">
+                        Submit <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+                <div id="feedback-success" class="hidden text-center py-6">
+                    <i class="fa-solid fa-circle-check text-3xl text-[#89a844] mb-3"></i>
+                    <p class="font-bold text-sm uppercase tracking-widest">Thank you for your feedback ☕✨</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SOCIAL -->
+        <div class="flex justify-center gap-10 mb-16 opacity-40">
+            <a href="https://www.instagram.com/the__whisk/" target="_blank" class="text-2xl"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://wa.me/255788693881" target="_blank" class="text-2xl"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+    </main>
+
+    <!-- MODAL: MENU -->
+    <div id="menu-modal" class="modal" onclick="closeOnOverlay(event, 'menu-modal')">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <button class="modal-close-btn" onclick="closeModal('menu-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-3xl font-bold brand-font mb-10 text-center">Menu</h2>
+            <div class="space-y-10">
+                <section>
+                    <h3 class="text-[#89a844] font-black text-[10px] tracking-widest uppercase mb-4 opacity-60">☕ Coffee Selection</h3>
+                    <div class="space-y-1">
+                        <div class="menu-item"><span>Espresso</span></div>
+                        <div class="menu-item"><span>Americano</span></div>
+                        <div class="menu-item"><span>Latte</span></div>
+                        <div class="menu-item"><span>Cappuccino</span></div>
+                        <div class="menu-item"><span>Iced Coffee</span></div>
+                    </div>
+                </section>
+                <section>
+                    <h3 class="text-[#89a844] font-black text-[10px] tracking-widest uppercase mb-4 opacity-60">🍵 Matcha Selection</h3>
+                    <div class="space-y-1">
+                        <div class="menu-item"><span>Classic Matcha Latte</span></div>
+                        <div class="menu-item"><span>Vanilla Matcha</span></div>
+                        <div class="menu-item"><span>Iced Matcha</span></div>
+                        <div class="menu-item"><span>Premium Ceremonial</span></div>
+                    </div>
+                </section>
+                <div class="bg-yellow-500/10 p-6 rounded-3xl border border-yellow-500/10">
+                    <h3 class="text-yellow-500 font-bold text-xs uppercase mb-3">✨ Specials</h3>
+                    <p class="text-sm opacity-70">• Seasonal Whisk Drinks<br>• Limited editions</p>
+                </div>
+            </div>
+            <button onclick="orderWA('Full Menu')" class="w-full btn-green py-5 mt-10 text-xs uppercase tracking-widest">Order via WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- MODAL: ABOUT -->
+    <div id="about-modal" class="modal" onclick="closeOnOverlay(event, 'about-modal')">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <button class="modal-close-btn" onclick="closeModal('about-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-3xl font-bold brand-font mb-6">About Us</h2>
+            <p class="text-lg font-bold text-[#89a844] mb-6">Premium coffee & matcha experience in Dar es Salaam.</p>
+            <div class="space-y-4 mb-10">
+                <div class="flex items-start gap-4"><i class="fa-solid fa-check text-[#89a844] mt-1"></i><span class="text-sm">High-quality coffee brewing</span></div>
+                <div class="flex items-start gap-4"><i class="fa-solid fa-check text-[#89a844] mt-1"></i><span class="text-sm">Authentic matcha culture</span></div>
+                <div class="flex items-start gap-4"><i class="fa-solid fa-check text-[#89a844] mt-1"></i><span class="text-sm">Premium ceremonial matcha powder</span></div>
+                <div class="flex items-start gap-4"><i class="fa-solid fa-check text-[#89a844] mt-1"></i><span class="text-sm">Modern café lifestyle experience</span></div>
+            </div>
+            <div class="pt-6 border-t border-white/5 space-y-3 opacity-50">
+                <p class="text-xs">📌 Carefully sourced ingredients</p>
+                <p class="text-xs">📌 Crafted drinks, not mass production</p>
+                <p class="text-xs">📌 Calm, minimal, premium atmosphere</p>
+            </div>
+            <p class="text-center font-bold italic mt-10 text-[#89a844] text-xl brand-font">“Every cup is intentional.”</p>
+        </div>
+    </div>
+
+    <!-- MODAL: MATCHA -->
+    <div id="matcha-modal" class="modal" onclick="closeOnOverlay(event, 'matcha-modal')">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <button class="modal-close-btn" onclick="closeModal('matcha-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-3xl font-bold brand-font mb-8">Matcha Collection</h2>
+            <div class="bg-[#89a844]/10 p-8 rounded-[32px] mb-8 space-y-5">
+                <div class="flex items-center gap-4 text-sm font-medium"><i class="fa-solid fa-star text-[#89a844]"></i> Ceremonial grade matcha</div>
+                <div class="flex items-center gap-4 text-sm font-medium"><i class="fa-solid fa-star text-[#89a844]"></i> Smooth earthy taste</div>
+                <div class="flex items-center gap-4 text-sm font-medium"><i class="fa-solid fa-star text-[#89a844]"></i> Classic + new varieties</div>
+                <div class="flex items-center gap-4 text-sm font-medium"><i class="fa-solid fa-star text-[#89a844]"></i> Premium import quality</div>
+            </div>
+            <button onclick="orderWA('Matcha Selection')" class="w-full btn-green py-5 text-xs uppercase tracking-widest">Order Matcha via WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- MODAL: COFFEE -->
+    <div id="coffee-modal" class="modal" onclick="closeOnOverlay(event, 'coffee-modal')">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <button class="modal-close-btn" onclick="closeModal('coffee-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-3xl font-bold brand-font mb-8">Coffee Selection</h2>
+            <div class="bg-orange-500/10 p-8 rounded-[32px] mb-8 space-y-5">
+                <div class="flex items-center gap-4 text-sm font-medium"><i class="fa-solid fa-bolt text-orange-500"></i> Fresh daily brewed coffee</div>
+                <div class="flex items-center gap-4 text-sm font-medium"><i class="fa-solid fa-bolt text-orange-500"></i> Espresso-based drinks</div>
+                <div class="flex items-center gap-4 text-sm font-medium"><i class="fa-solid fa-bolt text-orange-500"></i> Hot & iced options</div>
+                <div class="flex items-center gap-4 text-sm font-medium"><i class="fa-solid fa-bolt text-orange-500"></i> Balanced premium taste</div>
+            </div>
+            <button onclick="orderWA('Coffee Selection')" class="w-full bg-orange-700 text-white font-bold rounded-2xl py-5 text-xs uppercase tracking-widest">Order Coffee via WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- MODAL: CONTACT -->
+    <div id="contact-modal" class="modal" onclick="closeOnOverlay(event, 'contact-modal')">
+        <div class="modal-content text-center">
+            <div class="modal-handle"></div>
+            <button class="modal-close-btn" onclick="closeModal('contact-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-20 h-20 bg-[#89a844] rounded-full flex items-center justify-center text-white mx-auto mb-6 text-2xl shadow-xl shadow-[#89a844]/30">
+                <i class="fa-solid fa-phone"></i>
+            </div>
+            <h2 class="text-2xl font-bold brand-font mb-2">Get in Touch</h2>
+            <p class="text-sm opacity-50 mb-10 italic">Ready for your daily whisk?</p>
+            <div class="space-y-4">
+                <a href="https://wa.me/255788693881" target="_blank" class="whisk-card p-6 flex items-center justify-between">
+                    <div class="flex items-center gap-5 text-left">
+                        <i class="fa-brands fa-whatsapp text-3xl text-green-500"></i>
+                        <div>
+                            <p class="font-bold">+255 788 693 881</p>
+                            <p class="text-[10px] opacity-40 uppercase font-black">WhatsApp & Call</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs opacity-20"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- STICKY BOTTOM BAR -->
+    <nav class="fixed bottom-6 left-0 right-0 px-6 z-[150] pointer-events-none">
+        <div class="max-w-md mx-auto flex gap-4 pointer-events-auto">
+            <button onclick="orderWA('General inquiry')" class="flex-1 h-16 whisk-card dock flex items-center justify-center gap-3 font-bold text-[#89a844]">
+                <i class="fa-brands fa-whatsapp text-xl"></i> WhatsApp
+            </button>
+            <button onclick="openModal('menu-modal')" class="flex-1 h-16 btn-green !border-none flex items-center justify-center gap-3 font-bold shadow-2xl shadow-[#89a844]/40">
+                <i class="fa-solid fa-leaf"></i> Menu
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        const body = document.body;
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            themeIcon.className = 'fa-solid fa-moon text-lg';
+        } else {
+            themeIcon.className = 'fa-solid fa-sun text-lg';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            themeIcon.className = isLight ? 'fa-solid fa-moon text-lg' : 'fa-solid fa-sun text-lg';
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loading');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 700);
+            }, 1200);
+        });
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        function closeOnOverlay(e, id) {
+            if (e.target.id === id) closeModal(id);
+        }
+
+        function orderWA(context) {
+            const phone = "255788693881";
+            const text = encodeURIComponent(`Hi The Whisk, I would like to place an order for: ${context}.`);
+            window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+        }
+
+        function submitFeedback() {
+            const val = document.getElementById('feedbackText').value;
+            if (val.trim().length < 3) return;
+            document.getElementById('feedback-form').classList.add('hidden');
+            document.getElementById('feedback-success').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
