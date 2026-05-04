@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>SKANI | TONY BIASHARA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap');
+
+        :root {
+            --neon-purple: #9d50bb;
+            --deep-purple: #6e48aa;
+            --accent-cyan: #00f3ff;
+            --bg-dark: #08080c;
+            --glass: rgba(20, 20, 30, 0.6);
+            --glass-border: rgba(157, 80, 187, 0.3);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #f0f0ff;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Animated Tech Background */
+        .cyber-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 0%, #1a1025 0%, #08080c 100%);
+            z-index: -2;
+        }
+
+        .grid-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(157, 80, 187, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(157, 80, 187, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* Components */
+        .glass-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-header {
+            background: rgba(8, 8, 12, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(157, 80, 187, 0.2);
+        }
+
+        .glass-card:active {
+            transform: scale(0.97);
+            border-color: var(--neon-purple);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 15px rgba(157, 80, 187, 0.6);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, var(--neon-purple), var(--deep-purple));
+            color: white;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(157, 80, 187, 0.3);
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active { display: flex; animation: modalIn 0.3s ease-out; }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Sections */
+        .page { display: none; animation: fadeIn 0.4s ease; }
+        .page.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Deals Slider */
+        .deals-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 15px;
+            padding: 10px 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .deals-container::-webkit-scrollbar { display: none; }
+        .deal-card {
+            min-width: 85%;
+            scroll-snap-align: center;
+        }
+
+        .dock {
+            background: rgba(10, 10, 15, 0.95);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="pb-32">
+
+    <div class="cyber-bg"></div>
+    <div class="grid-pattern"></div>
+
+    <!-- STARTUP -->
+    <div id="loading" class="fixed inset-0 z-[300] bg-black flex flex-col items-center justify-center transition-opacity duration-700">
+        <i class="fa-brands fa-apple text-5xl mb-4 animate-pulse"></i>
+        <h1 class="neon-text text-xl tracking-[0.4em]">TONY BIASHARA</h1>
+    </div>
+
+    <!-- HEADER with Glassmorphism -->
+    <header class="p-6 sticky top-0 z-50 flex justify-between items-center glass-header">
+        <div class="flex flex-col">
+            <span class="text-[10px] tracking-[0.3em] uppercase text-purple-400 font-bold">Shopping & retail</span>
+            <h1 class="text-lg font-black tracking-tight" onclick="showPage('home-page')">TONY BIASHARA</h1>
+        </div>
+        <div class="flex gap-4">
+            <a href="https://www.instagram.com/tonybiashara_/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 glass-card flex items-center justify-center text-purple-400">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://wa.me/255654014471" target="_blank" rel="noopener noreferrer" class="w-10 h-10 glass-card flex items-center justify-center text-green-400">
+                <i class="fa-brands fa-whatsapp"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- HOME PAGE -->
+    <div id="home-page" class="page active px-6">
+        <section class="py-8">
+            <h2 class="text-3xl font-bold mb-2">Welcome to <br><span class="neon-text text-purple-500">Tony Biashara</span></h2>
+            <p class="text-sm opacity-70 leading-relaxed mb-6">We sell genuine Apple products and premium smartphones you can trust.</p>
+            
+            <div class="flex flex-wrap gap-2">
+                <div class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider">iPhone 16 Series</div>
+                <div class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider">Samsung S25 AI</div>
+                <div class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider">Premium Service</div>
+            </div>
+        </section>
+
+        <!-- MAIN GRID -->
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div onclick="showPage('products-page')" class="glass-card p-6 flex flex-col items-center justify-center text-center gap-3">
+                <div class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-400">
+                    <i class="fa-solid fa-mobile-screen-button text-2xl"></i>
+                </div>
+                <span class="font-bold text-sm tracking-widest uppercase">Products</span>
+            </div>
+            
+            <div onclick="openModal('deals-modal')" class="glass-card p-6 flex flex-col items-center justify-center text-center gap-3">
+                <div class="w-12 h-12 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-400">
+                    <i class="fa-solid fa-fire text-2xl"></i>
+                </div>
+                <span class="font-bold text-sm tracking-widest uppercase">Hot Deals</span>
+            </div>
+
+            <div onclick="openModal('about-modal')" class="glass-card p-6 flex flex-col items-center justify-center text-center gap-3">
+                <div class="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-400">
+                    <i class="fa-solid fa-brain text-2xl"></i>
+                </div>
+                <span class="font-bold text-sm tracking-widest uppercase">About Us</span>
+            </div>
+
+            <div onclick="window.open('https://maps.app.goo.gl/aBdgx6LsWjASDjJr5', '_blank')" class="glass-card p-6 flex flex-col items-center justify-center text-center gap-3">
+                <div class="w-12 h-12 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-400">
+                    <i class="fa-solid fa-location-dot text-2xl"></i>
+                </div>
+                <span class="font-bold text-sm tracking-widest uppercase">Location</span>
+            </div>
+        </div>
+
+        <!-- NEW HOT DEALS SLIDER ON HOME -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-[10px] uppercase font-black tracking-[0.3em] opacity-40">Featured Deals</h3>
+                <span class="text-[10px] text-purple-400 font-bold">Swipe to view</span>
+            </div>
+            <div class="deals-container">
+                <div class="deal-card glass-card p-6 border-orange-500/30">
+                    <span class="text-[10px] bg-orange-500 text-white px-2 py-1 rounded mb-4 inline-block font-bold">IPHONE DEAL</span>
+                    <h3 class="text-xl font-bold mb-2">iPhone 14/15 Stock</h3>
+                    <p class="text-xs opacity-70 mb-6">Discounted prices on current stock bundles.</p>
+                    <button onclick="orderWA('iPhone Promo Deal')" class="w-full bg-orange-600 py-3 rounded-xl font-black text-xs uppercase italic">Grab Deal</button>
+                </div>
+                <div class="deal-card glass-card p-6 border-blue-500/30">
+                    <span class="text-[10px] bg-blue-500 text-white px-2 py-1 rounded mb-4 inline-block font-bold">SAMSUNG PROMO</span>
+                    <h3 class="text-xl font-bold mb-2">S24 Series Sale</h3>
+                    <p class="text-xs opacity-70 mb-6">Limited time offer on Samsung flagship series.</p>
+                    <button onclick="orderWA('Samsung S24 Promo')" class="w-full bg-blue-600 py-3 rounded-xl font-black text-xs uppercase italic">Grab Deal</button>
+                </div>
+                <div class="deal-card glass-card p-6 border-purple-500/30">
+                    <span class="text-[10px] bg-purple-500 text-white px-2 py-1 rounded mb-4 inline-block font-bold">ACCESSORY COMBO</span>
+                    <h3 class="text-xl font-bold mb-2">Watch & Buds</h3>
+                    <p class="text-xs opacity-70 mb-6">Free protector with every Apple Watch deal.</p>
+                    <button onclick="orderWA('Accessory Bundle')" class="w-full bg-purple-600 py-3 rounded-xl font-black text-xs uppercase italic">Grab Deal</button>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="openModal('contact-modal')" class="w-full glass-card p-4 flex items-center justify-between group">
+            <div class="flex items-center gap-4">
+                <i class="fa-solid fa-headset text-purple-500"></i>
+                <span class="uppercase font-bold text-xs tracking-widest">Connect with Tony</span>
+            </div>
+            <i class="fa-solid fa-arrow-right text-xs opacity-50 group-hover:translate-x-2 transition-transform"></i>
+        </button>
+    </div>
+
+    <!-- PRODUCTS PAGE -->
+    <div id="products-page" class="page px-6">
+        <div class="flex items-center gap-4 mb-8">
+            <button onclick="showPage('home-page')" class="w-10 h-10 glass-card flex items-center justify-center"><i class="fa-solid fa-chevron-left"></i></button>
+            <h2 class="neon-text text-xl uppercase tracking-tighter">Device Catalog</h2>
+        </div>
+
+        <div class="space-y-4">
+            <!-- APPLE SECTION -->
+            <div class="mb-4">
+                <p class="text-[10px] uppercase font-black tracking-[0.3em] opacity-40 mb-4">Apple Flagships</p>
+                <div class="grid gap-3">
+                    <div class="glass-card p-4 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold">iPhone 14</h3>
+                            <p class="text-[10px] opacity-60 uppercase">Genuine Apple Device</p>
+                        </div>
+                        <button onclick="orderWA('iPhone 14')" class="px-4 py-2 cta-button text-[10px]">Order</button>
+                    </div>
+                    <div class="glass-card p-4 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold">iPhone 15</h3>
+                            <p class="text-[10px] opacity-60 uppercase">Latest Gen Performance</p>
+                        </div>
+                        <button onclick="orderWA('iPhone 15')" class="px-4 py-2 cta-button text-[10px]">Order</button>
+                    </div>
+                    <div class="glass-card p-4 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold">iPhone 16</h3>
+                            <p class="text-[10px] opacity-60 uppercase">Premium Camera System</p>
+                        </div>
+                        <button onclick="orderWA('iPhone 16')" class="px-4 py-2 cta-button text-[10px]">Order</button>
+                    </div>
+                    <div class="glass-card p-4 flex justify-between items-center border-purple-500/50">
+                        <div>
+                            <h3 class="font-bold">iPhone 17</h3>
+                            <p class="text-[10px] text-purple-400 uppercase font-bold">Flagship Series</p>
+                        </div>
+                        <button onclick="orderWA('iPhone 17')" class="px-4 py-2 cta-button text-[10px]">Order</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SAMSUNG SECTION -->
+            <div class="pt-4">
+                <p class="text-[10px] uppercase font-black tracking-[0.3em] opacity-40 mb-4">Samsung Premium</p>
+                <div class="grid gap-3">
+                    <div class="glass-card p-4 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold">Samsung S24</h3>
+                            <p class="text-[10px] opacity-60 uppercase">Flagship Performance</p>
+                        </div>
+                        <button onclick="orderWA('Samsung S24')" class="px-4 py-2 cta-button text-[10px]">Order</button>
+                    </div>
+                    <div class="glass-card p-4 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold">Samsung S25</h3>
+                            <p class="text-[10px] opacity-60 uppercase">AI-Powered Tech</p>
+                        </div>
+                        <button onclick="orderWA('Samsung S25')" class="px-4 py-2 cta-button text-[10px]">Order</button>
+                    </div>
+                    <div class="glass-card p-4 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold">Samsung S26</h3>
+                            <p class="text-[10px] opacity-60 uppercase">Ultra Flagship Device</p>
+                        </div>
+                        <button onclick="orderWA('Samsung S26')" class="px-4 py-2 cta-button text-[10px]">Order</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    
+    <!-- About Modal -->
+    <div id="about-modal" class="modal">
+        <div class="glass-card w-full max-w-sm p-8 text-center relative">
+            <button onclick="closeModal('about-modal')" class="absolute top-4 right-4 opacity-50"><i class="fa-solid fa-xmark"></i></button>
+            <i class="fa-brands fa-apple text-4xl text-purple-500 mb-6"></i>
+            <h2 class="neon-text text-xl mb-4">TONY BIASHARA</h2>
+            <p class="text-sm opacity-80 leading-relaxed mb-6">
+                Specializing in genuine Apple products: iPhones, Watches, AirPods, and premium accessories. 100% authenticity guaranteed.
+            </p>
+            <ul class="text-left text-xs space-y-3 mb-8">
+                <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> Genuine Products</li>
+                <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> Trusted Customer Service</li>
+                <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> Fast WhatsApp Response</li>
+            </ul>
+            <p class="text-[10px] italic opacity-50 italic">"Your trusted source for premium Apple devices in Tanzania."</p>
+        </div>
+    </div>
+
+    <!-- Deals Modal -->
+    <div id="deals-modal" class="modal">
+        <div class="w-full max-w-md">
+            <div class="flex justify-between items-center mb-6 px-4">
+                <h2 class="neon-text text-xl">HOT DEALS</h2>
+                <button onclick="closeModal('deals-modal')" class="w-8 h-8 glass-card flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="deals-container px-4">
+                <div class="deal-card glass-card p-6 border-orange-500/30">
+                    <span class="text-[10px] bg-orange-500 text-white px-2 py-1 rounded mb-4 inline-block font-bold">IPHONE DEAL</span>
+                    <h3 class="text-xl font-bold mb-2">iPhone 14/15 Stock</h3>
+                    <p class="text-xs opacity-70 mb-6">Discounted prices on current stock bundles.</p>
+                    <button onclick="orderWA('iPhone Promo Deal')" class="w-full bg-orange-600 py-3 rounded-xl font-black text-xs uppercase italic">Grab Deal</button>
+                </div>
+                <div class="deal-card glass-card p-6 border-blue-500/30">
+                    <span class="text-[10px] bg-blue-500 text-white px-2 py-1 rounded mb-4 inline-block font-bold">SAMSUNG PROMO</span>
+                    <h3 class="text-xl font-bold mb-2">S24 Series Sale</h3>
+                    <p class="text-xs opacity-70 mb-6">Limited time offer on Samsung flagship series.</p>
+                    <button onclick="orderWA('Samsung S24 Promo')" class="w-full bg-blue-600 py-3 rounded-xl font-black text-xs uppercase italic">Grab Deal</button>
+                </div>
+                <div class="deal-card glass-card p-6 border-purple-500/30">
+                    <span class="text-[10px] bg-purple-500 text-white px-2 py-1 rounded mb-4 inline-block font-bold">ACCESSORY COMBO</span>
+                    <h3 class="text-xl font-bold mb-2">Watch & Buds</h3>
+                    <p class="text-xs opacity-70 mb-6">Free protector with every Apple Watch deal.</p>
+                    <button onclick="orderWA('Accessory Bundle')" class="w-full bg-purple-600 py-3 rounded-xl font-black text-xs uppercase italic">Grab Deal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contact-modal" class="modal">
+        <div class="glass-card w-full max-w-sm p-8 text-center relative">
+            <button onclick="closeModal('contact-modal')" class="absolute top-4 right-4 opacity-50"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="neon-text text-xl mb-6 uppercase">Contact System</h2>
+            <div class="space-y-4">
+                <a href="tel:+255654014471" class="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl">
+                    <i class="fa-solid fa-phone text-purple-400"></i>
+                    <span class="font-bold">+255 654 014 471</span>
+                </a>
+                <button onclick="orderWA('General Inquiry')" class="w-full flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl">
+                    <i class="fa-brands fa-whatsapp text-green-400"></i>
+                    <span class="font-bold">Instant Chat Order</span>
+                </button>
+            </div>
+            <div class="mt-8 pt-8 border-t border-white/10">
+                <p class="text-[10px] opacity-50 uppercase tracking-widest mb-4">Digital Presence</p>
+                <div class="flex justify-center gap-6">
+                    <a href="https://www.instagram.com/tonybiashara_/" target="_blank" rel="noopener noreferrer" class="text-2xl text-purple-400"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://wa.me/255654014471" target="_blank" rel="noopener noreferrer" class="text-2xl text-green-400"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STICKY DOCK -->
+    <nav class="fixed bottom-0 left-0 right-0 p-6 z-[150] pointer-events-none">
+        <div class="max-w-md mx-auto flex gap-4 pointer-events-auto">
+            <a href="https://www.instagram.com/tonybiashara_/" target="_blank" rel="noopener noreferrer" class="w-16 h-16 glass-card dock flex items-center justify-center text-purple-400 active:scale-90">
+                <i class="fa-brands fa-instagram text-2xl"></i>
+            </a>
+            <button onclick="showPage('products-page')" class="flex-1 glass-card dock flex items-center justify-center font-bold uppercase text-[10px] tracking-[0.2em] text-white active:scale-95">
+                Catalog
+            </button>
+            <button onclick="orderWA('Instant Chat')" class="w-16 h-16 glass-card dock flex items-center justify-center text-green-500 active:scale-90 border-green-500/20">
+                <i class="fa-brands fa-whatsapp text-2xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // Startup Simulation
+        window.onload = function() {
+            setTimeout(() => {
+                const loader = document.getElementById('loading');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 700);
+            }, 1500);
+        }
+
+        // Navigation
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        // Modals
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Ordering Logic
+        function orderWA(item) {
+            const phone = "255654014471";
+            const text = encodeURIComponent(`Hi Tony Biashara 📱🔥\nI'm interested in: ${item}\n\nPlease provide availability and current pricing details.`);
+            window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+        }
+    </script>
+</body>
+</html>
