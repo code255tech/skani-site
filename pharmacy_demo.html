@@ -10,14 +10,35 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Lexend:wght@300;400;600;700&display=swap');
 
+        /* Default is Light Mode variables */
         :root {
-            --primary: #10b981; /* Emerald-500 */
+            --primary: #10b981;
             --primary-dark: #059669;
             --bg: #f8fafc;
             --card: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
+            --header-bg: rgba(255, 255, 255, 0.8);
+            --border: rgba(0, 0, 0, 0.05);
+            --modal-bg: #ffffff;
+            --pill-bg: #ecfdf5;
+            --pill-text: #065f46;
+            --pill-border: #d1fae5;
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Dark Mode variables applied when [data-theme='dark'] is active */
+        [data-theme='dark'] {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --header-bg: rgba(15, 23, 42, 0.8);
+            --border: rgba(255, 255, 255, 0.1);
+            --modal-bg: #1e293b;
+            --pill-bg: #064e3b;
+            --pill-text: #d1fae5;
+            --pill-border: #065f46;
         }
 
         body {
@@ -26,28 +47,29 @@
             color: var(--text-main);
             margin: 0;
             -webkit-tap-highlight-color: transparent;
+            transition: background-color var(--transition), color var(--transition);
         }
 
         h1, h2, h3, .brand-font { font-family: 'Lexend', sans-serif; }
 
         .glass-header {
-            background: rgba(255, 255, 255, 0.8);
+            background: var(--header-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+            border-bottom: 1px solid var(--border);
             z-index: 100;
         }
 
         .scani-card {
             background: var(--card);
             border-radius: 20px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
             transition: all var(--transition);
             cursor: pointer;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
         }
 
-        .scani-card:active { transform: scale(0.96); background: #f1f5f9; }
+        .scani-card:active { transform: scale(0.96); opacity: 0.8; }
 
         .btn-pharmacy {
             background: var(--primary);
@@ -57,9 +79,7 @@
             transition: all var(--transition);
             box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
         }
-        .btn-pharmacy:active { transform: scale(0.98); opacity: 0.9; }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -74,7 +94,8 @@
         .modal.active { display: flex; }
 
         .modal-content {
-            background: white;
+            background: var(--modal-bg);
+            color: var(--text-main);
             width: 100%;
             max-width: 500px;
             border-radius: 32px 32px 0 0;
@@ -87,7 +108,7 @@
 
         .modal-handle {
             width: 40px; height: 4px;
-            background: #e2e8f0;
+            background: var(--border);
             border-radius: 10px;
             position: absolute;
             top: 12px; left: 50%;
@@ -99,9 +120,9 @@
             top: 20px; right: 20px;
             width: 32px; height: 32px;
             border-radius: 50%;
-            background: #f1f5f9;
+            background: var(--bg);
             display: flex; align-items: center; justify-content: center;
-            color: #64748b;
+            color: var(--text-muted);
             cursor: pointer;
         }
 
@@ -112,16 +133,37 @@
             align-items: center;
             gap: 6px;
             padding: 6px 14px;
-            background: #ecfdf5;
-            color: #065f46;
+            background: var(--pill-bg);
+            color: var(--pill-text);
             border-radius: 99px;
             font-size: 11px;
             font-weight: 700;
-            border: 1px solid #d1fae5;
+            border: 1px solid var(--pill-border);
+        }
+
+        .quick-btn {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .theme-toggle {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition);
         }
     </style>
 </head>
-<body class="pb-32">
+<!-- Added data-theme="dark" to start in dark mode by default -->
+<body class="pb-32" data-theme="dark">
 
     <!-- HEADER -->
     <header class="glass-header sticky top-0 p-4 flex justify-between items-center">
@@ -129,11 +171,14 @@
             <div class="w-9 h-9 bg-emerald-500 rounded-lg flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
                 <i class="fa-solid fa-notes-medical"></i>
             </div>
-            <span class="brand-font text-xl font-bold tracking-tight text-emerald-600">SKANI PHARMACY</span>
+            <span class="brand-font text-xl font-bold tracking-tight text-emerald-600">SKANI Pharmacy</span>
         </div>
-        <div class="flex gap-4">
-            <button onclick="openModal('hours-modal')" class="text-slate-400"><i class="fa-regular fa-clock"></i></button>
-            <button onclick="openModal('contact-modal')" class="text-slate-400"><i class="fa-solid fa-phone"></i></button>
+        <div class="flex gap-3 items-center">
+            <button onclick="toggleTheme()" class="theme-toggle" id="theme-btn">
+                <i class="fa-solid fa-sun"></i>
+            </button>
+            <button onclick="openModal('hours-modal')" class="text-slate-400 hover:text-emerald-500 transition-colors"><i class="fa-regular fa-clock"></i></button>
+            <button onclick="openModal('contact-modal')" class="text-slate-400 hover:text-emerald-500 transition-colors"><i class="fa-solid fa-phone"></i></button>
         </div>
     </header>
 
@@ -141,7 +186,7 @@
         <!-- 1. WELCOME SCREEN -->
         <section class="mb-8">
             <h1 class="text-3xl font-bold brand-font mb-2">Welcome 👋</h1>
-            <p class="text-slate-500 text-sm leading-relaxed mb-4">
+            <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-4">
                 Find medicines, check availability, and connect with our pharmacy — all in one place.
             </p>
             <div class="flex gap-2">
@@ -153,40 +198,40 @@
         <!-- 2. MAIN GRID (2x3) -->
         <div class="grid grid-cols-2 gap-3 mb-8">
             <div onclick="openModal('about-modal')" class="scani-card p-5 flex flex-col gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500">
+                <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
                     <i class="fa-solid fa-hospital"></i>
                 </div>
-                <span class="text-xs font-bold text-slate-700">About Us</span>
+                <span class="text-xs font-bold">About Us</span>
             </div>
             <div onclick="openModal('products-modal')" class="scani-card p-5 flex flex-col gap-3">
-                <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
                     <i class="fa-solid fa-capsules"></i>
                 </div>
-                <span class="text-xs font-bold text-slate-700">Products</span>
+                <span class="text-xs font-bold">Products</span>
             </div>
             <div onclick="openModal('wholesale-modal')" class="scani-card p-5 flex flex-col gap-3">
-                <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-500">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500">
                     <i class="fa-solid fa-boxes-stacked"></i>
                 </div>
-                <span class="text-xs font-bold text-slate-700">Wholesale</span>
+                <span class="text-xs font-bold">Wholesale</span>
             </div>
             <div onclick="window.open('https://maps.google.com')" class="scani-card p-5 flex flex-col gap-3">
-                <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-rose-500">
+                <div class="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-500">
                     <i class="fa-solid fa-location-dot"></i>
                 </div>
-                <span class="text-xs font-bold text-slate-700">Find Us</span>
+                <span class="text-xs font-bold">Find Us</span>
             </div>
             <div onclick="window.open('#')" class="scani-card p-5 flex flex-col gap-3">
-                <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
                     <i class="fa-solid fa-star"></i>
                 </div>
-                <span class="text-xs font-bold text-slate-700">Reviews</span>
+                <span class="text-xs font-bold">Reviews</span>
             </div>
             <div onclick="openModal('contact-modal')" class="scani-card p-5 flex flex-col gap-3">
-                <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-500">
+                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
                     <i class="fa-solid fa-headset"></i>
                 </div>
-                <span class="text-xs font-bold text-slate-700">Contact</span>
+                <span class="text-xs font-bold">Contact</span>
             </div>
         </div>
 
@@ -201,16 +246,16 @@
         <section class="mb-10">
             <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 px-1">Quick Actions</h3>
             <div class="grid grid-cols-2 gap-3">
-                <button onclick="contactWA('Check Availability')" class="bg-white p-4 rounded-2xl flex items-center gap-3 text-xs font-bold border border-slate-100 shadow-sm">
+                <button onclick="contactWA('Check Availability')" class="quick-btn p-4 rounded-2xl flex items-center gap-3 text-xs font-bold shadow-sm">
                     <i class="fa-solid fa-magnifying-glass text-emerald-500"></i> Availability
                 </button>
-                <button onclick="contactWA('Prescription Submission')" class="bg-white p-4 rounded-2xl flex items-center gap-3 text-xs font-bold border border-slate-100 shadow-sm">
+                <button onclick="contactWA('Prescription Submission')" class="quick-btn p-4 rounded-2xl flex items-center gap-3 text-xs font-bold shadow-sm">
                     <i class="fa-solid fa-file-medical text-blue-500"></i> Prescription
                 </button>
-                <button onclick="openModal('delivery-modal')" class="bg-white p-4 rounded-2xl flex items-center gap-3 text-xs font-bold border border-slate-100 shadow-sm">
+                <button onclick="openModal('delivery-modal')" class="quick-btn p-4 rounded-2xl flex items-center gap-3 text-xs font-bold shadow-sm">
                     <i class="fa-solid fa-truck text-amber-500"></i> Delivery
                 </button>
-                <button onclick="openModal('hours-modal')" class="bg-white p-4 rounded-2xl flex items-center gap-3 text-xs font-bold border border-slate-100 shadow-sm">
+                <button onclick="openModal('hours-modal')" class="quick-btn p-4 rounded-2xl flex items-center gap-3 text-xs font-bold shadow-sm">
                     <i class="fa-solid fa-clock text-rose-500"></i> Hours
                 </button>
             </div>
@@ -219,23 +264,23 @@
         <!-- 5. TRUST SLIDER -->
         <section class="mb-10 overflow-hidden">
             <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                <div class="flex-none w-40 bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                <div class="flex-none w-40 bg-emerald-500/10 p-4 rounded-2xl border border-emerald-500/20">
                     <i class="fa-solid fa-shield-halved text-emerald-600 mb-2"></i>
-                    <p class="text-[10px] font-bold text-emerald-900">Genuine Products</p>
+                    <p class="text-[10px] font-bold">Genuine Products</p>
                 </div>
-                <div class="flex-none w-40 bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                <div class="flex-none w-40 bg-blue-500/10 p-4 rounded-2xl border border-blue-500/20">
                     <i class="fa-solid fa-award text-blue-600 mb-2"></i>
-                    <p class="text-[10px] font-bold text-blue-900">Licensed Pharmacy</p>
+                    <p class="text-[10px] font-bold">Licensed Pharmacy</p>
                 </div>
-                <div class="flex-none w-40 bg-amber-50 p-4 rounded-2xl border border-amber-100">
+                <div class="flex-none w-40 bg-amber-500/10 p-4 rounded-2xl border border-amber-500/20">
                     <i class="fa-solid fa-user-doctor text-amber-600 mb-2"></i>
-                    <p class="text-[10px] font-bold text-amber-900">Expert Support</p>
+                    <p class="text-[10px] font-bold">Expert Support</p>
                 </div>
             </div>
         </section>
 
         <!-- 6. SUPPORT CARD -->
-        <section class="bg-slate-900 rounded-[32px] p-6 text-center text-white mb-10">
+        <section class="bg-slate-900 dark:bg-emerald-950 rounded-[32px] p-6 text-center text-white mb-10 transition-colors">
             <h3 class="text-xl font-bold brand-font mb-2">Need Help?</h3>
             <p class="text-xs text-slate-400 mb-6 italic">Talk to our pharmacist instantly.</p>
             <div class="flex justify-center gap-4">
@@ -251,7 +296,7 @@
             <button onclick="contactWA('Instant Order')" class="flex-1 h-14 btn-pharmacy flex items-center justify-center gap-3 font-bold text-sm shadow-xl">
                 <i class="fa-brands fa-whatsapp"></i> Order Now
             </button>
-            <button onclick="window.location.href='tel:+255000000000'" class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-xl border border-slate-100">
+            <button onclick="window.location.href='tel:+255000000000'" class="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-emerald-600 shadow-xl border border-slate-100 dark:border-slate-700">
                 <i class="fa-solid fa-phone"></i>
             </button>
         </div>
@@ -263,17 +308,17 @@
             <div class="modal-handle"></div>
             <button class="modal-close" onclick="closeModal('about-modal')"><i class="fa-solid fa-xmark"></i></button>
             <h2 class="text-2xl font-bold brand-font mb-4">About Our Pharmacy</h2>
-            <p class="text-sm text-slate-500 mb-6 leading-relaxed">
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
                 Trusted retail and wholesale pharmacy providing quality medicines and healthcare products directly to you.
             </p>
             <ul class="space-y-4 mb-8">
-                <li class="flex items-center gap-3 text-sm font-semibold text-slate-700"><i class="fa-solid fa-check-circle text-emerald-500"></i> Genuine & certified medicines</li>
-                <li class="flex items-center gap-3 text-sm font-semibold text-slate-700"><i class="fa-solid fa-check-circle text-emerald-500"></i> Retail & bulk supply</li>
-                <li class="flex items-center gap-3 text-sm font-semibold text-slate-700"><i class="fa-solid fa-check-circle text-emerald-500"></i> Professional guidance</li>
-                <li class="flex items-center gap-3 text-sm font-semibold text-slate-700"><i class="fa-solid fa-check-circle text-emerald-500"></i> Fast response & service</li>
+                <li class="flex items-center gap-3 text-sm font-semibold"><i class="fa-solid fa-check-circle text-emerald-500"></i> Genuine & certified medicines</li>
+                <li class="flex items-center gap-3 text-sm font-semibold"><i class="fa-solid fa-check-circle text-emerald-500"></i> Retail & bulk supply</li>
+                <li class="flex items-center gap-3 text-sm font-semibold"><i class="fa-solid fa-check-circle text-emerald-500"></i> Professional guidance</li>
+                <li class="flex items-center gap-3 text-sm font-semibold"><i class="fa-solid fa-check-circle text-emerald-500"></i> Fast response & service</li>
             </ul>
-            <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
-                <p class="text-[10px] text-emerald-800 font-bold uppercase tracking-widest text-center">Your health and trust come first.</p>
+            <div class="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
+                <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-widest text-center">Your health and trust come first.</p>
             </div>
         </div>
     </div>
@@ -285,26 +330,26 @@
             <button class="modal-close" onclick="closeModal('products-modal')"><i class="fa-solid fa-xmark"></i></button>
             <h2 class="text-2xl font-bold brand-font mb-6">Available Products</h2>
             <div class="grid grid-cols-1 gap-2 mb-8">
-                <div class="p-4 bg-slate-50 rounded-xl flex items-center justify-between">
+                <div class="p-4 bg-slate-500/5 rounded-xl flex items-center justify-between border border-transparent hover:border-emerald-500/30 transition-all">
                     <span class="text-sm font-bold">Prescription Meds</span>
                     <i class="fa-solid fa-prescription text-emerald-500"></i>
                 </div>
-                <div class="p-4 bg-slate-50 rounded-xl flex items-center justify-between">
+                <div class="p-4 bg-slate-500/5 rounded-xl flex items-center justify-between">
                     <span class="text-sm font-bold">Over-the-counter Drugs</span>
                     <i class="fa-solid fa-pills text-blue-500"></i>
                 </div>
-                <div class="p-4 bg-slate-50 rounded-xl flex items-center justify-between">
+                <div class="p-4 bg-slate-500/5 rounded-xl flex items-center justify-between">
                     <span class="text-sm font-bold">Supplements & Vitamins</span>
                     <i class="fa-solid fa-bottle-droplet text-amber-500"></i>
                 </div>
-                <div class="p-4 bg-slate-50 rounded-xl flex items-center justify-between">
+                <div class="p-4 bg-slate-500/5 rounded-xl flex items-center justify-between">
                     <span class="text-sm font-bold">Medical Supplies</span>
                     <i class="fa-solid fa-kit-medical text-rose-500"></i>
                 </div>
             </div>
             <div class="flex flex-col gap-3">
-                <button class="w-full py-4 bg-slate-900 text-white rounded-xl text-xs font-bold uppercase tracking-widest"><i class="fa-solid fa-file-pdf mr-2"></i> View Full Catalogue</button>
-                <button onclick="contactWA('Browse Products')" class="w-full py-4 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold uppercase tracking-widest">Browse on WhatsApp</button>
+                <button class="w-full py-4 bg-slate-900 dark:bg-emerald-600 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors"><i class="fa-solid fa-file-pdf mr-2"></i> View Full Catalogue</button>
+                <button onclick="contactWA('Browse Products')" class="w-full py-4 border border-slate-500/20 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold uppercase tracking-widest">Browse on WhatsApp</button>
             </div>
         </div>
     </div>
@@ -314,15 +359,15 @@
         <div class="modal-content text-center">
             <div class="modal-handle"></div>
             <button class="modal-close" onclick="closeModal('wholesale-modal')"><i class="fa-solid fa-xmark"></i></button>
-            <div class="w-16 h-16 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+            <div class="w-16 h-16 bg-purple-500/10 text-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
                 <i class="fa-solid fa-truck-ramp-box"></i>
             </div>
             <h2 class="text-2xl font-bold brand-font mb-2">Wholesale Orders</h2>
             <p class="text-sm text-slate-500 mb-8 px-4">For pharmacies, clinics, and healthcare businesses.</p>
             <div class="text-left space-y-4 mb-8">
-                <div class="flex items-center gap-3 text-xs font-bold opacity-70"><i class="fa-solid fa-circle-check text-purple-500"></i> Competitive bulk pricing</div>
-                <div class="flex items-center gap-3 text-xs font-bold opacity-70"><i class="fa-solid fa-circle-check text-purple-500"></i> Large quantity supply guaranteed</div>
-                <div class="flex items-center gap-3 text-xs font-bold opacity-70"><i class="fa-solid fa-circle-check text-purple-500"></i> Reliable weekly restocking</div>
+                <div class="flex items-center gap-3 text-xs font-bold opacity-80"><i class="fa-solid fa-circle-check text-purple-500"></i> Competitive bulk pricing</div>
+                <div class="flex items-center gap-3 text-xs font-bold opacity-80"><i class="fa-solid fa-circle-check text-purple-500"></i> Large quantity supply guaranteed</div>
+                <div class="flex items-center gap-3 text-xs font-bold opacity-80"><i class="fa-solid fa-circle-check text-purple-500"></i> Reliable weekly restocking</div>
             </div>
             <button onclick="contactWA('Wholesale Order Enquiry')" class="w-full btn-pharmacy py-5 uppercase tracking-widest text-xs bg-purple-600 shadow-purple-600/20">Place Wholesale Order</button>
         </div>
@@ -335,18 +380,18 @@
             <button class="modal-close" onclick="closeModal('delivery-modal')"><i class="fa-solid fa-xmark"></i></button>
             <h2 class="text-2xl font-bold brand-font mb-6">Delivery Service</h2>
             <div class="space-y-4 mb-8">
-                <div class="flex gap-4 p-4 bg-amber-50 rounded-2xl border border-amber-100">
+                <div class="flex gap-4 p-4 bg-amber-500/10 rounded-2xl border border-amber-500/20">
                     <i class="fa-solid fa-house-chimney text-amber-600 mt-1"></i>
                     <div>
                         <h4 class="font-bold text-sm">Home Delivery</h4>
-                        <p class="text-xs opacity-60">Available for all retail orders within the city.</p>
+                        <p class="text-xs opacity-70">Available for all retail orders within the city.</p>
                     </div>
                 </div>
-                <div class="flex gap-4 p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+                <div class="flex gap-4 p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
                     <i class="fa-solid fa-gauge-high text-emerald-600 mt-1"></i>
                     <div>
                         <h4 class="font-bold text-sm">Fast Processing</h4>
-                        <p class="text-xs opacity-60">Orders processed within 30 minutes of confirmation.</p>
+                        <p class="text-xs opacity-70">Orders processed within 30 minutes of confirmation.</p>
                     </div>
                 </div>
             </div>
@@ -361,20 +406,20 @@
             <button class="modal-close" onclick="closeModal('hours-modal')"><i class="fa-solid fa-xmark"></i></button>
             <h2 class="text-2xl font-bold brand-font mb-6">Opening Hours</h2>
             <div class="space-y-2 mb-8">
-                <div class="flex justify-between p-3 border-b border-slate-100">
+                <div class="flex justify-between p-3 border-b border-slate-500/10">
                     <span class="text-sm font-bold">Mon – Fri</span>
-                    <span class="text-sm text-emerald-600 font-bold">08:00 AM – 09:00 PM</span>
+                    <span class="text-sm text-emerald-500 font-bold">08:00 AM – 09:00 PM</span>
                 </div>
-                <div class="flex justify-between p-3 border-b border-slate-100">
+                <div class="flex justify-between p-3 border-b border-slate-500/10">
                     <span class="text-sm font-bold">Saturday</span>
-                    <span class="text-sm text-emerald-600 font-bold">09:00 AM – 08:00 PM</span>
+                    <span class="text-sm text-emerald-500 font-bold">09:00 AM – 08:00 PM</span>
                 </div>
                 <div class="flex justify-between p-3">
                     <span class="text-sm font-bold">Sunday</span>
-                    <span class="text-sm text-emerald-600 font-bold">10:00 AM – 04:00 PM</span>
+                    <span class="text-sm text-emerald-500 font-bold">10:00 AM – 04:00 PM</span>
                 </div>
             </div>
-            <div class="p-4 bg-rose-50 text-rose-800 rounded-xl text-center text-[10px] font-bold uppercase">
+            <div class="p-4 bg-rose-500/10 text-rose-500 rounded-xl text-center text-[10px] font-bold uppercase">
                 Emergency support available via Phone
             </div>
         </div>
@@ -388,14 +433,14 @@
             <h2 class="text-2xl font-bold brand-font mb-8">Get in Touch</h2>
             <div class="flex flex-col gap-4">
                 <button onclick="contactWA('General Support')" class="w-full p-6 scani-card flex items-center gap-6">
-                    <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 text-xl"><i class="fa-brands fa-whatsapp"></i></div>
+                    <div class="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 text-xl"><i class="fa-brands fa-whatsapp"></i></div>
                     <div class="text-left">
                         <p class="text-xs text-slate-400">Chat with us</p>
                         <h4 class="font-bold">WhatsApp Support</h4>
                     </div>
                 </button>
                 <button onclick="window.location.href='tel:+255000000000'" class="w-full p-6 scani-card flex items-center gap-6">
-                    <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 text-xl"><i class="fa-solid fa-phone"></i></div>
+                    <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 text-xl"><i class="fa-solid fa-phone"></i></div>
                     <div class="text-left">
                         <p class="text-xs text-slate-400">Voice call</p>
                         <h4 class="font-bold">Direct Hotline</h4>
@@ -406,6 +451,22 @@
     </div>
 
     <script>
+        // Theme logic
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('theme-btn');
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            
+            if (isDark) {
+                body.removeAttribute('data-theme');
+                btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+        }
+
+        // Modal logic
         function openModal(id) {
             document.getElementById(id).classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -420,8 +481,9 @@
             if (e.target.id === id) closeModal(id);
         }
 
+        // Action logic
         function contactWA(reason) {
-            const phone = "255000000000"; // Placeholder
+            const phone = "255000000000";
             let message = "";
             
             if (reason === "Prescription Submission") {
