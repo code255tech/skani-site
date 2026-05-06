@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>💳 SCANI — FINTECH DEMO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Lexend:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary: #7c3aed; /* Purple-600 */
+            --primary-light: #a78bfa;
+            --bg: #0f172a; /* Slate-900 */
+            --card: #1e293b; /* Slate-800 */
+            --text: #f8fafc;
+            --border: rgba(124, 58, 237, 0.2);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .brand-font { font-family: 'Lexend', sans-serif; }
+
+        .glass-header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .scani-card {
+            background: var(--card);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scani-card:active { transform: scale(0.96); background: rgba(124, 58, 237, 0.1); }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border-radius: 16px;
+            font-weight: 700;
+            transition: all var(--transition);
+            box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.4);
+        }
+        .btn-primary:active { transform: scale(0.98); opacity: 0.9; }
+
+        /* Modal Architecture */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: var(--bg);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 32px 32px 0 0;
+            padding: 32px 24px 48px 24px;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            border-top: 1px solid var(--border);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-handle {
+            width: 40px; height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            position: absolute;
+            top: 12px; left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px; right: 20px;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: var(--card);
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .slider-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 16px;
+            padding-bottom: 10px;
+        }
+        .slider-container::-webkit-scrollbar { display: none; }
+        .slide {
+            scroll-snap-align: start;
+            flex: 0 0 70%;
+            min-width: 200px;
+        }
+
+        .gradient-mesh {
+            position: fixed;
+            top: -10%; left: -10%;
+            width: 120%; height: 120%;
+            background: radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.1) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 40%);
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="pb-32">
+
+    <div class="gradient-mesh"></div>
+
+    <!-- HEADER -->
+    <header class="glass-header sticky top-0 p-5 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-9 h-9 bg-purple-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-purple-600/30">
+                <i class="fa-solid fa-qrcode"></i>
+            </div>
+            <span class="brand-font text-xl font-bold tracking-tight">SCANI FINTECH</span>
+        </div>
+        <div class="flex gap-4">
+            <button onclick="openModal('security-modal')" class="text-slate-400"><i class="fa-solid fa-shield-halved"></i></button>
+            <button onclick="openModal('contact-modal')" class="text-slate-400"><i class="fa-solid fa-headset"></i></button>
+        </div>
+    </header>
+
+    <!-- 1. WELCOME SCREEN -->
+    <main class="px-6 pt-8">
+        <section class="mb-10">
+            <h1 class="text-3xl font-bold brand-font mb-3">Welcome 👋</h1>
+            <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                Access your financial services, get support, and navigate your account — all in one place.
+            </p>
+            <div class="bg-blue-500/10 border border-blue-500/20 p-4 rounded-2xl flex gap-3 items-start">
+                <i class="fa-solid fa-circle-info text-blue-400 mt-1"></i>
+                <p class="text-xs text-blue-100/70">
+                    <span class="font-bold text-blue-300">Notice:</span> No transactions are processed here. This is your smart access hub.
+                </p>
+            </div>
+        </section>
+
+        <!-- 2. MAIN GRID (2x3) -->
+        <div class="grid grid-cols-2 gap-4 mb-10">
+            <!-- About Us -->
+            <div onclick="openModal('about-modal')" class="scani-card p-6 flex flex-col gap-4">
+                <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400">
+                    <i class="fa-solid fa-building"></i>
+                </div>
+                <span class="text-sm font-semibold">About Us</span>
+            </div>
+            <!-- Login -->
+            <div onclick="openModal('login-modal')" class="scani-card p-6 flex flex-col gap-4">
+                <div class="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <span class="text-sm font-semibold">Access Account</span>
+            </div>
+            <!-- Services -->
+            <div onclick="openModal('services-modal')" class="scani-card p-6 flex flex-col gap-4">
+                <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <span class="text-sm font-semibold">Services</span>
+            </div>
+            <!-- Payment -->
+            <div onclick="openModal('payment-modal')" class="scani-card p-6 flex flex-col gap-4">
+                <div class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400">
+                    <i class="fa-solid fa-credit-card"></i>
+                </div>
+                <span class="text-sm font-semibold">Make Payment</span>
+            </div>
+            <!-- Help -->
+            <div onclick="openModal('help-modal')" class="scani-card p-6 flex flex-col gap-4">
+                <div class="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-400">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <span class="text-sm font-semibold">Trans. Help</span>
+            </div>
+            <!-- Security -->
+            <div onclick="openModal('security-modal')" class="scani-card p-6 flex flex-col gap-4">
+                <div class="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                    <i class="fa-solid fa-shield-check"></i>
+                </div>
+                <span class="text-sm font-semibold">Security Info</span>
+            </div>
+        </div>
+
+        <!-- 3. FEATURED ACTION -->
+        <section class="mb-12">
+            <button onclick="contactWA('General Inquiry')" class="w-full btn-primary py-5 flex items-center justify-center gap-3 text-sm uppercase tracking-wider shadow-purple-600/20">
+                <i class="fa-solid fa-rocket"></i> Get Started
+            </button>
+        </section>
+
+        <!-- 4. QUICK ACCESS -->
+        <section class="mb-12">
+            <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 mb-5">Quick Access Redirects</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="redirectToSystem('balance')" class="bg-slate-800/50 p-4 rounded-2xl flex items-center gap-3 text-xs font-medium border border-white/5">
+                    <i class="fa-solid fa-wallet text-purple-400"></i> Check Balance
+                </button>
+                <button onclick="redirectToSystem('history')" class="bg-slate-800/50 p-4 rounded-2xl flex items-center gap-3 text-xs font-medium border border-white/5">
+                    <i class="fa-solid fa-chart-line text-blue-400"></i> History
+                </button>
+                <button onclick="redirectToSystem('send')" class="bg-slate-800/50 p-4 rounded-2xl flex items-center gap-3 text-xs font-medium border border-white/5">
+                    <i class="fa-solid fa-paper-plane text-emerald-400"></i> Send Money
+                </button>
+                <button onclick="openModal('receive-modal')" class="bg-slate-800/50 p-4 rounded-2xl flex items-center gap-3 text-xs font-medium border border-white/5">
+                    <i class="fa-solid fa-download text-amber-400"></i> Receive
+                </button>
+            </div>
+        </section>
+
+        <!-- 5. SERVICES OVERVIEW SLIDER -->
+        <section class="mb-12">
+            <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 mb-5">Service Overview</h3>
+            <div class="slider-container">
+                <div class="slide bg-gradient-to-br from-purple-600/20 to-purple-900/20 p-6 rounded-3xl border border-purple-500/20">
+                    <i class="fa-solid fa-money-bill-transfer text-2xl text-purple-400 mb-4"></i>
+                    <h4 class="font-bold mb-2">Transfers</h4>
+                    <p class="text-[10px] opacity-60">Seamless local and international fund transfers.</p>
+                </div>
+                <div class="slide bg-gradient-to-br from-blue-600/20 to-blue-900/20 p-6 rounded-3xl border border-blue-500/20">
+                    <i class="fa-solid fa-bolt text-2xl text-blue-400 mb-4"></i>
+                    <h4 class="font-bold mb-2">Payments</h4>
+                    <p class="text-[10px] opacity-60">Instant bill and utility payments at your fingertips.</p>
+                </div>
+                <div class="slide bg-gradient-to-br from-emerald-600/20 to-emerald-900/20 p-6 rounded-3xl border border-emerald-500/20">
+                    <i class="fa-solid fa-mobile-screen text-2xl text-emerald-400 mb-4"></i>
+                    <h4 class="font-bold mb-2">Mobile Access</h4>
+                    <p class="text-[10px] opacity-60">Complete control of your finances on the go.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. SUPPORT SECTION -->
+        <section class="mb-12 bg-slate-800/40 p-8 rounded-[32px] border border-white/5 text-center">
+            <h3 class="text-xl font-bold brand-font mb-2">Need assistance?</h3>
+            <p class="text-sm text-slate-400 mb-8 italic">We're here to help you navigate.</p>
+            <div class="flex justify-center gap-6">
+                <button onclick="contactWA('Support')" class="w-14 h-14 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 border border-green-500/20">
+                    <i class="fa-brands fa-whatsapp text-xl"></i>
+                </button>
+                <button onclick="window.location.href='tel:+255000000000'" class="w-14 h-14 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 border border-blue-500/20">
+                    <i class="fa-solid fa-phone text-xl"></i>
+                </button>
+                <button onclick="window.location.href='mailto:support@scani.com'" class="w-14 h-14 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 border border-rose-500/20">
+                    <i class="fa-solid fa-envelope text-xl"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 7. PROFESSIONAL LINKS -->
+        <footer class="text-center pb-12">
+            <div class="flex justify-center gap-8 mb-6 opacity-40">
+                <a href="#" class="text-xl"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#" class="text-xl"><i class="fa-solid fa-globe"></i></a>
+                <a href="#" class="text-xl"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+            <p class="text-[10px] uppercase tracking-widest opacity-30 font-black">© 2024 SCANI FINTECH ACCESS HUB</p>
+        </footer>
+    </main>
+
+    <!-- STICKY BOTTOM BAR -->
+    <nav class="fixed bottom-6 left-0 right-0 px-6 z-[150] pointer-events-none">
+        <div class="max-w-md mx-auto flex gap-3 pointer-events-auto">
+            <button onclick="openModal('contact-modal')" class="flex-1 h-16 bg-slate-800/90 backdrop-blur-xl border border-white/5 rounded-2xl flex items-center justify-center gap-3 font-bold text-slate-300">
+                <i class="fa-solid fa-comment-dots"></i> Support
+            </button>
+            <button onclick="openModal('login-modal')" class="flex-[1.5] h-16 btn-primary flex items-center justify-center gap-3 font-bold">
+                <i class="fa-solid fa-shield-halved"></i> Open Secure System
+            </button>
+        </div>
+    </nav>
+
+    <!-- MODAL: ABOUT -->
+    <div id="about-modal" class="modal" onclick="closeOnOverlay(event, 'about-modal')">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <button class="modal-close" onclick="closeModal('about-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-2xl font-bold brand-font mb-6">About Our Platform</h2>
+            <p class="text-sm text-slate-400 mb-6 leading-relaxed">
+                We are a modern fintech platform designed to simplify how users access financial services.
+            </p>
+            <h4 class="text-xs font-bold uppercase text-purple-400 tracking-widest mb-4">What we provide:</h4>
+            <ul class="space-y-4 mb-8">
+                <li class="flex items-center gap-3 text-sm"><i class="fa-solid fa-circle-check text-emerald-500"></i> Easy access to financial tools</li>
+                <li class="flex items-center gap-3 text-sm"><i class="fa-solid fa-circle-check text-emerald-500"></i> Direct secure connections</li>
+                <li class="flex items-center gap-3 text-sm"><i class="fa-solid fa-circle-check text-emerald-500"></i> Fast support and guidance</li>
+                <li class="flex items-center gap-3 text-sm"><i class="fa-solid fa-circle-check text-emerald-500"></i> Smart navigation</li>
+            </ul>
+            <p class="text-[11px] text-slate-500 italic p-4 bg-white/5 rounded-xl border border-white/5">
+                📌 We do not process transactions here — we connect you to the right place.
+            </p>
+        </div>
+    </div>
+
+    <!-- MODAL: LOGIN -->
+    <div id="login-modal" class="modal" onclick="closeOnOverlay(event, 'login-modal')">
+        <div class="modal-content text-center">
+            <div class="modal-handle"></div>
+            <button class="modal-close" onclick="closeModal('login-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-16 h-16 bg-purple-600/20 text-purple-400 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <h2 class="text-2xl font-bold brand-font mb-2">Access Your Account</h2>
+            <p class="text-sm text-slate-400 mb-8">Securely continue to your official platform.</p>
+            <div class="text-left space-y-3 mb-8">
+                <div class="flex items-center gap-3 text-xs opacity-70"><i class="fa-solid fa-check text-emerald-500"></i> View account balance</div>
+                <div class="flex items-center gap-3 text-xs opacity-70"><i class="fa-solid fa-check text-emerald-500"></i> Manage transactions</div>
+                <div class="flex items-center gap-3 text-xs opacity-70"><i class="fa-solid fa-check text-emerald-500"></i> Full account features</div>
+            </div>
+            <button onclick="redirectToSystem('login')" class="w-full btn-primary py-5 mb-4 uppercase tracking-widest text-xs">🚀 Open Secure System</button>
+            <p class="text-[10px] text-rose-400 font-bold uppercase tracking-widest">🔒 Login details are never stored here.</p>
+        </div>
+    </div>
+
+    <!-- MODAL: SERVICES -->
+    <div id="services-modal" class="modal" onclick="closeOnOverlay(event, 'services-modal')">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <button class="modal-close" onclick="closeModal('services-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-2xl font-bold brand-font mb-6">Available Services</h2>
+            <div class="space-y-3 mb-10">
+                <div class="p-4 bg-white/5 rounded-2xl flex items-center justify-between border border-white/5">
+                    <span class="text-sm font-medium">Money Transfers</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] opacity-30"></i>
+                </div>
+                <div class="p-4 bg-white/5 rounded-2xl flex items-center justify-between border border-white/5">
+                    <span class="text-sm font-medium">Bill Payments</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] opacity-30"></i>
+                </div>
+                <div class="p-4 bg-white/5 rounded-2xl flex items-center justify-between border border-white/5">
+                    <span class="text-sm font-medium">Airtime Top-Up</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] opacity-30"></i>
+                </div>
+                <div class="p-4 bg-white/5 rounded-2xl flex items-center justify-between border border-white/5">
+                    <span class="text-sm font-medium">Business Payments</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] opacity-30"></i>
+                </div>
+            </div>
+            <button onclick="redirectToSystem('services')" class="w-full btn-primary py-5 uppercase tracking-widest text-xs">Go to Official Platform</button>
+        </div>
+    </div>
+
+    <!-- MODAL: PAYMENT -->
+    <div id="payment-modal" class="modal" onclick="closeOnOverlay(event, 'payment-modal')">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <button class="modal-close" onclick="closeModal('payment-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-2xl font-bold brand-font mb-4">Payment Access</h2>
+            <div class="space-y-6 mb-10 mt-6">
+                <div class="flex gap-4">
+                    <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold shrink-0">1</div>
+                    <p class="text-sm text-slate-300">Tap the button below to proceed</p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold shrink-0">2</div>
+                    <p class="text-sm text-slate-300">You will be securely redirected to our payment gateway</p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold shrink-0">3</div>
+                    <p class="text-sm text-slate-300">Complete your payment securely there</p>
+                </div>
+            </div>
+            <button onclick="redirectToSystem('payment')" class="w-full btn-primary py-5 mb-4 uppercase tracking-widest text-xs">🚀 Proceed to Payment System</button>
+            <p class="text-center text-[10px] text-slate-500 uppercase font-black">📌 Payments are NOT processed inside this page.</p>
+        </div>
+    </div>
+
+    <!-- MODAL: HELP -->
+    <div id="help-modal" class="modal" onclick="closeOnOverlay(event, 'help-modal')">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <button class="modal-close" onclick="closeModal('help-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-2xl font-bold brand-font mb-6">Need Help?</h2>
+            <div class="space-y-4 mb-10">
+                <div class="flex gap-4 p-4 bg-white/5 rounded-2xl">
+                    <i class="fa-solid fa-magnifying-glass-chart text-purple-400 mt-1"></i>
+                    <div>
+                        <h4 class="font-bold text-sm">Track transaction issues</h4>
+                        <p class="text-xs opacity-50">Guidance on finding your transaction ID.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 p-4 bg-white/5 rounded-2xl">
+                    <i class="fa-solid fa-clock-rotate-left text-blue-400 mt-1"></i>
+                    <div>
+                        <h4 class="font-bold text-sm">Understand status</h4>
+                        <p class="text-xs opacity-50">What pending, failed, or success means.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 p-4 bg-white/5 rounded-2xl">
+                    <i class="fa-solid fa-hand-holding-medical text-emerald-400 mt-1"></i>
+                    <div>
+                        <h4 class="font-bold text-sm">Failed payments</h4>
+                        <p class="text-xs opacity-50">Resolution steps for incomplete transfers.</p>
+                    </div>
+                </div>
+            </div>
+            <button onclick="contactWA('Transaction Help')" class="w-full btn-primary py-5 uppercase tracking-widest text-xs">Chat with Resolution Team</button>
+        </div>
+    </div>
+
+    <!-- MODAL: SECURITY -->
+    <div id="security-modal" class="modal" onclick="closeOnOverlay(event, 'security-modal')">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <button class="modal-close" onclick="closeModal('security-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-2xl font-bold brand-font mb-6">Your Security Matters</h2>
+            <ul class="space-y-4 mb-10">
+                <li class="flex items-start gap-3 text-sm"><i class="fa-solid fa-shield-halved text-purple-400 mt-1"></i> Secure redirection only</li>
+                <li class="flex items-start gap-3 text-sm"><i class="fa-solid fa-database text-purple-400 mt-1"></i> No sensitive data stored here</li>
+                <li class="flex items-start gap-3 text-sm"><i class="fa-solid fa-user-lock text-purple-400 mt-1"></i> Official system handling all transactions</li>
+                <li class="flex items-start gap-3 text-sm"><i class="fa-solid fa-certificate text-purple-400 mt-1"></i> Trusted and safe access layer</li>
+            </ul>
+            <div class="bg-purple-900/20 border border-purple-500/20 p-5 rounded-2xl text-center">
+                <p class="text-xs font-bold text-purple-300 uppercase tracking-widest">🔒 Safe Access Layer</p>
+                <p class="text-[10px] opacity-60 mt-2">This hub acts as a navigator, not a payment processor.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: RECEIVE INSTRUCTIONS -->
+    <div id="receive-modal" class="modal" onclick="closeOnOverlay(event, 'receive-modal')">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <button class="modal-close" onclick="closeModal('receive-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-2xl font-bold brand-font mb-6">Receive Payments</h2>
+            <div class="p-6 bg-slate-800 rounded-2xl mb-8">
+                <p class="text-sm leading-relaxed opacity-70">
+                    To receive funds, please log in to the secure system to generate your unique QR code or share your payment link.
+                </p>
+            </div>
+            <button onclick="redirectToSystem('receive')" class="w-full btn-primary py-5 uppercase tracking-widest text-xs">Open Receive System</button>
+        </div>
+    </div>
+
+    <!-- MODAL: CONTACT HUB -->
+    <div id="contact-modal" class="modal" onclick="closeOnOverlay(event, 'contact-modal')">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <button class="modal-close" onclick="closeModal('contact-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-2xl font-bold brand-font mb-8">Contact Support</h2>
+            <div class="grid grid-cols-1 gap-4">
+                <button onclick="contactWA('Support Inquiry')" class="scani-card p-5 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center text-green-500"><i class="fa-brands fa-whatsapp text-xl"></i></div>
+                        <div class="text-left">
+                            <h4 class="text-sm font-bold">WhatsApp</h4>
+                            <p class="text-[10px] opacity-40">Average reply: 5 mins</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] opacity-20"></i>
+                </button>
+                <button onclick="window.location.href='tel:+255000000000'" class="scani-card p-5 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500"><i class="fa-solid fa-phone text-xl"></i></div>
+                        <div class="text-left">
+                            <h4 class="text-sm font-bold">Phone Call</h4>
+                            <p class="text-[10px] opacity-40">Direct assistance</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] opacity-20"></i>
+                </button>
+                <button onclick="window.location.href='mailto:support@scani.com'" class="scani-card p-5 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-rose-500/10 rounded-xl flex items-center justify-center text-rose-500"><i class="fa-solid fa-envelope text-xl"></i></div>
+                        <div class="text-left">
+                            <h4 class="text-sm font-bold">Email Support</h4>
+                            <p class="text-[10px] opacity-40">Detailed tickets</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] opacity-20"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeOnOverlay(e, id) {
+            if (e.target.id === id) closeModal(id);
+        }
+
+        function contactWA(topic) {
+            const phone = "255000000000"; // Placeholder
+            const text = encodeURIComponent(`Hello 👋 I would like help accessing your fintech services for: ${topic}.`);
+            window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+        }
+
+        function redirectToSystem(context) {
+            // Simulated redirection
+            const url = "https://example.com/official-app"; 
+            console.log(`Redirecting for context: ${context}`);
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
