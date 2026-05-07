@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>🍗 SCANI — CHICKZING</title>
+    
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        darkMode: 'class'
+    }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+        :root {
+            --primary: #C70021;
+            --dark: #181818;
+            --light-bg: #fcf2f2;
+            --card-bg-light: #ffffff;
+            --transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--dark);
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: var(--dark);
+            color: #ffffff;
+        }
+
+        .heading-font { font-family: 'Bangers', cursive; letter-spacing: 1px; }
+
+        /* Card Styling - Explicit Visibility Fix */
+        .chick-card {
+            background: var(--card-bg-light);
+            border-radius: 20px;
+            box-shadow: 0 4px 0 rgba(199, 0, 33, 0.05);
+            transition: var(--transition);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(199, 0, 33, 0.05);
+            color: var(--dark); /* Ensure text is visible in light mode */
+        }
+        
+        .dark-mode .chick-card {
+            background: #242424;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.05);
+            color: #ffffff; /* Ensure text is visible in dark mode */
+        }
+
+        .chick-card:active {
+            transform: translateY(3px);
+            box-shadow: 0 0 0 transparent;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border-radius: 16px;
+            font-weight: 800;
+            transition: var(--transition);
+            box-shadow: 0 6px 0 #900018;
+        }
+
+        .btn-primary:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #900018;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(24, 24, 24, 0.9);
+            backdrop-filter: blur(5px);
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 30px 30px 0 0;
+            padding: 40px 24px;
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            max-height: 90vh;
+            overflow-y: auto;
+            color: var(--dark);
+        }
+        
+        .dark-mode .modal-content { background: #1a1a1a; color: white; }
+
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .brand-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .floating-chicken {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="pb-32">
+
+    <!-- 0. HEADER -->
+    <header class="sticky top-0 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md z-[100] px-4 py-3 flex justify-between items-center border-b border-red-100 dark:border-zinc-800">
+        <div class="flex items-center gap-3">
+            <img src="https://firebasestorage.googleapis.com/v0/b/prod-managesome.appspot.com/o/images%2Ftenants%2Fchickzing-africa-tnz%2Fimage_url?alt=media&token=3193cb6c-8c5f-4ccc-b8d7-0733020d892c&timestamp=1766476360526" 
+                 class="brand-logo" alt="ChickZing Logo">
+            <div>
+                <h1 class="heading-font text-xl text-[#C70021]">CHICKZING</h1>
+                <p class="text-[9px] font-extrabold uppercase tracking-tighter opacity-60 dark:text-zinc-400">Crispy • Addictive • Halal</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500">
+                <i class="fa-solid fa-moon dark:hidden"></i>
+                <i class="fa-solid fa-sun hidden dark:block text-yellow-400"></i>
+            </button>
+            <button onclick="openModal('download-modal')" class="bg-[#C70021] text-white text-[10px] font-black px-4 py-2 rounded-full">
+                GET APP
+            </button>
+        </div>
+    </header>
+
+    <main class="px-6 pt-6">
+        <!-- 1. WELCOME SCREEN (Logo Removed as requested) -->
+        <section class="mb-8 text-center pt-4">
+            <h2 class="heading-font text-4xl mb-2">Welcome to ChickZing 🍗🔥</h2>
+            <p class="text-zinc-500 dark:text-zinc-400 text-sm font-semibold">
+                Crispy bites, bold flavor, and fast ordering — everything you need is right here.
+            </p>
+            <div class="flex justify-center gap-2 mt-4">
+            <span class="bg-red-100 dark:bg-red-900/30 text-[#C70021] px-3 py-1 rounded-full text-[10px] font-black uppercase">
+                Halal
+            </span>
+            <span class="bg-red-100 dark:bg-red-900/30 text-[#C70021] px-3 py-1 rounded-full text-[10px] font-black uppercase">
+                Takeaway
+            </span>
+            <span class="bg-red-100 dark:bg-red-900/30 text-[#C70021] px-3 py-1 rounded-full text-[10px] font-black uppercase">
+                Delivery
+            </span>
+            </div>
+        </section>
+
+        <!-- 2. GRID A (2x2) -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div onclick="openModal('about-modal')" class="chick-card p-6 gap-2">
+                <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-house-chimney text-[#C70021] text-xl"></i>
+                </div>
+                <span class="heading-font text-lg tracking-wide">About Us</span>
+            </div>
+            <div onclick="window.open('https://chickzing.com/menu?order_type=delivery')" class="chick-card p-6 gap-2">
+                <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-utensils text-[#C70021] text-xl"></i>
+                </div>
+                <span class="heading-font text-lg tracking-wide">The Menu</span>
+            </div>
+        </div>
+
+        <!-- 3. FEATURED ACTION (1x1) -->
+        <button onclick="openModal('order-options-modal')" class="w-full btn-primary py-5 mb-4 heading-font text-2xl tracking-widest flex items-center justify-center gap-3">
+            🍗 Start Your Order
+        </button>
+
+        <!-- 2. GRID B (2x3 Navigation) -->
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div onclick="openModal('delivery-modal')" class="chick-card p-6 gap-2">
+                <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-motorcycle text-[#C70021] text-xl"></i>
+                </div>
+                <span class="heading-font text-lg tracking-wide">Delivery</span>
+            </div>
+            <div onclick="window.open('https://maps.app.goo.gl/qMszZtXicSCTaC6dA')" class="chick-card p-6 gap-2">
+                <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-map-location-dot text-[#C70021] text-xl"></i>
+                </div>
+                <span class="heading-font text-lg tracking-wide">Find Us</span>
+            </div>
+            <div onclick="window.open('https://www.google.com/search?sca_esv=51a16279084d0999&sxsrf=ANbL-n5gFKei_CjtJDdgGceroUCtE_Jwag:1778193551548&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOY8zw318v6esAGqoOnDT6ClxDIC0mF2f2WySNcFuEwMnSrJ0HTZzmp7_DvAOaoTxKCsAJCtADKu7Y7tsE6SoNXxqDyRo&q=Chickzing+Reviews&sa=X&ved=2ahUKEwixo-2Xn6iUAxXnR0EAHYacFfIQ0bkNegQIMxAF&biw=1920&bih=911&dpr=1')" class="chick-card p-6 gap-2 col-span-2 flex-row">
+                <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-star text-yellow-500 text-xl"></i>
+                </div>
+                <span class="heading-font text-lg tracking-wide">Reviews & Feedback</span>
+            </div>
+        </div>
+
+        <!-- 4. QUICK ACTION CATEGORIES -->
+        <section class="mb-10">
+            <h3 class="heading-font text-2xl mb-4 px-1">Quick Picks 🍟</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="window.open('https://chickzing.com/menu')" class="chick-card p-4 flex-row justify-start gap-3 text-sm font-bold">
+                    <span class="text-xl">🍗</span> Chicken Combos
+                </button>
+                <button onclick="window.open('https://chickzing.com/menu')" class="chick-card p-4 flex-row justify-start gap-3 text-sm font-bold">
+                    <span class="text-xl">🍔</span> Burgers & Wraps
+                </button>
+                <button onclick="window.open('https://chickzing.com/menu')" class="chick-card p-4 flex-row justify-start gap-3 text-sm font-bold">
+                    <span class="text-xl">🍟</span> Fries & Sides
+                </button>
+                <button onclick="window.open('https://chickzing.com/menu')" class="chick-card p-4 flex-row justify-start gap-3 text-sm font-bold">
+                    <span class="text-xl">🥤</span> Drinks
+                </button>
+            </div>
+        </section>
+
+        <!-- 5. EXPERIENCE SLIDER -->
+        <section class="mb-10">
+            <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                <div class="flex-none w-64 chick-card p-6 bg-[#C70021] text-white border-none shadow-none items-start">
+                    <i class="fa-solid fa-fire text-3xl mb-4"></i>
+                    <h4 class="heading-font text-2xl">Crispy Chicken</h4>
+                    <p class="text-[11px] font-bold opacity-80 mt-1 uppercase">The signature crunch you crave</p>
+                </div>
+                <div class="flex-none w-64 chick-card p-6 bg-zinc-900 text-white border-none shadow-none items-start">
+                    <i class="fa-solid fa-pepper-hot text-3xl mb-4 text-[#C70021]"></i>
+                    <h4 class="heading-font text-2xl">Bold Flavor</h4>
+                    <p class="text-[11px] font-bold opacity-80 mt-1 uppercase">Secret spices in every bite</p>
+                </div>
+                <div class="flex-none w-64 chick-card p-6 bg-white dark:bg-zinc-800 text-[#C70021] dark:text-white border-none shadow-none items-start">
+                    <i class="fa-solid fa-truck-fast text-3xl mb-4"></i>
+                    <h4 class="heading-font text-2xl">Fast Delivery</h4>
+                    <p class="text-[11px] font-bold opacity-60 mt-1 uppercase">Hot & Fresh to your door</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. OPENING HOURS -->
+        <section onclick="openModal('hours-modal')" class="chick-card p-6 mb-10 flex-row justify-between items-center border-dashed border-2 border-red-200 dark:border-zinc-700">
+            <div class="flex items-center gap-4">
+                <i class="fa-solid fa-clock text-[#C70021] text-2xl"></i>
+                <div class="text-left">
+                    <h4 class="heading-font text-xl">Opening Hours</h4>
+                    <p class="text-xs font-bold text-zinc-500 dark:text-zinc-400">Daily: 11:30 AM – 12:00 AM</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-zinc-300"></i>
+        </section>
+
+        <!-- 7. SOCIAL LINKS -->
+        <section class="mb-12">
+            <div class="flex justify-center gap-6">
+                <a href="https://www.instagram.com/chickzing/" target="_blank" class="w-14 h-14 bg-white dark:bg-zinc-800 rounded-2xl flex items-center justify-center shadow-md text-pink-600">
+                    <i class="fa-brands fa-instagram text-2xl"></i>
+                </a>
+                <a href="https://www.tiktok.com/@chickzing" target="_blank" class="w-14 h-14 bg-white dark:bg-zinc-800 rounded-2xl flex items-center justify-center shadow-md text-zinc-900 dark:text-white">
+                    <i class="fa-brands fa-tiktok text-2xl"></i>
+                </a>
+                <a href="tel:0787455333" class="w-14 h-14 bg-white dark:bg-zinc-800 rounded-2xl flex items-center justify-center shadow-md text-green-600">
+                    <i class="fa-solid fa-phone text-2xl"></i>
+                </a>
+                <a href="https://wa.me/255787455333" class="w-14 h-14 bg-white dark:bg-zinc-800 rounded-2xl flex items-center justify-center shadow-md text-emerald-500">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- 8. SUGGESTION SECTION -->
+        <section class="mb-10 bg-white dark:bg-zinc-900 rounded-3xl p-8 border-2 border-red-50 dark:border-zinc-800">
+            <h3 class="heading-font text-2xl mb-2 dark:text-white">We're Listening 👂</h3>
+            <p class="text-xs font-bold text-zinc-400 mb-6 uppercase tracking-wider">How can we improve your experience?</p>
+            <div id="feedback-form">
+                <input type="text" placeholder="Your Name (Optional)" class="w-full bg-zinc-50 dark:bg-zinc-800 p-4 rounded-xl text-sm mb-3 outline-none border border-transparent focus:border-red-500 font-bold dark:text-white text-zinc-900">
+                <textarea rows="3" placeholder="Your Suggestion..." class="w-full bg-zinc-50 dark:bg-zinc-800 p-4 rounded-xl text-sm mb-4 outline-none border border-transparent focus:border-red-500 font-bold dark:text-white text-zinc-900"></textarea>
+                <button onclick="submitFeedback()" class="w-full btn-primary py-4 text-sm uppercase font-black shadow-lg">Send Feedback</button>
+            </div>
+            <div id="feedback-success" class="hidden text-center py-4">
+                <i class="fa-solid fa-circle-check text-green-500 text-4xl mb-4"></i>
+                <p class="heading-font text-2xl dark:text-white">Thank you! 🙏🍗</p>
+                <p class="text-xs font-bold text-zinc-500">We appreciate your feedback.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- 9. STICKY BOTTOM BAR -->
+    <div class="fixed bottom-0 left-0 right-0 p-6 z-[200] bg-gradient-to-t from-[#fcf2f2]/95 via-[#fcf2f2]/95 dark:from-zinc-900 dark:via-zinc-900 to-transparent">
+        <div class="max-w-md mx-auto flex gap-3">
+            <button onclick="openModal('order-options-modal')" class="flex-1 btn-primary h-16 heading-font text-xl tracking-widest">
+                🍗 ORDER NOW
+            </button>
+            <button onclick="openModal('download-modal')" class="w-16 h-16 bg-white dark:bg-zinc-800 rounded-2xl flex flex-col items-center justify-center shadow-xl border border-red-100 dark:border-zinc-700">
+                <i class="fa-solid fa-cloud-arrow-down text-[#C70021] text-xl"></i>
+                <span class="text-[8px] font-black uppercase mt-1 dark:text-zinc-400">App</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL: DOWNLOAD -->
+    <div id="download-modal" class="modal" onclick="closeOnOverlay(event, 'download-modal')">
+        <div class="modal-content text-center">
+            <div class="w-16 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto mb-8"></div>
+            <h2 class="heading-font text-3xl mb-2">Download ChickZing App</h2>
+            <p class="text-zinc-500 dark:text-zinc-400 text-sm font-bold mb-8 uppercase tracking-tighter">Choose your device:</p>
+            <div class="grid grid-cols-1 gap-4 mb-4">
+                <button onclick="window.open('https://apps.apple.com/tz/app/chick-zing/id6756869946')" class="w-full py-5 bg-black text-white rounded-2xl flex items-center justify-center gap-4">
+                    <i class="fa-brands fa-apple text-3xl"></i>
+                    <div class="text-left">
+                        <p class="text-xl font-bold leading-none">App Store</p>
+                    </div>
+                </button>
+                <button onclick="window.open('https://play.google.com/store/apps/details?id=com.chickzing')" class="w-full py-5 bg-zinc-900 text-white rounded-2xl flex items-center justify-center gap-4">
+                    <i class="fa-brands fa-google-play text-2xl"></i>
+                    <div class="text-left">
+                        <p class="text-xl font-bold leading-none">Google Play</p>
+                    </div>
+                </button>
+            </div>
+            <button onclick="closeModal('download-modal')" class="text-zinc-400 text-xs font-black uppercase mt-4">Maybe Later</button>
+        </div>
+    </div>
+
+    <!-- MODAL: ABOUT -->
+    <div id="about-modal" class="modal" onclick="closeOnOverlay(event, 'about-modal')">
+        <div class="modal-content">
+            <div class="w-16 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto mb-8"></div>
+            <h2 class="heading-font text-4xl text-[#C70021] mb-6">About ChickZing</h2>
+            <p class="text-sm font-bold text-zinc-500 dark:text-zinc-400 leading-relaxed mb-8">
+                At ChickZing, we serve crispy, flavorful, and addictive chicken made for real cravings.
+            </p>
+            <div class="space-y-4 mb-8">
+                <div class="flex items-center gap-4 p-4 bg-red-50 dark:bg-zinc-800 rounded-2xl">
+                    <i class="fa-solid fa-check-circle text-[#C70021]"></i>
+                    <span class="text-sm font-bold dark:text-white text-zinc-900">Crispy & juicy chicken</span>
+                </div>
+                <div class="flex items-center gap-4 p-4 bg-red-50 dark:bg-zinc-800 rounded-2xl">
+                    <i class="fa-solid fa-check-circle text-[#C70021]"></i>
+                    <span class="text-sm font-bold dark:text-white text-zinc-900">Halal food</span>
+                </div>
+                <div class="flex items-center gap-4 p-4 bg-red-50 dark:bg-zinc-800 rounded-2xl">
+                    <i class="fa-solid fa-check-circle text-[#C70021]"></i>
+                    <span class="text-sm font-bold dark:text-white text-zinc-900">Fast takeaway & delivery</span>
+                </div>
+            </div>
+            <button onclick="closeModal('about-modal')" class="w-full btn-primary py-4 heading-font text-lg">Awesome!</button>
+        </div>
+    </div>
+
+    <!-- MODAL: ORDER OPTIONS -->
+    <div id="order-options-modal" class="modal" onclick="closeOnOverlay(event, 'order-options-modal')">
+        <div class="modal-content">
+            <div class="w-16 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto mb-8"></div>
+            <h2 class="heading-font text-3xl mb-8 text-center">Order Now?</h2>
+            <div class="space-y-3">
+                <div onclick="window.open('https://chickzing.com/menu?order_type=delivery')" class="p-5 chick-card flex-row justify-between cursor-pointer border-red-50 dark:border-zinc-800">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-globe text-[#C70021] text-xl"></i>
+                        <div class="text-left">
+                            <p class="font-black text-sm">Order via Website</p>
+                            <p class="text-[10px] text-zinc-500 font-bold">BROWSE FULL MENU ONLINE</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-zinc-300"></i>
+                </div>
+                <div onclick="openModal('download-modal')" class="p-5 chick-card flex-row justify-between cursor-pointer border-[#C70021]/30">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-mobile-screen text-[#C70021] text-xl"></i>
+                        <div class="text-left">
+                            <p class="font-black text-sm">Order via App</p>
+                            <p class="text-[10px] text-[#C70021] font-bold uppercase tracking-tighter">Faster ordering experience</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[#C70021]"></i>
+                </div>
+                <div onclick="window.location.href='tel:0787455333'" class="p-5 chick-card flex-row justify-between cursor-pointer border-red-50 dark:border-zinc-800">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-phone-volume text-[#C70021] text-xl"></i>
+                        <div class="text-left">
+                            <p class="font-black text-sm">Call To Order</p>
+                            <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-tighter">Speak with ChickZing</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-zinc-300"></i>
+                </div>
+            </div>
+            <button onclick="closeModal('order-options-modal')" class="w-full mt-6 py-4 text-xs font-black uppercase text-zinc-400">Cancel</button>
+        </div>
+    </div>
+
+    <!-- MODAL: DELIVERY -->
+    <div id="delivery-modal" class="modal" onclick="closeOnOverlay(event, 'delivery-modal')">
+        <div class="modal-content">
+            <div class="w-16 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto mb-8"></div>
+            <h2 class="heading-font text-3xl mb-6 text-center">Fast Delivery & Pickup</h2>
+            <div class="flex flex-col items-center gap-6 mb-8 text-center">
+                        <i class="fa-solid fa-motorcycle text-6xl text-[#C70021]"></i>                <div class="grid grid-cols-2 gap-4 w-full">
+                    <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-2xl">
+                        <p class="text-xs font-black uppercase text-green-700 dark:text-green-400">Takeaway</p>
+                        <p class="text-[10px] font-bold text-green-600/70">AVAILABLE</p>
+                    </div>
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
+                        <p class="text-xs font-black uppercase text-blue-700 dark:text-blue-400">Delivery</p>
+                        <p class="text-[10px] font-bold text-blue-600/70">AVAILABLE</p>
+                    </div>
+                </div>
+            </div>
+            <button onclick="openModal('order-options-modal')" class="w-full btn-primary py-4 heading-font text-lg">Order Now</button>
+        </div>
+    </div>
+
+    <!-- MODAL: HOURS -->
+    <div id="hours-modal" class="modal" onclick="closeOnOverlay(event, 'hours-modal')">
+        <div class="modal-content text-center">
+            <div class="w-16 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto mb-8"></div>
+            <h2 class="heading-font text-4xl text-[#C70021] mb-2">Opening Hours</h2>
+            <div class="p-8 bg-red-50 dark:bg-zinc-800 rounded-3xl mb-8">
+                <p class="heading-font text-xl text-[#C70021] mb-1">EVERYDAY</p>
+                <p class="text-3xl font-black dark:text-white text-zinc-900">11:30 AM</p>
+                <p class="text-xs font-black text-zinc-400 my-2 uppercase">— UNTIL —</p>
+                <p class="text-3xl font-black dark:text-white text-zinc-900">12:00 AM</p>
+            </div>
+            <button onclick="closeModal('hours-modal')" class="w-full btn-primary py-4 heading-font text-lg">Got It!</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) {
+            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeOnOverlay(e, id) {
+            if (e.target.id === id) closeModal(id);
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            document.documentElement.classList.toggle('dark');
+
+        }
+
+        function submitFeedback() {
+            const form = document.getElementById('feedback-form');
+            const success = document.getElementById('feedback-success');
+            form.classList.add('hidden');
+            success.classList.remove('hidden');
+            setTimeout(() => {
+                form.classList.remove('hidden');
+                success.classList.add('hidden');
+                form.querySelectorAll('input, textarea').forEach(i => i.value = '');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
