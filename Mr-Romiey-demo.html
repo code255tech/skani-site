@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>👕 SCANI — MR_ROMIEY_OUTFIT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --gold: #eab308; /* Yellow-500 equivalent */
+            --gold-light: #fefce8;
+            --bg: #0a0a0a;
+            --card: #141414;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --border: rgba(255, 255, 255, 0.08);
+            --transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .serif { font-family: 'Cormorant+Garamond', serif; }
+
+        .premium-glass {
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .scani-card {
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .scani-card:active { transform: scale(0.97); background: #1a1a1a; }
+
+        .btn-gold {
+            background: var(--gold);
+            color: #000;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: all var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-gold:active { transform: translateY(2px); opacity: 0.9; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: #111;
+            color: var(--text-main);
+            width: 100%;
+            max-width: 450px;
+            border-radius: 20px;
+            padding: 32px 24px;
+            border: 1px solid var(--border);
+            animation: fadeIn 0.3s ease-out;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        .modal-close {
+            position: absolute;
+            top: 20px; right: 20px;
+            color: var(--text-muted);
+            font-size: 20px;
+        }
+
+        .gold-pill {
+            background: rgba(234, 179, 8, 0.1);
+            color: var(--gold);
+            border: 1px solid rgba(234, 179, 8, 0.2);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Custom Scrollbar for the Experience Slider */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--gold);
+        }
+    </style>
+</head>
+<body class="pb-32">
+
+    <!-- HEADER -->
+    <header class="premium-glass sticky top-0 p-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <img src="https://instagram.fdar1-1.fna.fbcdn.net/v/t51.82787-19/688220944_17878639428588821_308044099477889141_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby42NDAuYzIifQ&_nc_ht=instagram.fdar1-1.fna.fbcdn.net&_nc_cat=105&_nc_oc=Q6cZ2gEN8JmtaEWyC5UzcS0JFHvHqXyU5rBOnc4-7Of13a-y-4bWRaazasTupnm82K228gY&_nc_ohc=5_ZOz-RKbVMQ7kNvwE9vkZl&_nc_gid=F0n6NE7xTucSvezePn46OA&edm=APoiHPcBAAAA&ccb=7-5&oh=00_Af544TAIh8Cz0SZoz1TsfSdbu4XG7DvWY3iGG84V3aWTcA&oe=6A025DBB&_nc_sid=22de04" 
+                 alt="SCANI Logo" class="brand-logo" onerror="this.src='https://ui-avatars.com/api/?name=MR+ROMIEY&background=eab308&color=000'">
+            <div>
+                <h1 class="text-sm font-bold tracking-widest uppercase">MR_ROMIEY_OUTFIT</h1>
+                <p class="text-[9px] text-yellow-500 font-medium">One scan away.</p>
+            </div>
+        </div>
+        <div class="flex gap-4">
+            <button onclick="window.open('https://www.instagram.com/mr_romiey_outfit/')" class="text-white/70 hover:text-yellow-500 transition-colors">
+                <i class="fa-brands fa-instagram text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="px-6 pt-8">
+        <!-- 1. WELCOME SCREEN -->
+        <section class="mb-10">
+            <h2 class="serif text-4xl mb-3">Welcome 👋</h2>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-6">
+                Explore premium outfits for gentlemen and ladies — discover styles, shop instantly, and visit us in your nearest location.
+            </p>
+            <div class="flex items-center gap-2">
+                <span class="gold-pill">Fashion made simple</span>
+                <span class="gold-pill">Confidence visible</span>
+            </div>
+        </section>
+
+        <!-- 2. MAIN GRID (2x3 CORE NAVIGATION) -->
+        <div class="grid grid-cols-2 gap-4 mb-10">
+            <div onclick="openModal('about-modal')" class="scani-card p-6 flex flex-col items-center text-center gap-3">
+                <i class="fa-solid fa-hotel text-yellow-500 text-xl"></i>
+                <span class="text-[11px] font-bold uppercase tracking-widest">About Us</span>
+            </div>
+            <div onclick="openModal('catalogue-modal')" class="scani-card p-6 flex flex-col items-center text-center gap-3 border-yellow-500/30">
+                <i class="fa-solid fa-shirt text-yellow-500 text-xl"></i>
+                <span class="text-[11px] font-bold uppercase tracking-widest text-yellow-500">Catalogue</span>
+            </div>
+            <div onclick="shopWA('General Order')" class="scani-card p-6 flex flex-col items-center text-center gap-3">
+                <i class="fa-solid fa-bag-shopping text-yellow-500 text-xl"></i>
+                <span class="text-[11px] font-bold uppercase tracking-widest">Order Now</span>
+            </div>
+            <div onclick="openModal('locations-modal')" class="scani-card p-6 flex flex-col items-center text-center gap-3">
+                <i class="fa-solid fa-location-crosshairs text-yellow-500 text-xl"></i>
+                <span class="text-[11px] font-bold uppercase tracking-widest">Locations</span>
+            </div>
+            <div onclick="openModal('hours-modal')" class="scani-card p-6 flex flex-col items-center text-center gap-3">
+                <i class="fa-solid fa-clock-rotate-left text-yellow-500 text-xl"></i>
+                <span class="text-[11px] font-bold uppercase tracking-widest">Opening Hours</span>
+            </div>
+            <div onclick="window.open('https://www.instagram.com/mr_romiey_outfit/')" class="scani-card p-6 flex flex-col items-center text-center gap-3 bg-white/5">
+                <i class="fa-brands fa-instagram text-yellow-500 text-xl"></i>
+                <span class="text-[11px] font-bold uppercase tracking-widest">Our Outfits</span>
+            </div>
+        </div>
+
+        <!-- 3. FEATURED ACTION -->
+        <section class="mb-10">
+            <button onclick="shopWA('Shop')" class="w-full btn-gold py-5 flex items-center justify-center gap-3 text-xs">
+                <i class="fa-brands fa-whatsapp text-lg"></i> Shop via WhatsApp
+            </button>
+        </section>
+
+        <!-- 4. QUICK ACTION GRID -->
+        <section class="mb-12">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-5 px-1">Style Shortcuts</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="shopWA('Men Collection')" class="scani-card p-4 flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-user-tie text-yellow-500"></i> Men
+                </button>
+                <button onclick="shopWA('Women Collection')" class="scani-card p-4 flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-person-dress text-yellow-500"></i> Women
+                </button>
+                <button onclick="shopWA('Trending Outfits')" class="scani-card p-4 flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-fire text-yellow-500"></i> Trending
+                </button>
+                <button onclick="shopWA('New Arrivals')" class="scani-card p-4 flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-sparkles text-yellow-500"></i> New Drops
+                </button>
+            </div>
+        </section>
+
+        <!-- 5. FASHION EXPERIENCE SLIDER -->
+        <section class="mb-12 overflow-hidden">
+            <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                <div class="flex-none w-48 scani-card p-6 bg-gradient-to-br from-yellow-500/10 to-transparent">
+                    <p class="serif text-lg leading-tight mb-4 italic">Premium Streetwear</p>
+                    <i class="fa-solid fa-arrow-right-long text-yellow-500"></i>
+                </div>
+                <div class="flex-none w-48 scani-card p-6 bg-gradient-to-br from-white/5 to-transparent">
+                    <p class="serif text-lg leading-tight mb-4 italic">Gentleman Style</p>
+                    <i class="fa-solid fa-arrow-right-long text-yellow-500"></i>
+                </div>
+                <div class="flex-none w-48 scani-card p-6 bg-gradient-to-br from-yellow-500/10 to-transparent">
+                    <p class="serif text-lg leading-tight mb-4 italic">Women Elegance</p>
+                    <i class="fa-solid fa-arrow-right-long text-yellow-500"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. STORE LOCATIONS -->
+        <section class="mb-12 px-2">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-5">Find Nearest Store</h3>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-location-dot text-yellow-500"></i>
+                        <span class="text-xs font-semibold">Mikocheni</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-zinc-600"></i>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-location-dot text-yellow-500"></i>
+                        <span class="text-xs font-semibold">Pugu Kona</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-zinc-600"></i>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-location-dot text-yellow-500"></i>
+                        <span class="text-xs font-semibold">Tabata Segerea</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-zinc-600"></i>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-location-dot text-yellow-500"></i>
+                        <span class="text-xs font-semibold">Kigamboni Ferry</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-zinc-600"></i>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-location-dot text-yellow-500"></i>
+                        <span class="text-xs font-semibold">Sinza</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-zinc-600"></i>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- STICKY BOTTOM BAR -->
+    <nav class="fixed bottom-0 left-0 right-0 p-6 z-[150] bg-gradient-to-t from-black via-black/80 to-transparent">
+        <div class="max-w-md mx-auto flex gap-4">
+            <button onclick="shopWA('Direct Order')" class="flex-1 h-14 btn-gold flex items-center justify-center gap-3 font-bold text-xs shadow-2xl shadow-yellow-500/20">
+                <i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp Order
+            </button>
+            <button onclick="window.open('https://www.instagram.com/mr_romiey_outfit/')" class="w-14 h-14 bg-zinc-900 rounded-xl flex items-center justify-center text-white border border-white/10 shadow-2xl">
+                <i class="fa-brands fa-instagram text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MODAL: ABOUT -->
+    <div id="about-modal" class="modal" onclick="closeOnOverlay(event, 'about-modal')">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('about-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="serif text-3xl mb-6">About Mr Romiey Outfit</h2>
+            <p class="text-sm text-zinc-400 mb-6 leading-relaxed">
+                We are a modern fashion brand offering stylish clothing for both men and women. 
+                Our philosophy is centered on confidence through quality and modern styling.
+            </p>
+            <div class="space-y-3 mb-8">
+                <div class="flex items-center gap-3 text-xs font-medium"><i class="fa-solid fa-check text-yellow-500"></i> Fashion for confidence</div>
+                <div class="flex items-center gap-3 text-xs font-medium"><i class="fa-solid fa-check text-yellow-500"></i> Quality and modern styling</div>
+                <div class="flex items-center gap-3 text-xs font-medium"><i class="fa-solid fa-check text-yellow-500"></i> Men & women outfits</div>
+                <div class="flex items-center gap-3 text-xs font-medium"><i class="fa-solid fa-check text-yellow-500"></i> Everyday to premium wear</div>
+            </div>
+            <div class="p-6 bg-yellow-500/5 rounded-2xl border border-yellow-500/20 italic text-center">
+                <p class="serif text-lg leading-snug">"Being a gentleman isn’t just about money; sound judgment is also a form of strength. Protect your brand so it never fades."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CATALOGUE -->
+    <div id="catalogue-modal" class="modal" onclick="closeOnOverlay(event, 'catalogue-modal')">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('catalogue-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="serif text-3xl mb-6">Our Collection</h2>
+            <div class="grid grid-cols-1 gap-3 mb-8">
+                <div class="p-4 bg-white/5 rounded-xl flex items-center justify-between border border-white/5">
+                    <span class="text-sm font-bold uppercase tracking-widest">Men’s Outfits</span>
+                    <i class="fa-solid fa-user-tie text-yellow-500"></i>
+                </div>
+                <div class="p-4 bg-white/5 rounded-xl flex items-center justify-between border border-white/5">
+                    <span class="text-sm font-bold uppercase tracking-widest">Women’s Outfits</span>
+                    <i class="fa-solid fa-person-dress text-yellow-500"></i>
+                </div>
+                <div class="p-4 bg-white/5 rounded-xl flex items-center justify-between border border-white/5">
+                    <span class="text-sm font-bold uppercase tracking-widest">Casual Wear</span>
+                    <i class="fa-solid fa-mug-hot text-yellow-500"></i>
+                </div>
+                <div class="p-4 bg-white/5 rounded-xl flex items-center justify-between border border-white/5">
+                    <span class="text-sm font-bold uppercase tracking-widest">Official Wear</span>
+                    <i class="fa-solid fa-briefcase text-yellow-500"></i>
+                </div>
+                <div class="p-4 bg-white/5 rounded-xl flex items-center justify-between border border-white/5">
+                    <span class="text-sm font-bold uppercase tracking-widest">Street Fashion</span>
+                    <i class="fa-solid fa-road text-yellow-500"></i>
+                </div>
+            </div>
+            <button onclick="shopWA('Catalogue Inquiry')" class="w-full btn-gold py-4 text-xs">Order via WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- MODAL: LOCATIONS -->
+    <div id="locations-modal" class="modal" onclick="closeOnOverlay(event, 'locations-modal')">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('locations-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="serif text-3xl mb-2">Visit Our Stores</h2>
+            <p class="text-xs text-zinc-500 mb-8">Tap on a location for directions</p>
+            <div class="space-y-4 mb-8">
+                <div onclick="window.open('https://maps.google.com')" class="flex items-center gap-4 p-4 scani-card cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500"><i class="fa-solid fa-location-arrow"></i></div>
+                    <span class="text-sm font-bold">Mikocheni</span>
+                </div>
+                <div onclick="window.open('https://maps.google.com')" class="flex items-center gap-4 p-4 scani-card cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500"><i class="fa-solid fa-location-arrow"></i></div>
+                    <span class="text-sm font-bold">Pugu Kona</span>
+                </div>
+                <div onclick="window.open('https://maps.google.com')" class="flex items-center gap-4 p-4 scani-card cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500"><i class="fa-solid fa-location-arrow"></i></div>
+                    <span class="text-sm font-bold">Tabata Segerea</span>
+                </div>
+                <div onclick="window.open('https://maps.google.com')" class="flex items-center gap-4 p-4 scani-card cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500"><i class="fa-solid fa-location-arrow"></i></div>
+                    <span class="text-sm font-bold">Kigamboni Ferry</span>
+                </div>
+                <div onclick="window.open('https://maps.google.com')" class="flex items-center gap-4 p-4 scani-card cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500"><i class="fa-solid fa-location-arrow"></i></div>
+                    <span class="text-sm font-bold">Sinza</span>
+                </div>
+            </div>
+            <p class="text-[10px] text-zinc-600 text-center uppercase tracking-widest font-black">Open daily for you</p>
+        </div>
+    </div>
+
+    <!-- MODAL: HOURS -->
+    <div id="hours-modal" class="modal" onclick="closeOnOverlay(event, 'hours-modal')">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('hours-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="serif text-3xl mb-8">Opening Hours</h2>
+            <div class="space-y-4 mb-10">
+                <div class="flex justify-between items-center p-4 bg-white/5 rounded-xl">
+                    <span class="text-xs font-bold tracking-widest uppercase">Mon – Sat</span>
+                    <span class="text-xs font-bold text-yellow-500">9:00 AM – 6:00 PM</span>
+                </div>
+                <div class="flex justify-between items-center p-4 bg-white/5 rounded-xl">
+                    <span class="text-xs font-bold tracking-widest uppercase">Sunday</span>
+                    <span class="text-xs font-bold text-yellow-500">9:00 AM – 4:00 PM</span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-4">
+                <button onclick="shopWA('Store Availability')" class="w-full btn-gold py-4 text-xs">Confirm Availability</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeOnOverlay(e, id) {
+            if (e.target.id === id) closeModal(id);
+        }
+
+        function shopWA(context) {
+            const phone = "255621129607";
+            let message = "";
+            
+            if (context === "Shop") {
+                message = "Hello 👋 I want to shop outfits from Mr Romiey Outfit.";
+            } else if (context === "Men Collection") {
+                message = "Hello, I'm interested in your Men's Outfit collection.";
+            } else if (context === "Women Collection") {
+                message = "Hello, I'm interested in your Women's Outfit collection.";
+            } else {
+                message = "Hello 👋 I would like to order outfits from Mr Romiey Outfit.";
+            }
+            
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
