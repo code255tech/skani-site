@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>☕🌅 LARAI CAFÉ — ZANZIBAR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+        :root {
+            --primary: #1B4D4B; 
+            --accent: #D4A373;  
+            --dark: #121212;
+            --light-bg: #FDFBF7;
+            --card-bg-light: #ffffff;
+            --transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--dark);
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: var(--dark);
+            color: #ffffff;
+        }
+
+        .heading-font { font-family: 'Bangers', cursive; letter-spacing: 1px; }
+
+        .cafe-card {
+            background: var(--card-bg-light);
+            border-radius: 24px;
+            box-shadow: 0 4px 0 rgba(27, 77, 75, 0.1);
+            transition: var(--transition);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(27, 77, 75, 0.08);
+            color: var(--dark);
+        }
+
+        .dark-mode .cafe-card {
+            background: #1E1E1E;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.05);
+            color: #ffffff;
+        }
+
+        .cafe-card:active {
+            transform: translateY(3px);
+            box-shadow: 0 0 0 transparent;
+        }
+
+        /* High Attention Menu Card */
+        .menu-attention {
+            border: 2px solid var(--accent);
+            background: linear-gradient(to bottom right, #ffffff, #fff9f2);
+            box-shadow: 0 10px 20px -5px rgba(212, 163, 115, 0.3);
+            transform: scale(1.02);
+        }
+        .dark-mode .menu-attention {
+            background: linear-gradient(to bottom right, #1E1E1E, #25211d);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border-radius: 18px;
+            font-weight: 800;
+            transition: var(--transition);
+            box-shadow: 0 6px 0 #0D2B2A;
+        }
+
+        .btn-primary:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #0D2B2A;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(8px);
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 32px 32px 0 0;
+            padding: 40px 24px;
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            max-height: 90vh;
+            overflow-y: auto;
+            color: var(--dark);
+        }
+        .dark-mode .modal-content { background: #181818; color: white; }
+
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .brand-logo {
+            width: 54px;
+            height: 54px;
+            object-fit: cover;
+            border-radius: 14px;
+            border: 2px solid var(--accent);
+        }
+
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        
+        .pulse-accent {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(212, 163, 115, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(212, 163, 115, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 163, 115, 0); }
+        }
+    </style>
+</head>
+<body class="pb-36">
+
+    <header class="sticky top-0 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md z-[100] px-4 py-3 flex justify-between items-center border-b border-zinc-100 dark:border-zinc-800">
+        <div class="flex items-center gap-3">
+            <img src="https://lh3.googleusercontent.com/p/AF1QipOqqg9Xs2T2k1zqJ7miAT0e0_HasB6ql4vVRsHH=w243-h174-n-k-no-nu" 
+                 class="brand-logo" alt="Larai Café Logo">
+            <div>
+                <h1 class="heading-font text-xl text-[#1B4D4B] dark:text-[#D4A373]">LARAI CAFÉ</h1>
+                <p class="text-[9px] font-extrabold uppercase tracking-tighter opacity-60 dark:text-zinc-400">Zanzibar • Stone Town</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500">
+                <i class="fa-solid fa-moon dark:hidden text-zinc-600"></i>
+                <i class="fa-solid fa-sun hidden dark:block text-yellow-400"></i>
+            </button>
+            <a href="tel:0677478250" class="bg-[#1B4D4B] text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg shadow-[#1B4D4B]/20">
+                <i class="fa-solid fa-phone text-sm"></i>
+            </a>
+        </div>
+    </header>
+
+    <main class="px-6 pt-6">
+        <section class="mb-8 text-center pt-2">
+            <h2 class="heading-font text-4xl mb-2">Welcome to Larai Café ☕🌅</h2>
+            <p class="text-zinc-500 dark:text-zinc-400 text-sm font-semibold leading-snug">
+                Slow mornings, ocean breeze, great coffee, and beautiful sunset moments — everything you need is one scan away.
+            </p>
+            <div class="flex flex-wrap justify-center gap-2 mt-4">
+                <span class="bg-teal-50 dark:bg-teal-900/30 text-[#1B4D4B] dark:text-teal-400 px-3 py-1 rounded-full text-[10px] font-black uppercase">Stone Town</span>
+                <span class="bg-orange-50 dark:bg-orange-900/30 text-[#D4A373] px-3 py-1 rounded-full text-[10px] font-black uppercase">Oceanfront</span>
+                <span class="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 px-3 py-1 rounded-full text-[10px] font-black uppercase">Sunset Views</span>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div onclick="openModal('about-modal')" class="cafe-card p-6 gap-2">
+                <div class="w-12 h-12 bg-teal-50 dark:bg-teal-900/20 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-mug-hot text-[#1B4D4B] text-xl"></i>
+                </div>
+                <span class="heading-font text-lg tracking-wide uppercase">About Us</span>
+            </div>
+            
+            <div onclick="openModal('wifi-modal')" class="cafe-card p-6 gap-2 pulse-accent">
+                <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-wifi text-blue-500 text-xl"></i>
+                </div>
+                <span class="heading-font text-lg tracking-wide uppercase">WiFi Access</span>
+            </div>
+
+            <div onclick="window.open('https://www.instagram.com/stories/highlights/18056646635495815/')" class="cafe-card p-6 gap-2 col-span-2 flex-row justify-center menu-attention">
+                <div class="w-12 h-12 bg-orange-50 dark:bg-orange-900/20 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-utensils text-[#D4A373] text-2xl"></i>
+                </div>
+                <div class="flex flex-col items-start ml-4">
+                    <span class="heading-font text-2xl tracking-wide uppercase text-[#1B4D4B] dark:text-[#D4A373]">EXPLORE THE MENU</span>
+                    <span class="text-[10px] font-black opacity-70 uppercase tracking-widest">Coffee • Breakfast • Desserts</span>
+                </div>
+            </div>
+
+            <div onclick="window.open('https://maps.app.goo.gl/3uQ3e4BpA2wFERro6')" class="cafe-card p-6 gap-2">
+                <div class="w-12 h-12 bg-zinc-50 dark:bg-zinc-800 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-map-location-dot text-[#1B4D4B] dark:text-[#D4A373] text-xl"></i>
+                </div>
+                <span class="heading-font text-lg tracking-wide uppercase">Find Us</span>
+            </div>
+
+            <div onclick="window.open('https://www.google.com/search?sca_esv=06a5c6fbedc9f216&sxsrf=ANbL-n7jBIZrf8Roub6aTjCv7Gt2qurNqg:1778422753013&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOeZB32sIc0gt4ydBB0GRoau2IGZRoMCxYFo7JqbBtqlHNc6EBUCgsw73w9-yaNhcVmuod7us7aBfd8gwwkZaijjwsieo&q=Larai+Cafe+Reviews&sa=X&ved=2ahUKEwieu9CD9a6UAxXwhysGHU_vCEAQ0bkNegQIMhAF&biw=1920&bih=911&dpr=1')" class="cafe-card p-6 gap-2">
+                <div class="w-12 h-12 bg-yellow-50 dark:bg-yellow-900/20 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-star text-yellow-500 text-xl"></i>
+                </div>
+                <span class="heading-font text-lg tracking-wide uppercase">Reviews</span>
+            </div>
+
+            <div onclick="openModal('hours-modal')" class="cafe-card p-6 gap-2 col-span-2 flex-row justify-between w-full border-dashed border-2 border-teal-100 dark:border-zinc-800 px-8">
+                <div class="flex items-center gap-4">
+                    <i class="fa-solid fa-clock text-[#1B4D4B] dark:text-[#D4A373] text-2xl"></i>
+                    <div class="text-left">
+                        <h4 class="heading-font text-xl uppercase">Opening Hours</h4>
+                        <p class="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Daily: 8:00 AM – 7:00 PM</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-zinc-300"></i>
+            </div>
+        </div>
+
+        <section class="mb-10">
+            <h3 class="heading-font text-2xl mb-4 px-1">Experience Larai ✨</h3>
+            <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+                <div class="flex-none w-64 cafe-card p-6 bg-[#1B4D4B] text-white border-none items-start snap-center">
+                    <i class="fa-solid fa-mug-saucer text-3xl mb-4 text-[#D4A373]"></i>
+                    <h4 class="heading-font text-2xl uppercase">Fresh Coffee</h4>
+                    <p class="text-[11px] font-bold opacity-80 mt-1 uppercase">Made for slow mornings</p>
+                </div>
+                <div class="flex-none w-64 cafe-card p-6 bg-[#D4A373] text-white border-none items-start snap-center">
+                    <i class="fa-solid fa-sun text-3xl mb-4"></i>
+                    <h4 class="heading-font text-2xl uppercase">Sunset Views</h4>
+                    <p class="text-[11px] font-bold opacity-90 mt-1 uppercase">Relax with oceanfront vibes</p>
+                </div>
+                <div class="flex-none w-64 cafe-card p-6 bg-zinc-900 text-white border-none items-start snap-center">
+                    <i class="fa-solid fa-bread-slice text-3xl mb-4 text-[#D4A373]"></i>
+                    <h4 class="heading-font text-2xl uppercase">Breakfast</h4>
+                    <p class="text-[11px] font-bold opacity-80 mt-1 uppercase">Start your day beautifully</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h3 class="heading-font text-2xl mb-4 px-1">Customer Favorites ☕</h3>
+            <div id="favoritesSlider" class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide snap-x">
+                <div class="min-w-[260px] cafe-card p-6 items-start border-l-8 border-l-[#1B4D4B] snap-center">
+                    <span class="text-4xl mb-4">🍵</span>
+                    <h4 class="heading-font text-xl uppercase">Signature Matcha</h4>
+                    <p class="text-xs font-bold text-zinc-400 uppercase tracking-tighter mb-4">Smooth, rich & refreshing</p>
+                    <button onclick="window.open('https://www.instagram.com/laraicafe/')" class="w-full btn-primary py-3 text-[10px] uppercase">Details</button>
+                </div>
+                <div class="min-w-[260px] cafe-card p-6 items-start border-l-8 border-l-[#D4A373] snap-center">
+                    <span class="text-4xl mb-4">☕</span>
+                    <h4 class="heading-font text-xl uppercase">Espresso Coffee</h4>
+                    <p class="text-xs font-bold text-zinc-400 uppercase tracking-tighter mb-4">Freshly brewed daily</p>
+                    <button onclick="window.open('https://www.instagram.com/laraicafe/')" class="w-full btn-primary py-3 text-[10px] uppercase">Details</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <div class="flex justify-center gap-5">
+                <a href="tel:0677478250" class="w-14 h-14 bg-white dark:bg-zinc-800 rounded-2xl flex items-center justify-center shadow-md text-[#1B4D4B]"><i class="fa-solid fa-phone text-2xl"></i></a>
+                <a href="https://wa.me/255677478250" class="w-14 h-14 bg-white dark:bg-zinc-800 rounded-2xl flex items-center justify-center shadow-md text-emerald-500"><i class="fa-brands fa-whatsapp text-2xl"></i></a>
+                <a href="https://www.instagram.com/laraicafe/" class="w-14 h-14 bg-white dark:bg-zinc-800 rounded-2xl flex items-center justify-center shadow-md text-pink-600"><i class="fa-brands fa-instagram text-2xl"></i></a>
+                <a href="https://www.tiktok.com/@laraicafe" class="w-14 h-14 bg-white dark:bg-zinc-800 rounded-2xl flex items-center justify-center shadow-md text-zinc-900 dark:text-white"><i class="fa-brands fa-tiktok text-2xl"></i></a>
+            </div>
+        </section>
+
+        <section class="mb-10 bg-white dark:bg-zinc-900 rounded-[32px] p-8 border-2 border-teal-50 dark:border-zinc-800">
+            <h3 class="heading-font text-2xl mb-1 dark:text-white uppercase">Share Your Experience</h3>
+            <div id="feedback-form">
+                <input type="text" placeholder="Your Name (Optional)" class="w-full bg-zinc-50 dark:bg-zinc-800 p-4 rounded-xl text-sm mb-3 outline-none border border-transparent focus:border-[#D4A373] font-bold dark:text-white text-zinc-900">
+                <textarea rows="3" placeholder="How was your experience at Larai Café?" class="w-full bg-zinc-50 dark:bg-zinc-800 p-4 rounded-xl text-sm mb-4 outline-none border border-transparent focus:border-[#D4A373] font-bold dark:text-white text-zinc-900"></textarea>
+                <button onclick="submitFeedback()" class="w-full btn-primary py-4 text-xs uppercase font-black tracking-widest shadow-lg">Send Feedback</button>
+            </div>
+            <div id="feedback-success" class="hidden text-center py-4">
+                <i class="fa-solid fa-circle-check text-emerald-500 text-4xl mb-4"></i>
+                <p class="heading-font text-2xl dark:text-white">Thank you! 🙏☕</p>
+            </div>
+        </section>
+    </main>
+
+    <div class="fixed bottom-0 left-0 right-0 p-6 z-[200] bg-gradient-to-t from-white/95 via-white/95 dark:from-zinc-900 dark:via-zinc-900 to-transparent">
+        <div class="max-w-md mx-auto flex gap-3">
+            <button onclick="window.open('https://www.instagram.com/stories/highlights/18056646635495815/')" class="flex-1 btn-primary h-16 heading-font text-xl tracking-widest flex items-center justify-center gap-3">
+                📖 VIEW MENU
+            </button>
+            <a href="https://www.instagram.com/laraicafe/" class="w-16 h-16 bg-white dark:bg-zinc-800 rounded-2xl flex flex-col items-center justify-center shadow-xl border border-zinc-100 dark:border-zinc-700">
+                <i class="fa-brands fa-instagram text-[#1B4D4B] dark:text-[#D4A373] text-xl"></i>
+                <span class="text-[8px] font-black uppercase mt-1 dark:text-zinc-400">Insta</span>
+            </a>
+        </div>
+    </div>
+
+    <div id="about-modal" class="modal" onclick="closeOnOverlay(event, 'about-modal')">
+        <div class="modal-content">
+            <div class="w-16 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto mb-8"></div>
+            <h2 class="heading-font text-4xl text-[#1B4D4B] dark:text-[#D4A373] mb-4 uppercase">About Larai Café</h2>
+            <p class="text-sm font-bold text-zinc-500 dark:text-zinc-400 leading-relaxed mb-6">Larai Café is a cozy café experience located in the heart of Stone Town, Zanzibar.</p>
+            <div class="space-y-3 mb-8 text-xs font-bold uppercase">
+                <div class="flex items-center gap-4 p-4 bg-teal-50 dark:bg-zinc-800/50 rounded-2xl">✔ Fresh coffee & drinks</div>
+                <div class="flex items-center gap-4 p-4 bg-teal-50 dark:bg-zinc-800/50 rounded-2xl">✔ Sunset atmosphere</div>
+                <div class="flex items-center gap-4 p-4 bg-teal-50 dark:bg-zinc-800/50 rounded-2xl">✔ Breakfast experience</div>
+            </div>
+            <button onclick="closeModal('about-modal')" class="w-full btn-primary py-4 heading-font text-lg">Awesome!</button>
+        </div>
+    </div>
+
+    <div id="wifi-modal" class="modal" onclick="closeOnOverlay(event, 'wifi-modal')">
+        <div class="modal-content text-center">
+            <div class="w-16 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto mb-8"></div>
+            <h2 class="heading-font text-4xl mb-6 uppercase">WiFi Access</h2>
+            <div class="p-8 bg-zinc-50 dark:bg-zinc-800 rounded-3xl mb-8">
+                <p class="text-[10px] font-black text-zinc-400 uppercase mb-2">Network</p>
+                <p class="heading-font text-2xl mb-4">LaraiCafe_Guest</p>
+                <p class="text-[10px] font-black text-zinc-400 uppercase mb-2">Password</p>
+                <p id="wifi-pass" class="text-3xl font-black text-[#1B4D4B] dark:text-[#D4A373]">LaraiCafe2024</p>
+            </div>
+            <button onclick="copyWifi()" class="w-full btn-primary py-5 heading-font text-xl mb-4">Copy Password</button>
+            <button onclick="closeModal('wifi-modal')" class="text-zinc-400 text-[10px] font-black uppercase">Cancel</button>
+        </div>
+    </div>
+
+    <div id="hours-modal" class="modal" onclick="closeOnOverlay(event, 'hours-modal')">
+        <div class="modal-content text-center">
+            <div class="w-16 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto mb-8"></div>
+            <h2 class="heading-font text-4xl text-[#1B4D4B] dark:text-[#D4A373] mb-6 uppercase">Opening Hours</h2>
+            <div class="p-8 bg-teal-50 dark:bg-zinc-800 rounded-[40px] mb-8">
+                <p class="heading-font text-2xl text-[#1B4D4B] mb-1">Open Everyday</p>
+                <p class="text-4xl font-black">8:00 AM – 7:00 PM</p>
+            </div>
+            <div class="p-4 bg-red-50 rounded-2xl mb-8"><span class="text-xs font-black text-red-600 uppercase">Closed on Tuesdays</span></div>
+            <button onclick="closeModal('hours-modal')" class="w-full btn-primary py-4 heading-font text-lg">Got It!</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) {
+            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        function closeOnOverlay(e, id) { if (e.target.id === id) closeModal(id); }
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            document.documentElement.classList.toggle('dark');
+        }
+        function copyWifi() {
+            const pass = document.getElementById('wifi-pass').innerText;
+            navigator.clipboard.writeText(pass);
+            const btn = event.target;
+            btn.innerText = "COPIED! ✅";
+            setTimeout(() => btn.innerText = "Copy Password", 2000);
+        }
+        function submitFeedback() {
+            document.getElementById('feedback-form').classList.add('hidden');
+            document.getElementById('feedback-success').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
