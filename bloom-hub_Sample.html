@@ -1,45 +1,144 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ScanIt | Bloom Hub Companion</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap');
+
         :root {
-            /* Bloom Hub Official Palette */
-            --bloom-purple: #8D6DAC;
-            --bloom-teal: #00ABCC;
-            --bloom-yellow: #EACC55;
-            --bloom-black: #1A1819; /* Deeper Dark */
-            --bloom-gray: #231F20; /* Original Black as card bg */
-            --border-white: rgba(255, 255, 255, 0.08);
+            --bloom-purple: #7357B8;
+            --bloom-teal: #09B7D8;
+            --bloom-teal-deep: #018AAB;
+            --bloom-yellow: #FFD92E;
+            --bloom-pink: #EF5CA8;
+            --bloom-orange: #F7941D;
+            --bloom-green: #43C66F;
+            --ink: #29213F;
+            --bg-main: #6D58AE;
+            --bg-card: rgba(41, 33, 63, 0.86);
+            --text-main: #FFF9EF;
+            --text-soft: rgba(255, 249, 239, 0.74);
+            --border-white: rgba(255, 255, 255, 0.18);
+            --glass-bg: rgba(41, 33, 63, 0.74);
+            --outline: rgba(255, 255, 255, 0.88);
+            --shadow-pop: 0 18px 0 rgba(41, 33, 63, 0.22), 0 24px 44px rgba(0, 0, 0, 0.22);
+            --pattern: url("data:image/svg+xml,%3Csvg width='260' height='260' viewBox='0 0 260 260' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2301789b' stroke-opacity='.23' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='54' cy='54' r='28'/%3E%3Cpath d='M54 9v18M54 82v18M9 54h18M82 54h18M23 22l13 13M73 73l13 13M86 22 73 35M36 73 23 86'/%3E%3Cpath d='M143 35c29 5 49 35 39 65s-43 43-70 29c-30-15-35-58-9-79'/%3E%3Cpath d='M142 69l17 17-21 21-17-17zM151 80l37-37M183 38l9 9M123 130l-23 23M91 147l15 15'/%3E%3Ccircle cx='196' cy='182' r='36'/%3E%3Cpath d='M196 126v22M196 216v22M140 182h22M230 182h22M157 143l16 16M220 205l16 16M236 143l-16 16M173 205l-16 16'/%3E%3Cpath d='M42 203h54M50 222h38M61 182v22M37 176c21-25 51-25 72 0'/%3E%3C/g%3E%3C/svg%3E");
+            --circuit-pattern: url("data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.18' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M21 30h52v38h30v42h54M36 144h44V96h23M137 24v49M18 84h33M119 131h28'/%3E%3Ccircle cx='21' cy='30' r='7'/%3E%3Ccircle cx='157' cy='110' r='7'/%3E%3Ccircle cx='137' cy='24' r='7'/%3E%3Ccircle cx='18' cy='84' r='7'/%3E%3Ccircle cx='36' cy='144' r='7'/%3E%3Ccircle cx='147' cy='131' r='7'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .light {
+            --bg-main: #2EC5E7;
+            --bg-card: rgba(255, 251, 235, 0.92);
+            --text-main: #29213F;
+            --text-soft: rgba(41, 33, 63, 0.68);
+            --border-white: rgba(41, 33, 63, 0.15);
+            --glass-bg: rgba(255, 251, 235, 0.82);
+            --outline: rgba(255, 255, 255, 0.95);
+            --shadow-pop: 0 12px 0 rgba(41, 33, 63, 0.13), 0 22px 42px rgba(1, 138, 171, 0.20);
+        }
+
+        * {
+            letter-spacing: 0;
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            scroll-behavior: smooth;
-            background-color: var(--bloom-black);
-            color: #F1F5F9;
+            position: relative;
+            min-height: 100vh;
+            font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+            background:
+                linear-gradient(180deg, #38C7EA 0 24rem, #25BDE0 36rem, #2DA9D6 58rem, #7357B8 100%);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+            background-attachment: scroll;
         }
 
-        .glass { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: rgba(26, 24, 25, 0.8); }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: var(--pattern), var(--circuit-pattern);
+            background-size: 260px 260px, 180px 180px;
+            background-position: center top, 46px 28px;
+            opacity: 0.66;
+            mix-blend-mode: multiply;
+            z-index: 0;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: auto -3.5rem -4rem auto;
+            width: 17rem;
+            height: 17rem;
+            pointer-events: none;
+            background:
+                conic-gradient(from 12deg, transparent 0 10deg, rgba(255, 217, 46, 0.72) 10deg 26deg, transparent 26deg 46deg),
+                radial-gradient(circle, transparent 0 32%, rgba(255, 217, 46, 0.72) 33% 45%, transparent 46%);
+            border-radius: 999px;
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        h1, h2, h3, h4, .font-black, .font-extrabold {
+            font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+        }
+
+        .glass { 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px); 
+            background: var(--glass-bg); 
+            box-shadow: 0 12px 34px rgba(41, 33, 63, 0.16);
+        }
         
         .bento-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid var(--border-white);
-            background: var(--bloom-gray);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            border: 3px solid var(--outline);
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.10), transparent 46%),
+                var(--bg-card);
             cursor: pointer;
+            box-shadow: 0 8px 0 rgba(41, 33, 63, 0.18);
         }
-        .bento-card:active { transform: scale(0.97); }
+
+        .bento-card:hover {
+            transform: translateY(-4px) rotate(-0.5deg);
+            box-shadow: var(--shadow-pop);
+            border-color: white;
+        }
+
+        .bento-card::after,
+        .mentor-card::after,
+        .founder-section::after,
+        .social-card::after,
+        .p-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background-image: var(--pattern);
+            background-size: 110px 110px;
+            opacity: 0.13;
+        }
         
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(18, 16, 17, 0.98);
+            background: rgba(41, 33, 63, 0.72);
             backdrop-filter: blur(12px);
             z-index: 100;
             align-items: flex-end;
@@ -50,10 +149,15 @@
         .modal-content {
             width: 100%;
             max-width: 500px;
-            background: var(--bloom-black);
-            border-top: 2px solid var(--bloom-purple);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.08), transparent),
+                var(--bg-card);
+            border: 4px solid var(--outline);
+            border-bottom: 0;
             border-radius: 32px 32px 0 0;
             animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 -18px 55px rgba(0, 0, 0, 0.34);
+            color: var(--text-main);
         }
 
         @keyframes slideUp {
@@ -61,52 +165,596 @@
             to { transform: translateY(0); }
         }
 
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
         .service-icon {
             width: 44px;
             height: 44px;
-            border-radius: 14px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .program-tag {
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid currentColor;
+            background: rgba(255, 255, 255, 0.86) !important;
+            box-shadow: 0 5px 0 rgba(41, 33, 63, 0.16);
         }
 
         .btn-bloom-purple { background-color: var(--bloom-purple); color: white; }
         .btn-bloom-teal { background-color: var(--bloom-teal); color: white; }
-        .btn-bloom-yellow { background-color: var(--bloom-yellow); color: var(--bloom-black); }
+        .btn-bloom-yellow { background-color: var(--bloom-yellow); color: #1A1819; }
 
         .learn-more-link {
             font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.04em;
             text-decoration: underline;
             text-underline-offset: 4px;
         }
 
-        input::placeholder, textarea::placeholder {
-            color: rgba(255, 255, 255, 0.3);
+        .floating-nav {
+            margin-left: 1.25rem;
+            margin-right: 1.25rem;
+            width: calc(100% - 2.5rem);
+        }
+
+        .form-input {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid var(--outline);
+            color: var(--text-main);
+        }
+
+        .mentor-card, .founder-section, .social-card, .p-card {
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 3px solid var(--outline);
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 0 rgba(41, 33, 63, 0.16);
+        }
+
+        header {
+            border-bottom: 3px solid rgba(255, 255, 255, 0.36) !important;
+        }
+
+        header h1 {
+            text-shadow: 0 2px 0 rgba(255, 255, 255, 0.44);
+        }
+
+        header .w-10.h-10 {
+            border: 2px solid white;
+            box-shadow: 0 5px 0 rgba(41, 33, 63, 0.16);
+        }
+
+        .logo-fallback {
+            position: relative;
+            background:
+                radial-gradient(circle at 68% 32%, var(--bloom-yellow) 0 0.33rem, transparent 0.36rem),
+                linear-gradient(135deg, var(--bloom-teal), var(--bloom-purple)) !important;
+        }
+
+        .logo-fallback::before {
+            content: "BH";
+            font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: white;
+            letter-spacing: 0;
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+        }
+
+        .stem-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .stem-bot,
+        .stem-tool {
+            position: absolute;
+            opacity: 0.62;
+            filter: drop-shadow(0 10px 0 rgba(41, 33, 63, 0.10));
+        }
+
+        .stem-bot {
+            width: 6.3rem;
+            height: 9.5rem;
+        }
+
+        .stem-bot::before {
+            content: "";
+            position: absolute;
+            left: 1.1rem;
+            right: 1.1rem;
+            top: 1.9rem;
+            height: 5.2rem;
+            border: 4px solid rgba(41, 33, 63, 0.58);
+            border-radius: 1.3rem;
+            background:
+                radial-gradient(circle at 36% 38%, white 0 0.34rem, transparent 0.37rem),
+                radial-gradient(circle at 64% 38%, white 0 0.34rem, transparent 0.37rem),
+                linear-gradient(180deg, #FFD92E 0 63%, #F7941D 64%);
+        }
+
+        .stem-bot::after {
+            content: "";
+            position: absolute;
+            left: 0.2rem;
+            right: 0.2rem;
+            top: 0.15rem;
+            bottom: 0;
+            background:
+                linear-gradient(rgba(41,33,63,.58), rgba(41,33,63,.58)) 50% 8% / 4px 1.8rem no-repeat,
+                radial-gradient(circle at 50% 3%, #FFD92E 0 .42rem, transparent .45rem),
+                linear-gradient(90deg, rgba(41,33,63,.58), rgba(41,33,63,.58)) 4% 49% / 1.9rem 4px no-repeat,
+                linear-gradient(90deg, rgba(41,33,63,.58), rgba(41,33,63,.58)) 96% 49% / 1.9rem 4px no-repeat,
+                radial-gradient(circle at 8% 49%, #B7EEF8 0 .62rem, transparent .66rem),
+                radial-gradient(circle at 92% 49%, #B7EEF8 0 .62rem, transparent .66rem),
+                linear-gradient(110deg, transparent 39%, rgba(41,33,63,.58) 40% 43%, transparent 44%) 30% 91% / 2.2rem 2.2rem no-repeat,
+                linear-gradient(70deg, transparent 39%, rgba(41,33,63,.58) 40% 43%, transparent 44%) 70% 91% / 2.2rem 2.2rem no-repeat;
+        }
+
+        .stem-tool {
+            width: 7rem;
+            height: 5rem;
+            border-radius: 1rem;
+            background:
+                linear-gradient(90deg, #B7EEF8 0 24%, transparent 24% 30%, #B7EEF8 30% 100%);
+            border: 4px solid rgba(41, 33, 63, 0.44);
+            transform: rotate(-10deg);
+        }
+
+        .stem-tool::before {
+            content: "";
+            position: absolute;
+            inset: 0.75rem;
+            border-radius: 0.65rem;
+            background:
+                radial-gradient(circle at 25% 50%, #FFD92E 0 .34rem, transparent .37rem),
+                radial-gradient(circle at 48% 50%, #EF5CA8 0 .34rem, transparent .37rem),
+                radial-gradient(circle at 71% 50%, #43C66F 0 .34rem, transparent .37rem),
+                repeating-linear-gradient(0deg, transparent 0 0.35rem, rgba(41,33,63,.2) .36rem .5rem);
+        }
+
+        .stem-bot-left {
+            left: -2.9rem;
+            top: 7.8rem;
+            transform: rotate(8deg);
+        }
+
+        .stem-bot-right {
+            right: -3.2rem;
+            top: 27rem;
+            transform: rotate(-8deg) scale(0.94);
+        }
+
+        .stem-tool-left {
+            left: -3.5rem;
+            bottom: 11rem;
+        }
+
+        .stem-tool-right {
+            right: -3rem;
+            bottom: 22rem;
+            transform: rotate(12deg) scale(0.88);
+        }
+
+        main::before {
+            content: "";
+            position: absolute;
+            top: 6.6rem;
+            right: 0.35rem;
+            width: 5.7rem;
+            height: 4.2rem;
+            border: 4px solid var(--ink);
+            border-radius: 1.4rem;
+            background:
+                radial-gradient(circle at 34% 46%, white 0 0.35rem, transparent 0.38rem),
+                radial-gradient(circle at 66% 46%, white 0 0.35rem, transparent 0.38rem),
+                linear-gradient(180deg, #8FE9FF 0 58%, #7357B8 59%);
+            box-shadow: 0 8px 0 rgba(41, 33, 63, 0.16);
+            transform: rotate(5deg);
+            z-index: -1;
+        }
+
+        main::after {
+            content: "";
+            position: absolute;
+            top: 5.7rem;
+            right: 2.6rem;
+            width: 0.75rem;
+            height: 0.75rem;
+            background: var(--bloom-yellow);
+            border: 3px solid var(--ink);
+            border-radius: 999px;
+            box-shadow: 0 1.1rem 0 -0.2rem var(--ink);
+            z-index: -1;
+        }
+
+        section > h3 {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: auto;
+            position: relative;
+            padding: 0.68rem 1rem 0.68rem 2.55rem;
+            border-radius: 1rem;
+            background:
+                linear-gradient(135deg, var(--bloom-purple), #8D6DAC);
+            color: white !important;
+            opacity: 1 !important;
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 6px 0 rgba(41, 33, 63, 0.18);
+        }
+
+        section > h3::before {
+            content: "\f013";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0.65rem;
+            top: 50%;
+            width: 1.45rem;
+            height: 1.45rem;
+            transform: translateY(-50%);
+            border-radius: 999px;
+            background: var(--bloom-yellow);
+            color: var(--ink);
+            display: grid;
+            place-items: center;
+            font-size: 0.7rem;
+            box-shadow: 0 3px 0 rgba(41, 33, 63, 0.16);
+        }
+
+        section > h3::after {
+            content: "";
+            position: absolute;
+            right: -1.7rem;
+            top: 50%;
+            width: 1.25rem;
+            height: 0.25rem;
+            transform: translateY(-50%);
+            border-radius: 999px;
+            background: var(--bloom-yellow);
+        }
+
+        section:first-child {
+            position: relative;
+            padding: 1.4rem;
+            border-radius: 1.75rem;
+            background:
+                linear-gradient(135deg, rgba(255, 217, 46, 0.96), rgba(255, 249, 239, 0.88));
+            color: var(--ink);
+            border: 3px solid white;
+            box-shadow: var(--shadow-pop);
+        }
+
+        section:first-child::before {
+            content: "";
+            position: absolute;
+            inset: 0.6rem;
+            border: 2px dashed rgba(41, 33, 63, 0.16);
+            border-radius: 1.25rem;
+            pointer-events: none;
+        }
+
+        section:first-child h2 {
+            position: relative;
+            font-size: clamp(2rem, 8vw, 2.45rem);
+            line-height: 0.95;
+        }
+
+        section:first-child p {
+            position: relative;
+            max-width: 18rem;
+            color: rgba(41, 33, 63, 0.72);
+            opacity: 1 !important;
+        }
+
+        .grid.grid-cols-4 > .bento-card:nth-child(1) {
+            background-color: #FFF6D0;
+            color: var(--ink);
+            transform: rotate(-1deg);
+        }
+
+        .grid.grid-cols-4 > .bento-card:nth-child(2) {
+            background-color: #DDF8FF;
+            color: var(--ink);
+            transform: rotate(1deg);
+        }
+
+        .grid.grid-cols-4 > .bento-card:nth-child(4) {
+            background-color: #E8DCFF;
+            color: var(--ink);
+        }
+
+        .grid.grid-cols-4 > .bento-card:nth-child(5) {
+            background-color: #FFE1F1;
+            color: var(--ink);
+        }
+
+        button.btn-bloom-yellow,
+        .btn-bloom-teal,
+        .btn-bloom-purple,
+        .bg-green-600,
+        .bg-green-600:hover {
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 7px 0 rgba(41, 33, 63, 0.17);
+        }
+
+        .grid.grid-cols-2.gap-3\\.5 > div {
+            border: 3px solid white !important;
+            box-shadow: 0 9px 0 rgba(41, 33, 63, 0.23);
+        }
+
+        .grid.grid-cols-2.gap-3\\.5 > div::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: var(--pattern);
+            background-size: 120px 120px;
+            opacity: 0.22;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .grid.grid-cols-2.gap-3\\.5 > div > .absolute {
+            background: linear-gradient(to top, rgba(41, 33, 63, 0.96), rgba(41, 33, 63, 0.72), rgba(9, 183, 216, 0.25)) !important;
+        }
+
+        .grid.grid-cols-2.gap-3\\.5 > div:nth-child(2) > .absolute {
+            background: linear-gradient(to top, rgba(41, 33, 63, 0.96), rgba(115, 87, 184, 0.70), rgba(255, 217, 46, 0.20)) !important;
+        }
+
+        .grid.grid-cols-2.gap-3\\.5 > div:nth-child(3) > .absolute {
+            background: linear-gradient(to top, rgba(41, 33, 63, 0.96), rgba(115, 87, 184, 0.72), rgba(239, 92, 168, 0.20)) !important;
+        }
+
+        .grid.grid-cols-2.gap-3\\.5 > div:nth-child(4) > .absolute {
+            background: linear-gradient(to top, rgba(41, 33, 63, 0.96), rgba(239, 92, 168, 0.64), rgba(9, 183, 216, 0.18)) !important;
+        }
+
+        .grid.grid-cols-2.gap-3\\.5 button {
+            border: 2px solid rgba(255, 255, 255, 0.42) !important;
+            border-radius: 0.95rem !important;
+        }
+
+        .payment-card,
+        section:nth-of-type(4) .space-y-4 > div,
+        section:nth-of-type(5) .grid > div,
+        section:nth-of-type(7) > div,
+        .testimonial-carousel,
+        .review-card,
+        section:nth-of-type(9) a {
+            border: 3px solid var(--outline) !important;
+            background: var(--bg-card) !important;
+            box-shadow: 0 7px 0 rgba(41, 33, 63, 0.14);
+        }
+
+        .payment-card {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            background:
+                radial-gradient(circle at 8% 18%, rgba(255, 255, 255, 0.55) 0 3rem, transparent 3.1rem),
+                linear-gradient(135deg, rgba(255, 217, 46, 0.98), rgba(9, 183, 216, 0.95) 52%, rgba(115, 87, 184, 0.92)) !important;
+            color: var(--ink);
+        }
+
+        .payment-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: var(--pattern);
+            background-size: 180px 180px;
+            opacity: 0.22;
+            z-index: -1;
+        }
+
+        .payment-card::after {
+            content: "";
+            position: absolute;
+            right: -1rem;
+            bottom: -1.25rem;
+            width: 6.2rem;
+            height: 6.2rem;
+            border: 0.75rem solid rgba(255, 255, 255, 0.48);
+            border-radius: 999px;
+            box-shadow: inset 0 0 0 0.45rem rgba(41, 33, 63, 0.13);
+            z-index: -1;
+        }
+
+        .payment-mini-chip {
+            border: 2px solid rgba(255, 255, 255, 0.68);
+            background: rgba(255, 255, 255, 0.30);
+            color: var(--ink);
+        }
+
+        .founder-section,
+        section:nth-of-type(7) > div,
+        .testimonial-carousel,
+        .review-card {
+            background:
+                linear-gradient(145deg, rgba(115, 87, 184, 0.92), rgba(41, 33, 63, 0.92)) !important;
+        }
+
+        .light .founder-section,
+        .light section:nth-of-type(7) > div,
+        .light .testimonial-carousel,
+        .light .review-card,
+        .light section:nth-of-type(9) a,
+        .light section:nth-of-type(4) .space-y-4 > div,
+        .light .modal-content {
+            color: var(--ink);
+            background:
+                linear-gradient(145deg, rgba(255, 251, 235, 0.96), rgba(221, 248, 255, 0.92)) !important;
+        }
+
+        .testimonial-carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 2rem;
+        }
+
+        .testimonial-carousel::before {
+            content: "\f544";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 1.25rem;
+            top: 1.1rem;
+            color: rgba(255, 217, 46, 0.28);
+            font-size: 4.6rem;
+            transform: rotate(10deg);
+        }
+
+        .testimonial-track {
+            display: flex;
+            transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .testimonial-slide {
+            min-width: 100%;
+            padding: 2rem;
+        }
+
+        .testimonial-dots {
+            display: flex;
+            gap: 0.45rem;
+            padding: 0 2rem 1.65rem;
+        }
+
+        .testimonial-dot {
+            width: 0.55rem;
+            height: 0.55rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.35);
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        .testimonial-dot.active {
+            width: 1.55rem;
+            background: var(--bloom-yellow);
+        }
+
+        .connect-panel {
+            position: relative;
+            padding: 1rem;
+            border-radius: 2rem;
+            border: 3px solid var(--outline);
+            background:
+                linear-gradient(145deg, rgba(255, 251, 235, 0.18), rgba(9, 183, 216, 0.15)),
+                rgba(41, 33, 63, 0.42);
+            box-shadow: 0 8px 0 rgba(41, 33, 63, 0.16);
+            overflow: hidden;
+        }
+
+        .connect-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: var(--circuit-pattern);
+            opacity: 0.22;
+        }
+
+        .connect-panel > * {
+            position: relative;
+        }
+
+        section:nth-of-type(9) a {
+            position: relative;
+            overflow: hidden;
+            background:
+                linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(221, 248, 255, 0.82)) !important;
+            color: var(--ink);
+        }
+
+        section:nth-of-type(9) a::after {
+            content: "";
+            position: absolute;
+            right: -1rem;
+            bottom: -1rem;
+            width: 3.2rem;
+            height: 3.2rem;
+            border-radius: 999px;
+            background: rgba(255, 217, 46, 0.42);
+        }
+
+        .light .text-white,
+        .light .text-slate-200,
+        .light .text-slate-300 {
+            color: var(--ink) !important;
+        }
+
+        input,
+        textarea,
+        select {
+            border: 2px solid rgba(255, 255, 255, 0.48) !important;
+            background: rgba(255, 255, 255, 0.13) !important;
+            color: var(--text-main) !important;
+            box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.06);
+        }
+
+        .light input,
+        .light textarea,
+        .light select {
+            background: rgba(255, 255, 255, 0.88) !important;
+            color: var(--ink) !important;
+            border-color: rgba(41, 33, 63, 0.18) !important;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: currentColor;
+            opacity: 0.5;
+        }
+
+        .floating-nav {
+            border: 3px solid white !important;
+            box-shadow: 0 12px 0 rgba(41, 33, 63, 0.18), 0 20px 45px rgba(0, 0, 0, 0.2);
+        }
+
+        .hide-scrollbar {
+            scrollbar-width: none;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (max-width: 420px) {
+            main::before {
+                top: 7.2rem;
+                right: 0.2rem;
+                width: 4.8rem;
+                height: 3.6rem;
+                opacity: 0.9;
+            }
+
+            section:first-child {
+                padding-right: 4.25rem;
+            }
         }
     </style>
 </head>
-<body>
+<body class="dark:bg-[#1A1819]">
+    <div class="stem-layer" aria-hidden="true">
+        <div class="stem-bot stem-bot-left"></div>
+        <div class="stem-bot stem-bot-right"></div>
+        <div class="stem-tool stem-tool-left"></div>
+        <div class="stem-tool stem-tool-right"></div>
+    </div>
 
     <!-- Header -->
-    <header class="fixed top-0 w-full z-50 h-20 px-6 flex items-center justify-between glass border-b border-white/5">
+    <header class="fixed top-0 w-full z-50 h-20 px-6 flex items-center justify-between glass border-b border-black/5 dark:border-white/5">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
-                <i class="fa-solid fa-graduation-cap text-[#8D6DAC] text-lg"></i>
+            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-md">
+                <img src="https://255virtualtours.infinityhomes.co.tz/bloom%20hub%20logo.jpg" alt="Bloom Hub Logo" class="w-6 h-6 object-cover rounded-sm" onerror="this.style.display='none'; this.parentElement.classList.add('logo-fallback')">
             </div>
             <div>
                 <h1 class="font-black text-base tracking-tighter uppercase leading-none" style="color: var(--bloom-teal)">Bloom Hub</h1>
@@ -114,13 +762,18 @@
             </div>
         </div>
         <div class="flex gap-2">
-            <button onclick="window.open('https://bloomhub.co.tz/', '_blank')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+            <!-- Theme Toggle Button -->
+            <button id="themeToggle" class="w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center border border-black/5 dark:border-white/10 transition-colors">
+                <i class="fa-solid fa-moon dark:hidden text-gray-600"></i>
+                <i class="fa-solid fa-sun hidden dark:block text-yellow-400"></i>
+            </button>
+            <button onclick="window.open('https://bloomhub.co.tz/', '_blank')" class="w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center border border-black/5 dark:border-white/10">
                 <i class="fa-solid fa-globe text-xs"></i>
             </button>
         </div>
     </header>
 
-    <main class="max-w-md mx-auto pt-28 pb-32 px-5">
+    <main class="max-w-md mx-auto pt-28 pb-40 px-5">
         
         <!-- Welcome Section -->
         <section class="mb-8">
@@ -161,7 +814,7 @@
             </button>
 
             <!-- Explore Space -->
-            <button onclick="window.open('https://255virtualtours.infinityhomes.co.tz/bobo-play-learn/', '_blank')" class="bento-card col-span-2 p-5 rounded-[28px] flex items-center gap-4 border-teal-500/20">
+            <button onclick="showModal('explore')" class="bento-card col-span-2 p-5 rounded-[28px] flex items-center gap-4 border-teal-500/20">
                 <div class="service-icon bg-teal-500/10" style="color: var(--bloom-teal)"><i class="fa-solid fa-camera-retro"></i></div>
                 <div class="text-left">
                     <p class="font-black text-sm">Explore</p>
@@ -178,6 +831,169 @@
                 </div>
             </button>
         </div>
+
+        <!-- PREMIUM 2x2 ATTENTION-GRABBING SECTION -->
+        <section class="mb-10">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-[#00ABCC] mb-4 px-1 flex items-center gap-2">
+                <span class="flex h-2 w-2 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                Active Camps & Catalogues
+            </h3>
+            
+            <div class="grid grid-cols-2 gap-3.5">
+                
+                <!-- CARD 1: REGULAR CATALOGUE -->
+                <div class="group relative aspect-square rounded-[28px] overflow-hidden border border-white/5 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(0,171,204,0.35)] hover:border-[#00ABCC]/50 text-left bg-cover bg-center" style="background-image: url('https://www.skani.space/bloom-hub/BM_3.png');">
+                    <!-- Overlay Mask for Text Visibility -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/75 to-black/30 z-0"></div>
+                    
+                    <div class="relative z-10 h-full p-4 flex flex-col justify-between">
+                        <!-- Top Pill Badging -->
+                        <div class="flex items-center justify-between">
+                            <div class="w-8 h-8 rounded-xl bg-[#00ABCC]/20 text-[#00ABCC] flex items-center justify-center text-xs backdrop-blur-md border border-[#00ABCC]/30">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+                            <span class="text-[8px] bg-[#00ABCC] text-black font-extrabold uppercase px-2 py-0.5 rounded-full tracking-wider">Active</span>
+                        </div>
+                        
+                        <!-- Middle Information Titles -->
+                        <div class="my-auto pt-2">
+                            <p class="font-black text-sm leading-tight text-white tracking-tight drop-shadow-md">Regular Catalogue</p>
+                            <p class="text-[10px] text-[#00ABCC] mt-0.5 uppercase font-bold tracking-wider">View Classes</p>
+                        </div>
+                        
+                        <!-- Bottom Double Action Buttons -->
+                        <div class="grid grid-cols-2 gap-1.5 pt-1 border-t border-white/10">
+                            <button onclick="showModal('catalogue')" class="py-2 text-[9px] font-black text-center text-white/90 bg-white/10 rounded-xl hover:bg-white/20 transition-all active:scale-95 border border-white/5">
+                                Learn More
+                            </button>
+                            <button onclick="window.open('https://wa.me/255753227064?text=Hello%20Bloom%20Hub%2C%20I%20am%20interested%20in%20registering%20my%20child%20for%20the%20Regular%20Catalogue%20Classes.', '_blank')" class="py-2 text-[9px] font-black text-center text-black bg-[#00ABCC] rounded-xl hover:bg-[#00c2e6] transition-all active:scale-95 shadow-md">
+                                Register
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2: SUMMER CAMP -->
+                <div class="group relative aspect-square rounded-[28px] overflow-hidden border border-white/5 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(234,204,85,0.35)] hover:border-[#EACC55]/50 text-left bg-cover bg-center" style="background-image: url('https://www.skani.space/bloom-hub/BM_3.png');">
+                    <!-- Overlay Mask for Text Visibility -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/75 to-black/30 z-0"></div>
+                    
+                    <div class="relative z-10 h-full p-4 flex flex-col justify-between">
+                        <!-- Top Pill Badging -->
+                        <div class="flex items-center justify-between">
+                            <div class="w-8 h-8 rounded-xl bg-[#EACC55]/20 text-[#EACC55] flex items-center justify-center text-xs backdrop-blur-md border border-[#EACC55]/30">
+                                <i class="fa-solid fa-sun"></i>
+                            </div>
+                            <span class="text-[8px] bg-[#EACC55] text-black font-extrabold uppercase px-2 py-0.5 rounded-full tracking-wider">Open</span>
+                        </div>
+                        
+                        <!-- Middle Information Titles -->
+                        <div class="my-auto pt-2">
+                            <p class="font-black text-sm leading-tight text-white tracking-tight drop-shadow-md">Summer Camp</p>
+                            <p class="text-[10px] text-[#EACC55] mt-0.5 uppercase font-bold tracking-wider">Register Hub</p>
+                        </div>
+                        
+                        <!-- Bottom Double Action Buttons -->
+                        <div class="grid grid-cols-2 gap-1.5 pt-1 border-t border-white/10">
+                            <button onclick="window.open('https://bloomhub.co.tz/our-programs/', '_blank')" class="py-2 text-[9px] font-black text-center text-white/90 bg-white/10 rounded-xl hover:bg-white/20 transition-all active:scale-95 border border-white/5">
+                                Learn More
+                            </button>
+                            <button onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScDNJBvSW_2vkaavZQhrzoS9fZeOiEi5EI0inQ4eSJCdYY7SA/viewform?usp=publish-editor', '_blank')" class="py-2 text-[9px] font-black text-center text-black bg-[#EACC55] rounded-xl hover:bg-[#ffe26b] transition-all active:scale-95 shadow-md">
+                                Register
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3: FOOTBALL CAMP -->
+                <div class="group relative aspect-square rounded-[28px] overflow-hidden border border-white/5 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(141,109,172,0.35)] hover:border-[#8D6DAC]/50 text-left bg-cover bg-center" style="background-image: url('https://www.skani.space/bloom-hub/BM_3.png');">
+                    <!-- Overlay Mask for Text Visibility -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/75 to-black/30 z-0"></div>
+                    
+                    <div class="relative z-10 h-full p-4 flex flex-col justify-between">
+                        <!-- Top Pill Badging -->
+                        <div class="flex items-center justify-between">
+                            <div class="w-8 h-8 rounded-xl bg-[#8D6DAC]/20 text-[#8D6DAC] flex items-center justify-center text-xs backdrop-blur-md border border-[#8D6DAC]/30">
+                                <i class="fa-solid fa-futbol"></i>
+                            </div>
+                            <span class="text-[8px] bg-[#8D6DAC] text-white font-extrabold uppercase px-2 py-0.5 rounded-full tracking-wider">Youth</span>
+                        </div>
+                        
+                        <!-- Middle Information Titles -->
+                        <div class="my-auto pt-2">
+                            <p class="font-black text-sm leading-tight text-white tracking-tight drop-shadow-md">Football Camp</p>
+                            <p class="text-[10px] text-[#8D6DAC] mt-0.5 uppercase font-bold tracking-wider">Join Academy</p>
+                        </div>
+                        
+                        <!-- Bottom Double Action Buttons -->
+                        <div class="grid grid-cols-2 gap-1.5 pt-1 border-t border-white/10">
+                            <button onclick="window.open('https://bloomhub.co.tz/our-programs/', '_blank')" class="py-2 text-[9px] font-black text-center text-white/90 bg-white/10 rounded-xl hover:bg-white/20 transition-all active:scale-95 border border-white/5">
+                                Learn More
+                            </button>
+                            <button onclick="window.open('https://docs.google.com/forms/u/1/d/e/1FAIpQLSdZkeHA4m8TPjcjJ7ocjDuDLB9GHbo3m3uylMrUKzbrRW1LxQ/viewform?usp=publish-editor', '_blank')" class="py-2 text-[9px] font-black text-center text-white bg-[#8D6DAC] rounded-xl hover:bg-[#a383c4] transition-all active:scale-95 shadow-md">
+                                Register
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 4: PICKLEBALL CLASSES -->
+                <div class="group relative aspect-square rounded-[28px] overflow-hidden border border-white/5 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(236,72,153,0.35)] hover:border-[#EC4899]/50 text-left bg-cover bg-center" style="background-image: url('https://www.skani.space/bloom-hub/BM_3.png');">
+                    <!-- Overlay Mask for Text Visibility -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/75 to-black/30 z-0"></div>
+                    
+                    <div class="relative z-10 h-full p-4 flex flex-col justify-between">
+                        <!-- Top Pill Badging -->
+                        <div class="flex items-center justify-between">
+                            <div class="w-8 h-8 rounded-xl bg-pink-500/20 text-[#EC4899] flex items-center justify-center text-xs backdrop-blur-md border border-pink-500/30">
+                                <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+                            </div>
+                            <span class="text-[8px] bg-[#EC4899] text-white font-extrabold uppercase px-2 py-0.5 rounded-full tracking-wider">Fun</span>
+                        </div>
+                        
+                        <!-- Middle Information Titles -->
+                        <div class="my-auto pt-2">
+                            <p class="font-black text-sm leading-tight text-white tracking-tight drop-shadow-md">Pickleball Classes</p>
+                            <p class="text-[10px] text-[#EC4899] mt-0.5 uppercase font-bold tracking-wider">Schedules</p>
+                        </div>
+                        
+                        <!-- Bottom Double Action Buttons -->
+                        <div class="grid grid-cols-2 gap-1.5 pt-1 border-t border-white/10">
+                            <button onclick="showModal('pickleball')" class="py-2 text-[9px] font-black text-center text-white/90 bg-white/10 rounded-xl hover:bg-white/20 transition-all active:scale-95 border border-white/5">
+                                Learn More
+                            </button>
+                            <button onclick="window.open('https://wa.me/255753227064?text=Hello%20Bloom%20Hub%2C%20I%20am%20interested%20in%20enrolling%20my%20child%20in%20your%20Pickleball%20Classes.', '_blank')" class="py-2 text-[9px] font-black text-center text-white bg-[#EC4899] rounded-xl hover:bg-[#f26fae] transition-all active:scale-95 shadow-md">
+                                Register
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- PAYMENT METHODS CTA SECTION -->
+        <section class="mb-10">
+            <div onclick="showModal('payments')" class="payment-card p-6 rounded-[32px] flex items-center justify-between cursor-pointer active:scale-98 transition-all shadow-xl">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-white/40 flex items-center justify-center text-[#29213F] text-xl border-2 border-white/70">
+                        <i class="fa-solid fa-credit-card"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-black text-sm uppercase text-[#29213F]">Payment Options</h4>
+                        <p class="text-[10px] text-[#29213F]/70 uppercase font-bold tracking-wider">Selcom, Lipa Namba & Bank details</p>
+                        <div class="flex gap-1.5 mt-2">
+                            <span class="payment-mini-chip text-[8px] font-black uppercase px-2 py-0.5 rounded-full">Copy</span>
+                            <span class="payment-mini-chip text-[8px] font-black uppercase px-2 py-0.5 rounded-full">WhatsApp</span>
+                        </div>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-[#29213F]/50 text-sm"></i>
+            </div>
+        </section>
 
         <!-- PROGRAM HIGHLIGHTS -->
         <section class="mb-10">
@@ -268,18 +1084,73 @@
             </div>
         </section>
 
+        <!-- FOUNDER'S MESSAGE -->
+        <section class="mb-10">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-5 px-1">Founder's Message</h3>
+            <div class="founder-section relative overflow-hidden">
+                <div class="absolute -top-4 -right-4 w-16 h-16 bg-[#8D6DAC]/10 rounded-full blur-2xl"></div>
+                <div class="flex flex-col sm:flex-row gap-5 items-center sm:items-start mb-4">
+                    <div class="w-20 h-20 rounded-2xl overflow-hidden border-2 border-[#8D6DAC]/30 p-0.5 flex-shrink-0">
+                        <img src="https://m.media-amazon.com/images/I/A1GySCHVQvL.jpg" alt="Fatema Dewji" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://placehold.co/150x150/8D6DAC/ffffff?text=FD'">
+                    </div>
+                    <div class="text-center sm:text-left">
+                        <h4 class="font-black text-base text-white">Fatema Dewji</h4>
+                        <p class="text-[10px] text-[#8D6DAC] uppercase font-bold tracking-widest mt-0.5">Founder, Bloom Hub</p>
+                        <div class="flex gap-1 justify-center sm:justify-start mt-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#00ABCC]"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#EACC55]"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#8D6DAC]"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-3 text-xs leading-relaxed opacity-80 font-medium">
+                    <p class="text-slate-200"><span class="font-bold text-[#EACC55]">Dear Parents and Guardians,</span></p>
+                    <p>Thank you for entrusting your child's growth to Bloom Hub. It fills my heart with joy to see their excitement as they learn and explore. My mission is to empower them to love learning and have fun along the way. This new catalog reflects my passion for nurturing each child's mind and spirit. I’m excited for what we’ll achieve together this year. Thank you for being part of our Bloom Hub family. Together, we’re helping your children grow into confident, creative leaders.</p>
+                    <p class="pt-2 text-right text-slate-300 italic font-semibold">— With gratitude,<br><span class="not-italic text-white font-black">Fatema Dewji</span><br><span class="text-[10px] uppercase font-bold tracking-widest not-italic text-[#8D6DAC]">Founder, Bloom Hub</span></p>
+                </div>
+            </div>
+        </section>
+
         <!-- TESTIMONIALS -->
         <section class="mb-10">
             <h3 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-5 px-1">Parent Voices</h3>
-            <div class="p-8 rounded-[40px] bg-white/5 border border-white/5 relative overflow-hidden">
-                <div class="absolute -top-4 -left-4 w-16 h-16 bg-purple-500/10 rounded-full blur-2xl"></div>
-                <div class="flex gap-1 text-[#EACC55] text-[10px] mb-4">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <div class="testimonial-carousel" aria-label="Parent testimonials">
+                <div class="testimonial-track" id="testimonialTrack">
+                    <article class="testimonial-slide">
+                        <div class="flex gap-1 text-[#EACC55] text-[10px] mb-4">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-sm opacity-80 leading-relaxed font-medium">"Bloom Hub has been a game-changer. My child became more confident and creative after just one month in the robotics program!"</p>
+                        <div class="flex items-center gap-3 mt-6">
+                            <div class="w-8 h-8 rounded-full bg-[#00ABCC]/20 flex items-center justify-center text-[10px] font-bold text-[#00ABCC]">HP</div>
+                            <p class="text-[10px] font-black uppercase opacity-40 tracking-wider">Happy Parent, Masaki</p>
+                        </div>
+                    </article>
+                    <article class="testimonial-slide">
+                        <div class="flex gap-1 text-[#EACC55] text-[10px] mb-4">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-sm opacity-80 leading-relaxed font-medium">"Bloom Hub has been a game-changer. My child became more confident and creative after just one month in the robotics program!"</p>
+                        <div class="flex items-center gap-3 mt-6">
+                            <div class="w-8 h-8 rounded-full bg-[#00ABCC]/20 flex items-center justify-center text-[10px] font-bold text-[#00ABCC]">HP</div>
+                            <p class="text-[10px] font-black uppercase opacity-40 tracking-wider">Happy Parent, Masaki</p>
+                        </div>
+                    </article>
+                    <article class="testimonial-slide">
+                        <div class="flex gap-1 text-[#EACC55] text-[10px] mb-4">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-sm opacity-80 leading-relaxed font-medium">"Bloom Hub has been a game-changer. My child became more confident and creative after just one month in the robotics program!"</p>
+                        <div class="flex items-center gap-3 mt-6">
+                            <div class="w-8 h-8 rounded-full bg-[#00ABCC]/20 flex items-center justify-center text-[10px] font-bold text-[#00ABCC]">HP</div>
+                            <p class="text-[10px] font-black uppercase opacity-40 tracking-wider">Happy Parent, Masaki</p>
+                        </div>
+                    </article>
                 </div>
-                <p class="text-sm opacity-80 leading-relaxed font-medium">"Bloom Hub has been a game-changer. My child became more confident and creative after just one month in the robotics program!"</p>
-                <div class="flex items-center gap-3 mt-6">
-                    <div class="w-8 h-8 rounded-full bg-[#00ABCC]/20 flex items-center justify-center text-[10px] font-bold text-[#00ABCC]">HP</div>
-                    <p class="text-[10px] font-black uppercase opacity-40 tracking-wider">Happy Parent, Masaki</p>
+                <div class="testimonial-dots" id="testimonialDots">
+                    <span class="testimonial-dot active"></span>
+                    <span class="testimonial-dot"></span>
+                    <span class="testimonial-dot"></span>
                 </div>
             </div>
         </section>
@@ -287,7 +1158,7 @@
         <!-- ADD A REVIEW SECTION -->
         <section class="mb-10">
             <h3 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-5 px-1">Share Your Experience</h3>
-            <div class="p-8 rounded-[40px] border border-white/5 bg-white/5">
+            <div class="review-card p-8 rounded-[40px] border border-black/10 dark:border-white/5 bg-white/5 dark:bg-white/5">
                 <p class="text-xs opacity-60 mb-6 leading-relaxed">Loved our program? We'd love to hear your feedback!</p>
                 <form id="reviewForm" class="space-y-4">
                     <input type="text" id="reviewerName" required placeholder="Your Name" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-white outline-none focus:border-[#EACC55]/50 transition-all text-sm">
@@ -297,21 +1168,74 @@
             </div>
         </section>
 
+        <!-- CONNECT WITH US / SOCIAL SECTION -->
+        <section class="mb-10">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-5 px-1">Connect with Us</h3>
+            <div class="connect-panel space-y-3">
+                <!-- Direct Contacts Row -->
+                <div class="grid grid-cols-2 gap-3">
+                    <!-- Phone -->
+                    <a href="tel:+255753227064" class="p-4 rounded-[24px] bg-white/5 border border-white/5 flex flex-col items-center justify-center text-center gap-2 hover:bg-white/10 active:scale-95 transition-all">
+                        <div class="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] opacity-40 font-bold uppercase tracking-wider">Call Us</p>
+                            <p class="text-[11px] font-black tracking-tight mt-0.5 whitespace-nowrap">+255 753 227 064</p>
+                        </div>
+                    </a>
+
+                    <!-- Email -->
+                    <a href="mailto:engage@bloomhub.co.tz" class="p-4 rounded-[24px] bg-white/5 border border-white/5 flex flex-col items-center justify-center text-center gap-2 hover:bg-white/10 active:scale-95 transition-all">
+                        <div class="w-10 h-10 rounded-full bg-[#00ABCC]/10 text-[#00ABCC] flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] opacity-40 font-bold uppercase tracking-wider">Email Us</p>
+                            <p class="text-[11px] font-black tracking-tight mt-0.5 truncate max-w-full">engage@bloomhub.co.tz</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Social Media Channel Hub -->
+                <div class="grid grid-cols-3 gap-3">
+                    <!-- Instagram -->
+                    <a href="https://www.instagram.com/bloomhub_tz/" target="_blank" class="p-4 rounded-[24px] bg-gradient-to-tr from-[#f9ce34]/10 via-[#ee2a7b]/10 to-[#6228d7]/10 border border-pink-500/20 flex flex-col items-center justify-center text-center gap-1.5 hover:scale-[1.03] active:scale-95 transition-all">
+                        <i class="fa-brands fa-instagram text-xl text-pink-500"></i>
+                        <span class="text-[9px] font-black uppercase tracking-wider text-pink-500">Instagram</span>
+                    </a>
+
+                    <!-- Facebook -->
+                    <a href="https://www.facebook.com/people/Bloom-Hub/61560356981208/" target="_blank" class="p-4 rounded-[24px] bg-blue-600/10 border border-blue-500/20 flex flex-col items-center justify-center text-center gap-1.5 hover:scale-[1.03] active:scale-95 transition-all">
+                        <i class="fa-brands fa-facebook text-xl text-blue-500"></i>
+                        <span class="text-[9px] font-black uppercase tracking-wider text-blue-500">Facebook</span>
+                    </a>
+
+                    <!-- LinkedIn -->
+                    <a href="https://www.linkedin.com/company/bloom-hub-tanzania/" target="_blank" class="p-4 rounded-[24px] bg-blue-700/10 border border-blue-600/20 flex flex-col items-center justify-center text-center gap-1.5 hover:scale-[1.03] active:scale-95 transition-all">
+                        <i class="fa-brands fa-linkedin text-xl text-blue-400"></i>
+                        <span class="text-[9px] font-black uppercase tracking-wider text-blue-400">LinkedIn</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- Bottom Action Bar -->
-    <div class="fixed bottom-8 left-0 w-full px-6 z-40">
-        <div class="max-w-xs mx-auto flex items-center gap-3 p-2 rounded-full glass border border-white/10 bg-black shadow-2xl">
-            <button onclick="window.open('https://wa.me/255753227064', '_blank')" class="flex-1 bg-green-600 h-14 rounded-full text-white flex items-center justify-center gap-2 font-black text-xs uppercase tracking-wider active:scale-95 transition-all">
-                <i class="fa-brands fa-whatsapp text-xl"></i> Need Help?
-            </button>
-            <button onclick="window.location.href='tel:+255753227064'" class="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white active:scale-90 transition-all">
-                <i class="fa-solid fa-phone"></i>
-            </button>
+    <!-- MODALS -->
+
+    <!-- Explore Virtual Tour Modal -->
+    <div id="modal-explore" class="modal-overlay" onclick="closeModal('explore')">
+        <div class="modal-content p-10 text-center" onclick="event.stopPropagation()">
+            <div class="w-20 h-20 bg-teal-500/10 rounded-full flex items-center justify-center text-[#00ABCC] mx-auto mb-6 text-3xl shadow-inner animate-pulse">
+                <i class="fa-solid fa-vr-cardboard"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-2">Coming Soon</h3>
+            <p class="text-sm opacity-60 mb-8 leading-relaxed">We are currently capturing our state-of-the-art Masaki facility.<br>Soon you'll be able to explore our hub in interactive 3D!</p>
+            <button onclick="closeModal('explore')" class="w-full btn-bloom-teal p-5 rounded-3xl font-black text-xs uppercase shadow-xl mb-4">Awesome, can't wait!</button>
+            <button onclick="closeModal('explore')" class="w-full p-2 text-[10px] font-black opacity-30 uppercase tracking-[0.2em]">Go Back</button>
         </div>
     </div>
-
-    <!-- MODALS -->
 
     <!-- About Bloom Hub -->
     <div id="modal-about" class="modal-overlay" onclick="closeModal('about')">
@@ -356,7 +1280,6 @@
                 <button onclick="closeModal('programs')" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="flex-1 overflow-y-auto p-8 space-y-10 hide-scrollbar pb-10">
-                
                 <!-- STEM -->
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
@@ -367,7 +1290,7 @@
                         <div class="p-5 rounded-3xl bg-white/5 border border-white/5">
                             <div class="flex justify-between items-start mb-2">
                                 <p class="font-black text-base">Robotics & Coding</p>
-                                <span class="program-tag bg-teal-500/20 text-teal-400">Ages 6-15</span>
+                                <span class="program-tag bg-teal-500/20 text-teal-400 text-[10px] px-2.5 py-1 rounded-full font-bold">Ages 6-15</span>
                             </div>
                             <p class="text-xs opacity-60 leading-relaxed mb-4">Hands-on learning experience with sensors, motors, and logic.</p>
                             <a href="https://bloomhub.co.tz/our-programs/" target="_blank" class="text-[10px] font-black uppercase tracking-widest text-[#00ABCC]">Explore More →</a>
@@ -387,7 +1310,7 @@
                     </div>
                     <div class="p-5 rounded-3xl bg-white/5 border border-white/5">
                         <p class="font-black text-base">Physical Training</p>
-                        <p class="text-xs opacity-60">Build strength, team work, and discipline.</p>
+                        <p class="text-xs opacity-60">Build strength, teamwork, and discipline.</p>
                     </div>
                 </div>
 
@@ -402,7 +1325,6 @@
                         <p class="text-xs opacity-60">Exploring visual arts and linguistic skills.</p>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -460,59 +1382,243 @@
         </div>
     </div>
 
+    <!-- Catalogue Modal -->
+    <div id="modal-catalogue" class="modal-overlay" onclick="closeModal('catalogue')">
+        <div class="modal-content p-8" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="text-xl font-black text-white">Regular Catalogue</h3>
+                    <p class="text-[10px] text-[#00ABCC] uppercase font-bold tracking-wider mt-1">Class Schedules & Pricing</p>
+                </div>
+                <button onclick="closeModal('catalogue')" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4 pb-8 max-h-[60vh] overflow-y-auto pr-1">
+                <p class="text-xs opacity-70 leading-relaxed">Explore our full line-up of year-round foundational development classes:</p>
+                
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-sm text-white">Robotics Foundational</p>
+                        <p class="text-[10px] opacity-50">Every Sat & Sun • Ages 6-15</p>
+                    </div>
+                    <span class="text-xs font-bold text-[#EACC55]">Weekly</span>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-sm text-white">3D Modeling & Printing</p>
+                        <p class="text-[10px] opacity-50">CAD Designing Workshops</p>
+                    </div>
+                    <span class="text-xs font-bold text-[#EACC55]">Labs</span>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-sm text-white">Creative Kids Athletics</p>
+                        <p class="text-[10px] opacity-50">Coordination & Team Play</p>
+                    </div>
+                    <span class="text-xs font-bold text-[#EACC55]">Daily</span>
+                </div>
+
+                <button onclick="window.open('https://wa.me/255753227064?text=Hello%20Bloom%20Hub%2C%20I%20would%20like%20to%20request%20the%20Regular%20Catalogue%20PDF.', '_blank')" class="w-full btn-bloom-teal py-4 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 mt-2 shadow-lg">
+                    <i class="fa-solid fa-file-pdf"></i> Request PDF Catalogue
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pickleball Modal -->
+    <div id="modal-pickleball" class="modal-overlay" onclick="closeModal('pickleball')">
+        <div class="modal-content p-8" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="text-xl font-black text-white">Pickleball Classes</h3>
+                    <p class="text-[10px] text-[#EC4899] uppercase font-bold tracking-wider mt-1">Ages 6 - 16</p>
+                </div>
+                <button onclick="closeModal('pickleball')" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4 pb-8">
+                <p class="text-xs opacity-70 leading-relaxed">Join the fastest-growing racquet sport! Our youth pickleball program focuses on coordination, responsive reflexes, sportsmanship, and tactical gameplay.</p>
+                
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                    <div class="flex justify-between text-xs text-white">
+                        <span class="font-bold">Weekly Slots:</span>
+                        <span>Sat & Sun (Afternoons)</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-white">
+                        <span class="font-bold">Class Cap:</span>
+                        <span>Max 8 players per court</span>
+                    </div>
+                </div>
+
+                <button onclick="window.open('https://wa.me/255753227064?text=Hello%20Bloom%20Hub%2C%20I%20am%20interested%20in%20enrolling%20my%20child%20in%20your%20Pickleball%20Classes.', '_blank')" class="w-full btn-bloom-yellow py-4 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 mt-4 shadow-lg">
+                    <i class="fa-solid fa-calendar-plus"></i> Inquire Class Slots
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Methods Modal -->
+    <div id="modal-payments" class="modal-overlay" onclick="closeModal('payments')">
+        <div class="modal-content p-8 max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6 flex-shrink-0">
+                <div>
+                    <h3 class="text-xl font-black text-white">Payment Options</h3>
+                    <p class="text-[10px] text-[#00ABCC] uppercase font-bold tracking-wider mt-1">Official Payment Details</p>
+                </div>
+                <button onclick="closeModal('payments')" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto space-y-4 pr-1 hide-scrollbar pb-6">
+                <!-- Instruction Toast -->
+                <div class="p-3 bg-teal-500/10 border border-teal-500/20 rounded-xl text-left flex items-start gap-2.5">
+                    <i class="fa-solid fa-circle-info text-[#00ABCC] text-xs mt-0.5"></i>
+                    <p class="text-[10px] text-slate-300 leading-relaxed">Click any card below to copy the payment number automatically.</p>
+                </div>
+
+                <!-- Selcom -->
+                <div onclick="copyTextToClipboard('60971934', 'Selcom Number')" class="p-4 rounded-2xl bg-white/5 border border-white/5 text-left cursor-pointer active:scale-[0.99] hover:bg-white/10 transition-all relative group">
+                    <span class="text-[9px] text-[#00ABCC] font-bold uppercase tracking-wider">Selcom Pay</span>
+                    <p class="text-base font-black text-white mt-1">60971934</p>
+                    <p class="text-[10px] opacity-60">FD360 Tanzania Ltd</p>
+                    <i class="fa-solid fa-copy absolute right-4 top-1/2 -translate-y-1/2 opacity-30 group-hover:opacity-100 transition-opacity text-xs"></i>
+                </div>
+
+                <!-- Lipa Namba -->
+                <div onclick="copyTextToClipboard('54266257', 'Lipa Namba')" class="p-4 rounded-2xl bg-white/5 border border-white/5 text-left cursor-pointer active:scale-[0.99] hover:bg-white/10 transition-all relative group">
+                    <span class="text-[9px] text-[#00ABCC] font-bold uppercase tracking-wider">Lipa Namba (Vodacom)</span>
+                    <p class="text-base font-black text-white mt-1">54266257</p>
+                    <p class="text-[10px] opacity-60">FD360 Tanzania Limited</p>
+                    <i class="fa-solid fa-copy absolute right-4 top-1/2 -translate-y-1/2 opacity-30 group-hover:opacity-100 transition-opacity text-xs"></i>
+                </div>
+
+                <!-- Bank Transfer -->
+                <div onclick="copyTextToClipboard('9120001108377', 'Bank Account')" class="p-4 rounded-2xl bg-white/5 border border-white/5 text-left cursor-pointer active:scale-[0.99] hover:bg-white/10 transition-all relative group">
+                    <span class="text-[9px] text-[#8D6DAC] font-bold uppercase tracking-wider">Bank Transfer (Stanbic Bank)</span>
+                    <p class="text-sm font-black text-white mt-1">9120001108377</p>
+                    <p class="text-[10px] opacity-60">MS Fatema Gulamabbas Dewji</p>
+                    <i class="fa-solid fa-copy absolute right-4 top-1/2 -translate-y-1/2 opacity-30 group-hover:opacity-100 transition-opacity text-xs"></i>
+                </div>
+
+                <!-- Mobile Money -->
+                <div onclick="copyTextToClipboard('0744298755', 'Mobile Number')" class="p-4 rounded-2xl bg-white/5 border border-white/5 text-left cursor-pointer active:scale-[0.99] hover:bg-white/10 transition-all relative group">
+                    <span class="text-[9px] text-[#EACC55] font-bold uppercase tracking-wider">Mobile Money (Vodacom M-Pesa)</span>
+                    <p class="text-sm font-black text-white mt-1">0744 298755</p>
+                    <p class="text-[10px] opacity-60">Chrispian Gabriel Mwalo</p>
+                    <i class="fa-solid fa-copy absolute right-4 top-1/2 -translate-y-1/2 opacity-30 group-hover:opacity-100 transition-opacity text-xs"></i>
+                </div>
+
+                <!-- Bottom instruction + WhatsApp CTA -->
+                <div class="pt-4 border-t border-white/5 space-y-3">
+                    <p class="text-xs font-bold text-center text-[#EACC55]">Once payment is done please send a screenshot of the payment to our WhatsApp.</p>
+                    <button onclick="window.open('https://wa.me/255753227064?text=Hello%20Bloom%20Hub%2C%20here%20is%20the%20screenshot%20of%20my%20completed%20payment%20registration.', '_blank')" class="w-full bg-green-600 hover:bg-green-500 py-4 rounded-2xl text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Send Screenshot
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Action Bar -->
+    <div class="fixed bottom-8 left-0 w-full z-40">
+        <div class="max-w-md mx-auto floating-nav flex items-center gap-2.5 p-2 rounded-full glass border border-black/10 dark:border-white/10 bg-white dark:bg-black shadow-2xl">
+            <!-- Instagram Button - To the left of Need Help -->
+            <button onclick="window.open('https://www.instagram.com/bloomhub_tz/', '_blank')" class="w-14 h-14 flex-shrink-0 rounded-full bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] flex items-center justify-center text-white active:scale-90 transition-all shadow-lg">
+                <i class="fa-brands fa-instagram text-2xl"></i>
+            </button>
+            
+            <!-- WhatsApp Help -->
+            <button onclick="window.open('https://wa.me/255753227064', '_blank')" class="flex-1 bg-green-600 h-14 rounded-full text-white flex items-center justify-center gap-2 font-black text-[11px] uppercase tracking-wider active:scale-95 transition-all">
+                <i class="fa-brands fa-whatsapp text-xl"></i> Need Help?
+            </button>
+            
+            <!-- Call Button -->
+            <button onclick="window.location.href='tel:+255753227064'" class="w-14 h-14 flex-shrink-0 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center text-current active:scale-90 transition-all">
+                <i class="fa-solid fa-phone"></i>
+            </button>
+        </div>
+    </div>
+
     <script>
-        const body = document.body;
+        const html = document.documentElement;
+        const themeToggle = document.getElementById('themeToggle');
+
+        // Theme Switcher
+        themeToggle.addEventListener('click', () => {
+            if (html.classList.contains('dark')) {
+                html.classList.replace('dark', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.replace('light', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        if (localStorage.getItem('theme') === 'light') html.classList.replace('dark', 'light');
 
         function showModal(id) {
-            const modal = document.getElementById(`modal-${id}`);
-            if (modal) {
-                modal.classList.add('active');
-                body.style.overflow = 'hidden';
-            }
+            document.getElementById(`modal-${id}`).classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeModal(id) {
-            const modal = document.getElementById(`modal-${id}`);
-            if (modal) {
-                modal.classList.remove('active');
-                body.style.overflow = 'auto';
+            document.getElementById(`modal-${id}`).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Copy Clipboard Helper
+        function copyTextToClipboard(text, entityName) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const tip = document.querySelector('#modal-payments .fa-circle-info').parentElement;
+                    const originalTipText = tip.innerHTML;
+                    tip.innerHTML = `<i class="fa-solid fa-check text-green-400 text-xs mt-0.5"></i><p class="text-[10px] text-green-400 font-bold leading-relaxed">Copied ${entityName} to clipboard!</p>`;
+                    setTimeout(() => {
+                        tip.innerHTML = originalTipText;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+            } else {
+                // Fallback for older browsers
+                const tempEl = document.createElement('textarea');
+                tempEl.value = text;
+                document.body.appendChild(tempEl);
+                tempEl.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempEl);
+                alert(`Copied ${entityName} to clipboard!`);
             }
         }
 
-        // Close modal on click outside content
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal-overlay')) {
-                event.target.classList.remove('active');
-                body.style.overflow = 'auto';
-            }
-        }
-
-        // Enrollment Form Submission
         document.getElementById('enrollmentForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const childName = document.getElementById('childName').value;
-            const childAge = document.getElementById('childAge').value;
-            const program = document.getElementById('selProgram').value;
-            const parentName = document.getElementById('parentName').value;
-            const phone = document.getElementById('parentPhone').value;
-
-            const message = `Hello Bloom Hub, I would like to enroll my child.\n\nChild Name: ${childName}\nAge: ${childAge}\nProgram: ${program}\nParent Name: ${parentName}\nPhone: ${phone}`;
-            
-            window.open(`https://wa.me/255753227064?text=${encodeURIComponent(message)}`, '_blank');
+            window.open(`https://wa.me/255753227064?text=Hello, I want to enroll ${childName}`, '_blank');
             closeModal('enroll');
         });
 
-        // Review Form Submission
         document.getElementById('reviewForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const reviewerName = document.getElementById('reviewerName').value;
-            const reviewText = document.getElementById('reviewText').value;
-
-            const message = `Hi Bloom Hub, I'd like to share a review:\n\nReviewer: ${reviewerName}\nMessage: ${reviewText}`;
-            
-            window.open(`https://wa.me/255753227064?text=${encodeURIComponent(message)}`, '_blank');
-            this.reset();
+            const name = document.getElementById('reviewerName').value;
+            const text = document.getElementById('reviewText').value;
+            window.open(`https://wa.me/255753227064?text=Feedback from ${name}: ${text}`, '_blank');
         });
+
+        // Parent voices carousel
+        const testimonialTrack = document.getElementById('testimonialTrack');
+        const testimonialDots = Array.from(document.querySelectorAll('#testimonialDots .testimonial-dot'));
+        let testimonialIndex = 0;
+
+        function showTestimonial(index) {
+            if (!testimonialTrack || testimonialDots.length === 0) return;
+            testimonialIndex = index % testimonialDots.length;
+            testimonialTrack.style.transform = `translateX(-${testimonialIndex * 100}%)`;
+            testimonialDots.forEach((dot, dotIndex) => dot.classList.toggle('active', dotIndex === testimonialIndex));
+        }
+
+        setInterval(() => {
+            showTestimonial(testimonialIndex + 1);
+        }, 6000);
     </script>
 </body>
 </html>
