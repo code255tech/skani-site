@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -71,7 +70,7 @@
             pointer-events: none;
             background:
                 linear-gradient(180deg, rgba(57, 199, 234, 0.04) 0 40%, rgba(115, 87, 184, 0.58) 100%),
-                url("./assets/bloom-stem-bg.png") center center / cover no-repeat;
+                url("https://www.skani.space/bloom-hub/assets/bloom-stem-bg.png") center center / cover no-repeat;
             opacity: 0.46;
             z-index: 0;
         }
@@ -931,7 +930,7 @@
     </style>
 </head>
 <body class="dark:bg-[#1A1819]">
-        <div class="stem-layer" aria-hidden="true">
+     <div class="stem-layer" aria-hidden="true">
         <div class="stem-bot stem-bot-left"></div>
 
         <div class="stem-tool stem-tool-right"></div>
@@ -939,8 +938,8 @@
     <!-- Header -->
     <header class="fixed top-0 w-full z-50 h-20 px-6 flex items-center justify-between glass border-b border-black/5 dark:border-white/5">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-md">
-                <img src="https://www.skani.space/bloom-hub/assets/bloom-hub-logo.png" alt="Bloom Hub Logo" class="w-9 h-9 object-contain rounded-sm" onerror="this.style.display='none'; this.parentElement.classList.add('logo-fallback')">
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden">
+                <img src="https://www.skani.space/bloom-hub/assets/bloom-hub-logo.png" alt="Bloom Hub Logo" class="w-9 h-9 object-contain rounded-full" onerror="this.style.display='none'; this.parentElement.classList.add('logo-fallback')">
             </div>
             <div>
                 <h1 class="font-bold uppercase leading-none">Bloom Hub</h1>
@@ -981,7 +980,7 @@
                 <div class="service-icon bg-teal-500/10" style="color: var(--bloom-teal)"><i class="fa-solid fa-brain"></i></div>
                 <div class="text-left">
                     <p class="font-black text-sm">Programs</p>
-                    <p class="text-[10px] opacity-40 font-bold uppercase tracking-tight">STEM & Arts</p>
+                    <p class="text-[10px] opacity-40 font-bold uppercase tracking-tight">STEM, Sports & Creative</p>
                 </div>
             </button>
 
@@ -1171,7 +1170,8 @@
                         <p class="text-[10px] text-[#29213F]/70 uppercase font-bold tracking-wider">Selcom, Lipa Namba & Bank details</p>
                         <div class="flex gap-1.5 mt-2">
                             <span class="payment-mini-chip text-[8px] font-black uppercase px-2 py-0.5 rounded-full">Copy</span>
-                            <span class="payment-mini-chip text-[8px] font-black uppercase px-2 py-0.5 rounded-full">WhatsApp</span>
+                            <span class="payment-mini-chip text-[8px] font-black uppercase px-2 py-0.5 rounded-full">Pay</span>
+                            <span class="payment-mini-chip text-[8px] font-black uppercase px-2 py-0.5 rounded-full">Screenshot</span>
                         </div>
                     </div>
                 </div>
@@ -1183,41 +1183,67 @@
         <section class="mb-10">
             <h3 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-5 px-1">Program Highlights</h3>
             <div class="space-y-4">
-                <!-- Robotics -->
+                <!-- Imagine STEM -->
                 <div class="p-6 rounded-[32px] bg-white/5 border border-white/5 flex flex-col gap-4">
                     <div class="flex items-center gap-5">
-                        <div class="w-14 h-14 rounded-2xl bg-teal-500/10 flex items-center justify-center" style="color: var(--bloom-teal)"><i class="fa-solid fa-robot text-2xl"></i></div>
+                        <div class="w-14 h-14 rounded-2xl bg-teal-500/10 flex items-center justify-center" style="color: var(--bloom-teal)"><i class="fa-solid fa-lightbulb text-2xl"></i></div>
                         <div>
-                            <p class="font-black text-base">Robotics Classes</p>
-                            <p class="text-xs opacity-60">Building and programming future-ready machines.</p>
+                            <p class="font-black text-base">Imagine STEM</p>
+                            <p class="text-xs opacity-60">Ages 5-7: foundational STEM skills through hands-on experiences.</p>
                         </div>
                     </div>
-                    <a href="https://bloomhub.co.tz/our-programs/" target="_blank" class="learn-more-link" style="color: var(--bloom-teal)">Learn More <i class="fa-solid fa-arrow-right-long ml-1"></i></a>
+                    <a href="https://bloomhub.co.tz/imagine-stem/" target="_blank" class="learn-more-link" style="color: var(--bloom-teal)">Learn More <i class="fa-solid fa-arrow-right-long ml-1"></i></a>
                 </div>
 
-                <!-- 3D Printing -->
+                <!-- Discover STEM -->
                 <div class="p-6 rounded-[32px] bg-white/5 border border-white/5 flex flex-col gap-4">
                     <div class="flex items-center gap-5">
-                        <div class="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center" style="color: var(--bloom-purple)"><i class="fa-solid fa-cube text-2xl"></i></div>
+                        <div class="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center" style="color: var(--bloom-purple)"><i class="fa-solid fa-robot text-2xl"></i></div>
                         <div>
-                            <p class="font-black text-base">3D Printing Workshops</p>
-                            <p class="text-xs opacity-60">Bringing imagination to life with modern tech.</p>
+                            <p class="font-black text-base">Discover STEM</p>
+                            <p class="text-xs opacity-60">Ages 8-12: deepen curiosity and build technical confidence.</p>
                         </div>
                     </div>
-                    <a href="https://bloomhub.co.tz/our-programs/" target="_blank" class="learn-more-link" style="color: var(--bloom-purple)">Learn More <i class="fa-solid fa-arrow-right-long ml-1"></i></a>
+                    <a href="https://bloomhub.co.tz/discover-stem/" target="_blank" class="learn-more-link" style="color: var(--bloom-purple)">Learn More <i class="fa-solid fa-arrow-right-long ml-1"></i></a>
                 </div>
 
-                <!-- Photography -->
+                <!-- Advance in STEM -->
                 <div class="p-6 rounded-[32px] bg-white/5 border border-white/5 flex flex-col gap-4">
                     <div class="flex items-center gap-5">
-                        <div class="w-14 h-14 rounded-2xl bg-yellow-500/10 flex items-center justify-center" style="color: var(--bloom-yellow)"><i class="fa-solid fa-camera text-2xl"></i></div>
+                        <div class="w-14 h-14 rounded-2xl bg-yellow-500/10 flex items-center justify-center" style="color: var(--bloom-yellow)"><i class="fa-solid fa-microchip text-2xl"></i></div>
                         <div>
-                            <p class="font-black text-base">Photography Classes</p>
-                            <p class="text-xs opacity-60">Capturing the world through a creative lens.</p>
+                            <p class="font-black text-base">Advance in STEM</p>
+                            <p class="text-xs opacity-60">Ages 13-16: microcontrollers, automation, sensors, and interactive systems.</p>
                         </div>
                     </div>
-                    <a href="https://bloomhub.co.tz/our-programs/" target="_blank" class="learn-more-link" style="color: var(--bloom-yellow)">Learn More <i class="fa-solid fa-arrow-right-long ml-1"></i></a>
+                    <a href="https://bloomhub.co.tz/advance-in-stem/" target="_blank" class="learn-more-link" style="color: var(--bloom-yellow)">Learn More <i class="fa-solid fa-arrow-right-long ml-1"></i></a>
                 </div>
+
+                <!-- Sports & Fitness -->
+                <div class="p-6 rounded-[32px] bg-white/5 border border-white/5 flex flex-col gap-4">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 rounded-2xl bg-green-500/10 flex items-center justify-center" style="color: var(--bloom-green)"><i class="fa-solid fa-person-running text-2xl"></i></div>
+                        <div>
+                            <p class="font-black text-base">Sports & Fitness</p>
+                            <p class="text-xs opacity-60">Ages 5-17: movement, discipline, teamwork, strength, agility, and confidence.</p>
+                        </div>
+                    </div>
+                    <a href="https://bloomhub.co.tz/sports-fitness/" target="_blank" class="learn-more-link" style="color: var(--bloom-green)">Learn More <i class="fa-solid fa-arrow-right-long ml-1"></i></a>
+                </div>
+
+                <!-- Creative & Language Learning -->
+                <div class="p-6 rounded-[32px] bg-white/5 border border-white/5 flex flex-col gap-4">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 rounded-2xl bg-pink-500/10 flex items-center justify-center" style="color: var(--bloom-pink)"><i class="fa-solid fa-palette text-2xl"></i></div>
+                        <div>
+                            <p class="font-black text-base">Creative & Language Learning</p>
+                            <p class="text-xs opacity-60">Ages 3-20: expression, communication, identity, and cultural experiences.</p>
+                        </div>
+                    </div>
+                    <a href="https://bloomhub.co.tz/creative-language-learning/" target="_blank" class="learn-more-link" style="color: var(--bloom-pink)">Learn More <i class="fa-solid fa-arrow-right-long ml-1"></i></a>
+                </div>
+
+               
             </div>
         </section>
 
@@ -1438,8 +1464,7 @@
                 </div>
                 <button onclick="closeModal('programs')" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="flex-1 overflow-y-auto p-8 space-y-10 hide-scrollbar pb-10">
-                <!-- STEM -->
+            <div class="flex-1 overflow-y-auto p-8 space-y-8 hide-scrollbar pb-10">
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-1 bg-[#00ABCC] rounded-full"></div>
@@ -1447,43 +1472,65 @@
                     </div>
                     <div class="grid gap-3">
                         <div class="p-5 rounded-3xl bg-white/5 border border-white/5">
-                            <div class="flex justify-between items-start mb-2">
-                                <p class="font-black text-base">Robotics & Coding</p>
-                                <span class="program-tag bg-teal-500/20 text-teal-400 text-[10px] px-2.5 py-1 rounded-full font-bold">Ages 6-15</span>
+                            <div class="flex justify-between items-start gap-3 mb-2">
+                                <p class="font-black text-base">Imagine STEM</p>
+                                <span class="program-tag bg-teal-500/20 text-teal-400 text-[10px] px-2.5 py-1 rounded-full font-bold whitespace-nowrap">Ages 5-7</span>
                             </div>
-                            <p class="text-xs opacity-60 leading-relaxed mb-4">Hands-on learning experience with sensors, motors, and logic.</p>
-                            <a href="https://bloomhub.co.tz/our-programs/" target="_blank" class="text-[10px] font-black uppercase tracking-widest text-[#00ABCC]">Explore More →</a>
+                            <p class="text-xs opacity-60 leading-relaxed mb-4">Students learn foundational STEM skills through hands-on experiences.</p>
+                            <a href="https://bloomhub.co.tz/imagine-stem/" target="_blank" class="text-[10px] font-black uppercase tracking-widest text-[#00ABCC]">Learn More →</a>
                         </div>
                         <div class="p-5 rounded-3xl bg-white/5 border border-white/5">
-                            <p class="font-black text-base">3D Printing</p>
-                            <p class="text-xs opacity-60">Model and print real objects in 3D.</p>
+                            <div class="flex justify-between items-start gap-3 mb-2">
+                                <p class="font-black text-base">Discover STEM</p>
+                                <span class="program-tag bg-purple-500/20 text-purple-300 text-[10px] px-2.5 py-1 rounded-full font-bold whitespace-nowrap">Ages 8-12</span>
+                            </div>
+                            <p class="text-xs opacity-60 leading-relaxed mb-4">An intermediate level STEM program that deepens curiosity and builds technical confidence.</p>
+                            <a href="https://bloomhub.co.tz/discover-stem/" target="_blank" class="text-[10px] font-black uppercase tracking-widest text-[#8D6DAC]">Learn More →</a>
+                        </div>
+                        <div class="p-5 rounded-3xl bg-white/5 border border-white/5">
+                            <div class="flex justify-between items-start gap-3 mb-2">
+                                <p class="font-black text-base">Advance in STEM</p>
+                                <span class="program-tag bg-yellow-500/20 text-yellow-300 text-[10px] px-2.5 py-1 rounded-full font-bold whitespace-nowrap">Ages 13-16</span>
+                            </div>
+                            <p class="text-xs opacity-60 leading-relaxed mb-4">Students explore microcontrollers, automation, sensors, and interactive systems.</p>
+                            <a href="https://bloomhub.co.tz/advance-in-stem/" target="_blank" class="text-[10px] font-black uppercase tracking-widest text-[#EACC55]">Learn More →</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Sports -->
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-1 bg-[#EACC55] rounded-full"></div>
+                        <div class="w-8 h-1 bg-[#43C66F] rounded-full"></div>
                         <h4 class="text-xs font-black uppercase tracking-[0.2em]">Sports & Fitness</h4>
                     </div>
                     <div class="p-5 rounded-3xl bg-white/5 border border-white/5">
-                        <p class="font-black text-base">Physical Training</p>
-                        <p class="text-xs opacity-60">Build strength, teamwork, and discipline.</p>
+                        <div class="flex justify-between items-start gap-3 mb-2">
+                            <p class="font-black text-base">Sports & Fitness</p>
+                            <span class="program-tag bg-green-500/20 text-green-300 text-[10px] px-2.5 py-1 rounded-full font-bold whitespace-nowrap">Ages 5-17</span>
+                        </div>
+                        <p class="text-xs opacity-60 leading-relaxed mb-4">Students learn movement, discipline, and teamwork while building strength, agility, and confidence.</p>
+                        <a href="https://bloomhub.co.tz/sports-fitness/" target="_blank" class="text-[10px] font-black uppercase tracking-widest text-[#43C66F]">Learn More →</a>
                     </div>
                 </div>
 
-                <!-- Arts -->
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-1 bg-[#8D6DAC] rounded-full"></div>
-                        <h4 class="text-xs font-black uppercase tracking-[0.2em]">Creative & Language</h4>
+                        <div class="w-8 h-1 bg-[#EC4899] rounded-full"></div>
+                        <h4 class="text-xs font-black uppercase tracking-[0.2em]">Creative & Language Learning</h4>
                     </div>
                     <div class="p-5 rounded-3xl bg-white/5 border border-white/5">
-                        <p class="font-black text-base">Photography & Arabic</p>
-                        <p class="text-xs opacity-60">Exploring visual arts and linguistic skills.</p>
+                        <div class="flex justify-between items-start gap-3 mb-2">
+                            <p class="font-black text-base">Creative & Language Learning</p>
+                            <span class="program-tag bg-pink-500/20 text-pink-300 text-[10px] px-2.5 py-1 rounded-full font-bold whitespace-nowrap">Ages 3-20</span>
+                        </div>
+                        <p class="text-xs opacity-60 leading-relaxed mb-4">Students learn to express themselves, communicate, and explore identity through creative and cultural experiences.</p>
+                        <a href="https://bloomhub.co.tz/creative-language-learning/" target="_blank" class="text-[10px] font-black uppercase tracking-widest text-[#EC4899]">Learn More →</a>
                     </div>
                 </div>
+
+                <a href="https://bloomhub.co.tz/our-programs/" target="_blank" class="w-full btn-bloom-teal py-4 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg">
+                    More About Our Programs <i class="fa-solid fa-arrow-right-long"></i>
+                </a>
             </div>
         </div>
     </div>
@@ -1508,10 +1555,10 @@
                     <div class="relative">
                         <select id="selProgram" required class="w-full p-5 rounded-3xl bg-white/5 border border-white/10 text-white outline-none appearance-none focus:border-[#00ABCC]/50 transition-all">
                             <option value="" disabled selected>Program</option>
-                            <option>Regular Catalogue Classes</option>
+                            <option>Regular Classes</option>
                             <option>STEM</option>
-                            <option>Arts</option>
-                            <option>Sports</option>
+                            <option>Sports & Fitness</option>
+                            <option>Creative & Language Learning</option>
                             <option>Pickleball Classes</option>
                             <option>Football Camp</option>
                             <option>Summer Camp</option>
