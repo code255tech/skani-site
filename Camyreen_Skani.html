@@ -69,12 +69,13 @@
 
         /* Category Card Specific Styles */
         .reel-thumbnail-bg {
-            filter: blur(20px) brightness(0.6);
-            transform: scale(1.1);
+            filter: brightness(0.82);
+            transform: scale(1);
             transition: transform 0.8s ease;
         }
         .portfolio-card:hover .reel-thumbnail-bg {
-            transform: scale(1.2);
+            filter: brightness(0.9);
+            transform: scale(1.06);
         }
     </style>
 </head>
@@ -173,7 +174,7 @@
 
             <!-- FEATURED HERO REEL -->
             <div onclick="window.open('https://instagram.com/reel/DXPKtMzDJ37', '_blank')" class="relative group cursor-pointer aspect-[16/10] rounded-[40px] overflow-hidden shadow-2xl border-2 border-neutral-800 mx-2 portfolio-card shimmer-sweep featured-border">
-                <img src="https://www.skani.space/alfazulu.png" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Featured Reel">
+                <img src="alfazulu.png" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Featured Reel">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                 <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
                     <div class="w-20 h-20 bg-white/10 backdrop-blur-2xl rounded-full flex items-center justify-center border border-white/30 mb-6 group-hover:scale-110 transition-transform">
@@ -329,30 +330,35 @@
                 title: "1. BEAUTY & AESTHETICS ✨",
                 desc: "Luxury beauty visuals, skincare storytelling, clinic promotions, and aesthetic treatment content.",
                 reels: [
-                    { id: "DXPKtMzDJ37", label: "BEAUTY TREATMENT" },
-                    { id: "DPi3krejO7s", label: "SKINCARE CONTENT" },
-                    { id: "DG-qpPgo5dx", label: "AESTHETIC VISUALS" },
-                    { id: "DCXkLzLCv4u", label: "LUXURY BEAUTY" },
-                    { id: "DQqzeNxjPLb", label: "BEAUTY STORYTELLING" }
+                    { id: "DVaxM1wDFOW", label: "BEAUTY TREATMENT", image: "assets/Beauty treatment.jpg" },
+                    { id: "DUfxm82DEgx", label: "SKINCARE CONTENT", image: "assets/Skincare Content.jpg" },
+                    { id: "DUh7-0OjFLG", label: "BEAUTY STORYTELLING", image: "assets/Beauty storytelling.jpg" },
+                    { id: "DQJSfWRjBwR", label: "LUXURY BEAUTY", image: "assets/LUXURY BEAUTY.jpg" }
                 ]
             },
             {
                 title: "2. FASHION CONTENT 👗✨",
                 desc: "Elegant outfit showcases, luxury fashion visuals, and aesthetic styling content.",
                 reels: [
-                    { id: "DVvnPJdjE46", label: "TRAVEL & FASHION" },
-                    { id: "DVaxM1wDFOW", label: "OUTFIT SHOWCASE" },
-                    { id: "DVMZ2rJjDi0", label: "AESTHETIC FASHION" },
-                    { id: "DUwVOp-jJIf", label: "STYLE CONTENT" },
-                    { id: "DUfxm82DEgx", label: "LUXURY VISUALS" }
+                    { id: "DUtDgNejABi", label: "FASHION. STYLE CONTENT", image: "assets/Fashion Content.jpg" },
+                    { id: "DU4w8KVDJFJ", label: "AESTHETIC FASHION", image: "assets/AESTHETIC FASHION 1.jpg" },
+                    { id: "DUcfhLbDOt8", label: "AESTHETIC FASHION", image: "assets/AESTHETIC FASHION 2.jpg" }
                 ]
             },
             {
                 title: "3. HAIR CONTENT 💇🏽‍♀️",
                 desc: "Hair transformations, styling visuals, and beauty-focused salon content.",
                 reels: [
-                    { id: "DN8UYCADLrc", label: "HAIR TRANSFORMATION" },
-                    { id: "DO7-viujF6A", label: "HAIR & BEAUTY" }
+                    { id: "DCXkLzLCv4u", label: "HAIR TRANSFORMATION", image: "assets/Hair transformation.jpg" },
+                    { id: "DR4Vb5OgjxH", label: "HAIR & BEAUTY", image: "assets/Hair and Beauty.jpg" }
+                ]
+            },
+            {
+                title: "4. AESTHETIC VISUALS",
+                desc: "Polished lifestyle visuals with a premium, editorial feel for short-form content.",
+                reels: [
+                    { id: "DVBA-tFjDUw", label: "AESTHETIC VISUALS", image: "assets/Aesthetic visuals 1.jpg" },
+                    { id: "DVvnPJdjE46", label: "AESTHETIC VISUALS", image: "assets/Aesthetic visuals 2.jpg" }
                 ]
             }
         ];
@@ -482,7 +488,7 @@
                         ${cat.reels.map((reel, rIdx) => `
                             <div onclick="window.open('https://instagram.com/reel/${reel.id}', '_blank')" class="flex-none w-64 h-[400px] relative rounded-[32px] overflow-hidden group cursor-pointer snap-center border-2 portfolio-card ${cardBorder}">
                                 <!-- Blurred Thumbnail Background -->
-                                <img src="https://images.unsplash.com/photo-${1500000000000 + (i*100) + (rIdx*50)}?q=80&w=600&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover reel-thumbnail-bg">
+                                <img src="${reel.image}" alt="${reel.label}" class="absolute inset-0 w-full h-full object-cover reel-thumbnail-bg">
                                 
                                 <!-- Play Icon Overlay -->
                                 <div class="absolute inset-0 flex items-center justify-center z-20">
