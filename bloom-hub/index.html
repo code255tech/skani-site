@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="en" class="light">
 <head>
@@ -646,6 +647,8 @@
             position: relative;
             overflow: hidden;
             border-radius: 2rem;
+            touch-action: pan-y;
+            user-select: none;
         }
 
         .testimonial-carousel::before {
@@ -663,6 +666,12 @@
         .testimonial-track {
             display: flex;
             transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+
+        .testimonial-track.is-dragging {
+            transition: none;
+            cursor: grabbing;
         }
 
         .testimonial-slide {
@@ -682,6 +691,7 @@
             border-radius: 999px;
             background: rgba(255, 255, 255, 0.35);
             transition: width 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
         }
 
         .testimonial-dot.active {
@@ -2288,18 +2298,81 @@ confidence soar!
         // Parent voices carousel
         const testimonialTrack = document.getElementById('testimonialTrack');
         const testimonialDots = Array.from(document.querySelectorAll('#testimonialDots .testimonial-dot'));
+        const testimonialCarousel = document.querySelector('.testimonial-carousel');
         let testimonialIndex = 0;
+        let testimonialTimer;
+        let testimonialDragStart = 0;
+        let testimonialDragDelta = 0;
+        let testimonialIsDragging = false;
 
         function showTestimonial(index) {
             if (!testimonialTrack || testimonialDots.length === 0) return;
-            testimonialIndex = index % testimonialDots.length;
+            testimonialIndex = (index + testimonialDots.length) % testimonialDots.length;
             testimonialTrack.style.transform = `translateX(-${testimonialIndex * 100}%)`;
             testimonialDots.forEach((dot, dotIndex) => dot.classList.toggle('active', dotIndex === testimonialIndex));
         }
 
-        setInterval(() => {
-            showTestimonial(testimonialIndex + 1);
-        }, 6000);
+        function resetTestimonialTimer() {
+            window.clearInterval(testimonialTimer);
+            testimonialTimer = window.setInterval(() => {
+                showTestimonial(testimonialIndex + 1);
+            }, 6000);
+        }
+
+        testimonialDots.forEach((dot, dotIndex) => {
+            dot.setAttribute('role', 'button');
+            dot.setAttribute('tabindex', '0');
+            dot.setAttribute('aria-label', `Show parent voice ${dotIndex + 1}`);
+            dot.addEventListener('click', () => {
+                showTestimonial(dotIndex);
+                resetTestimonialTimer();
+            });
+            dot.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    showTestimonial(dotIndex);
+                    resetTestimonialTimer();
+                }
+            });
+        });
+
+        if (testimonialCarousel && testimonialTrack) {
+            testimonialCarousel.addEventListener('pointerdown', (event) => {
+                testimonialIsDragging = true;
+                testimonialDragStart = event.clientX;
+                testimonialDragDelta = 0;
+                testimonialTrack.classList.add('is-dragging');
+                testimonialCarousel.setPointerCapture(event.pointerId);
+            });
+
+            testimonialCarousel.addEventListener('pointermove', (event) => {
+                if (!testimonialIsDragging) return;
+                testimonialDragDelta = event.clientX - testimonialDragStart;
+                const dragPercent = (testimonialDragDelta / testimonialCarousel.offsetWidth) * 100;
+                testimonialTrack.style.transform = `translateX(calc(-${testimonialIndex * 100}% + ${dragPercent}%))`;
+            });
+
+            function finishTestimonialDrag(event) {
+                if (!testimonialIsDragging) return;
+                testimonialIsDragging = false;
+                testimonialTrack.classList.remove('is-dragging');
+                if (testimonialCarousel.hasPointerCapture(event.pointerId)) {
+                    testimonialCarousel.releasePointerCapture(event.pointerId);
+                }
+                const threshold = testimonialCarousel.offsetWidth * 0.18;
+                if (Math.abs(testimonialDragDelta) > threshold) {
+                    showTestimonial(testimonialIndex + (testimonialDragDelta < 0 ? 1 : -1));
+                } else {
+                    showTestimonial(testimonialIndex);
+                }
+                resetTestimonialTimer();
+            }
+
+            testimonialCarousel.addEventListener('pointerup', finishTestimonialDrag);
+            testimonialCarousel.addEventListener('pointercancel', finishTestimonialDrag);
+        }
+
+        resetTestimonialTimer();
     </script>
 </body>
 </html>
