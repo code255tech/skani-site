@@ -2224,6 +2224,8 @@ confidence soar!
         </div>
     </div>
 
+    <iframe id="bloomSuggestionFrame" name="bloomSuggestionFrame" class="hidden" aria-hidden="true"></iframe>
+
     <script>
         function showModal(id) {
             document.getElementById(`modal-${id}`).classList.add('active');
@@ -2290,9 +2292,26 @@ confidence soar!
 
         document.getElementById('reviewForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbxotuxaguynvNEaC53yKizZkDFt40n-i8yWHAWlSwi4NusLX_T8MFtbzyUFs5j4C4lX/exec';
+            const frame = document.getElementById('bloomSuggestionFrame');
             const thanks = document.getElementById('suggestionThanks');
-            thanks.classList.add('active');
+            const submitButton = this.querySelector('button[type="submit"]');
+            const name = document.getElementById('reviewerName').value.trim();
+            const suggestion = document.getElementById('reviewText').value.trim();
+
+            if (!suggestion) return;
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+            frame.src = `${scriptUrl}?name=${encodeURIComponent(name)}&suggestion=${encodeURIComponent(suggestion)}&source=bloomhub-skani&t=${Date.now()}`;
+
             this.reset();
+            thanks.classList.add('active');
+
+            setTimeout(() => {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Suggestion';
+            }, 1200);
         });
 
         // Parent voices carousel
