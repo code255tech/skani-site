@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Bloom Hub Skani Delivery</title>
+    <link rel="icon" type="image/png" href="http://skani.space/bloom-hub/assets/bloom-hub-icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        bloomPurple: '#8E6DAC',
+                        bloomTeal: '#7EDCEB',
+                        bloomYellow: '#F7ECA5',
+                        bloomPink: '#F5B9D7',
+                        bloomInk: '#302842',
+                        bloomSoft: '#F7F3FF'
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap');
+
+        :root {
+            --purple: #8E6DAC;
+            --teal: #7EDCEB;
+            --yellow: #F7ECA5;
+            --pink: #F5B9D7;
+            --ink: #302842;
+            --muted: rgba(48, 40, 66, 0.62);
+            --line: rgba(142, 109, 172, 0.14);
+            --card: rgba(255, 255, 255, 0.84);
+            --shadow: 0 18px 42px rgba(86, 67, 113, 0.10);
+        }
+
+        * {
+            box-sizing: border-box;
+            letter-spacing: 0;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Nunito", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 16% -8%, rgba(126, 220, 235, 0.34), transparent 19rem),
+                radial-gradient(circle at 95% 5%, rgba(245, 185, 215, 0.28), transparent 17rem),
+                linear-gradient(180deg, #F7F3FF 0%, #EEF9FC 48%, #FFF9E7 100%);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: url("http://skani.space/bloom-hub/assets/bloom-stem-bg.png") center / cover no-repeat;
+            opacity: 0.08;
+            filter: saturate(0.55);
+        }
+
+        h1, h2, h3, h4, button, .font-display {
+            font-family: "Fredoka", "Nunito", system-ui, sans-serif;
+        }
+
+        .tap-scale {
+            transition: transform 0.12s ease, box-shadow 0.2s ease;
+        }
+
+        .tap-scale:active {
+            transform: scale(0.97);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: fadeIn 0.58s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glass-card {
+            border: 1px solid var(--line);
+            background: var(--card);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .btn-primary {
+            color: white;
+            background: linear-gradient(135deg, var(--purple), var(--teal));
+            box-shadow: 0 14px 28px rgba(86, 67, 113, 0.14);
+        }
+
+        .btn-soft {
+            color: var(--ink);
+            background: rgba(246, 241, 255, 0.76);
+            border: 1px solid var(--line);
+        }
+
+        .icon-bubble {
+            width: 2.65rem;
+            height: 2.65rem;
+            display: grid;
+            place-items: center;
+            border-radius: 1rem;
+            color: var(--purple);
+            background: rgba(255, 255, 255, 0.74);
+            border: 1px solid var(--line);
+        }
+
+        .hero-card {
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 88% 18%, rgba(247, 236, 165, 0.5), transparent 8rem),
+                linear-gradient(135deg, rgba(255,255,255,0.94), rgba(238,249,252,0.86));
+        }
+
+        .hero-card::after {
+            content: "";
+            position: absolute;
+            right: 1.2rem;
+            bottom: -1rem;
+            width: 7rem;
+            height: 7rem;
+            background: url("http://skani.space/bloom-hub/assets/bloom-hub-icon.png") center / contain no-repeat;
+            opacity: 0.18;
+        }
+
+        .asset-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 1.25rem;
+            background: rgba(255, 255, 255, 0.62);
+            border: 1px solid var(--line);
+            cursor: pointer;
+        }
+
+        .asset-row i {
+            color: var(--purple);
+        }
+
+        .tip-number {
+            width: 1.55rem;
+            height: 1.55rem;
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            border-radius: 999px;
+            color: #6E5196;
+            background: rgba(142, 109, 172, 0.10);
+            font-size: 0.65rem;
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body>
+    <main class="relative z-10 min-h-screen pb-12">
+        <div class="max-w-md mx-auto px-5">
+            <header class="py-7 pt-[calc(1.75rem+env(safe-area-inset-top))] flex items-center gap-4">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-14 h-14 rounded-full bg-white border border-[var(--line)] shadow-lg overflow-hidden flex items-center justify-center">
+                        <img src="http://skani.space/bloom-hub/assets/bloom-hub-logo.png"
+                             alt="Bloom Hub Logo"
+                             class="w-full h-full object-contain"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';">
+                        <span class="hidden w-full h-full place-items-center text-xs font-black text-bloomPurple">BH</span>
+                    </div>
+                    <div class="min-w-0">
+                        <h1 class="text-xl font-black leading-none tracking-tight">Bloom Hub Skani</h1>
+                        <p class="text-[10px] text-[var(--muted)] font-black uppercase tracking-[0.16em] mt-1.5">Delivery & Owner Access</p>
+                    </div>
+                </div>
+            </header>
+
+            <section class="reveal hero-card glass-card p-7 rounded-[2.25rem]">
+                <span class="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.16em] text-bloomPurple mb-4">
+                    <i class="fa-solid fa-circle-check"></i> Setup Ready
+                </span>
+                <h2 class="text-4xl font-black leading-[0.92] tracking-tight max-w-[16rem]">Bloom Hub Skani is ready</h2>
+                <p class="text-sm text-[var(--muted)] font-bold leading-relaxed mt-4 max-w-[18rem]">
+                    Use this owner page to open the live Skani, copy the link, check parent suggestions, and download QR files.
+                </p>
+                <button onclick="window.open('http://skani.space/bloom-hub/assets/bloomhub_updated_1.html', '_blank')"
+                        class="relative z-10 mt-7 w-full btn-primary py-4 rounded-2xl font-black text-xs uppercase tracking-[0.12em] tap-scale">
+                    Open Live Skani
+                </button>
+            </section>
+
+            <section class="grid grid-cols-2 gap-3 mt-4">
+                <article class="reveal glass-card p-5 rounded-[1.85rem]" style="animation-delay: 0.08s">
+                    <div class="icon-bubble mb-4"><i class="fa-solid fa-link"></i></div>
+                    <h3 class="text-[10px] font-black uppercase text-bloomPurple tracking-widest mb-2">Your Link</h3>
+                    <p class="text-[11px] font-bold text-[var(--muted)] leading-tight mb-4">Use this anywhere your QR should point.</p>
+                    <button onclick="copyToClipboard('http://skani.space/bloom-hub/assets/bloomhub_updated_1.html', this)"
+                            class="w-full btn-soft py-3 rounded-xl font-black text-[10px] uppercase tracking-widest tap-scale">
+                        Copy Link
+                    </button>
+                </article>
+
+                <article class="reveal glass-card p-5 rounded-[1.85rem]" style="animation-delay: 0.14s">
+                    <div class="icon-bubble mb-4"><i class="fa-solid fa-folder-open"></i></div>
+                    <h3 class="text-[10px] font-black uppercase text-bloomPurple tracking-widest mb-2">All Files</h3>
+                    <p class="text-[11px] font-bold text-[var(--muted)] leading-tight mb-4">Placeholder for the final asset folder.</p>
+                    <button onclick="window.open('http://skani.space/bloom-hub/assets/', '_blank')"
+                            class="w-full btn-soft py-3 rounded-xl font-black text-[10px] uppercase tracking-widest tap-scale">
+                        Open Folder
+                    </button>
+                </article>
+
+                <article class="reveal glass-card p-5 rounded-[1.85rem] col-span-2" style="animation-delay: 0.2s">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="icon-bubble"><i class="fa-solid fa-comment-dots"></i></div>
+                        <div>
+                            <h3 class="text-[10px] font-black uppercase text-bloomPurple tracking-widest">Suggestions</h3>
+                            <p class="text-[11px] font-bold text-[var(--muted)] leading-tight mt-1">Check parent suggestions submitted from the Bloom Hub Skani.</p>
+                        </div>
+                    </div>
+                    <button onclick="window.open('http://skani.space/bloom-hub/assets/bloomhub-suggestions.html', '_blank')"
+                            class="w-full btn-primary py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest tap-scale">
+                        View Suggestions
+                    </button>
+                </article>
+            </section>
+
+            <section class="reveal glass-card mt-4 p-6 rounded-[2rem]" style="animation-delay: 0.26s">
+                <h3 class="text-[10px] font-black uppercase text-[var(--muted)] tracking-[0.2em] mb-4">QR Files</h3>
+                <div class="space-y-3">
+                    <div onclick="window.open('http://skani.space/bloom-hub/assets/bloomhub-qr.png', '_blank')" class="asset-row tap-scale">
+                        <div>
+                            <strong class="text-sm block">PNG <span class="text-[10px] text-[var(--muted)]">(Quick Use)</span></strong>
+                            <span class="text-[10px] text-[var(--muted)] font-bold">WhatsApp, Instagram, quick sharing</span>
+                        </div>
+                        <i class="fa-solid fa-circle-arrow-down text-xl"></i>
+                    </div>
+
+                    <div onclick="window.open('http://skani.space/bloom-hub/assets/bloomhub-qr.svg', '_blank')" class="asset-row tap-scale">
+                        <div>
+                            <strong class="text-sm block">SVG <span class="text-[10px] text-[var(--muted)]">(High Quality)</span></strong>
+                            <span class="text-[10px] text-[var(--muted)] font-bold">Best for large-scale print</span>
+                        </div>
+                        <i class="fa-solid fa-circle-arrow-down text-xl"></i>
+                    </div>
+
+                    <div onclick="window.open('http://skani.space/bloom-hub/assets/bloomhub-qr.pdf', '_blank')" class="asset-row tap-scale">
+                        <div>
+                            <strong class="text-sm block">PDF <span class="text-[10px] text-[var(--muted)]">(Print Ready)</span></strong>
+                            <span class="text-[10px] text-[var(--muted)] font-bold">For print shops and branded boards</span>
+                        </div>
+                        <i class="fa-solid fa-circle-arrow-down text-xl"></i>
+                    </div>
+                </div>
+            </section>
+
+            <section class="reveal glass-card mt-4 p-6 rounded-[2rem]" style="animation-delay: 0.32s">
+                <h3 class="text-[10px] font-black uppercase text-bloomPurple tracking-[0.2em] mb-5">Get the Best Results</h3>
+                <div class="space-y-5">
+                    <div class="flex gap-3">
+                        <span class="tip-number">1</span>
+                        <div>
+                            <h4 class="text-xs font-black uppercase mb-1">Place it where parents pause</h4>
+                            <p class="text-[11px] text-[var(--muted)] font-bold leading-relaxed">Reception, waiting area, entrance, front desk, and activity rooms are strong scan points.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="tip-number">2</span>
+                        <div>
+                            <h4 class="text-xs font-black uppercase mb-1">Print large enough</h4>
+                            <p class="text-[11px] text-[var(--muted)] font-bold leading-relaxed">Avoid tiny QR placements. Parents should scan comfortably without zooming or bending down.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="tip-number">3</span>
+                        <div>
+                            <h4 class="text-xs font-black uppercase mb-1">Tell people what to expect</h4>
+                            <p class="text-[11px] text-[var(--muted)] font-bold leading-relaxed">Use simple copy like "Scan for programs, enrolment, payments, and parent reviews."</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="tip-number">4</span>
+                        <div>
+                            <h4 class="text-xs font-black uppercase mb-1">Use the link online</h4>
+                            <p class="text-[11px] text-[var(--muted)] font-bold leading-relaxed">Add it to WhatsApp replies, Instagram bio, parent groups, and email signatures.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="reveal mt-6 p-7 rounded-[2.25rem] border border-dashed border-[var(--line)] text-center bg-white/50" style="animation-delay: 0.38s">
+                <h3 class="text-xl font-black tracking-tight mb-3">Need help with printing?</h3>
+                <p class="text-xs font-bold text-[var(--muted)] mb-6 leading-relaxed">
+                    Use this for QR boards, table stands, acrylic signs, and branded displays.
+                </p>
+                <button onclick="window.open('https://wa.me/255757249910?text=Hello!%20I%20need%20help%20with%20printing%20the%20Bloom%20Hub%20Skani%20QR%20board', '_blank')"
+                        class="w-full btn-primary py-4 rounded-2xl font-black text-xs uppercase tracking-widest tap-scale">
+                    Request Printing
+                </button>
+            </section>
+
+            <section class="reveal glass-card mt-6 p-6 rounded-[2rem]" style="animation-delay: 0.42s">
+                <h3 class="text-xl font-black tracking-tight mb-2">Want More?</h3>
+                <p class="text-xs font-bold text-[var(--muted)] mb-5 leading-relaxed">
+                    Add more digital tools around your Skani experience.
+                </p>
+                <div class="grid gap-3">
+                    <button onclick="window.open('https://wa.me/255757249910?text=Hello!%20I%20am%20interested%20in%20Virtual%20Tours%20for%20Bloom%20Hub.', '_blank')"
+                            class="asset-row tap-scale text-left">
+                        <div class="flex items-center gap-3">
+                            <span class="icon-bubble"><i class="fa-solid fa-vr-cardboard"></i></span>
+                            <div>
+                                <strong class="text-sm block">Virtual Tours</strong>
+                                <span class="text-[10px] text-[var(--muted)] font-bold">Let parents explore the space online.</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+
+                    <button onclick="window.open('https://wa.me/255757249910?text=Hello!%20I%20am%20interested%20in%20a%20website%20for%20Bloom%20Hub.', '_blank')"
+                            class="asset-row tap-scale text-left">
+                        <div class="flex items-center gap-3">
+                            <span class="icon-bubble"><i class="fa-solid fa-globe"></i></span>
+                            <div>
+                                <strong class="text-sm block">Websites</strong>
+                                <span class="text-[10px] text-[var(--muted)] font-bold">Build a polished web presence beyond QR.</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+
+                    <button onclick="window.open('https://wa.me/255757249910?text=Hello!%20I%20would%20like%20a%20consultation%20for%20Bloom%20Hub%20digital%20experience.', '_blank')"
+                            class="asset-row tap-scale text-left">
+                        <div class="flex items-center gap-3">
+                            <span class="icon-bubble"><i class="fa-solid fa-comments"></i></span>
+                            <div>
+                                <strong class="text-sm block">Consultation</strong>
+                                <span class="text-[10px] text-[var(--muted)] font-bold">Plan the next version with Skani.</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <section class="reveal mt-6 text-center" style="animation-delay: 0.48s">
+                <div class="inline-flex items-center gap-3 px-5 py-4 rounded-[1.4rem] bg-white/60 border border-[var(--line)]">
+                    <i class="fa-solid fa-lock text-bloomPurple"></i>
+                    <div class="text-left">
+                        <p class="text-[9px] font-black uppercase text-bloomPurple leading-none">Owner Access</p>
+                        <p class="text-[10px] font-bold text-[var(--muted)] mt-1">Keep this page private.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        function copyToClipboard(text, button) {
+            const original = button.textContent;
+            const done = () => {
+                button.textContent = 'Copied';
+                setTimeout(() => {
+                    button.textContent = original;
+                }, 1600);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+            } else {
+                fallbackCopy(text, done);
+            }
+        }
+
+        function fallbackCopy(text, done) {
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            done();
+        }
+    </script>
+</body>
+</html>
