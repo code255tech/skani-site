@@ -665,7 +665,8 @@
 
         .testimonial-track {
             display: flex;
-            transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+            align-items: flex-start;
+            transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), height 0.35s ease;
             will-change: transform;
         }
 
@@ -676,6 +677,7 @@
 
         .testimonial-slide {
             min-width: 100%;
+            flex: 0 0 100%;
             padding: 2rem;
         }
 
@@ -2355,11 +2357,19 @@ confidence soar!
         let testimonialDragDelta = 0;
         let testimonialIsDragging = false;
 
+        function updateTestimonialHeight() {
+            if (!testimonialTrack) return;
+            const activeSlide = testimonialTrack.children[testimonialIndex];
+            if (!activeSlide) return;
+            testimonialTrack.style.height = `${activeSlide.offsetHeight}px`;
+        }
+
         function showTestimonial(index) {
             if (!testimonialTrack || testimonialDots.length === 0) return;
             testimonialIndex = (index + testimonialDots.length) % testimonialDots.length;
             testimonialTrack.style.transform = `translateX(-${testimonialIndex * 100}%)`;
             testimonialDots.forEach((dot, dotIndex) => dot.classList.toggle('active', dotIndex === testimonialIndex));
+            window.requestAnimationFrame(updateTestimonialHeight);
         }
 
         function resetTestimonialTimer() {
@@ -2422,6 +2432,11 @@ confidence soar!
             testimonialCarousel.addEventListener('pointercancel', finishTestimonialDrag);
         }
 
+        window.addEventListener('resize', updateTestimonialHeight);
+        testimonialTrack?.querySelectorAll('img').forEach((image) => {
+            image.addEventListener('load', updateTestimonialHeight);
+        });
+        updateTestimonialHeight();
         resetTestimonialTimer();
     </script>
 </body>
