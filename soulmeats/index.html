@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -640,9 +639,7 @@ function canShowPwaPrompt() {
 function schedulePwaInstallPrompt() {
     if (!canShowPwaPrompt() || pwaPromptTimer) return;
     pwaPromptTimer = setTimeout(() => {
-        if (deferredInstallPrompt || isIosDevice()) {
-            showPwaInstallPrompt();
-        }
+        showPwaInstallPrompt();
     }, PWA_PROMPT_DELAY);
 }
 
@@ -658,6 +655,10 @@ function showPwaInstallPrompt() {
     if (!deferredInstallPrompt && isIosDevice()) {
         title.textContent = 'Add SoulMeats';
         copy.textContent = 'Tap Share, then Add to Home Screen to save SoulMeats like an app.';
+        button.textContent = 'Got It';
+    } else if (!deferredInstallPrompt) {
+        title.textContent = 'Add SoulMeats';
+        copy.textContent = 'Open your browser menu, then choose Install app or Add to Home screen.';
         button.textContent = 'Got It';
     } else {
         title.textContent = 'Install SoulMeats';
@@ -676,9 +677,14 @@ function dismissPwaInstallPrompt() {
     hidePwaInstallPrompt();
 }
 
+function snoozePwaInstallPrompt() {
+    localStorage.setItem('sm_pwa_prompt_dismissed_until', String(Date.now() + PWA_PROMPT_COOLDOWN));
+    hidePwaInstallPrompt();
+}
+
 async function installSoulMeatsApp() {
     if (!deferredInstallPrompt) {
-        dismissPwaInstallPrompt();
+        snoozePwaInstallPrompt();
         return;
     }
 

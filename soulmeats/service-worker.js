@@ -1,8 +1,10 @@
-const CACHE_NAME = 'soulmeats-pwa-v1';
+const CACHE_NAME = 'soulmeats-pwa-v2';
 const APP_SHELL = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './icons/soulmeats-192.png',
+  './icons/soulmeats-512.png'
 ];
 
 self.addEventListener('install', event => {
