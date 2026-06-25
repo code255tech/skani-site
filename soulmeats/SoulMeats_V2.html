@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>SoulMeats Skani</title>
+    <link rel="icon" href="https://www.skani.space/slmtlogo.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        yellow: { 500: '#EAB308', 600: '#CA8A04' },
+                        cream: '#FFFDF0'
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); }
+        body {
+            background-color: #000;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        .dark body { background-color: #000; }
+        .bg-cream { background-color: #FFFDF0; }
+        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        input, textarea, select { font-size: 16px !important; }
+        .modal-overlay { opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); backdrop-filter: blur(0px); }
+        .modal-overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(12px); }
+        .modal-content { transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .order-modal-content { transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .modal-overlay.active .order-modal-content { transform: translateY(0); }
+        .card-shimmer { position: relative; overflow: hidden; }
+        .card-shimmer::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.03), transparent); transform: rotate(45deg); transition: 0.5s; }
+        .card-shimmer:active::after { left: 100%; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .tap-scale { transition: transform 0.1s ease; }
+        .tap-scale:active { transform: scale(0.95); }
+
+        /* Order Bot Styles */
+        .cat-pill { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 999px; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; border: 1.5px solid transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; }
+        .cat-pill.active { background: #EAB308; color: #000; border-color: #EAB308; }
+        .cat-pill.inactive { background: transparent; color: #a1a1aa; border-color: #3f3f46; }
+        .cat-pill.inactive:hover { border-color: #71717a; color: #e4e4e7; }
+        .cat-pill.unavailable { background: transparent; color: #52525b; border-color: #27272a; cursor: not-allowed; }
+        .item-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); gap: 12px; }
+        .dark .item-row { border-bottom-color: rgba(255,255,255,0.06); }
+        .light-mode .item-row { border-bottom-color: rgba(0,0,0,0.08); }
+        .add-btn { width: 34px; height: 34px; border-radius: 50%; background: #EAB308; color: #000; font-size: 20px; font-weight: 900; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; line-height: 1; }
+        .add-btn:hover { transform: scale(1.1); }
+        .add-btn:active { transform: scale(0.9); }
+        .qty-ctrl { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .qty-btn { width: 30px; height: 30px; border-radius: 50%; background: #27272a; color: #fff; font-size: 16px; font-weight: 900; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+        .qty-btn:hover { background: #3f3f46; }
+        .qty-num { min-width: 22px; text-align: center; font-size: 15px; font-weight: 900; color: #fff; }
+        .size-pill { padding: 4px 10px; border-radius: 999px; font-size: 10px; font-weight: 900; text-transform: uppercase; border: 1.5px solid #3f3f46; color: #a1a1aa; cursor: pointer; transition: all 0.15s; }
+        .size-pill.selected { background: #EAB308; color: #000; border-color: #EAB308; }
+        .cart-badge { position: absolute; top: -4px; right: -4px; background: #EAB308; color: #000; border-radius: 999px; font-size: 9px; font-weight: 900; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; padding: 0 3px; }
+        .step-dot { width: 8px; height: 8px; border-radius: 50%; background: #3f3f46; transition: all 0.3s; }
+        .step-dot.done { background: #22c55e; }
+        .step-dot.active { background: #EAB308; width: 24px; border-radius: 4px; }
+        .slide-left { animation: slideLeft 0.3s cubic-bezier(0.22,1,0.36,1) both; }
+        .slide-right { animation: slideRight 0.3s cubic-bezier(0.22,1,0.36,1) both; }
+        @keyframes slideLeft { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideRight { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+        .unavailable-banner { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 10px 14px; font-size: 11px; color: #f87171; font-weight: 700; text-align: center; margin-bottom: 12px; }
+        .search-wrap { position: relative; margin-bottom: 14px; }
+        .search-input { width: 100%; box-sizing: border-box; background: #18181b; border: 1.5px solid #3f3f46; border-radius: 16px; padding: 12px 16px 12px 42px; font-size: 14px !important; font-weight: 700; color: #fff; outline: none; transition: border-color 0.2s; }
+        .search-input:focus { border-color: #EAB308; }
+        .search-input::placeholder { color: #52525b; font-weight: 600; }
+        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #52525b; font-size: 15px; pointer-events: none; transition: color 0.2s; }
+        .search-input:focus ~ .search-icon, .search-wrap:focus-within .search-icon { color: #EAB308; }
+        .search-clear { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: #3f3f46; border: none; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #a1a1aa; font-size: 11px; transition: all 0.15s; }
+        .search-clear:hover { background: #52525b; color: #fff; }
+        .search-cat-label { display: inline-block; background: #27272a; color: #a1a1aa; border-radius: 6px; padding: 2px 7px; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; margin-left: 6px; vertical-align: middle; }
+        .search-empty { text-align: center; padding: 40px 20px; color: #52525b; }
+        .search-empty .se-icon { font-size: 36px; margin-bottom: 10px; }
+        .search-empty p { font-size: 13px; font-weight: 700; }
+        .light-mode .search-input { background: #f4f4f5; color: #18181b; border-color: #d4d4d8; }
+        .light-mode .search-input::placeholder { color: #a1a1aa; }
+        .light-mode .search-cat-label { background: #e4e4e7; color: #71717a; }
+        .light-mode .search-clear { background: #e4e4e7; color: #71717a; }
+        .pay-opt { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 16px; border: 1.5px solid #3f3f46; cursor: pointer; transition: all 0.2s; margin-bottom: 10px; }
+        .pay-opt.selected { border-color: #EAB308; background: rgba(234,179,8,0.08); }
+        .pay-opt .radio-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #52525b; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+        .pay-opt.selected .radio-dot { border-color: #EAB308; background: #EAB308; }
+        .pay-opt.selected .radio-dot::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #000; }
+        .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .summary-row:last-of-type { border-bottom: none; }
+        .order-screen { display: none; }
+        .order-screen.active { display: block; }
+        /* Light mode overrides for order bot */
+        .light-mode .qty-num { color: #18181b; }
+        .light-mode .qty-btn { background: #e4e4e7; color: #18181b; }
+        .light-mode .qty-btn:hover { background: #d4d4d8; }
+        .light-mode .pay-opt { border-color: #d4d4d8; }
+        .light-mode .pay-opt.selected { border-color: #EAB308; background: rgba(234,179,8,0.06); }
+        .light-mode .summary-row { border-bottom-color: rgba(0,0,0,0.08); }
+        .light-mode .item-row { border-bottom-color: rgba(0,0,0,0.08); }
+        .light-mode .cat-pill.inactive { color: #52525b; border-color: #d4d4d8; }
+        .light-mode .cat-pill.inactive:hover { border-color: #a1a1aa; color: #18181b; }
+        .light-mode .cat-pill.unavailable { color: #a1a1aa; border-color: #e4e4e7; }
+        .light-mode .size-pill { border-color: #d4d4d8; color: #52525b; }
+        .light-mode .step-dot { background: #d4d4d8; }
+    </style>
+</head>
+<body class="transition-colors duration-500">
+<div class="min-h-screen bg-cream dark:bg-black pb-40">
+    <div class="text-zinc-900 dark:text-zinc-100 max-w-md mx-auto">
+
+        <!-- HEADER -->
+        <header class="px-6 py-5 flex items-center justify-between sticky top-0 bg-cream/80 dark:bg-black/80 backdrop-blur-xl z-40 border-b border-zinc-200 dark:border-zinc-900 pt-[calc(1.25rem+env(safe-area-inset-top))]">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 bg-yellow-500 rounded-2xl overflow-hidden flex items-center justify-center shadow-lg rotate-3 animate-pulse-slow">
+                    <img src="https://www.skani.space/slmtlogo.png" alt="Soul Meat Logo" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="hidden w-full h-full items-center justify-center text-black font-black italic">SM</div>
+                </div>
+                <div>
+                    <h1 class="text-sm font-black dark:text-white uppercase tracking-tighter leading-none">SoulMeats</h1>
+                    <p class="text-[9px] text-yellow-600 dark:text-yellow-500 uppercase tracking-[0.2em] font-black mt-1">Open Air Restaurant</p>
+                </div>
+            </div>
+            <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-yellow-500 shadow-inner active:scale-90 transition-all hover:rotate-12">
+                <i id="theme-icon" class="fa-solid fa-sun"></i>
+            </button>
+        </header>
+
+        <!-- WELCOME -->
+        <section class="px-6 py-10 reveal">
+            <div class="inline-block px-3 py-1 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 text-[10px] font-black uppercase tracking-widest rounded-full mb-3 border border-yellow-500/20">Premium Dining</div>
+            <h2 class="text-4xl font-black text-zinc-900 dark:text-white leading-[0.95] tracking-tighter">
+                Welcome to <br><span class="text-yellow-500 drop-shadow-md">SoulMeats 🍖🔥</span>
+            </h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mt-4 text-sm font-medium leading-relaxed max-w-[300px]">
+                Great food, great vibes — everything you need is one scan away.
+            </p>
+        </section>
+
+        <!-- ACTION GRID -->
+        <section class="px-6 grid grid-cols-2 gap-4">
+            <button onclick="openModal('menu-options-modal')" class="reveal tap-scale card-shimmer bg-yellow-500 p-5 rounded-3xl flex flex-col items-center justify-center text-black shadow-lg shadow-yellow-500/20">
+                <i class="fa-solid fa-utensils text-2xl mb-1 animate-float"></i>
+                <span class="font-black text-lg tracking-tight">Menu</span>
+                <span class="text-[10px] font-bold opacity-80 uppercase tracking-tight">Taste the vibe</span>
+            </button>
+            <button onclick="openModal('wifi-modal')" class="reveal tap-scale card-shimmer bg-zinc-900 dark:bg-zinc-100 dark:text-black text-white p-5 rounded-3xl flex flex-col items-center justify-center shadow-xl">
+                <i class="fa-solid fa-wifi text-2xl mb-1"></i>
+                <span class="font-black text-lg tracking-tight">WiFi Access</span>
+                <span class="text-[10px] font-bold opacity-70 dark:opacity-80 uppercase tracking-tight">Instant Connect</span>
+            </button>
+            <button onclick="navigateTo('https://www.google.com/search?sca_esv=f9ea728914227c9b&sxsrf=APpeQnv2eUsUS-E_ZMGU6oowh-K3V5kf1Q:1782390968999&q=soulmeats&si=APenkKm7iecQ4G6P-TsbSMFKIQtv3EFIqRAFw-i8uEbk55Z-__UipycWRNgTjnwenTa4bar0iIAK5L90y7DYxgSn6t-i-bl_PfpJgReMFH7HEyIiSfn0HWOmCcB619YW_zOJU2RwPW_zikGCQDT5vXF_KETxn4ZBuA%3D%3D&sa=X&ved=2ahUKEwiS-brks6KVAxX6zwIHHaEJKRwQrrQLegQIHRAA&biw=1920&bih=945&dpr=1')" class="reveal tap-scale card-shimmer bg-[#EBE9D8] dark:bg-zinc-900 dark:text-white text-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-3xl flex flex-col items-center justify-center shadow-sm">
+                <i class="fa-regular fa-star text-2xl mb-1 text-zinc-900 dark:text-zinc-100"></i>
+                <span class="font-black text-lg tracking-tight">Reviews</span>
+                <span class="text-[10px] font-bold opacity-60 uppercase tracking-tight">Top Rated</span>
+            </button>
+            <button onclick="navigateTo('https://maps.app.goo.gl/1tMdQ1JYLSNmmBbFA')" class="reveal tap-scale card-shimmer bg-[#EBE9D8] dark:bg-zinc-900 dark:text-white text-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-3xl flex flex-col items-center justify-center shadow-sm">
+                <i class="fa-regular fa-map text-2xl mb-1 text-zinc-900 dark:text-zinc-100"></i>
+                <span class="font-black text-lg tracking-tight">Find Us</span>
+                <span class="text-[10px] font-bold opacity-60 uppercase tracking-tight">Get Directions</span>
+            </button>
+        </section>
+
+        <!-- ORDER NOW CTA — replaces Book a Table -->
+        <section class="px-6 mt-8 reveal">
+            <button onclick="openOrderBot()"
+                class="w-full bg-yellow-500 p-7 rounded-[2.5rem] text-left text-black flex justify-between items-center group overflow-hidden relative shadow-2xl tap-scale">
+                <div class="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                <div class="relative z-10">
+                    <h3 class="text-2xl font-black italic uppercase tracking-tighter">Order Now 🛒</h3>
+                    <p class="text-black/60 text-[11px] font-black uppercase tracking-wider mt-1">Build your order in seconds</p>
+                </div>
+                <div id="order-cta-badge" class="w-12 h-12 bg-black rounded-full flex items-center justify-center text-yellow-500 relative z-10 transition-transform group-hover:scale-110">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+            </button>
+        </section>
+
+        <!-- SOCIAL LINKS -->
+        <section class="px-6 mt-12">
+            <h3 class="reveal text-xl font-black dark:text-white mb-5 uppercase tracking-tighter italic">Stay Connected 🔥</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <a href="https://wa.me/255757249910" target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-cream dark:bg-zinc-900 p-4 rounded-2xl flex flex-col border border-zinc-200 dark:border-zinc-800 border-b-[3px] border-b-[#25D366]">
+                    <i class="fa-brands fa-whatsapp text-[#25D366] text-xl mb-2"></i>
+                    <span class="font-black text-sm tracking-tight">WhatsApp</span>
+                    <span class="text-[9px] font-bold opacity-60 uppercase">Chat instantly</span>
+                </a>
+                <a href="https://www.instagram.com/soulmeatstz" target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-cream dark:bg-zinc-900 p-4 rounded-2xl flex flex-col border border-zinc-200 dark:border-zinc-800 border-b-[3px] border-b-[#E4405F]">
+                    <i class="fa-brands fa-instagram text-[#E4405F] text-xl mb-2"></i>
+                    <span class="font-black text-sm tracking-tight">Instagram</span>
+                    <span class="text-[9px] font-bold opacity-60 uppercase">See the vibe</span>
+                </a>
+                <a href="https://www.snapchat.com/add/soulmeats" target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-cream dark:bg-zinc-900 p-4 rounded-2xl flex flex-col border border-zinc-200 dark:border-zinc-800 border-b-[3px] border-b-[#FFFC00]">
+                    <i class="fa-brands fa-snapchat text-yellow-500 text-xl mb-2"></i>
+                    <span class="font-black text-sm tracking-tight">Snapchat</span>
+                    <span class="text-[9px] font-bold opacity-60 uppercase">Behind scenes</span>
+                </a>
+                <a href="https://www.tiktok.com/@soulmeats" target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-cream dark:bg-zinc-900 p-4 rounded-2xl flex flex-col border border-zinc-200 dark:border-zinc-800 border-b-[3px] border-b-zinc-400">
+                    <i class="fa-brands fa-tiktok text-zinc-400 text-xl mb-2"></i>
+                    <span class="font-black text-sm tracking-tight">TikTok</span>
+                    <span class="text-[9px] font-bold opacity-60 uppercase">The experience</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- FEEDBACK -->
+        <section class="px-6 mt-12 mb-10 reveal">
+            <div class="bg-[#EBE9D8] dark:bg-zinc-900/50 p-8 rounded-[3rem] border-2 border-dashed border-zinc-300 dark:border-zinc-800 transition-all hover:border-yellow-500/50">
+                <h3 class="font-black text-lg dark:text-white mb-3 tracking-tight">Suggestion</h3>
+                <div id="suggestion-feedback" class="py-6 text-center hidden">
+                    <p class="text-yellow-600 dark:text-yellow-500 font-black">Thank you! 🙏</p>
+                </div>
+                <form id="suggestion-form" onsubmit="handleSuggestion(event)" class="space-y-4">
+                    <textarea id="suggestion-text" name="suggestion" placeholder="Write here..." required class="w-full bg-cream dark:bg-black border border-zinc-300 dark:border-zinc-800 rounded-2xl p-4 text-sm dark:text-white min-h-[80px] outline-none focus:border-yellow-500 transition-colors"></textarea>
+                    <button type="submit" id="submit-btn" class="w-full bg-zinc-900 dark:bg-yellow-500 text-white dark:text-black py-4 rounded-2xl font-black text-sm uppercase tracking-widest tap-scale transition-all">Submit</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ASSISTANCE -->
+        <section class="px-6 mt-6 mb-12 reveal">
+            <p class="text-[10px] font-bold text-zinc-400 dark:text-zinc-600 uppercase tracking-[0.25em] text-center mb-4">Need Assistance?</p>
+            <div class="grid grid-cols-2 gap-4">
+                <a href="https://wa.me/255757249910" target="_blank" rel="noopener noreferrer" class="tap-scale flex items-center justify-center gap-3 bg-white dark:bg-zinc-900 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                    <i class="fa-brands fa-whatsapp text-[#25D366] text-xl"></i>
+                    <span class="font-black text-[12px] dark:text-white uppercase tracking-tight">WhatsApp</span>
+                </a>
+                <a href="tel:0658898989" class="tap-scale flex items-center justify-center gap-3 bg-white dark:bg-zinc-900 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                    <i class="fa-solid fa-phone text-yellow-500 text-xl"></i>
+                    <span class="font-black text-[12px] dark:text-white uppercase tracking-tight">Call Now</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- FLOATING BOTTOM BAR -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pointer-events-none">
+            <div class="max-w-md mx-auto bg-black/90 dark:bg-zinc-900/90 backdrop-blur-2xl rounded-[2rem] p-3 flex items-center justify-between border border-white/10 pointer-events-auto shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                <button onclick="openOrderBot()" class="flex-[1.5] flex items-center justify-center gap-2 bg-yellow-500 text-black font-black text-xs uppercase py-4 rounded-[1.5rem] tap-scale shadow-lg shadow-yellow-500/20 relative">
+                    <i class="fa-solid fa-bag-shopping"></i> Order Now
+                    <span id="bottom-cart-badge" class="hidden absolute -top-1 -right-1 bg-black text-yellow-400 text-[9px] font-black rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 border border-yellow-500"></span>
+                </button>
+                <div class="w-4"></div>
+                <button onclick="openModal('booking-modal')" class="flex-[1.2] flex items-center justify-center gap-2 text-white font-black text-[10px] uppercase py-4 tap-scale">
+                    <i class="fa-solid fa-calendar-days text-yellow-400 text-xl"></i> Reserve Table
+                </button>
+            </div>
+        </nav>
+
+        <div class="fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom))] left-0 right-0 z-[51] px-6 pointer-events-none">
+            <div class="max-w-md mx-auto flex justify-end">
+                <a href="https://www.skani.space/" target="_blank" rel="noopener noreferrer"
+                   class="pointer-events-auto text-[7px] font-black uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200/70 dark:border-zinc-800 px-2 py-1 rounded-full shadow-lg opacity-40 hover:opacity-100 transition-opacity duration-300 hover:text-yellow-600 dark:hover:text-yellow-500">
+                    Powered by Skani.space
+                </a>
+            </div>
+        </div>
+
+        <!-- ===================== MODALS ===================== -->
+
+        <!-- MENU OPTIONS MODAL -->
+        <div id="menu-options-modal" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+            <div class="absolute inset-0 bg-black/60" onclick="closeModal('menu-options-modal')"></div>
+            <div class="modal-content bg-cream dark:bg-zinc-950 w-full max-w-sm rounded-[3rem] p-8 relative border-t-8 border-yellow-500 shadow-2xl">
+                <button onclick="closeModal('menu-options-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="text-3xl font-black dark:text-white mb-2 tracking-tighter italic">Select Menu</h3>
+                <p class="text-zinc-500 text-[10px] font-black uppercase mb-8 tracking-widest leading-tight">Pick your dining experience</p>
+                <div class="space-y-4">
+                    <button onclick="openInNewTab('https://www.skani.space/SOULMEATS%20menu%20_compressed.pdf')"
+                        class="w-full tap-scale bg-yellow-500 p-6 rounded-2xl flex items-center gap-4 text-black shadow-lg shadow-yellow-500/10">
+                        <div class="w-12 h-12 bg-black/10 rounded-xl flex items-center justify-center text-2xl"><i class="fa-solid fa-utensils"></i></div>
+                        <div class="text-left">
+                            <span class="block font-black text-lg leading-tight">Main Menu</span>
+                            <span class="text-[9px] font-bold uppercase opacity-70 tracking-tighter">Explore full selection</span>
+                        </div>
+                    </button>
+                    <button onclick="openInNewTab('http://skani.space/SoulMeats%20Special%20Menu%20Offers.pdf')"
+                        class="w-full tap-scale bg-zinc-100 dark:bg-zinc-900 p-6 rounded-2xl flex items-center gap-4 border border-zinc-200 dark:border-zinc-800">
+                        <div class="w-12 h-12 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 rounded-xl flex items-center justify-center text-2xl"><i class="fa-solid fa-fire-flame-curved"></i></div>
+                        <div class="text-left">
+                            <span class="block font-black text-lg leading-tight dark:text-white">Daily Offers</span>
+                            <span class="text-[9px] font-bold uppercase opacity-60 dark:text-zinc-400 tracking-tighter">Today's specials</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- WIFI MODAL -->
+        <div id="wifi-modal" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+            <div class="absolute inset-0 bg-black/60" onclick="closeModal('wifi-modal')"></div>
+            <div class="modal-content bg-cream dark:bg-zinc-950 w-full rounded-[3rem] p-10 relative border-t-8 border-yellow-500 shadow-2xl">
+                <button onclick="closeModal('wifi-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="text-3xl font-black dark:text-white mb-2 tracking-tighter">WiFi Access</h3>
+                <p class="text-zinc-500 text-[10px] font-black uppercase mb-6 tracking-widest">Connect and enjoy</p>
+                <div class="space-y-4 mt-6">
+                    <div class="bg-zinc-100 dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <label class="text-[10px] font-black uppercase text-zinc-400 mb-1 block tracking-wider">Network Name (SSID)</label>
+                        <div class="text-xl font-black dark:text-white tracking-tight">Soulmeats</div>
+                    </div>
+                    <div class="bg-zinc-100 dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 flex justify-between items-center">
+                        <div class="flex-1">
+                            <label class="text-[10px] font-black uppercase text-zinc-400 mb-1 block tracking-wider">Password</label>
+                            <div class="text-xl font-black dark:text-white tracking-tight">ilovesoulmeats</div>
+                        </div>
+                        <button id="copy-btn" onclick="copyWifiText('ilovesoulmeats')" class="w-12 h-12 bg-yellow-500 text-black rounded-xl tap-scale flex items-center justify-center shadow-lg"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOOKING MODAL -->
+        <div id="booking-modal" class="modal-overlay fixed inset-0 z-[60] flex items-end sm:items-center justify-center px-4">
+            <div class="absolute inset-0 bg-black/70" onclick="closeModal('booking-modal')"></div>
+            <div class="modal-content bg-cream dark:bg-zinc-950 w-full rounded-t-[3rem] sm:rounded-[3rem] p-10 relative border-t-8 border-yellow-500 pb-[calc(2rem+env(safe-area-inset-bottom))]">
+                <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-800 rounded-full mx-auto mb-6 sm:hidden"></div>
+                <button onclick="closeModal('booking-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="text-3xl font-black dark:text-white mb-6 tracking-tighter italic">Reserve a Table</h3>
+                <form onsubmit="handleBookingSubmit(event)" class="space-y-4">
+                    <input type="text" id="book-name" required placeholder="Your Name" class="w-full bg-zinc-100 dark:bg-zinc-900 p-5 dark:text-white text-sm font-black border border-transparent focus:border-yellow-500 outline-none rounded-2xl transition-all">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="date" id="book-date" required class="w-full bg-zinc-100 dark:bg-zinc-900 p-5 dark:text-white text-sm font-black border border-transparent focus:border-yellow-500 outline-none rounded-2xl transition-all">
+                        <input type="time" id="book-time" required class="w-full bg-zinc-100 dark:bg-zinc-900 p-5 dark:text-white text-sm font-black border border-transparent focus:border-yellow-500 outline-none rounded-2xl transition-all">
+                    </div>
+                    <input type="number" id="book-people" required min="1" placeholder="Number of People" class="w-full bg-zinc-100 dark:bg-zinc-900 p-5 dark:text-white text-sm font-black border border-transparent focus:border-yellow-500 outline-none rounded-2xl transition-all">
+                    <button type="submit" class="w-full bg-yellow-500 text-black py-6 rounded-3xl font-black text-lg tap-scale transition-all uppercase italic shadow-xl shadow-yellow-500/20">
+                        Request Table
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ===================== ORDER BOT FULL-PAGE MODAL ===================== -->
+        <div id="order-modal" class="modal-overlay fixed inset-0 z-[70] flex items-end justify-center">
+            <div class="absolute inset-0 bg-black/80" onclick="confirmCloseOrder()"></div>
+            <div class="order-modal-content bg-cream dark:bg-zinc-950 w-full max-w-md rounded-t-[2.5rem] relative flex flex-col" style="height: 94vh; max-height: 94vh;">
+
+                <!-- ORDER MODAL HEADER -->
+                <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-zinc-200 dark:border-zinc-800 flex-shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-yellow-500 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-bag-shopping text-black text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-black dark:text-white tracking-tight leading-none">Order</h3>
+                            <p class="text-[9px] text-zinc-500 uppercase tracking-widest font-black">SoulMeats</p>
+                        </div>
+                    </div>
+                    <!-- Step indicators -->
+                    <div class="flex items-center gap-2" id="step-indicators">
+                        <div class="step-dot active" id="sd1"></div>
+                        <div class="step-dot" id="sd2"></div>
+                        <div class="step-dot" id="sd3"></div>
+                        <div class="step-dot" id="sd4"></div>
+                    </div>
+                    <button onclick="confirmCloseOrder()" class="w-9 h-9 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-full dark:text-white tap-scale text-sm">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- SCROLLABLE BODY -->
+                <div class="flex-1 overflow-y-auto no-scrollbar px-6" id="order-body">
+
+                    <!-- SCREEN 1: BROWSE & ADD -->
+                    <div id="screen-1" class="order-screen active pt-5 pb-4">
+                        <h4 class="text-2xl font-black dark:text-white tracking-tighter mb-1">What are you having? 🍽️</h4>
+                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-4">Tap items to add to your order</p>
+
+                        <!-- Search bar -->
+                        <div class="search-wrap">
+                            <input type="text" id="menu-search" class="search-input" placeholder="Search any dish, e.g. mishkaki, biryani…" oninput="handleSearch(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <button class="search-clear hidden" id="search-clear-btn" onclick="clearSearch()" aria-label="Clear search">✕</button>
+                        </div>
+
+                        <!-- Search results (shown when searching) -->
+                        <div id="search-results" class="hidden"></div>
+
+                        <!-- Normal browse (hidden when searching) -->
+                        <div id="browse-view">
+                            <!-- Category pills -->
+                            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-3 mb-2" id="cat-pills"></div>
+                            <!-- Unavailable banner (breakfast) -->
+                            <div id="breakfast-banner" class="unavailable-banner hidden">
+                                ⏰ Breakfast is available 9:00 AM – 12:00 PM only
+                            </div>
+                            <!-- Item list -->
+                            <div id="item-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- SCREEN 2: CART REVIEW -->
+                    <div id="screen-2" class="order-screen pt-5 pb-4">
+                        <h4 class="text-2xl font-black dark:text-white tracking-tighter mb-1">Your Order 🛒</h4>
+                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-5">Adjust quantities before checkout</p>
+                        <div id="cart-review-list"></div>
+                        <div class="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex justify-between items-center">
+                            <span class="text-xs font-black uppercase text-zinc-500 tracking-wider">Delivery</span>
+                            <span class="text-sm font-black text-green-500">FREE</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-base font-black dark:text-white uppercase tracking-tight">Total</span>
+                            <span class="text-xl font-black text-yellow-500" id="cart-total-2">TZS 0</span>
+                        </div>
+                    </div>
+
+                    <!-- SCREEN 3: CUSTOMER DETAILS -->
+                    <div id="screen-3" class="order-screen pt-5 pb-4">
+                        <h4 class="text-2xl font-black dark:text-white tracking-tighter mb-1">Your Details 📋</h4>
+                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-5">So we know where to bring it</p>
+
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Full Name</label>
+                                <input type="text" id="cust-name" placeholder="e.g. Amani Juma" class="w-full bg-zinc-100 dark:bg-zinc-900 p-4 dark:text-white text-sm font-bold border border-transparent focus:border-yellow-500 outline-none rounded-2xl transition-all">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Phone Number</label>
+                                <input type="tel" id="cust-phone" placeholder="e.g. 0712 345 678" class="w-full bg-zinc-100 dark:bg-zinc-900 p-4 dark:text-white text-sm font-bold border border-transparent focus:border-yellow-500 outline-none rounded-2xl transition-all">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Order Type</label>
+                                <div class="flex gap-3">
+                                    <button onclick="setOrderType('Delivery')" id="btn-delivery" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-yellow-500 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 transition-all">🛵 Delivery</button>
+                                    <button onclick="setOrderType('Pickup')" id="btn-pickup" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-zinc-300 dark:border-zinc-700 text-zinc-500 transition-all">🏃 Pickup</button>
+                                </div>
+                            </div>
+                            <div id="addr-field">
+                                <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Delivery Address / Area</label>
+                                <input type="text" id="cust-addr" placeholder="e.g. Masaki, Oyster Bay..." class="w-full bg-zinc-100 dark:bg-zinc-900 p-4 dark:text-white text-sm font-bold border border-transparent focus:border-yellow-500 outline-none rounded-2xl transition-all">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Special Instructions (optional)</label>
+                                <textarea id="cust-notes" placeholder="e.g. Extra sauce, no onions..." rows="2" class="w-full bg-zinc-100 dark:bg-zinc-900 p-4 dark:text-white text-sm font-bold border border-transparent focus:border-yellow-500 outline-none rounded-2xl transition-all resize-none"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- PAYMENT -->
+                        <div class="mt-6">
+                            <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-3">Payment Method</label>
+                            <div class="pay-opt selected" id="pay-cash" onclick="selectPayment('cash')">
+                                <div class="radio-dot"></div>
+                                <div class="text-3xl">💵</div>
+                                <div>
+                                    <div class="font-black text-sm dark:text-white">Cash on Delivery</div>
+                                    <div class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Pay when it arrives</div>
+                                </div>
+                            </div>
+                            <div class="pay-opt" id="pay-mpesa" onclick="selectPayment('mpesa')">
+                                <div class="radio-dot"></div>
+                                <div class="text-3xl">📱</div>
+                                <div>
+                                    <div class="font-black text-sm dark:text-white">M-Pesa / Lipa Namba</div>
+                                    <div class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Lipa namba: 255757249910</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SCREEN 4: REVIEW & SEND -->
+                    <div id="screen-4" class="order-screen pt-5 pb-4">
+                        <h4 class="text-2xl font-black dark:text-white tracking-tighter mb-1">Review & Send ✅</h4>
+                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-5">Confirm your order before sending</p>
+
+                        <div class="bg-zinc-100 dark:bg-zinc-900 rounded-2xl p-5 mb-4">
+                            <div class="text-[10px] font-black uppercase text-zinc-400 tracking-wider mb-3">Order Summary</div>
+                            <div id="final-order-items"></div>
+                            <div class="mt-3 pt-3 border-t border-zinc-300 dark:border-zinc-700 flex justify-between">
+                                <span class="text-xs text-zinc-500 font-black uppercase">Delivery</span>
+                                <span class="text-sm font-black text-green-500">FREE</span>
+                            </div>
+                            <div class="flex justify-between mt-1">
+                                <span class="font-black dark:text-white uppercase text-sm">Total</span>
+                                <span class="font-black text-yellow-500 text-lg" id="final-total"></span>
+                            </div>
+                        </div>
+
+                        <div class="bg-zinc-100 dark:bg-zinc-900 rounded-2xl p-5 mb-4">
+                            <div class="text-[10px] font-black uppercase text-zinc-400 tracking-wider mb-3">Customer Details</div>
+                            <div id="final-customer-info" class="space-y-1"></div>
+                        </div>
+
+                        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-4 text-center">
+                            <p class="text-[11px] font-black text-yellow-600 dark:text-yellow-500 uppercase tracking-wider">Clicking send will open WhatsApp + auto-print the receipt 🖨️🟢</p>
+                        </div>
+                    </div>
+
+                </div><!-- end scrollable body -->
+
+                <!-- FOOTER ACTIONS -->
+                <div class="flex-shrink-0 px-6 py-4 border-t border-zinc-200 dark:border-zinc-800" id="order-footer">
+                    <!-- Screen 1 footer -->
+                    <div id="footer-1" class="flex items-center justify-between gap-3">
+                        <div class="flex-1">
+                            <div class="text-[10px] text-zinc-500 font-black uppercase tracking-wider">Cart</div>
+                            <div class="font-black dark:text-white" id="cart-summary-pill">0 items · TZS 0</div>
+                        </div>
+                        <button onclick="goToScreen(2)" id="btn-to-cart" class="bg-yellow-500 text-black font-black text-sm uppercase px-6 py-4 rounded-2xl tap-scale disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+                            View Order →
+                        </button>
+                    </div>
+                    <!-- Screen 2 footer -->
+                    <div id="footer-2" class="hidden flex gap-3">
+                        <button onclick="goToScreen(1)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 dark:text-white tap-scale">← Edit</button>
+                        <button onclick="goToScreen(3)" class="flex-[2] bg-yellow-500 text-black font-black text-sm uppercase py-4 rounded-2xl tap-scale">My Details →</button>
+                    </div>
+                    <!-- Screen 3 footer -->
+                    <div id="footer-3" class="hidden flex gap-3">
+                        <button onclick="goToScreen(2)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 dark:text-white tap-scale">← Back</button>
+                        <button onclick="goToScreen(4)" class="flex-[2] bg-yellow-500 text-black font-black text-sm uppercase py-4 rounded-2xl tap-scale">Review →</button>
+                    </div>
+                    <!-- Screen 4 footer -->
+                    <div id="footer-4" class="hidden flex gap-3">
+                        <button onclick="goToScreen(3)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 dark:text-white tap-scale">← Back</button>
+                        <button onclick="sendToWhatsApp()" class="flex-[2] bg-[#25D366] text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-lg"></i> Send Order
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div><!-- end max-w-md -->
+</div><!-- end min-h-screen -->
+
+<iframe id="suggestion-submit-frame" name="suggestion-submit-frame" class="hidden" aria-hidden="true"></iframe>
+
+<script>
+// ========== THEME ==========
+const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, observerOptions);
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+function toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    document.body.classList.toggle('light-mode', !isDark);
+    const icon = document.getElementById('theme-icon');
+    icon.style.transform = 'scale(0) rotate(90deg)';
+    setTimeout(() => {
+        icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        icon.style.transform = 'scale(1) rotate(0deg)';
+    }, 150);
+}
+function navigateTo(url) { window.open(url, '_blank', 'noopener,noreferrer'); }
+function openInNewTab(url) { window.open(url, '_blank', 'noopener,noreferrer'); }
+function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = ''; }
+
+document.querySelectorAll('a[href^="http://"], a[href^="https://"]').forEach(link => {
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+});
+
+function copyWifiText(text) {
+    const btn = document.getElementById('copy-btn');
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.left = "-9999px";
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try {
+        document.execCommand('copy');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+        btn.classList.replace('bg-yellow-500','bg-green-500'); btn.classList.add('text-white');
+    } catch(e){}
+    document.body.removeChild(ta);
+    setTimeout(() => {
+        btn.innerHTML = '<i class="fa-solid fa-copy"></i>';
+        btn.classList.replace('bg-green-500','bg-yellow-500'); btn.classList.remove('text-white');
+    }, 2000);
+}
+
+async function handleSuggestion(e) {
+    e.preventDefault();
+    const form = document.getElementById('suggestion-form');
+    const feedback = document.getElementById('suggestion-feedback');
+    const submitBtn = document.getElementById('submit-btn');
+    const text = document.getElementById('suggestion-text').value.trim();
+    if (!text) return;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Sending...';
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycby6l1_8WHArGhbuztSRW0uEhKSenlD_opoG0QaJhYo2ZJWWCpIuOsk96SV4ip_1V0u6KA/exec';
+    document.getElementById('suggestion-submit-frame').src = `${scriptUrl}?suggestion=${encodeURIComponent(text)}&t=${Date.now()}`;
+    form.style.opacity = '0';
+    setTimeout(() => { form.classList.add('hidden'); feedback.classList.remove('hidden'); }, 300);
+    setTimeout(() => {
+        feedback.classList.add('hidden'); form.classList.remove('hidden'); form.style.opacity = '1';
+        submitBtn.disabled = false; submitBtn.innerText = 'Submit'; e.target.reset();
+    }, 5000);
+}
+
+function handleBookingSubmit(e) {
+    e.preventDefault();
+    const message = `Hello SoulMeats, I would like to reserve a table.\n\nName: ${document.getElementById('book-name').value}\nDate: ${document.getElementById('book-date').value}\nTime: ${document.getElementById('book-time').value}\nNumber of People: ${document.getElementById('book-people').value}`;
+    openInNewTab(`https://wa.me/255757249910?text=${encodeURIComponent(message)}`);
+    closeModal('booking-modal');
+    e.target.reset();
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const active = document.querySelector('.modal-overlay.active');
+        if (active) { if (active.id === 'order-modal') confirmCloseOrder(); else closeModal(active.id); }
+    }
+});
+
+// ========== MENU DATA ==========
+const MENU = {
+    "Specials": {
+        emoji: "⭐",
+        items: [
+            { name: "Morogoro Mishkaki", price: 800, desc: "Signature street skewers" }
+        ]
+    },
+    "SGR Rolls": {
+        emoji: "🥖",
+        items: [
+            { name: "Chicken Tikka SGR", price: 10000 },
+            { name: "Chicken Periperi SGR", price: 10000 },
+            { name: "Crispy Chicken SGR", price: 10000 },
+            { name: "Beef Pepperoni SGR", price: 10000 },
+            { name: "Grilled Beef SGR", price: 10000 }
+        ]
+    },
+    "Breakfast": {
+        emoji: "🍳",
+        hours: { from: 9, to: 12 },
+        items: [
+            { name: "The Rancher's Breakfast", price: 10000, desc: "Steak, eggs, potatoes, fruit & toast" },
+            { name: "Egg & Spud Mash", price: 6000, desc: "Scrambled eggs with sautéed potatoes" },
+            { name: "Breakfast Quesadilla", price: 8000, desc: "Eggs, melted cheese in crispy tortilla" },
+            { name: "Guacamole Toast", price: 6000, desc: "Creamy guac, eggs, chilli flakes, lemon" },
+            { name: "Chicken Sandwich", price: 10000, desc: "Crisp lettuce, tomatoes, signature sauce" },
+            { name: "Chicken Soup", price: 7000, desc: "Slow simmered chicken with garlic bread" },
+            { name: "Swahili Mtori", price: 5000, desc: "Mashed plantains, beef & broth with chapati" }
+        ]
+    },
+    "Snacks": {
+        emoji: "🫔",
+        items: [
+            { name: "Beef Samosa", price: 1500 },
+            { name: "Chicken Samosa", price: 1500 },
+            { name: "Vegetable Samosa", price: 1500 },
+            { name: "Chicken Springroll", price: 2000 },
+            { name: "Chicken Pocket", price: 2000 },
+            { name: "Kebab", price: 1500 },
+            { name: "Meat Pie", price: 3000 },
+            { name: "Sausage", price: 1000 },
+            { name: "Nylon Bhajia", price: 3000 },
+            { name: "Bhajia", price: 1000 },
+            { name: "Kachori", price: 1000 },
+            { name: "Fried Cassava", price: 2000 },
+            { name: "Chapati", price: 1000 },
+            { name: "Chila", price: 1000 },
+            { name: "Mix (Urojo)", price: 3500 }
+        ]
+    },
+    "Starters": {
+        emoji: "🍗",
+        items: [
+            { name: "Chicken Tenders", price: 8000 },
+            { name: "Chicken Lollipop", price: 10000 },
+            { name: "Sweet & Spicy Wings", price: 12000 },
+            { name: "Lemon Garlic Wings", price: 10000 },
+            { name: "Crispy Wings", price: 11000 },
+            { name: "Chili Garlic Wings", price: 10000 },
+            { name: "Schezwan Paneer", price: 10000 },
+            { name: "Garlic Cheese Bread", price: 8000 }
+        ]
+    },
+    "BBQ / Mains": {
+        emoji: "🔥",
+        items: [
+            { name: "Choma Chicken", price: 8000 },
+            { name: "Sekela Chicken", price: 8000 },
+            { name: "Lemon Chicken", price: 8000 },
+            { name: "Gajjar Chicken", price: 9000 },
+            { name: "Tandoori Boti", price: 12000 },
+            { name: "Malai Boti", price: 12000 },
+            { name: "Chicken Seekh Kebab", price: 14000 },
+            { name: "Beef Seekh Kebab", price: 15000 },
+            { name: "Mishkaki", price: 9000 },
+            { name: "Nundu", price: 10000 },
+            { name: "Mbuzi Choma", price: 14000 },
+            { name: "Paneer Tikka", price: 5000 },
+            { name: "Changu", price: 18000 }
+        ]
+    },
+    "Platters": {
+        emoji: "🍱",
+        items: [
+            { name: "Vuruga Street Mix", price: 35000, desc: "Choma/sekela/gajjar/lemon chicken + fries, mishkaki, nundu, zege. Serves 2–4" },
+            { name: "The Soulmeats Platter", price: 70000, desc: "Malai boti, tandoori, seekh kebabs, mishkaki, nundu, fries, naan, house dips" },
+            { name: "THE Big Street Platter", price: 85000, desc: "Mega feast for groups. Choose 4 chicken styles. Serves 5–8" }
+        ]
+    },
+    "Continental": {
+        emoji: "🫕",
+        items: [
+            { name: "Chicken Quesadilla", price: 12000, desc: "Served with fries" },
+            { name: "Chicken Wrap", price: 10000, desc: "Served with fries" },
+            { name: "Beef Wrap", price: 10000, desc: "Served with fries" },
+            { name: "Crispy Chicken", price: 8000, desc: "Served with fries" }
+        ]
+    },
+    "Burgers": {
+        emoji: "🍔",
+        items: [
+            { name: "Schnitzel Burger", price: 13000, desc: "Crispy chicken, coleslaw, lettuce, signature sauce" },
+            { name: "Chicken Cheeseburger", price: 12000, desc: "Grilled chicken, cheese, lettuce, pickles" },
+            { name: "Classic Cheeseburger", price: 13000, desc: "Beef patty, cheddar, lettuce, tomato, sauce" },
+            { name: "Beef Smash Burger", price: 15000, desc: "Double smashed patties, melted cheese, caramelized onions" },
+            { name: "Paneer Burger", price: 12000, desc: "Crispy paneer, lettuce, onion rings, tandoori mayo" },
+            { name: "The Cluckzilla", price: 15000, desc: "Double crispy chicken, double cheese, brioche bun" }
+        ]
+    },
+    "Pizza": {
+        emoji: "🍕",
+        pizza: true,
+        items: [
+            { name: "Classic Margherita", prices: { S: 10000, M: 13000, L: 15000 } },
+            { name: "Garden Delight", prices: { S: 13000, M: 16000, L: 18000 } },
+            { name: "Paneer Tikka", prices: { S: 14000, M: 17000, L: 19000 } },
+            { name: "Chicken Tikka", prices: { S: 15000, M: 18000, L: 20000 } },
+            { name: "Chicken Hawaiian", prices: { S: 16000, M: 19000, L: 21000 } },
+            { name: "Chicken Grilled", prices: { S: 15000, M: 18000, L: 20000 } },
+            { name: "Pepperoni Luxe", prices: { S: 15000, M: 18000, L: 20000 } },
+            { name: "Beef Pizza", prices: { S: 15000, M: 18000, L: 20000 } },
+            { name: "Sausage Toscano", prices: { S: 14000, M: 17000, L: 19000 } },
+            { name: "Marina Elite", prices: { S: 18000, M: 22000, L: 25000 }, desc: "Prawns, calamari, red snapper" },
+            { name: "Soulmeats Special", prices: { S: 16000, M: 20000, L: 22000 }, desc: "Beef, sausage, pepperoni" }
+        ]
+    },
+    "Steaks": {
+        emoji: "🥩",
+        items: [
+            { name: "T-Bone Steak", price: 25000, desc: "With fries or mashed potatoes" },
+            { name: "Royal Steak", price: 24000, desc: "With fries or mashed potatoes" },
+            { name: "Beef Pepper Steak", price: 20000, desc: "With fries or mashed potatoes" },
+            { name: "Beef Garlic Steak", price: 20000, desc: "With fries or mashed potatoes" },
+            { name: "Chicken Cheddar Melt", price: 22000, desc: "With fries or mashed potatoes" },
+            { name: "Chicken Pepper Steak", price: 17000, desc: "With fries or mashed potatoes" }
+        ]
+    },
+    "Seafood": {
+        emoji: "🦐",
+        items: [
+            { name: "Prawns Curry", price: 18000, desc: "Coconut curry, garlic, coastal flavour" },
+            { name: "Fish Curry", price: 18000, desc: "Rich tomato & coconut gravy" },
+            { name: "Crispy Calamari", price: 13000, desc: "Served with lemon-garlic aioli" },
+            { name: "Thermidor Lobster", price: 45000, desc: "Creamy mustard-herb, golden cheese crust" },
+            { name: "Crispy Fish Fillet", price: 18000, desc: "Served with tartar sauce" },
+            { name: "Royal Platter", price: 90000, desc: "Lobster, shrimps, octopus, fried fish with rice or fries" }
+        ]
+    },
+    "Pasta": {
+        emoji: "🍝",
+        items: [
+            { name: "Chicken Alfredo Pasta", price: 15000 },
+            { name: "Spaghetti Bolognese", price: 13000 },
+            { name: "Seafood Pasta", price: 20000 },
+            { name: "Veggie Pasta", price: 11000 }
+        ]
+    },
+    "Salads": {
+        emoji: "🥗",
+        items: [
+            { name: "Chicken Caesar Salad", price: 13000 },
+            { name: "Greek Salad", price: 10000 },
+            { name: "Seafood Salad", price: 17000 },
+            { name: "Apple & Beetroot Salad", price: 10000 },
+            { name: "Grilled Chicken Salad", price: 13000 },
+            { name: "Grilled Beef Salad", price: 14000 }
+        ]
+    },
+    "Indian": {
+        emoji: "🍛",
+        items: [
+            { name: "Butter Chicken", price: 15000 },
+            { name: "Jeera Chicken", price: 15000 },
+            { name: "Chicken Biryani", price: 15000 },
+            { name: "Chicken Kadai", price: 15000 },
+            { name: "Chicken Achaar", price: 15000 },
+            { name: "Chicken Handi", price: 15000 },
+            { name: "Chicken Tikka Masala", price: 15000 },
+            { name: "Chicken Methi Masala", price: 15000 },
+            { name: "Chicken Coconut Curry", price: 15000 },
+            { name: "Chicken Korma", price: 15000 },
+            { name: "Chicken Badami", price: 15000 },
+            { name: "Chicken Patiala", price: 15000 },
+            { name: "Malai Tikka Gravy", price: 15000 },
+            { name: "Mutton Curry", price: 15000 },
+            { name: "Mutton Kadai", price: 15000 },
+            { name: "Mutton Masala", price: 15000 },
+            { name: "Fish Masala", price: 18000 },
+            { name: "Keema Mattar", price: 15000 },
+            { name: "Dal Makhani", price: 12000 },
+            { name: "Dal Tadka", price: 12000 },
+            { name: "Veg Kolapuri", price: 12000 },
+            { name: "Egg Curry", price: 14000 },
+            { name: "Corn Curry", price: 12000 },
+            { name: "Palak Paneer", price: 14000 },
+            { name: "Kadai Paneer", price: 14000 },
+            { name: "Paneer Tikka Masala", price: 14000 },
+            { name: "Paneer Butter Masala", price: 15000 },
+            { name: "Aalo Gobi", price: 12000 },
+            { name: "Aalo Mattar", price: 12000 }
+        ]
+    },
+    "Chinese": {
+        emoji: "🥡",
+        items: [
+            { name: "Chicken Fried Rice", price: 14000 },
+            { name: "Beef Fried Rice", price: 14000 },
+            { name: "Egg Fried Rice", price: 12000 },
+            { name: "Schezwan Fried Rice", price: 12000 },
+            { name: "Schezwan Paneer", price: 13000 },
+            { name: "Schezwan Noodles", price: 12000 },
+            { name: "Chili Chicken", price: 15000 },
+            { name: "Chili Prawns", price: 18000 },
+            { name: "Chili Beef", price: 15000 },
+            { name: "Hot Garlic Chicken", price: 15000 },
+            { name: "Hot Garlic Prawns", price: 18000 },
+            { name: "Hot Garlic Beef", price: 15000 },
+            { name: "Crispy Prawns", price: 18000 },
+            { name: "Crispy Chicken", price: 15000 },
+            { name: "Crispy Congee Lamb", price: 15000 },
+            { name: "Mutton Ribs Pousine", price: 15000 },
+            { name: "Beef Manchurian", price: 15000 },
+            { name: "Chinese Nundu", price: 15000 },
+            { name: "Paneer Chili", price: 14000 },
+            { name: "Honey Chicken", price: 15000 },
+            { name: "Chicken Hakka Noodles", price: 15000 },
+            { name: "Chicken Sesame", price: 15000 },
+            { name: "Chicken Mongolian", price: 15000 },
+            { name: "Chicken Hong Kong", price: 15000 },
+            { name: "Chicken Manchurian", price: 15000 },
+            { name: "Chicken Kungpao", price: 16000 },
+            { name: "Chicken 65", price: 15000 }
+        ]
+    },
+    "Swahili": {
+        emoji: "🫙",
+        items: [
+            { name: "Makange Kuku", price: 9000 },
+            { name: "Makange Samaki", price: 20000 },
+            { name: "Makange Nyama", price: 12000 },
+            { name: "Ugali Sembe", price: 3000 },
+            { name: "Ugali Dona", price: 4000 },
+            { name: "Ndizi Nyama", price: 9000 },
+            { name: "Samaki Waku Paka", price: 20000 },
+            { name: "Maharage", price: 4000 },
+            { name: "Wali wa Mbeya", price: 5000 }
+        ]
+    },
+    "Sides": {
+        emoji: "🍟",
+        items: [
+            { name: "Plain Fries", price: 3000 },
+            { name: "Zege", price: 5000 },
+            { name: "Masala Fries", price: 4000 },
+            { name: "Garlic Fries", price: 5000 },
+            { name: "Schezwan Fries", price: 5000 },
+            { name: "Sweet Potato Fries", price: 3000 },
+            { name: "Plain Basmati Rice", price: 7000 },
+            { name: "Jeera Rice", price: 7000 },
+            { name: "Grilled Plantain", price: 1000 },
+            { name: "Plain Naan", price: 2000 },
+            { name: "Butter Naan", price: 2500 },
+            { name: "Garlic Naan", price: 3000 },
+            { name: "Cheese Naan", price: 4000 },
+            { name: "Aloo Paratha", price: 3000 },
+            { name: "Atta Roti", price: 1000 },
+            { name: "Ajam", price: 1500 },
+            { name: "Garlic Bread", price: 3000 },
+            { name: "Mashed Potatoes", price: 5000 }
+        ]
+    },
+    "Drinks": {
+        emoji: "🥤",
+        items: [
+            { name: "Fresh Juice", price: 5000 },
+            { name: "Azam Juice 1L", price: 7000 },
+            { name: "Water 500ml", price: 1000 },
+            { name: "Water 1000ml", price: 2000 },
+            { name: "Non-alcoholic Champagne", price: 20000 },
+            { name: "Soda 300ml", price: 1000 },
+            { name: "Soda 350ml", price: 1500 },
+            { name: "Soda 750ml", price: 2000 },
+            { name: "Shani", price: 3500 },
+            { name: "Red Bull", price: 6000 },
+            { name: "Bavaria", price: 4500 },
+            { name: "Ceres 275ml", price: 5000 },
+            { name: "Ceres 1000ml", price: 10000 },
+            { name: "Dar Fresh Milkshake", price: 1500 },
+            { name: "Chai", price: 3000 },
+            { name: "Black Tea", price: 2000 },
+            { name: "Kahawa", price: 1000 },
+            { name: "Milk Coffee", price: 3000 },
+            { name: "Hot Chocolate", price: 5000 }
+        ]
+    }
+};
+
+let lastInvoiceData = null;
+
+function reprintLastInvoice() {
+    if (lastInvoiceData) printInvoice(lastInvoiceData);
+}
+
+// ========== SEARCH ==========
+let searchQuery = '';
+
+function handleSearch(val) {
+    searchQuery = val.trim().toLowerCase();
+    const clearBtn = document.getElementById('search-clear-btn');
+    const searchResults = document.getElementById('search-results');
+    const browseView = document.getElementById('browse-view');
+
+    if (!searchQuery) {
+        clearSearch();
+        return;
+    }
+
+    clearBtn.classList.remove('hidden');
+    searchResults.classList.remove('hidden');
+    browseView.classList.add('hidden');
+
+    // Search across all categories
+    const results = [];
+    Object.entries(MENU).forEach(([cat, data]) => {
+        const isUnavail = cat === 'Breakfast' && !isBreakfastAvailable();
+        if (data.pizza) {
+            data.items.forEach(item => {
+                if (item.name.toLowerCase().includes(searchQuery) ||
+                    (item.desc && item.desc.toLowerCase().includes(searchQuery))) {
+                    results.push({ cat, item, pizza: true, unavail: isUnavail });
+                }
+            });
+        } else {
+            data.items.forEach(item => {
+                if (item.name.toLowerCase().includes(searchQuery) ||
+                    (item.desc && item.desc.toLowerCase().includes(searchQuery))) {
+                    results.push({ cat, item, pizza: false, unavail: isUnavail });
+                }
+            });
+        }
+    });
+
+    if (results.length === 0) {
+        searchResults.innerHTML = `
+            <div class="search-empty">
+                <div class="se-icon">🔍</div>
+                <p class="dark:text-zinc-500">No results for "<strong>${val}</strong>"</p>
+                <p style="font-size:11px; margin-top:6px; color:#52525b;">Try searching: burger, biryani, wings, pizza…</p>
+            </div>`;
+        return;
+    }
+
+    const highlight = (str) => {
+        const re = new RegExp(`(${searchQuery.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+        return str.replace(re, '<mark style="background:#EAB308;color:#000;border-radius:3px;padding:0 2px;">$1</mark>');
+    };
+
+    searchResults.innerHTML = `
+        <div style="font-size:11px;font-weight:900;color:#52525b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">
+            ${results.length} result${results.length!==1?'s':''} for "${val}"
+        </div>
+        ${results.map(r => {
+            if (r.unavail) {
+                return `<div class="item-row" style="opacity:0.4;cursor:not-allowed;">
+                    <div style="flex:1;">
+                        <div style="display:flex;align-items:center;gap:4px;">
+                            <span class="font-black text-sm dark:text-white">${highlight(r.item.name)}</span>
+                            <span class="search-cat-label">${r.cat}</span>
+                            <span style="font-size:9px;color:#f87171;font-weight:900;margin-left:4px;">⏰ 9am–12pm</span>
+                        </div>
+                        <div class="text-xs font-black text-yellow-600 dark:text-yellow-500 mt-1">TZS ${r.item.price.toLocaleString()}</div>
+                    </div>
+                </div>`;
+            }
+            if (r.pizza) {
+                const selectedSize = pizzaSizes[r.item.name] || 'M';
+                const price = r.item.prices[selectedSize];
+                const key = cartKey(r.cat, r.item.name, selectedSize);
+                const inCart = cart[key];
+                return `<div class="item-row">
+                    <div style="flex:1;min-width:0;">
+                        <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
+                            <span class="font-black text-sm dark:text-white">${highlight(r.item.name)}</span>
+                            <span class="search-cat-label">${r.cat}</span>
+                        </div>
+                        ${r.item.desc?`<div class="text-[11px] text-zinc-500 mt-0.5">${r.item.desc}</div>`:''}
+                        <div style="display:flex;gap:4px;margin-top:6px;">
+                            ${['S','M','L'].map(s=>`<span class="size-pill ${s===selectedSize?'selected':''}" onclick="setPizzaSize('${r.cat}','${r.item.name}','${s}');handleSearch(document.getElementById('menu-search').value)">${s}·${(r.item.prices[s]/1000).toFixed(0)}k</span>`).join('')}
+                        </div>
+                        <div class="text-xs font-black text-yellow-600 dark:text-yellow-500 mt-1">TZS ${price.toLocaleString()}</div>
+                    </div>
+                    ${inCart ? `
+                    <div class="qty-ctrl">
+                        <button class="qty-btn" onclick="changeQty('${r.cat}','${r.item.name}','${selectedSize}',-1);handleSearch(document.getElementById('menu-search').value)">−</button>
+                        <span class="qty-num">${inCart.qty}</span>
+                        <button class="qty-btn" onclick="changeQty('${r.cat}','${r.item.name}','${selectedSize}',1);handleSearch(document.getElementById('menu-search').value)">+</button>
+                    </div>` : `
+                    <button class="add-btn" onclick="addItem('${r.cat}','${r.item.name}',${price},'${selectedSize}');handleSearch(document.getElementById('menu-search').value)">+</button>`}
+                </div>`;
+            }
+            const key = cartKey(r.cat, r.item.name, null);
+            const inCart = cart[key];
+            return `<div class="item-row">
+                <div style="flex:1;min-width:0;">
+                    <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
+                        <span class="font-black text-sm dark:text-white">${highlight(r.item.name)}</span>
+                        <span class="search-cat-label">${r.cat}</span>
+                    </div>
+                    ${r.item.desc?`<div class="text-[11px] text-zinc-500 mt-0.5">${r.item.desc}</div>`:''}
+                    <div class="text-xs font-black text-yellow-600 dark:text-yellow-500 mt-1">TZS ${r.item.price.toLocaleString()}</div>
+                </div>
+                ${inCart ? `
+                <div class="qty-ctrl">
+                    <button class="qty-btn" onclick="changeQty('${r.cat}','${r.item.name}',null,-1);handleSearch(document.getElementById('menu-search').value)">−</button>
+                    <span class="qty-num">${inCart.qty}</span>
+                    <button class="qty-btn" onclick="changeQty('${r.cat}','${r.item.name}',null,1);handleSearch(document.getElementById('menu-search').value)">+</button>
+                </div>` : `
+                <button class="add-btn" onclick="addItem('${r.cat}','${r.item.name}',${r.item.price},null);handleSearch(document.getElementById('menu-search').value)">+</button>`}
+            </div>`;
+        }).join('')}`;
+}
+
+function clearSearch() {
+    searchQuery = '';
+    document.getElementById('menu-search').value = '';
+    document.getElementById('search-clear-btn').classList.add('hidden');
+    document.getElementById('search-results').classList.add('hidden');
+    document.getElementById('browse-view').classList.remove('hidden');
+}
+
+// ========== PRINT INVOICE ==========
+function generateOrderNumber() {
+    const ts = Date.now().toString(36).toUpperCase();
+    return `SM-${ts.slice(-6)}`;
+}
+
+function printInvoice(orderData) {
+    const { name, phone, orderType, addr, notes, payLabel, items, total, orderNo, timestamp } = orderData;
+
+    const itemRows = items.map(i =>
+        `<tr>
+            <td style="padding:5px 0;border-bottom:1px dashed #ccc;">${i.name}${i.size ? ` (${i.size})` : ''}</td>
+            <td style="text-align:center;padding:5px 4px;border-bottom:1px dashed #ccc;">${i.qty}</td>
+            <td style="text-align:right;padding:5px 0;border-bottom:1px dashed #ccc;">${i.price.toLocaleString()}</td>
+            <td style="text-align:right;padding:5px 0;border-bottom:1px dashed #ccc;font-weight:700;">${(i.price*i.qty).toLocaleString()}</td>
+        </tr>`
+    ).join('');
+
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Order ${orderNo}</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    color: #000;
+    background: #fff;
+    width: 80mm;
+    margin: 0 auto;
+    padding: 6mm 4mm;
+  }
+  .center { text-align: center; }
+  .bold { font-weight: 700; }
+  .divider { border: none; border-top: 1px dashed #000; margin: 8px 0; }
+  .divider-solid { border: none; border-top: 2px solid #000; margin: 8px 0; }
+  .logo { font-size: 22px; font-weight: 900; letter-spacing: -1px; }
+  .tagline { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-top: 2px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 10px; text-transform: uppercase; padding: 4px 0; text-align: left; }
+  th:nth-child(2) { text-align: center; }
+  th:nth-child(3), th:nth-child(4) { text-align: right; }
+  .total-row td { padding-top: 8px; font-size: 15px; font-weight: 900; }
+  .detail-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 12px; }
+  .label { color: #555; }
+  .footer { font-size: 10px; text-align: center; margin-top: 10px; line-height: 1.6; }
+  @media print {
+    body { width: 80mm; }
+    @page { margin: 0; size: 80mm auto; }
+  }
+</style>
+</head>
+<body>
+  <div class="center">
+    <div class="logo">SOULMEATS</div>
+    <div class="tagline">Open Air Restaurant</div>
+    <div class="tagline" style="font-size:9px;margin-top:2px;">Don't let your diet decide your order</div>
+  </div>
+
+  <hr class="divider-solid">
+
+  <div class="detail-row"><span class="label">Order #</span><span class="bold">${orderNo}</span></div>
+  <div class="detail-row"><span class="label">Date</span><span>${timestamp}</span></div>
+  <div class="detail-row"><span class="label">Type</span><span class="bold">${orderType}${addr?' — '+addr:''}</span></div>
+  <div class="detail-row"><span class="label">Customer</span><span>${name}</span></div>
+  <div class="detail-row"><span class="label">Phone</span><span>${phone}</span></div>
+  <div class="detail-row"><span class="label">Payment</span><span>${payLabel}</span></div>
+  ${notes ? `<div class="detail-row"><span class="label">Notes</span><span style="max-width:55mm;text-align:right;">${notes}</span></div>` : ''}
+
+  <hr class="divider">
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:46%">Item</th>
+        <th style="width:10%">Qty</th>
+        <th style="width:20%">Price</th>
+        <th style="width:24%">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${itemRows}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2" style="padding-top:6px;font-size:11px;color:#555;">Delivery</td>
+        <td colspan="2" style="padding-top:6px;text-align:right;font-size:11px;font-weight:700;color:#000;">FREE</td>
+      </tr>
+      <tr class="total-row">
+        <td colspan="2">TOTAL</td>
+        <td colspan="2" style="text-align:right;">TZS ${total.toLocaleString()}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <hr class="divider-solid">
+
+  <div class="footer">
+    Thank you for your order! 🍖🔥<br>
+    WhatsApp: 0658 898 989<br>
+    @soulmeatstz<br>
+    <br>
+    *** CUSTOMER COPY ***
+  </div>
+</body>
+</html>`;
+
+    const win = window.open('', '_blank');
+    win.document.write(html);
+    win.document.close();
+    win.onload = () => { win.focus(); win.print(); };
+}
+let cart = {};         // key: "CategoryName||itemName||size" → { name, price, qty, size, category }
+let activeCat = "Specials";
+let pizzaSizes = {};   // track selected size per pizza item
+let selectedPayment = "cash";
+let orderType = "Delivery";
+let currentScreen = 1;
+
+function isBreakfastAvailable() {
+    const h = new Date().getHours();
+    return h >= 9 && h < 12;
+}
+
+function openOrderBot() {
+    // Restore cart from session
+    try {
+        const saved = sessionStorage.getItem('sm_cart');
+        if (saved) cart = JSON.parse(saved);
+    } catch(e) { cart = {}; }
+    openModal('order-modal');
+    clearSearch();
+    renderCategoryPills();
+    renderItems(activeCat);
+    updateCartSummary();
+    goToScreen(1, false);
+}
+
+function confirmCloseOrder() {
+    closeModal('order-modal');
+}
+
+function saveCart() {
+    try { sessionStorage.setItem('sm_cart', JSON.stringify(cart)); } catch(e){}
+    updateCartSummary();
+    updateBadges();
+}
+
+function cartKey(cat, name, size) {
+    return size ? `${cat}||${name}||${size}` : `${cat}||${name}`;
+}
+
+function getCartTotal() {
+    return Object.values(cart).reduce((s, v) => s + v.price * v.qty, 0);
+}
+function getCartCount() {
+    return Object.values(cart).reduce((s, v) => s + v.qty, 0);
+}
+
+function renderCategoryPills() {
+    const el = document.getElementById('cat-pills');
+    el.innerHTML = Object.entries(MENU).map(([cat, data]) => {
+        const isBreakfast = cat === "Breakfast";
+        const unavail = isBreakfast && !isBreakfastAvailable();
+        const active = cat === activeCat ? 'active' : unavail ? 'unavailable' : 'inactive';
+        const onclick = unavail ? '' : `onclick="switchCat('${cat}')"`;
+        return `<div class="cat-pill ${active}" ${onclick} id="pill-${CSS.escape(cat)}">${data.emoji} ${cat}</div>`;
+    }).join('');
+}
+
+function switchCat(cat) {
+    activeCat = cat;
+    renderCategoryPills();
+    renderItems(cat);
+    document.getElementById('order-body').scrollTop = 0;
+}
+
+function renderItems(cat) {
+    const catData = MENU[cat];
+    const el = document.getElementById('item-list');
+    const banner = document.getElementById('breakfast-banner');
+
+    if (cat === "Breakfast" && !isBreakfastAvailable()) {
+        banner.classList.remove('hidden');
+        el.innerHTML = '';
+        return;
+    }
+    banner.classList.add('hidden');
+
+    if (catData.pizza) {
+        el.innerHTML = catData.items.map(item => renderPizzaRow(cat, item)).join('');
+    } else {
+        el.innerHTML = catData.items.map(item => renderItemRow(cat, item)).join('');
+    }
+}
+
+function renderItemRow(cat, item) {
+    const key = cartKey(cat, item.name, null);
+    const inCart = cart[key];
+    const priceStr = `TZS ${item.price.toLocaleString()}`;
+    return `
+    <div class="item-row" id="row-${btoa(key).replace(/=/g,'')}">
+        <div style="flex:1; min-width:0;">
+            <div class="font-black text-sm dark:text-white leading-tight">${item.name}</div>
+            ${item.desc ? `<div class="text-[11px] text-zinc-500 mt-0.5 leading-tight">${item.desc}</div>` : ''}
+            <div class="text-xs font-black text-yellow-600 dark:text-yellow-500 mt-1">${priceStr}</div>
+        </div>
+        ${inCart ? `
+        <div class="qty-ctrl">
+            <button class="qty-btn" onclick="changeQty('${cat}','${item.name}',null,-1)">−</button>
+            <span class="qty-num">${inCart.qty}</span>
+            <button class="qty-btn" onclick="changeQty('${cat}','${item.name}',null,1)">+</button>
+        </div>` : `
+        <button class="add-btn" onclick="addItem('${cat}','${item.name}',${item.price},null)">+</button>`}
+    </div>`;
+}
+
+function renderPizzaRow(cat, item) {
+    const sizes = ['S','M','L'];
+    const selectedSize = pizzaSizes[item.name] || 'M';
+    const price = item.prices[selectedSize];
+    const key = cartKey(cat, item.name, selectedSize);
+    const inCart = cart[key];
+    return `
+    <div class="item-row" id="pizzarow-${item.name.replace(/\s/g,'_')}">
+        <div style="flex:1; min-width:0;">
+            <div class="font-black text-sm dark:text-white leading-tight">${item.name}</div>
+            ${item.desc ? `<div class="text-[11px] text-zinc-500 mt-0.5">${item.desc}</div>` : ''}
+            <div class="flex gap-1 mt-1.5">
+                ${sizes.map(s => `<span class="size-pill ${s===selectedSize?'selected':''}" onclick="setPizzaSize('${cat}','${item.name}','${s}')">${s} · ${(item.prices[s]/1000).toFixed(0)}k</span>`).join('')}
+            </div>
+            <div class="text-xs font-black text-yellow-600 dark:text-yellow-500 mt-1" id="pizzaprice-${item.name.replace(/\s/g,'_')}">TZS ${price.toLocaleString()}</div>
+        </div>
+        <div id="pizzactl-${item.name.replace(/\s/g,'_')}">
+        ${inCart ? `
+        <div class="qty-ctrl">
+            <button class="qty-btn" onclick="changeQty('${cat}','${item.name}','${selectedSize}',-1)">−</button>
+            <span class="qty-num">${inCart.qty}</span>
+            <button class="qty-btn" onclick="changeQty('${cat}','${item.name}','${selectedSize}',1)">+</button>
+        </div>` : `
+        <button class="add-btn" onclick="addItem('${cat}','${item.name}',${price},'${selectedSize}')">+</button>`}
+        </div>
+    </div>`;
+}
+
+function setPizzaSize(cat, name, size) {
+    // Remove old cart entry for this pizza if size changed
+    ['S','M','L'].forEach(s => {
+        const k = cartKey(cat, name, s);
+        if (cart[k] && s !== size) { delete cart[k]; }
+    });
+    pizzaSizes[name] = size;
+    saveCart();
+    renderItems(cat);
+}
+
+function addItem(cat, name, price, size) {
+    const key = cartKey(cat, name, size);
+    cart[key] = { name, price, qty: 1, size, cat };
+    saveCart();
+    renderItems(activeCat);
+}
+
+function changeQty(cat, name, size, delta) {
+    const key = cartKey(cat, name, size);
+    if (!cart[key]) return;
+    cart[key].qty = Math.max(0, cart[key].qty + delta);
+    if (cart[key].qty === 0) delete cart[key];
+    saveCart();
+    renderItems(activeCat);
+}
+
+function updateCartSummary() {
+    const count = getCartCount();
+    const total = getCartTotal();
+    const pill = document.getElementById('cart-summary-pill');
+    if (pill) pill.textContent = `${count} item${count!==1?'s':''} · TZS ${total.toLocaleString()}`;
+    const btn = document.getElementById('btn-to-cart');
+    if (btn) btn.disabled = count === 0;
+}
+
+function updateBadges() {
+    const count = getCartCount();
+    const b = document.getElementById('bottom-cart-badge');
+    if (b) {
+        if (count > 0) { b.textContent = count; b.classList.remove('hidden'); b.classList.add('flex'); }
+        else { b.classList.add('hidden'); b.classList.remove('flex'); }
+    }
+}
+
+function renderCartReview() {
+    const el = document.getElementById('cart-review-list');
+    const entries = Object.entries(cart);
+    if (entries.length === 0) { el.innerHTML = '<p class="text-zinc-500 text-sm text-center py-6">Your cart is empty.</p>'; return; }
+    el.innerHTML = entries.map(([key, item]) => `
+    <div class="summary-row" style="padding: 10px 0;">
+        <div style="flex:1;">
+            <div class="font-black text-sm dark:text-white">${item.name}${item.size ? ` <span class="text-[10px] text-zinc-500 font-bold uppercase">(${item.size})</span>` : ''}</div>
+            <div class="text-xs text-yellow-600 dark:text-yellow-500 font-black">TZS ${item.price.toLocaleString()} each</div>
+        </div>
+        <div class="qty-ctrl ml-3">
+            <button class="qty-btn" onclick="cartChangeQty('${key}',-1)">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn" onclick="cartChangeQty('${key}',1)">+</button>
+        </div>
+        <div class="ml-3 text-right" style="min-width:80px;">
+            <div class="font-black text-sm dark:text-white">TZS ${(item.price*item.qty).toLocaleString()}</div>
+        </div>
+    </div>`).join('');
+    document.getElementById('cart-total-2').textContent = `TZS ${getCartTotal().toLocaleString()}`;
+}
+
+function cartChangeQty(key, delta) {
+    if (!cart[key]) return;
+    cart[key].qty = Math.max(0, cart[key].qty + delta);
+    if (cart[key].qty === 0) delete cart[key];
+    saveCart();
+    renderCartReview();
+    renderItems(activeCat);
+}
+
+function setOrderType(type) {
+    orderType = type;
+    document.getElementById('btn-delivery').className = type === 'Delivery'
+        ? 'flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-yellow-500 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 transition-all'
+        : 'flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-zinc-300 dark:border-zinc-700 text-zinc-500 transition-all';
+    document.getElementById('btn-pickup').className = type === 'Pickup'
+        ? 'flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-yellow-500 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 transition-all'
+        : 'flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-zinc-300 dark:border-zinc-700 text-zinc-500 transition-all';
+    document.getElementById('addr-field').style.display = type === 'Delivery' ? 'block' : 'none';
+}
+
+function selectPayment(method) {
+    selectedPayment = method;
+    document.getElementById('pay-cash').className = 'pay-opt' + (method==='cash' ? ' selected' : '');
+    document.getElementById('pay-mpesa').className = 'pay-opt' + (method==='mpesa' ? ' selected' : '');
+}
+
+function renderFinalReview() {
+    const items = Object.values(cart);
+    document.getElementById('final-order-items').innerHTML = items.map(item =>
+        `<div class="summary-row"><span class="dark:text-zinc-300">${item.name}${item.size?` (${item.size})`:''} × ${item.qty}</span><span class="font-black dark:text-white">TZS ${(item.price*item.qty).toLocaleString()}</span></div>`
+    ).join('');
+    document.getElementById('final-total').textContent = `TZS ${getCartTotal().toLocaleString()}`;
+
+    const name = document.getElementById('cust-name').value || '—';
+    const phone = document.getElementById('cust-phone').value || '—';
+    const addr = document.getElementById('cust-addr').value || '';
+    const notes = document.getElementById('cust-notes').value || '';
+    const payLabel = selectedPayment === 'mpesa' ? 'M-Pesa (Lipa: 255757249910)' : 'Cash on Delivery';
+
+    document.getElementById('final-customer-info').innerHTML = `
+        <div class="summary-row"><span class="text-zinc-500">Name</span><span class="font-black dark:text-white">${name}</span></div>
+        <div class="summary-row"><span class="text-zinc-500">Phone</span><span class="font-black dark:text-white">${phone}</span></div>
+        <div class="summary-row"><span class="text-zinc-500">Type</span><span class="font-black dark:text-white">${orderType}${addr?' — '+addr:''}</span></div>
+        <div class="summary-row"><span class="text-zinc-500">Payment</span><span class="font-black dark:text-white">${payLabel}</span></div>
+        ${notes ? `<div class="summary-row"><span class="text-zinc-500">Notes</span><span class="font-black dark:text-white">${notes}</span></div>` : ''}
+    `;
+}
+
+function goToScreen(n, animate=true) {
+    // Validate before advancing
+    if (n === 3 && getCartCount() === 0) return;
+
+    // Hide all screens and footers
+    [1,2,3,4].forEach(i => {
+        document.getElementById(`screen-${i}`).classList.remove('active');
+        document.getElementById(`footer-${i}`).classList.add('hidden');
+        document.getElementById(`sd${i}`).className = 'step-dot' + (i < n ? ' done' : i === n ? ' active' : '');
+    });
+
+    // Show target
+    const s = document.getElementById(`screen-${n}`);
+    s.classList.add('active');
+    if (animate) s.className = `order-screen active ${n >= currentScreen ? 'slide-left' : 'slide-right'}`;
+    document.getElementById(`footer-${n}`).classList.remove('hidden');
+    document.getElementById('order-body').scrollTop = 0;
+    currentScreen = n;
+
+    // Screen-specific rendering
+    if (n === 1) { updateCartSummary(); }
+    if (n === 2) { renderCartReview(); }
+    if (n === 4) { renderFinalReview(); }
+}
+
+function sendToWhatsApp() {
+    const name = document.getElementById('cust-name').value.trim() || 'Customer';
+    const phone = document.getElementById('cust-phone').value.trim() || '—';
+    const addr = document.getElementById('cust-addr').value.trim();
+    const notes = document.getElementById('cust-notes').value.trim();
+    const payLabel = selectedPayment === 'mpesa' ? 'M-Pesa — Lipa Namba: 255757249910' : 'Cash on Delivery';
+
+    const items = Object.values(cart);
+    const total = getCartTotal();
+    const orderNo = generateOrderNumber();
+    const now = new Date();
+    const timestamp = now.toLocaleDateString('en-TZ', { day:'2-digit', month:'short', year:'numeric' }) +
+        ' ' + now.toLocaleTimeString('en-TZ', { hour:'2-digit', minute:'2-digit' });
+
+    // WhatsApp message — emoji outside monospace, plain text inside for alignment
+    const pad  = (str, len) => String(str).length >= len ? String(str).slice(0, len) : String(str) + ' '.repeat(len - String(str).length);
+    const padL = (str, len) => String(str).length >= len ? String(str).slice(-len) : ' '.repeat(len - String(str).length) + String(str);
+
+    const itemLines = items.map(i => {
+        const label    = pad(`${i.name}${i.size ? ` (${i.size})` : ''}`, 22);
+        const qty      = pad(`x${i.qty}`, 4);
+        const subtotal = padL((i.price * i.qty).toLocaleString(), 9);
+        return `${label} ${qty} ${subtotal}`;
+    }).join('\n');
+
+    const D         = '--------------------------------';
+    const freeLine  = pad('Delivery', 27) + padL('FREE', 9);
+    const totalLine = pad('TOTAL (TZS)', 27) + padL(total.toLocaleString(), 9);
+
+    const msg =
+`🍖 *SOULMEATS — NEW ORDER*
+
+🔖 Order: *#${orderNo}*
+🕐 Time: *${timestamp}*
+
+👤 Name: *${name}*
+📱 Phone: *${phone}*
+📦 Type: *${orderType}${addr ? ' — ' + addr : ''}*
+💳 Payment: *${payLabel}*
+${notes ? `📝 Notes: _${notes}_` : ''}
+\`\`\`
+${D}
+ITEM                   QTY  SUBTOTAL
+${D}
+${itemLines}
+${D}
+${freeLine}
+${totalLine}
+${D}
+\`\`\`
+🟢 *Please confirm this order*`;
+
+
+    // Fire WhatsApp
+    openInNewTab(`https://wa.me/255757249910?text=${encodeURIComponent(msg)}`);
+
+    // Clear cart
+    cart = {};
+    try { sessionStorage.removeItem('sm_cart'); } catch(e){}
+    updateBadges();
+    clearSearch();
+    closeModal('order-modal');
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        const saved = sessionStorage.getItem('sm_cart');
+        if (saved) { cart = JSON.parse(saved); updateBadges(); }
+    } catch(e){}
+});
+</script>
+</body>
+</html>
