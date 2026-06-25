@@ -1,0 +1,55 @@
+{
+  "id": "./index.html",
+  "name": "SoulMeats",
+  "short_name": "SoulMeats",
+  "description": "Order food, reserve a table, view menus, and connect with SoulMeats.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#EAB308",
+  "orientation": "portrait",
+  "categories": ["food", "lifestyle"],
+  "icons": [
+    {
+      "src": "https://www.skani.space/slmtlogo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://www.skani.space/slmtlogo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Order Now",
+      "short_name": "Order",
+      "description": "Open SoulMeats ordering",
+      "url": "./index.html?action=order",
+      "icons": [
+        {
+          "src": "https://www.skani.space/slmtlogo.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Reserve Table",
+      "short_name": "Reserve",
+      "description": "Reserve a table at SoulMeats",
+      "url": "./index.html?action=reserve",
+      "icons": [
+        {
+          "src": "https://www.skani.space/slmtlogo.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
