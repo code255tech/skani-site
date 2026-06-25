@@ -1,9 +1,16 @@
+
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>SoulMeats Skani</title>
+    <meta name="theme-color" content="#EAB308">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="SoulMeats">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://www.skani.space/slmtlogo.png">
     <link rel="icon" href="https://www.skani.space/slmtlogo.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -58,6 +65,22 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .tap-scale { transition: transform 0.1s ease; }
         .tap-scale:active { transform: scale(0.95); }
+        .pwa-install-toast {
+            position: fixed;
+            left: 1rem;
+            right: 1rem;
+            bottom: calc(7.25rem + env(safe-area-inset-bottom));
+            z-index: 80;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(16px);
+            transition: all 0.28s ease;
+        }
+        .pwa-install-toast.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
 
         /* Order Bot Styles */
         .cat-pill { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 999px; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; border: 1.5px solid transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; }
@@ -273,6 +296,28 @@
                    class="pointer-events-auto text-[7px] font-black uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200/70 dark:border-zinc-800 px-2 py-1 rounded-full shadow-lg opacity-40 hover:opacity-100 transition-opacity duration-300 hover:text-yellow-600 dark:hover:text-yellow-500">
                     Powered by Skani.space
                 </a>
+            </div>
+        </div>
+
+        <div id="pwa-install-toast" class="pwa-install-toast pointer-events-none">
+            <div class="max-w-md mx-auto bg-zinc-950 text-white border border-white/10 rounded-[2rem] p-4 shadow-[0_24px_70px_rgba(0,0,0,0.55)] pointer-events-auto">
+                <div class="flex gap-4">
+                    <div class="w-12 h-12 bg-yellow-500 rounded-2xl overflow-hidden flex items-center justify-center shrink-0">
+                        <img src="https://www.skani.space/slmtlogo.png" alt="" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <i class="fa-solid fa-utensils text-black hidden"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div id="pwa-install-title" class="font-black text-sm uppercase tracking-tight">Install SoulMeats</div>
+                        <p id="pwa-install-copy" class="text-[11px] text-zinc-400 font-bold leading-snug mt-1">Add SoulMeats to your home screen for faster ordering and table reservations.</p>
+                        <div class="flex gap-2 mt-3">
+                            <button id="pwa-install-btn" onclick="installSoulMeatsApp()" class="bg-yellow-500 text-black font-black uppercase text-[10px] px-4 py-3 rounded-2xl tap-scale">Install App</button>
+                            <button onclick="dismissPwaInstallPrompt()" class="text-zinc-300 font-black uppercase text-[10px] px-3 py-3 tap-scale">Not Now</button>
+                        </div>
+                    </div>
+                    <button onclick="dismissPwaInstallPrompt()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-zinc-400 tap-scale shrink-0" aria-label="Close install prompt">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -572,6 +617,91 @@ function closeModal(id) { document.getElementById(id).classList.remove('active')
 document.querySelectorAll('a[href^="http://"], a[href^="https://"]').forEach(link => {
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
+});
+
+const PWA_PROMPT_DELAY = 60000;
+const PWA_PROMPT_COOLDOWN = 7 * 24 * 60 * 60 * 1000;
+let deferredInstallPrompt = null;
+let pwaPromptTimer = null;
+
+function isSoulMeatsInstalled() {
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function isIosDevice() {
+    return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+}
+
+function canShowPwaPrompt() {
+    const dismissedUntil = Number(localStorage.getItem('sm_pwa_prompt_dismissed_until') || 0);
+    return !isSoulMeatsInstalled() && Date.now() > dismissedUntil;
+}
+
+function schedulePwaInstallPrompt() {
+    if (!canShowPwaPrompt() || pwaPromptTimer) return;
+    pwaPromptTimer = setTimeout(() => {
+        if (deferredInstallPrompt || isIosDevice()) {
+            showPwaInstallPrompt();
+        }
+    }, PWA_PROMPT_DELAY);
+}
+
+function showPwaInstallPrompt() {
+    if (!canShowPwaPrompt()) return;
+
+    const toast = document.getElementById('pwa-install-toast');
+    const title = document.getElementById('pwa-install-title');
+    const copy = document.getElementById('pwa-install-copy');
+    const button = document.getElementById('pwa-install-btn');
+    if (!toast || !title || !copy || !button) return;
+
+    if (!deferredInstallPrompt && isIosDevice()) {
+        title.textContent = 'Add SoulMeats';
+        copy.textContent = 'Tap Share, then Add to Home Screen to save SoulMeats like an app.';
+        button.textContent = 'Got It';
+    } else {
+        title.textContent = 'Install SoulMeats';
+        copy.textContent = 'Add SoulMeats to your home screen for faster ordering and table reservations.';
+        button.textContent = 'Install App';
+    }
+    toast.classList.add('active');
+}
+
+function hidePwaInstallPrompt() {
+    document.getElementById('pwa-install-toast')?.classList.remove('active');
+}
+
+function dismissPwaInstallPrompt() {
+    localStorage.setItem('sm_pwa_prompt_dismissed_until', String(Date.now() + PWA_PROMPT_COOLDOWN));
+    hidePwaInstallPrompt();
+}
+
+async function installSoulMeatsApp() {
+    if (!deferredInstallPrompt) {
+        dismissPwaInstallPrompt();
+        return;
+    }
+
+    deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    hidePwaInstallPrompt();
+
+    if (choice.outcome !== 'accepted') {
+        dismissPwaInstallPrompt();
+    }
+}
+
+window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    schedulePwaInstallPrompt();
+});
+
+window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    localStorage.setItem('sm_pwa_installed', '1');
+    hidePwaInstallPrompt();
 });
 
 function copyWifiText(text) {
@@ -1509,6 +1639,20 @@ ${D}
 
 // Init
 document.addEventListener('DOMContentLoaded', () => {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+    }
+
+    schedulePwaInstallPrompt();
+
+    const action = new URLSearchParams(window.location.search).get('action');
+    if (action === 'order') {
+        setTimeout(openOrderBot, 300);
+    }
+    if (action === 'reserve') {
+        setTimeout(() => openModal('booking-modal'), 300);
+    }
+
     try {
         const saved = sessionStorage.getItem('sm_cart');
         if (saved) { cart = JSON.parse(saved); updateBadges(); }
