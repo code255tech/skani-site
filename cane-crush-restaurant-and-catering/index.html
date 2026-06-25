@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Cane Crush Skani</title>
+    <link rel="icon" href="https://www.skani.space/cane-crush-restaurant-and-catering/cane-crush-logo.jpg" type="image/jpeg">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        canePrimary: '#A9CE1F',      // Fresh sugarcane green
+                        caneSecondary: '#C7CE41',    // Yellow-green highlight
+                        caneDark: '#1C3629',         // Deep forest green theme
+                        caneDarkBg: '#0b1611',       // Rich dark mode background
+                        caneAccent: '#997918',       // Premium accent gold
+                        caneLight: '#E8FCF4',        // Minty fresh light background
+                        caneLightCard: '#f4fdfa'     // Premium white-mint card
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 4s ease-in-out infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-8px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* iOS Safe Area & Base Reset */
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sab: env(safe-area-inset-bottom);
+        }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar behaviors */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Smooth reveal animations on scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.7s cubic-bezier(0.21, 1.02, 0.43, 1.01);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Prevent iOS input zoom triggers */
+        input, textarea, select { 
+            font-size: 16px !important; 
+        }
+
+        /* Premium Modal Transitions */
+        .modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(0px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            backdrop-filter: blur(16px);
+        }
+        .modal-content {
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+        @media (min-width: 640px) {
+            .modal-content {
+                transform: scale(0.9) translateY(20px);
+            }
+            .modal-overlay.active .modal-content {
+                transform: scale(1) translateY(0);
+            }
+        }
+        .modal-overlay.active .modal-content:not(.sm-scaled) {
+            transform: translateY(0);
+        }
+
+        /* Interactive card shimmers */
+        .card-shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .card-shimmer::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.06), transparent);
+            transform: rotate(45deg);
+            transition: 0.6s;
+        }
+        .card-shimmer:active::after {
+            left: 100%;
+        }
+
+        /* Dynamic scale micro-interactions */
+        .tap-scale { transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tap-scale:active { transform: scale(0.96); }
+
+        /* Premium gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #A9CE1F 0%, #C7CE41 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-caneLight dark:bg-caneDarkBg text-zinc-900 dark:text-zinc-100 transition-colors duration-500 pb-44">
+
+    <!-- Iframe for background form tracking/submission -->
+    <iframe id="suggestion-submit-frame" name="suggestion-submit-frame" class="hidden" aria-hidden="true"></iframe>
+
+    <div class="min-h-screen max-w-md mx-auto relative px-4 sm:px-6">
+
+        <!-- 1. HEADER SECTION -->
+        <header class="pt-[calc(1.25rem+env(safe-area-inset-top))] pb-5 sticky top-0 bg-caneLight/85 dark:bg-caneDarkBg/85 backdrop-blur-xl z-40 border-b border-canePrimary/10 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-caneDark rounded-2xl overflow-hidden flex items-center justify-center shadow-lg border-2 border-canePrimary/30 relative">
+                    <img 
+                        src="https://www.skani.space/cane-crush-restaurant-and-catering/cane-crush-logo.jpg" 
+                        alt="Cane Crush Logo" 
+                        class="w-full h-full object-cover"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    >
+                    <div class="hidden w-full h-full items-center justify-center text-canePrimary font-black italic text-sm">CC</div>
+                </div>
+                <div>
+                    <h1 class="text-sm font-black dark:text-white uppercase tracking-tight leading-none">Cane Crush</h1>
+                    <p class="text-[9px] text-caneAccent dark:text-canePrimary uppercase tracking-[0.08em] font-bold mt-1">Restaurant & Catering</p>
+                    <p class="text-[8px] text-zinc-500 dark:text-zinc-400 font-medium">Halal Seafood • BBQ • Steaks • Juices</p>
+                </div>
+            </div>
+            
+            <button onclick="toggleTheme()" class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white dark:bg-caneDark text-caneAccent dark:text-canePrimary shadow-sm hover:shadow active:scale-95 transition-all border border-canePrimary/10">
+                <i id="theme-icon" class="fa-solid fa-sun text-lg"></i>
+            </button>
+        </header>
+
+        <!-- 2. HERO SECTION -->
+        <section class="py-8 reveal">
+            <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-canePrimary/10 dark:bg-canePrimary/20 text-caneDark dark:text-canePrimary text-[10px] font-extrabold uppercase tracking-widest rounded-full mb-4 border border-canePrimary/25">
+                <span class="w-2 h-2 rounded-full bg-canePrimary animate-ping"></span>
+                Freshly Pressed Daily
+            </div>
+            <h2 class="text-4xl font-black text-zinc-900 dark:text-white leading-[1.05] tracking-tight">
+                Fresh Flavors.<br>
+                <span class="gradient-text">Bold Experiences.</span>
+            </h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mt-4 text-sm font-medium leading-relaxed">
+                From freshly pressed sugarcane juice to delicious BBQ, premium seafood, authentic Chinese cuisine, and island-classic Zanzibar pizzas.
+            </p>
+        </section>
+
+        <!-- 3. ACTION GRID SECTION -->
+        <section class="grid grid-cols-2 gap-3.5 my-2">
+            <!-- CARD 1 — MENU -->
+            <button onclick="openInNewTab('https://www.skani.space/cane-crush-restaurant-and-catering/cane-crush-menu.pdf')" 
+                class="reveal tap-scale card-shimmer bg-canePrimary p-5 rounded-[2rem] flex flex-col items-center justify-center text-caneDark shadow-lg shadow-canePrimary/15 hover:shadow-xl transition-all border border-canePrimary">
+                <div class="w-11 h-11 bg-white/30 rounded-2xl flex items-center justify-center mb-2.5">
+                    <i class="fa-solid fa-utensils text-xl text-caneDark animate-float"></i>
+                </div>
+                <span class="font-extrabold text-base tracking-tight text-zinc-950">Menu</span>
+                <span class="text-[9px] font-bold opacity-80 uppercase tracking-wide">Explore our dishes</span>
+            </button>
+
+            <!-- CARD 2 — WIFI ACCESS -->
+            <button onclick="openModal('wifi-modal')" 
+                class="reveal tap-scale card-shimmer bg-white dark:bg-caneDark text-zinc-900 dark:text-white p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-canePrimary/10">
+                <div class="w-11 h-11 bg-canePrimary/10 dark:bg-white/10 rounded-2xl flex items-center justify-center mb-2.5">
+                    <i class="fa-solid fa-wifi text-xl text-canePrimary"></i>
+                </div>
+                <span class="font-extrabold text-base tracking-tight dark:text-white">WiFi Access</span>
+                <span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-400 uppercase tracking-wide">Instant Connection</span>
+            </button>
+
+            <!-- CARD 3 — REVIEWS -->
+            <button onclick="openInNewTab('https://www.google.com/search?sca_esv=1a28dc1a6e7e6465&sxsrf=APpeQnur8y3VPNZkgOAhoF3obKxpSmxxig:1782384164739&si=APenkKm7iecQ4G6P-TsbSMFKIQtv3EFIqRAFw-i8uEbk55Z-_xPuVTIL7BfCZRZT-Uo6ez4Jk_G9GJAF8H3wqyLeXLIj8w3IGZeYcjXHS8DGMvZVworsbntuANFY9Ys4em6NHSEbh6z6ygIq4MtnN6ETAc-G-Th1kxN4p6x_LmeZ74Ih1mYn4sI%3D&q=Cane+Crush+Restaurant+%26+Catering+Reviews&sa=X&ved=2ahUKEwjC-_e3mqKVAxWpNfsDHZpZKX8Q0bkNegQIJhAD')" 
+                class="reveal tap-scale card-shimmer bg-white dark:bg-caneDark text-zinc-900 dark:text-white p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-canePrimary/10">
+                <div class="w-11 h-11 bg-amber-100 dark:bg-amber-500/10 rounded-2xl flex items-center justify-center mb-2.5">
+                    <i class="fa-solid fa-star text-xl text-amber-500"></i>
+                </div>
+                <span class="font-extrabold text-base tracking-tight">Reviews</span>
+                <span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-400 uppercase tracking-wide">Loved by customers</span>
+            </button>
+
+            <!-- CARD 4 — FIND US -->
+            <button onclick="openInNewTab('https://maps.app.goo.gl/MF5KQvyUaXDgUxqD7')" 
+                class="reveal tap-scale card-shimmer bg-white dark:bg-caneDark text-zinc-900 dark:text-white p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-canePrimary/10">
+                <div class="w-11 h-11 bg-rose-100 dark:bg-rose-500/10 rounded-2xl flex items-center justify-center mb-2.5">
+                    <i class="fa-solid fa-location-dot text-xl text-rose-500"></i>
+                </div>
+                <span class="font-extrabold text-base tracking-tight">Location</span>
+                <span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-400 uppercase tracking-wide">Get directions</span>
+            </button>
+        </section>
+
+        <!-- 4. CORE REVENUE CTA CARDS -->
+        <section class="mt-8 space-y-5">
+            <!-- PRIMARY CTA - BOOK TABLE -->
+            <div class="reveal">
+                <div class="bg-white dark:bg-caneDark rounded-[2.5rem] p-6 shadow-md border-2 border-canePrimary/25 dark:border-canePrimary/10 relative overflow-hidden group hover:border-canePrimary transition-all duration-300">
+                    <div class="absolute -right-12 -bottom-12 w-32 h-32 bg-canePrimary/10 dark:bg-canePrimary/5 rounded-full pointer-events-none"></div>
+                    <div class="flex items-start gap-4">
+                        <!-- Upgraded Suitable Icon (Gourmet Set) -->
+                        <div class="w-14 h-14 bg-gradient-to-br from-canePrimary/20 to-caneSecondary/10 dark:from-canePrimary/20 dark:to-transparent rounded-2xl flex items-center justify-center text-caneDark dark:text-canePrimary flex-shrink-0 shadow-inner border border-canePrimary/20">
+                            <i class="fa-solid fa-utensils text-2xl text-caneDark dark:text-canePrimary"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-black tracking-tight dark:text-white">Reserve a Table</h3>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">Enjoy premium dining experiences, fresh juices, and exceptional coastal hospitality.</p>
+                            
+                            <button onclick="openModal('booking-modal')" 
+                                class="w-full mt-5 bg-canePrimary hover:bg-caneSecondary text-zinc-950 font-black py-4 px-6 rounded-2xl text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md shadow-canePrimary/20 tap-scale">
+                                <i class="fa-solid fa-calendar-check"></i> Reserve Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECONDARY CTA - ORDER ONLINE -->
+            <div class="reveal">
+                <div class="bg-white dark:bg-caneDark rounded-[2.5rem] p-6 shadow-md border-2 border-caneSecondary/20 dark:border-caneSecondary/10 relative overflow-hidden group hover:border-caneSecondary transition-all duration-300">
+                    <div class="absolute -right-12 -bottom-12 w-32 h-32 bg-caneSecondary/10 dark:bg-caneSecondary/5 rounded-full pointer-events-none"></div>
+                    <div class="flex items-start gap-4">
+                        <!-- Upgraded Suitable Icon (Express Courier) -->
+                        <div class="w-14 h-14 bg-gradient-to-br from-caneSecondary/20 to-canePrimary/10 dark:from-caneSecondary/20 dark:to-transparent rounded-2xl flex items-center justify-center text-caneDark dark:text-caneSecondary flex-shrink-0 shadow-inner border border-caneSecondary/20">
+                            <i class="fa-solid fa-truck-fast text-2xl text-caneSecondary"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-black tracking-tight dark:text-white">Order Now</h3>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">Delivery, Takeaway, or Pickup. Get your hot food and sweet cane juice brought right to you.</p>
+                            
+                            <button onclick="openModal('order-modal')" 
+                                class="w-full mt-5 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:bg-zinc-800 font-black py-4 px-6 rounded-2xl text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all tap-scale">
+                                <i class="fa-solid fa-paper-plane"></i> Order via WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. OUR SPECIALTIES -->
+        <section class="mt-12">
+            <h3 class="reveal text-xl font-black dark:text-white mb-6 uppercase tracking-tight italic flex items-center gap-2">
+                <span class="w-1.5 h-6 bg-canePrimary rounded-full"></span> Our Specialties
+            </h3>
+            
+            <div class="flex gap-3 overflow-x-auto no-scrollbar pb-3 px-1">
+                <!-- Specialty 1 -->
+                <div class="reveal min-w-[130px] flex-shrink-0 bg-white dark:bg-caneDark rounded-[1.75rem] p-4 text-center shadow-sm border border-canePrimary/5">
+                    <span class="text-3xl block mb-2 filter drop-shadow">🥤</span>
+                    <h4 class="font-black text-xs tracking-tight dark:text-zinc-100">Fresh Cane Juice</h4>
+                    <span class="text-[8px] font-bold text-caneAccent dark:text-canePrimary uppercase tracking-widest block mt-1">Pressed Daily</span>
+                </div>
+                <!-- Specialty 2 -->
+                <div class="reveal min-w-[130px] flex-shrink-0 bg-white dark:bg-caneDark rounded-[1.75rem] p-4 text-center shadow-sm border border-canePrimary/5">
+                    <span class="text-3xl block mb-2 filter drop-shadow">🔥</span>
+                    <h4 class="font-black text-xs tracking-tight dark:text-zinc-100">BBQ & Steaks</h4>
+                    <span class="text-[8px] font-bold text-caneAccent dark:text-canePrimary uppercase tracking-widest block mt-1">Flame Grilled</span>
+                </div>
+                <!-- Specialty 3 -->
+                <div class="reveal min-w-[130px] flex-shrink-0 bg-white dark:bg-caneDark rounded-[1.75rem] p-4 text-center shadow-sm border border-canePrimary/5">
+                    <span class="text-3xl block mb-2 filter drop-shadow">🦞</span>
+                    <h4 class="font-black text-xs tracking-tight dark:text-zinc-100">Seafood Feast</h4>
+                    <span class="text-[8px] font-bold text-caneAccent dark:text-canePrimary uppercase tracking-widest block mt-1">Halal Fresh catch</span>
+                </div>
+                <!-- Specialty 4 -->
+                <div class="reveal min-w-[130px] flex-shrink-0 bg-white dark:bg-caneDark rounded-[1.75rem] p-4 text-center shadow-sm border border-canePrimary/5">
+                    <span class="text-3xl block mb-2 filter drop-shadow">🥢</span>
+                    <h4 class="font-black text-xs tracking-tight dark:text-zinc-100">Chinese Cuisine</h4>
+                    <span class="text-[8px] font-bold text-caneAccent dark:text-canePrimary uppercase tracking-widest block mt-1">Sizzling & Wok</span>
+                </div>
+                <!-- Specialty 5 -->
+                <div class="reveal min-w-[130px] flex-shrink-0 bg-white dark:bg-caneDark rounded-[1.75rem] p-4 text-center shadow-sm border border-canePrimary/5">
+                    <span class="text-3xl block mb-2 filter drop-shadow">🍕</span>
+                    <h4 class="font-black text-xs tracking-tight dark:text-zinc-100">Zanzibar Pizza</h4>
+                    <span class="text-[8px] font-bold text-caneAccent dark:text-canePrimary uppercase tracking-widest block mt-1">Island Classic</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. PREMIUM CATERING CARD -->
+        <section class="mt-10 reveal">
+            <div class="bg-gradient-to-br from-caneDark to-zinc-950 text-white rounded-[2.5rem] p-8 border-2 border-canePrimary/20 relative overflow-hidden shadow-xl">
+                <!-- Decorative element -->
+                <div class="absolute -right-16 -top-16 w-44 h-44 rounded-full bg-canePrimary/10 pointer-events-none border border-canePrimary/10"></div>
+                
+                <div class="w-12 h-12 bg-canePrimary/25 rounded-2xl flex items-center justify-center text-3xl mb-5 border border-canePrimary/30">
+                    🎉
+                </div>
+                
+                <h3 class="text-2xl font-black tracking-tight mb-2">Catering Services</h3>
+                <p class="text-zinc-300 text-xs font-normal leading-relaxed mb-6">
+                    From private gatherings to premium corporate events, we bring unforgettable culinary experiences and refreshing juices directly to your venue.
+                </p>
+
+                <!-- Suitable List -->
+                <div class="grid grid-cols-2 gap-3 mb-8 text-xs font-semibold text-zinc-200">
+                    <div class="flex items-center gap-2"><i class="fa-regular fa-circle-check text-canePrimary"></i> Weddings</div>
+                    <div class="flex items-center gap-2"><i class="fa-regular fa-circle-check text-canePrimary"></i> Corporate Events</div>
+                    <div class="flex items-center gap-2"><i class="fa-regular fa-circle-check text-canePrimary"></i> Birthdays</div>
+                    <div class="flex items-center gap-2"><i class="fa-regular fa-circle-check text-canePrimary"></i> Private Functions</div>
+                </div>
+
+                <button onclick="openModal('catering-modal')" 
+                    class="w-full bg-canePrimary hover:bg-caneSecondary text-zinc-950 font-black py-4 px-6 rounded-2xl text-xs uppercase tracking-widest transition-all tap-scale">
+                    Request Catering Quote
+                </button>
+            </div>
+        </section>
+
+        <!-- 7. SOCIAL LINKS & SHORTCUTS -->
+        <section class="mt-12">
+            <h3 class="reveal text-xl font-black dark:text-white mb-6 uppercase tracking-tight italic flex items-center gap-2">
+                <span class="w-1.5 h-6 bg-canePrimary rounded-full"></span> Stay Connected
+            </h3>
+            
+            <div class="grid grid-cols-2 gap-3.5">
+                <!-- WhatsApp Chat -->
+                <a href="https://wa.me/255713278622" target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-white dark:bg-caneDark p-4 rounded-2xl flex flex-col border border-canePrimary/5 border-b-[3.5px] border-b-[#25D366] shadow-sm transition-all">
+                    <i class="fa-brands fa-whatsapp text-[#25D366] text-xl mb-2"></i>
+                    <span class="font-black text-sm tracking-tight dark:text-white">WhatsApp</span>
+                    <span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-400 uppercase">Chat instantly</span>
+                </a>
+
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/canecrushrestaurantandcatering/" target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-white dark:bg-caneDark p-4 rounded-2xl flex flex-col border border-canePrimary/5 border-b-[3.5px] border-b-[#E4405F] shadow-sm transition-all">
+                    <i class="fa-brands fa-instagram text-[#E4405F] text-xl mb-2"></i>
+                    <span class="font-black text-sm tracking-tight dark:text-white">Instagram</span>
+                    <span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-400 uppercase">See our latest</span>
+                </a>
+
+                <!-- Delivery (Order Online Placeholder) -->
+                <a href="https://wa.me/255713278622?text=Hello%20Cane%20Crush%2C%20I%20would%20like%20to%20view%20your%20available%20dishes%20for%20delivery." target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-white dark:bg-caneDark p-4 rounded-2xl flex flex-col border border-canePrimary/5 border-b-[3.5px] border-b-canePrimary shadow-sm transition-all">
+                    <i class="fa-solid fa-truck-ramp-box text-canePrimary text-xl mb-2"></i>
+                    <span class="font-black text-sm tracking-tight dark:text-white">Order Online</span>
+                    <span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-400 uppercase">Duka Direct (Soon)</span>
+                </a>
+
+                <!-- Catering Quote Shortcut -->
+                <button onclick="openModal('catering-modal')" class="reveal text-left tap-scale bg-white dark:bg-caneDark p-4 rounded-2xl flex flex-col border border-canePrimary/5 border-b-[3.5px] border-b-caneAccent shadow-sm transition-all">
+                    <i class="fa-solid fa-file-invoice-dollar text-caneAccent text-xl mb-2"></i>
+                    <span class="font-black text-sm tracking-tight dark:text-white">Catering Services</span>
+                    <span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-400 uppercase">Get a Free Quote</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 8. FEEDBACK FORM (Google Sheets Integration Backed) -->
+        <section class="px-1 mt-12 reveal">
+            <div class="bg-white dark:bg-caneDark/40 p-6 rounded-[2.5rem] border-2 border-dashed border-canePrimary/25 dark:border-canePrimary/15 transition-all hover:border-canePrimary/50">
+                <h3 class="font-black text-lg dark:text-white mb-1 tracking-tight flex items-center gap-2">
+                    💬 Your Feedback Matters
+                </h3>
+                <p class="text-[10px] text-zinc-400 uppercase tracking-widest font-black mb-4">Help us serve you better</p>
+                
+                <div id="suggestion-feedback" class="py-6 text-center hidden">
+                    <i class="fa-solid fa-circle-check text-canePrimary text-3xl mb-2 animate-bounce"></i>
+                    <p class="text-zinc-900 dark:text-canePrimary font-black scale-up text-sm">Thank you for helping us improve! 🙏</p>
+                </div>
+                
+                <form id="suggestion-form" onsubmit="handleSuggestion(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Your suggestion or review</label>
+                        <textarea id="suggestion-text" name="suggestion" placeholder="Tell us about your dining experience, suggest updates, or share some love..." required class="w-full bg-caneLight/45 dark:bg-caneDarkBg border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 rounded-2xl p-4 text-sm dark:text-white min-h-[95px] outline-none transition-all placeholder:text-zinc-400/80 shadow-sm"></textarea>
+                    </div>
+                    
+                    <button type="submit" id="submit-btn" class="w-full bg-canePrimary hover:bg-caneSecondary text-zinc-950 py-4 rounded-2xl font-black text-xs uppercase tracking-widest tap-scale transition-all shadow-md shadow-canePrimary/10">
+                        Submit Feedback
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 9. ASSISTANCE DIRECT CHANNELS -->
+        <section class="mt-12 mb-10 reveal">
+            <p class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.25em] text-center mb-4">
+                Need Instant Assistance?
+            </p>
+            <div class="grid grid-cols-2 gap-3.5">
+                <a href="https://wa.me/255713278622" target="_blank" rel="noopener noreferrer" class="tap-scale flex items-center justify-center gap-2.5 bg-white dark:bg-caneDark p-4 rounded-2xl border border-canePrimary/10 shadow-sm transition-all">
+                    <i class="fa-brands fa-whatsapp text-[#25D366] text-lg"></i>
+                    <span class="font-extrabold text-[11px] dark:text-white uppercase tracking-tight">WhatsApp</span>
+                </a>
+                <a href="tel:+255713278622" class="tap-scale flex items-center justify-center gap-2.5 bg-white dark:bg-caneDark p-4 rounded-2xl border border-canePrimary/10 shadow-sm transition-all">
+                    <i class="fa-solid fa-phone text-canePrimary text-lg"></i>
+                    <span class="font-extrabold text-[11px] dark:text-white uppercase tracking-tight">Call Now</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 10. REVENUE-FOCUSED FLOATING BOTTOM NAV BAR -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-4 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pointer-events-none">
+            <div class="max-w-md mx-auto bg-[#102319]/90 dark:bg-caneDark/95 backdrop-blur-2xl rounded-[2.25rem] p-3.5 flex items-center justify-between border border-white/10 pointer-events-auto shadow-[0_24px_60px_rgba(0,0,0,0.5)]">
+                <!-- RESERVE TABLE ACTION -->
+                <button onclick="openModal('booking-modal')" class="flex-1 flex items-center justify-center gap-2 bg-canePrimary text-zinc-950 font-black text-[11px] uppercase py-4 rounded-[1.5rem] tap-scale shadow-lg shadow-canePrimary/25 border-t border-white/20">
+                    <i class="fa-solid fa-calendar-days text-sm"></i> Reserve Table
+                </button>
+                
+                <div class="w-3"></div>
+                
+                <!-- ORDER NOW ACTION -->
+                <button onclick="openModal('order-modal')" class="flex-1 flex items-center justify-center gap-2 bg-zinc-100 text-zinc-900 font-black text-[11px] uppercase py-4 rounded-[1.5rem] tap-scale shadow border-t border-white/10">
+                    <i class="fa-solid fa-shopping-bag text-sm"></i> Order Now
+                </button>
+            </div>
+        </nav>
+
+        <!-- Dynamic Brand Footnote -->
+        <div class="fixed bottom-[calc(0.5rem+env(safe-area-inset-bottom))] left-0 right-0 z-[51] px-6 pointer-events-none">
+            <div class="max-w-md mx-auto flex justify-end">
+                <a href="https://www.skani.space/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="pointer-events-auto text-[7px] font-black uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 bg-white/80 dark:bg-caneDark/80 backdrop-blur-md border border-canePrimary/10 px-2.5 py-1 rounded-full shadow-lg opacity-40 hover:opacity-100 transition-opacity duration-300 hover:text-canePrimary">
+                    Powered by Skani.space
+                </a>
+            </div>
+        </div>
+
+        <!-- ================== MODALS SYSTEM ================== -->
+
+        <!-- A. WIFI ACCESS MODAL -->
+        <div id="wifi-modal" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+            <div class="absolute inset-0 bg-black/75" onclick="closeModal('wifi-modal')"></div>
+            <div class="modal-content bg-caneLight dark:bg-zinc-950 w-full max-w-sm rounded-[3rem] p-8 relative border-t-8 border-canePrimary shadow-2xl sm-scaled">
+                <button onclick="closeModal('wifi-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-200/50 dark:bg-zinc-800 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+                
+                <h3 class="text-3xl font-black dark:text-white mb-1.5 tracking-tight">WiFi Access</h3>
+                <p class="text-zinc-500 text-[10px] font-bold uppercase mb-6 tracking-wider">Fast & Free Customer Connection</p>
+                
+                <div class="space-y-4">
+                    <div class="bg-white dark:bg-caneDark p-5 rounded-2xl border border-canePrimary/10">
+                        <label class="text-[9px] font-black uppercase text-zinc-400 dark:text-zinc-400 mb-1 block tracking-wider">Network Name (SSID)</label>
+                        <div class="text-xl font-black dark:text-white tracking-tight">CANECRUSH_WIFI</div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-caneDark p-5 rounded-2xl border border-canePrimary/10 flex justify-between items-center">
+                        <div class="flex-1">
+                            <label class="text-[9px] font-black uppercase text-zinc-400 dark:text-zinc-400 mb-1 block tracking-wider">Password</label>
+                            <div class="text-xl font-black dark:text-white tracking-tight">canecrushfresh</div>
+                        </div>
+                        <button id="copy-btn" onclick="copyWifiText('canecrushfresh')" class="w-12 h-12 bg-canePrimary text-zinc-950 rounded-2xl tap-scale transition-all flex items-center justify-center shadow-lg shadow-canePrimary/10">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- B. TABLE BOOKING MODAL -->
+        <div id="booking-modal" class="modal-overlay fixed inset-0 z-[60] flex items-end sm:items-center justify-center px-4">
+            <div class="absolute inset-0 bg-black/75" onclick="closeModal('booking-modal')"></div>
+            <div class="modal-content bg-caneLight dark:bg-zinc-950 w-full max-w-sm rounded-t-[3rem] sm:rounded-[3rem] p-8 sm:p-10 relative border-t-8 border-canePrimary pb-[calc(2rem+env(safe-area-inset-bottom))]">
+                <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-850 rounded-full mx-auto mb-6 sm:hidden"></div>
+                
+                <button onclick="closeModal('booking-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-200/50 dark:bg-zinc-800 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+                
+                <h3 class="text-3xl font-black dark:text-white mb-1.5 tracking-tight italic">Reserve a Table</h3>
+                <p class="text-zinc-500 text-[10px] font-bold uppercase mb-6 tracking-wider">Enjoy direct coastal hospitality</p>
+                
+                <form onsubmit="handleBookingSubmit(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Full Name</label>
+                        <input type="text" id="book-name" required placeholder="Enter full name" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Phone Number</label>
+                        <input type="tel" id="book-phone" required placeholder="e.g. +255 713 278 622" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Date</label>
+                            <input type="date" id="book-date" required class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-3 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Time</label>
+                            <input type="time" id="book-time" required class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-3 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Number of Guests</label>
+                        <input type="number" id="book-people" required min="1" placeholder="e.g. 4" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Special Requests</label>
+                        <textarea id="book-requests" placeholder="e.g. Seafood platter ready, VIP table, birthday decor" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-xs font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all min-h-[70px] shadow-sm"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-canePrimary text-zinc-950 py-5 rounded-2xl font-black text-sm uppercase tracking-widest tap-scale transition-all shadow-lg shadow-canePrimary/25 mt-2">
+                        Reserve Table
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- C. ORDER NOW MODAL -->
+        <div id="order-modal" class="modal-overlay fixed inset-0 z-[60] flex items-end sm:items-center justify-center px-4">
+            <div class="absolute inset-0 bg-black/75" onclick="closeModal('order-modal')"></div>
+            <div class="modal-content bg-caneLight dark:bg-zinc-950 w-full max-w-sm rounded-t-[3rem] sm:rounded-[3rem] p-8 sm:p-10 relative border-t-8 border-canePrimary pb-[calc(2rem+env(safe-area-inset-bottom))]">
+                <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-850 rounded-full mx-auto mb-6 sm:hidden"></div>
+                
+                <button onclick="closeModal('order-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-200/50 dark:bg-zinc-800 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+                
+                <h3 class="text-3xl font-black dark:text-white mb-1.5 tracking-tight italic">Place Your Order</h3>
+                <p class="text-zinc-500 text-[10px] font-bold uppercase mb-6 tracking-wider">Fresh Food & Juices To Go</p>
+                
+                <form onsubmit="handleOrderSubmit(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Full Name</label>
+                        <input type="text" id="order-name" required placeholder="Enter full name" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Phone Number</label>
+                        <input type="tel" id="order-phone" required placeholder="e.g. +255 713 278 622" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Order Details</label>
+                        <textarea id="order-details" required placeholder="e.g. 2x Mixed Seafood Platter, 3x Large Sugarcane Juice, 1x Beef BBQ" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-xs font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all min-h-[70px] shadow-sm"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Delivery or Pickup?</label>
+                        <select id="order-type" onchange="toggleDeliveryLocation(this.value)" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                            <option value="Delivery">Delivery 🚀</option>
+                            <option value="Pickup">Pickup 🥡</option>
+                        </select>
+                    </div>
+
+                    <div id="delivery-location-container">
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Delivery Location</label>
+                        <input type="text" id="order-location" placeholder="e.g. Hotel name, street, room #" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-canePrimary text-zinc-950 py-5 rounded-2xl font-black text-sm uppercase tracking-widest tap-scale transition-all shadow-lg shadow-canePrimary/25 mt-2">
+                        Place Order
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- D. CATERING QUOTATION MODAL -->
+        <div id="catering-modal" class="modal-overlay fixed inset-0 z-[60] flex items-end sm:items-center justify-center px-4">
+            <div class="absolute inset-0 bg-black/75" onclick="closeModal('catering-modal')"></div>
+            <div class="modal-content bg-caneLight dark:bg-zinc-950 w-full max-w-sm rounded-t-[3rem] sm:rounded-[3rem] p-8 sm:p-10 relative border-t-8 border-canePrimary pb-[calc(2rem+env(safe-area-inset-bottom))]">
+                <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-850 rounded-full mx-auto mb-6 sm:hidden"></div>
+                
+                <button onclick="closeModal('catering-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-200/50 dark:bg-zinc-800 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+                
+                <h3 class="text-3xl font-black dark:text-white mb-1.5 tracking-tight italic">Catering Quote</h3>
+                <p class="text-zinc-500 text-[10px] font-bold uppercase mb-6 tracking-wider">Exceptional Service Anywhere</p>
+                
+                <form onsubmit="handleCateringSubmit(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Full Name</label>
+                        <input type="text" id="cat-name" required placeholder="Enter full name" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Phone Number</label>
+                        <input type="tel" id="cat-phone" required placeholder="e.g. +255 713 278 622" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Event Type</label>
+                            <input type="text" id="cat-event" required placeholder="e.g. Wedding" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Event Date</label>
+                            <input type="date" id="cat-date" required class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-3 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Expected Guests</label>
+                        <input type="number" id="cat-guests" required min="1" placeholder="e.g. 150" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Additional Details</label>
+                        <textarea id="cat-details" placeholder="e.g. Menu preferences, theme style, special setup requests" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-4 dark:text-white text-xs font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all min-h-[70px] shadow-sm"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-canePrimary text-zinc-950 py-5 rounded-2xl font-black text-sm uppercase tracking-widest tap-scale transition-all shadow-lg shadow-canePrimary/25 mt-2">
+                        Request Quote
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================== SCRIPT LOGIC ================== -->
+    <script>
+        // 1. IN VIEW REVEAL OBSERVER
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { 
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible'); 
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // 2. THEME CONTROLLER
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            icon.style.transform = 'scale(0) rotate(90deg)';
+            setTimeout(() => {
+                icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+                icon.style.transform = 'scale(1) rotate(0deg)';
+            }, 150);
+        }
+
+        // 3. UTILITY NAVIGATION ACTIONS
+        function navigateTo(url) { 
+            window.location.href = url; 
+        }
+        function openInNewTab(url) { 
+            window.open(url, '_blank', 'noopener,noreferrer'); 
+        }
+
+        // 4. MODAL MANAGEMENT HANDLERS
+        function openModal(id) { 
+            const overlay = document.getElementById(id);
+            overlay.classList.add('active'); 
+            document.body.style.overflow = 'hidden'; 
+            
+            // Add custom scale class for non-mobile transitions
+            const content = overlay.querySelector('.modal-content');
+            if (window.innerWidth >= 640) {
+                content.classList.add('sm-scaled');
+            }
+        }
+        function closeModal(id) { 
+            const overlay = document.getElementById(id);
+            overlay.classList.remove('active'); 
+            document.body.style.overflow = ''; 
+            const content = overlay.querySelector('.modal-content');
+            content.classList.remove('sm-scaled');
+        }
+
+        // 5. INTERACTIVE ORDER SELECT TOGGLE
+        function toggleDeliveryLocation(value) {
+            const container = document.getElementById('delivery-location-container');
+            const locationInput = document.getElementById('order-location');
+            if (value === 'Pickup') {
+                container.style.display = 'none';
+                locationInput.removeAttribute('required');
+            } else {
+                container.style.display = 'block';
+                locationInput.setAttribute('required', 'true');
+            }
+        }
+
+        // Initialize state
+        toggleDeliveryLocation('Delivery');
+
+        // 6. CLIPBOARD WIFI LOGIC
+        function copyWifiText(text) {
+            const btn = document.getElementById('copy-btn');
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            document.body.appendChild(textArea);
+            textArea.focus(); 
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                btn.innerHTML = '<i class="fa-solid fa-check scale-up"></i>';
+                btn.classList.replace('bg-canePrimary', 'bg-green-500');
+                btn.classList.add('text-white');
+            } catch (err) {
+                console.error('Copy failed', err);
+            }
+            
+            document.body.removeChild(textArea);
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-solid fa-copy"></i>';
+                btn.classList.replace('bg-green-500', 'bg-canePrimary');
+                btn.classList.remove('text-white');
+            }, 2500);
+        }
+
+        // 7. BOOKING SUBMISSION COMPILER
+        function handleBookingSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('book-name').value;
+            const phone = document.getElementById('book-phone').value;
+            const date = document.getElementById('book-date').value;
+            const time = document.getElementById('book-time').value;
+            const guests = document.getElementById('book-people').value;
+            const requests = document.getElementById('book-requests').value || "None";
+
+            const message = `Hello Cane Crush, \n\nI would like to reserve a table.\n\nFull Name: ${name}\nPhone Number: ${phone}\nDate: ${date}\nTime: ${time}\nGuests: ${guests}\nSpecial Request: ${requests}`;
+            
+            openInNewTab(`https://wa.me/255713278622?text=${encodeURIComponent(message)}`);
+            closeModal('booking-modal');
+        }
+
+        // 8. ORDER SUBMISSION COMPILER
+        function handleOrderSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('order-name').value;
+            const phone = document.getElementById('order-phone').value;
+            const details = document.getElementById('order-details').value;
+            const type = document.getElementById('order-type').value;
+            const location = document.getElementById('order-location').value || "N/A";
+
+            const message = `Hello Cane Crush,\n\nI would like to place an order.\n\nFull Name: ${name}\nPhone Number: ${phone}\nOrder Details: ${details}\nDelivery/Pickup: ${type}\nLocation: ${location}`;
+            
+            openInNewTab(`https://wa.me/255713278622?text=${encodeURIComponent(message)}`);
+            closeModal('order-modal');
+        }
+
+        // 9. CATERING QUOTATION SUBMISSION COMPILER
+        function handleCateringSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('cat-name').value;
+            const phone = document.getElementById('cat-phone').value;
+            const event = document.getElementById('cat-event').value;
+            const date = document.getElementById('cat-date').value;
+            const guests = document.getElementById('cat-guests').value;
+            const details = document.getElementById('cat-details').value || "None";
+
+            const message = `Hello Cane Crush,\n\nI would like a catering quotation.\n\nName: ${name}\nPhone: ${phone}\nEvent Type: ${event}\nDate: ${date}\nGuests: ${guests}\nAdditional Details: ${details}`;
+            
+            openInNewTab(`https://wa.me/255713278622?text=${encodeURIComponent(message)}`);
+            closeModal('catering-modal');
+        }
+
+        // 10. SYSTEM FEEDBACK TRACKER (Google Sheets Friendly)
+        async function handleSuggestion(e) {
+            e.preventDefault();
+            const form = document.getElementById('suggestion-form');
+            const feedback = document.getElementById('suggestion-feedback');
+            const submitBtn = document.getElementById('submit-btn');
+            const suggestionText = document.getElementById('suggestion-text').value.trim();
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycby6l1_8WHArGhbuztSRW0uEhKSenlD_opoG0QaJhYo2ZJWWCpIuOsk96SV4ip_1V0u6KA/exec';
+            const submitFrame = document.getElementById('suggestion-submit-frame');
+
+            if (!suggestionText) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Sending...';
+
+            try {
+                // Submit through iframe target workaround to prevent CORS blocking issues on static portals.
+                submitFrame.src = `${scriptUrl}?suggestion=${encodeURIComponent(suggestionText)}&t=${Date.now()}`;
+
+                form.style.opacity = '0';
+                setTimeout(() => {
+                    form.classList.add('hidden');
+                    feedback.classList.remove('hidden');
+                    feedback.style.opacity = '1';
+                }, 300);
+
+                setTimeout(() => {
+                    feedback.classList.add('hidden');
+                    form.classList.remove('hidden');
+                    form.style.opacity = '1';
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Submit Feedback';
+                    e.target.reset();
+                }, 5000);
+
+            } catch (error) {
+                console.error('Submission tracking failed', error);
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Submission Error. Try Again';
+                setTimeout(() => { submitBtn.innerText = 'Submit Feedback'; }, 2500);
+            }
+        }
+
+        // 11. ACCESSIBILITY OVERLAY CLOSURES
+        document.addEventListener('keydown', (e) => { 
+            if (e.key === 'Escape') { 
+                const active = document.querySelector('.modal-overlay.active'); 
+                if (active) closeModal(active.id); 
+            } 
+        });
+    </script>
+</body>
+</html>
