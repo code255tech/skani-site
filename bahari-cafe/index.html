@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Bahari Café Skani</title>
+    <link rel="icon" href="https://www.skani.space/bahari-cafe/bahari-cafe-logo.jpg" type="image/jpeg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playpen+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        bahariPaper: '#FFFDF5',
+                        bahariCream: '#F7F1DE',
+                        bahariBlue: '#A9D8EF',
+                        bahariCoffee: '#7B4F36',
+                        bahariGreen: '#49652E',
+                        bahariInk: '#2C211A',
+                        bahariDark: '#131A14',
+                        bahariDarkCard: '#20281F',
+                        bahariGold: '#F3D978'
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        playful: ['Playpen Sans', 'cursive']
+                    },
+                    animation: {
+                        float: 'float 4s ease-in-out infinite',
+                        'float-delayed': 'float 4s ease-in-out 1.8s infinite',
+                        'bounce-soft': 'bounceSoft 2.6s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%,100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-8px)' }
+                        },
+                        bounceSoft: {
+                            '0%,100%': { transform: 'translateY(0) scale(1)' },
+                            '50%': { transform: 'translateY(-5px) scale(1.03)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            background:
+                radial-gradient(circle at 15% 5%, rgba(169, 216, 239, .34), transparent 28rem),
+                linear-gradient(180deg, #fffdf5 0%, #f9f2de 100%);
+            color: #2C211A;
+            font-family: 'Outfit', sans-serif;
+        }
+        .dark body {
+            background:
+                radial-gradient(circle at 15% 5%, rgba(169, 216, 239, .12), transparent 28rem),
+                linear-gradient(180deg, #131A14 0%, #1b2019 100%);
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .28;
+            background-image:
+                linear-gradient(135deg, rgba(123,79,54,.08) 25%, transparent 25%),
+                linear-gradient(225deg, rgba(73,101,46,.08) 25%, transparent 25%),
+                linear-gradient(45deg, rgba(169,216,239,.14) 25%, transparent 25%),
+                linear-gradient(315deg, rgba(123,79,54,.06) 25%, transparent 25%);
+            background-position: 18px 0, 18px 0, 0 0, 0 0;
+            background-size: 36px 36px;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        input, textarea, select { font-size: 16px !important; }
+        .tap-scale { transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease; }
+        .tap-scale:active { transform: scale(.96); }
+        .reveal { opacity: 0; transform: translateY(18px); transition: all .65s cubic-bezier(.16,1,.3,1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .modal-overlay { opacity: 0; visibility: hidden; transition: all .35s cubic-bezier(.16,1,.3,1); backdrop-filter: blur(0); }
+        .modal-overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(14px); }
+        .modal-panel, .order-modal-content { transform: translateY(100%); transition: transform .45s cubic-bezier(.16,1,.3,1); }
+        .modal-overlay.active .modal-panel, .modal-overlay.active .order-modal-content { transform: translateY(0); }
+        .menu-frame {
+            background: rgba(255,255,255,.7);
+            box-shadow: inset 0 0 0 1px rgba(123,79,54,.08);
+        }
+        .dark .menu-frame { background: rgba(255,255,255,.05); }
+        .hero-title { letter-spacing: 0; }
+        .cat-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 15px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            white-space: nowrap;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .cat-pill.active { background: #7B4F36; color: #fff; border-color: #7B4F36; }
+        .cat-pill.inactive { background: rgba(255,255,255,.65); color: #7B4F36; border-color: rgba(123,79,54,.18); }
+        .dark .cat-pill.inactive { background: rgba(255,255,255,.05); color: #c9d6bf; border-color: rgba(255,255,255,.1); }
+        .item-card {
+            border-radius: 18px;
+            border: 2px solid rgba(123,79,54,.1);
+            background: rgba(255,255,255,.78);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all .2s;
+            position: relative;
+        }
+        .dark .item-card { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.08); }
+        .item-card.in-cart { border-color: #A9D8EF; box-shadow: 0 10px 24px rgba(169,216,239,.22); }
+        .item-visual {
+            aspect-ratio: 1 / .82;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 44px;
+            background:
+                radial-gradient(circle at 70% 30%, rgba(255,255,255,.7), transparent 34%),
+                linear-gradient(135deg, rgba(169,216,239,.38), rgba(247,241,222,.95));
+        }
+        .item-card-body { padding: 11px 12px 12px; }
+        .add-btn-card, .qty-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            transition: all .15s;
+        }
+        .add-btn-card { background: #7B4F36; color: #fff; box-shadow: 0 6px 14px rgba(123,79,54,.28); }
+        .qty-btn { background: rgba(169,216,239,.3); color: #7B4F36; border: 1px solid rgba(123,79,54,.12); }
+        .qty-ctrl { display: flex; align-items: center; gap: 7px; }
+        .qty-num { min-width: 18px; text-align: center; font-size: 13px; font-weight: 900; color: #7B4F36; }
+        .badge-cart {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: #A9D8EF;
+            color: #2C211A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 900;
+        }
+        .step-dot { width: 8px; height: 8px; border-radius: 999px; background: rgba(123,79,54,.2); transition: all .25s; }
+        .step-dot.done, .step-dot.active { background: #7B4F36; }
+        .step-dot.active { width: 24px; }
+        .order-screen { display: none; }
+        .order-screen.active { display: block; }
+        .summary-row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(123,79,54,.1); font-size: 13px; }
+        .pay-opt { display: flex; align-items: center; gap: 12px; padding: 14px; border: 2px solid rgba(123,79,54,.14); border-radius: 18px; cursor: pointer; transition: all .2s; }
+        .pay-opt.selected { border-color: #7B4F36; background: rgba(169,216,239,.22); }
+        .radio-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(123,79,54,.45); flex-shrink: 0; }
+        .pay-opt.selected .radio-dot { background: #7B4F36; box-shadow: inset 0 0 0 4px #fff; }
+        .search-input {
+            width: 100%;
+            border: 2px solid rgba(123,79,54,.14);
+            background: rgba(255,255,255,.72);
+            border-radius: 18px;
+            padding: 13px 42px;
+            outline: none;
+            font-weight: 800;
+        }
+        .dark .search-input { background: rgba(255,255,255,.06); color: #fff; border-color: rgba(255,255,255,.1); }
+    </style>
+</head>
+<body class="bg-bahariPaper dark:bg-bahariDark text-bahariInk dark:text-zinc-100 transition-colors duration-300">
+    <div class="relative min-h-screen max-w-md mx-auto pb-36 px-4 sm:px-6">
+        <header class="sticky top-0 z-40 -mx-4 sm:-mx-6 px-4 sm:px-6 pt-[calc(1rem+env(safe-area-inset-top))] pb-3 bg-bahariPaper/86 dark:bg-bahariDark/86 backdrop-blur-xl border-b border-bahariCoffee/10">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-bahariBlue overflow-hidden border-2 border-white shadow-lg rotate-[-3deg]">
+                        <img src="https://www.skani.space/bahari-cafe/bahari-cafe-logo.jpg" alt="Bahari Café" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h1 class="font-black text-base uppercase leading-none text-bahariCoffee dark:text-bahariBlue">Bahari Café</h1>
+                        <p class="text-[9px] font-black uppercase tracking-[0.16em] text-bahariGreen dark:text-bahariGold mt-1">Coffee · Matcha · Fizzy</p>
+                    </div>
+                </div>
+                <button onclick="toggleTheme()" class="w-11 h-11 rounded-2xl bg-white/80 dark:bg-white/10 border border-bahariCoffee/10 flex items-center justify-center text-bahariCoffee dark:text-bahariBlue shadow-sm tap-scale" aria-label="Toggle theme">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <section class="pt-6 reveal">
+                <div class="relative overflow-hidden rounded-[2.35rem] bg-bahariCoffee text-white shadow-xl">
+                    <div class="absolute inset-0 opacity-30">
+                        <img src="https://www.skani.space/bahari-cafe/menu-image-1.jpeg" alt="" class="w-full h-full object-cover">
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-bahariCoffee/95 via-bahariCoffee/70 to-bahariGreen/70"></div>
+                    <div class="relative z-10 min-h-[390px] p-6 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-bahariBlue text-bahariInk text-[10px] font-black uppercase tracking-wider">
+                                <span class="w-2 h-2 rounded-full bg-bahariGreen animate-pulse"></span> 🌊 Home Based Café
+                            </span>
+                            <span class="text-5xl animate-float">🥤</span>
+                        </div>
+
+                        <div>
+                            <h2 class="hero-title text-[3.35rem] leading-[.88] font-black text-white">
+                                Sip the<br>
+                                <span class="font-playful text-bahariBlue">Bahari Way</span>
+                            </h2>
+                            <p class="mt-4 text-[12px] font-black uppercase tracking-wider text-white/85">
+                                Specialty Coffee · Japanese Matcha · Fizzy Drinks
+                            </p>
+                            <div class="mt-5 grid grid-cols-3 gap-2">
+                                <div class="menu-frame rounded-2xl p-3 text-center">
+                                    <div class="text-2xl">☕</div>
+                                    <div class="text-[10px] font-black uppercase mt-1">Coffee</div>
+                                </div>
+                                <div class="menu-frame rounded-2xl p-3 text-center">
+                                    <div class="text-2xl">🍵</div>
+                                    <div class="text-[10px] font-black uppercase mt-1">Matcha</div>
+                                </div>
+                                <div class="menu-frame rounded-2xl p-3 text-center">
+                                    <div class="text-2xl">🥤</div>
+                                    <div class="text-[10px] font-black uppercase mt-1">Fizzy</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-2 gap-3.5 mt-5">
+                <button onclick="openMenuPDF()" class="reveal tap-scale bg-bahariBlue p-5 rounded-[2rem] flex flex-col items-center justify-center text-bahariInk shadow-md border border-white/70">
+                    <div class="w-11 h-11 rounded-2xl bg-white/45 flex items-center justify-center mb-2 text-xl">📋</div>
+                    <span class="font-black text-base font-playful">Menu</span>
+                    <span class="text-[9px] font-black opacity-75 uppercase tracking-wide">Browse our drinks</span>
+                </button>
+                <button onclick="openModal('customizer-modal')" class="reveal tap-scale bg-white/80 dark:bg-bahariDarkCard p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-bahariCoffee/10">
+                    <div class="w-11 h-11 rounded-2xl bg-bahariGold/35 flex items-center justify-center mb-2 text-xl">✨</div>
+                    <span class="font-black text-base font-playful">Create Drink</span>
+                    <span class="text-[9px] font-black text-zinc-400 uppercase tracking-wide">Made your way ⭐</span>
+                </button>
+                <button onclick="openModal('reviews-modal')" class="reveal tap-scale bg-white/80 dark:bg-bahariDarkCard p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-bahariCoffee/10">
+                    <div class="w-11 h-11 rounded-2xl bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center mb-2 text-xl">⭐</div>
+                    <span class="font-black text-base font-playful">Reviews</span>
+                    <span class="text-[9px] font-black text-zinc-400 uppercase tracking-wide">Loved by community</span>
+                </button>
+                <a href="https://wa.me/255788693881" target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-white/80 dark:bg-bahariDarkCard p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-bahariCoffee/10 text-center">
+                    <div class="w-11 h-11 rounded-2xl bg-green-100 dark:bg-green-500/10 flex items-center justify-center mb-2 text-xl"><i class="fa-brands fa-whatsapp text-[#25D366]"></i></div>
+                    <span class="font-black text-base font-playful">WhatsApp</span>
+                    <span class="text-[9px] font-black text-zinc-400 uppercase tracking-wide">Order or Ask</span>
+                </a>
+                <button onclick="openOrderBot()" class="reveal tap-scale col-span-2 bg-bahariCoffee text-white p-5 rounded-[2rem] flex items-center justify-between shadow-xl shadow-bahariCoffee/20 relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-[0.16] bg-[radial-gradient(circle_at_85%_50%,#fff,transparent_30%)]"></div>
+                    <div class="relative text-left">
+                        <div class="text-2xl font-black font-playful leading-none">Order Now 🛒</div>
+                        <div class="text-[10px] font-black uppercase tracking-widest text-white/75 mt-1">Pick drinks from the Bahari menu</div>
+                    </div>
+                    <div class="relative flex items-center gap-2">
+                        <span id="cta-badge" class="hidden bg-bahariBlue text-bahariInk text-[10px] font-black rounded-full min-w-[22px] h-[22px] items-center justify-center px-1.5"></span>
+                        <div class="w-[3.25rem] h-[3.25rem] min-w-[3.25rem] rounded-full bg-white/15 flex items-center justify-center text-3xl animate-bounce-soft">🥤</div>
+                    </div>
+                </button>
+            </section>
+
+            <section class="mt-8 reveal">
+                <div onclick="openModal('customizer-modal')" class="tap-scale cursor-pointer rounded-[2.35rem] bg-white/82 dark:bg-bahariDarkCard border-2 border-bahariBlue/55 p-5 shadow-md relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-12 w-32 h-32 rounded-full bg-bahariBlue/18"></div>
+                    <div class="flex items-start gap-4 relative">
+                        <div class="w-16 h-16 rounded-3xl bg-bahariBlue/30 flex items-center justify-center text-4xl shadow-inner">🧋</div>
+                        <div class="flex-1 min-w-0">
+                            <span class="inline-flex px-2.5 py-1 rounded-full bg-bahariGold/50 text-bahariCoffee text-[9px] font-black uppercase tracking-widest">Build your drink</span>
+                            <h3 class="font-playful font-black text-2xl leading-tight mt-2">Create Your Drink</h3>
+                            <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">Choose a base, flavor, sweetness, ice and extras. Your preview builds with emoji as you go.</p>
+                            <div id="mini-builder-preview" class="mt-4 rounded-2xl bg-bahariCream dark:bg-white/5 border border-bahariCoffee/10 px-4 py-3 text-center text-2xl">☕ 🧊 ✨</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-9">
+                <h3 class="reveal text-xl font-black font-playful uppercase tracking-tight flex items-center gap-2">
+                    <span class="w-1.5 h-6 rounded-full bg-bahariCoffee"></span> Menu Inspired
+                </h3>
+                <div class="mt-5 flex gap-4 overflow-x-auto no-scrollbar pb-3 px-1">
+                    <button onclick="openOrderBot('coffee')" class="reveal tap-scale min-w-[210px] text-left bg-white/78 dark:bg-bahariDarkCard rounded-[2rem] p-3 border border-bahariCoffee/10 shadow-sm">
+                        <img src="https://www.skani.space/bahari-cafe/menu-image-2.jpeg" alt="Bahari coffee menu" class="w-full aspect-[4/3] object-cover rounded-[1.45rem]">
+                        <div class="px-2 pt-3 pb-1">
+                            <div class="font-black text-bahariCoffee dark:text-bahariBlue">Coffee</div>
+                            <div class="text-[10px] font-black uppercase tracking-wider text-zinc-400">From 10.000 TZS</div>
+                        </div>
+                    </button>
+                    <button onclick="openOrderBot('matcha')" class="reveal tap-scale min-w-[210px] text-left bg-white/78 dark:bg-bahariDarkCard rounded-[2rem] p-3 border border-bahariCoffee/10 shadow-sm">
+                        <img src="https://www.skani.space/bahari-cafe/menu-image-3.jpeg" alt="Bahari matcha menu" class="w-full aspect-[4/3] object-cover rounded-[1.45rem]">
+                        <div class="px-2 pt-3 pb-1">
+                            <div class="font-black text-bahariGreen dark:text-bahariGold">Matcha</div>
+                            <div class="text-[10px] font-black uppercase tracking-wider text-zinc-400">Classic to Biscoff</div>
+                        </div>
+                    </button>
+                    <button onclick="openOrderBot('fizzy')" class="reveal tap-scale min-w-[210px] text-left bg-white/78 dark:bg-bahariDarkCard rounded-[2rem] p-3 border border-bahariCoffee/10 shadow-sm">
+                        <img src="https://www.skani.space/bahari-cafe/menu-image-4.jpeg" alt="Bahari fizzy menu" class="w-full aspect-[4/3] object-cover rounded-[1.45rem]">
+                        <div class="px-2 pt-3 pb-1">
+                            <div class="font-black text-bahariBlue">Fizzy</div>
+                            <div class="text-[10px] font-black uppercase tracking-wider text-zinc-400">Fruit sparkle drinks</div>
+                        </div>
+                    </button>
+                </div>
+            </section>
+
+            <section class="mt-8 reveal">
+                <div class="rounded-[2.35rem] bg-bahariGreen text-white p-6 overflow-hidden relative shadow-lg">
+                    <div class="absolute -right-12 -top-12 w-36 h-36 rounded-full bg-white/10"></div>
+                    <div class="flex items-start gap-4 relative">
+                        <div class="w-14 h-14 rounded-2xl bg-white/14 flex items-center justify-center text-3xl">🍵</div>
+                        <div>
+                            <span class="text-[9px] font-black uppercase tracking-widest text-bahariGold">House Favorite</span>
+                            <h3 class="text-2xl font-black font-playful mt-1">Dirty Matcha + Biscoff</h3>
+                            <p class="text-xs font-semibold text-white/75 mt-1.5 leading-relaxed">Creamy green tea, espresso depth, and dessert-style richness.</p>
+                            <button onclick="quickAddAndOpen('matcha','Dirty Matcha')" class="mt-4 bg-bahariBlue text-bahariInk px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider tap-scale">Add to Order</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-8 reveal">
+                <div class="rounded-[2.35rem] bg-bahariCoffee text-white p-6 overflow-hidden relative shadow-xl border border-white/10">
+                    <div class="absolute -right-14 -top-14 w-40 h-40 rounded-full bg-bahariBlue/20"></div>
+                    <div class="absolute -left-12 -bottom-14 w-36 h-36 rounded-full bg-bahariGold/10"></div>
+                    <div class="relative">
+                        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-bahariBlue text-bahariInk text-[10px] font-black uppercase tracking-wider">
+                            🌊 Bahari Treat
+                        </span>
+                        <h3 class="font-playful font-black text-3xl leading-tight mt-4">Buy 2, get 1 small drink FREE 💙</h3>
+                        <p class="text-sm font-semibold text-white/80 mt-2 leading-relaxed">Order any 2 full-size drinks and Bahari adds 1 small drink on the house.</p>
+                        <div class="mt-5 flex items-center justify-between gap-3 rounded-2xl bg-white/10 border border-white/10 px-4 py-3">
+                            <span class="text-[10px] font-black uppercase tracking-widest text-bahariGold">Promo dates</span>
+                            <span class="text-xs font-black text-white">29 June - 11 July</span>
+                        </div>
+                        <button onclick="openOrderBot()" class="w-full mt-4 bg-bahariBlue text-bahariInk py-4 rounded-2xl font-black text-xs uppercase tracking-widest tap-scale shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cart-shopping"></i> Order the Treat
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-8 reveal">
+                <div class="bg-white/75 dark:bg-bahariDarkCard rounded-[2.2rem] p-5 border border-bahariCoffee/10">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-black font-playful text-xl">Today's Status</h4>
+                            <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mt-1">Home based café hours</p>
+                        </div>
+                        <div id="store-status-badge"></div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-bahariCoffee/10 text-xs font-bold text-zinc-500 dark:text-zinc-400 space-y-2">
+                        <p class="flex justify-between gap-4"><span>Mon, Tue, Wed, Fri, Sat</span><span class="text-bahariCoffee dark:text-bahariBlue">11:00 AM - 5:00 PM</span></p>
+                        <p class="flex justify-between gap-4"><span>Thursday & Sunday</span><span class="text-rose-500">Closed</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-8 reveal">
+                <div class="bg-white/78 dark:bg-bahariDarkCard rounded-[2.35rem] p-5 border border-bahariCoffee/10 shadow-sm">
+                    <div class="flex items-end justify-between gap-4 mb-4">
+                        <div>
+                            <span class="text-[9px] font-black uppercase tracking-widest text-bahariGreen dark:text-bahariGold">Let's connect</span>
+                            <h3 class="font-playful font-black text-2xl leading-tight mt-1">Connect with us</h3>
+                        </div>
+                        <span class="text-3xl">🌊</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="https://wa.me/255788693881" target="_blank" rel="noopener noreferrer" class="tap-scale rounded-2xl bg-green-50 dark:bg-green-500/10 border border-green-500/15 p-4 flex flex-col">
+                            <i class="fa-brands fa-whatsapp text-[#25D366] text-2xl mb-3"></i>
+                            <span class="font-black text-sm">WhatsApp</span>
+                            <span class="text-[9px] font-black uppercase tracking-wide text-zinc-400 mt-1">Order or ask</span>
+                        </a>
+                        <a href="https://www.instagram.com/baharicafe_/" target="_blank" rel="noopener noreferrer" class="tap-scale rounded-2xl bg-rose-50 dark:bg-rose-500/10 border border-rose-500/15 p-4 flex flex-col">
+                            <i class="fa-brands fa-instagram text-[#E4405F] text-2xl mb-3"></i>
+                            <span class="font-black text-sm">Instagram</span>
+                            <span class="text-[9px] font-black uppercase tracking-wide text-zinc-400 mt-1">Latest drinks</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-8 reveal">
+                <div class="bg-bahariCream/80 dark:bg-bahariDarkCard/70 p-6 rounded-[2.35rem] border-2 border-dashed border-bahariCoffee/20">
+                    <h3 class="font-black font-playful text-xl mb-1">💙 Community Taste</h3>
+                    <p class="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-black mb-4">What drink should Bahari create next?</p>
+                    <div id="suggestion-feedback" class="py-6 text-center hidden">
+                        <span class="text-4xl block mb-2 animate-bounce-soft">🌊</span>
+                        <p class="text-bahariCoffee dark:text-bahariBlue font-black text-sm">Delicious suggestion recorded. Thank you!</p>
+                    </div>
+                    <form id="suggestion-form" onsubmit="handleSuggestion(event)" class="space-y-4">
+                        <textarea id="suggestion-text" name="suggestion" placeholder="Describe your dream matcha twist or craft coffee blend..." required class="w-full bg-white dark:bg-bahariDark border border-bahariCoffee/10 focus:border-bahariCoffee focus:ring-4 focus:ring-bahariCoffee/10 rounded-2xl p-4 text-sm dark:text-white min-h-[95px] outline-none transition-all placeholder:text-zinc-400 shadow-sm"></textarea>
+                        <button type="submit" id="submit-btn" class="w-full bg-bahariCoffee text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest tap-scale shadow-md">Submit Idea</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-4 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pointer-events-none">
+            <div class="max-w-md mx-auto bg-white/94 dark:bg-bahariDarkCard/94 backdrop-blur-2xl rounded-[2rem] p-3 flex items-center gap-3 border border-bahariCoffee/10 shadow-[0_24px_50px_rgba(44,33,26,.18)] pointer-events-auto">
+                <button onclick="openModal('customizer-modal')" class="flex-1 flex items-center justify-center gap-2 bg-bahariCream dark:bg-white/6 text-bahariCoffee dark:text-white font-black text-[11px] uppercase py-4 rounded-[1.35rem] tap-scale">
+                    <i class="fa-solid fa-wand-magic-sparkles text-bahariBlue"></i> Build
+                </button>
+                <button onclick="openOrderBot()" class="flex-[1.35] flex items-center justify-center gap-2 bg-bahariCoffee text-white font-black text-[11px] uppercase py-4 rounded-[1.35rem] tap-scale shadow-lg relative">
+                    <span id="bottom-badge" class="hidden absolute -top-2 -right-1 bg-bahariBlue text-bahariInk text-[10px] font-black rounded-full min-w-[22px] h-[22px] items-center justify-center px-1.5"></span>
+                    <i class="fa-solid fa-cart-shopping"></i> Order Now
+                </button>
+            </div>
+        </nav>
+
+        <div class="fixed bottom-[calc(.45rem+env(safe-area-inset-bottom))] left-0 right-0 z-[51] px-6 pointer-events-none">
+            <div class="max-w-md mx-auto flex justify-end">
+                <a href="https://www.skani.space/" target="_blank" rel="noopener noreferrer" class="pointer-events-auto text-[7px] font-black uppercase tracking-[0.18em] text-zinc-500 bg-white/75 dark:bg-bahariDarkCard/75 backdrop-blur-md border border-bahariCoffee/10 px-2.5 py-1 rounded-full shadow-lg opacity-45 hover:opacity-100">Powered by Skani.space</a>
+            </div>
+        </div>
+    </div>
+
+    <iframe id="suggestion-submit-frame" name="suggestion-submit-frame" class="hidden" aria-hidden="true"></iframe>
+
+    <div id="customizer-modal" class="modal-overlay fixed inset-0 z-[70] flex items-end justify-center px-4">
+        <div class="absolute inset-0 bg-black/65" onclick="closeModal('customizer-modal')"></div>
+        <div class="modal-panel bg-bahariPaper dark:bg-bahariDarkCard w-full max-w-md rounded-t-[2.6rem] p-6 relative pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-2xl border-t-8 border-bahariBlue">
+            <div class="w-12 h-1.5 bg-bahariCoffee/20 dark:bg-white/15 rounded-full mx-auto mb-5"></div>
+            <button onclick="closeModal('customizer-modal')" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-bahariCoffee/10 dark:bg-white/10 text-bahariCoffee dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-3xl font-black font-playful leading-tight">Create Your Drink</h3>
+            <p class="text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-1 mb-5">Inspired by Build Your Sundae ✨</p>
+
+            <div class="rounded-[2rem] bg-white dark:bg-bahariDark p-5 border border-bahariCoffee/10 mb-5 text-center">
+                <div id="builder-visual" class="text-4xl min-h-[52px] flex items-center justify-center gap-2">🥤</div>
+                <p id="builder-summary" class="mt-3 text-xs font-black text-bahariCoffee dark:text-bahariBlue">Choose your drink style</p>
+            </div>
+
+            <div class="max-h-[52vh] overflow-y-auto no-scrollbar space-y-5 pr-1">
+                <div>
+                    <label class="block text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2">1. Drink Style</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button id="build-category-Coffee" onclick="selectBuildPart('category','Coffee')" class="build-category rounded-2xl bg-white dark:bg-bahariDark border-2 border-bahariCoffee/10 p-3 text-xs font-black tap-scale">☕ Coffee</button>
+                        <button id="build-category-Matcha" onclick="selectBuildPart('category','Matcha')" class="build-category rounded-2xl bg-white dark:bg-bahariDark border-2 border-bahariCoffee/10 p-3 text-xs font-black tap-scale">🍵 Matcha</button>
+                        <button id="build-category-Fizzy" onclick="selectBuildPart('category','Fizzy')" class="build-category rounded-2xl bg-white dark:bg-bahariDark border-2 border-bahariCoffee/10 p-3 text-xs font-black tap-scale">🥤 Fizzy</button>
+                    </div>
+                </div>
+                <div>
+                    <label id="build-flavor-label" class="block text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2">2. Choose a category first</label>
+                    <div id="build-flavor-options" class="grid grid-cols-2 gap-2">
+                        <div class="col-span-2 rounded-2xl bg-white/70 dark:bg-bahariDark border-2 border-bahariCoffee/10 p-4 text-xs font-black text-center text-zinc-400">Pick Coffee, Matcha, or Fizzy to see the right menu options.</div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2">3. Sweetness</label>
+                    <div class="grid grid-cols-4 gap-2">
+                        <button id="build-sweet-25%" onclick="selectBuildPart('sweet','25%')" class="build-sweet rounded-2xl bg-white dark:bg-bahariDark border-2 border-bahariCoffee/10 p-3 text-xs font-black tap-scale">25%</button>
+                        <button id="build-sweet-50%" onclick="selectBuildPart('sweet','50%')" class="build-sweet rounded-2xl bg-white dark:bg-bahariDark border-2 border-bahariCoffee/10 p-3 text-xs font-black tap-scale">50%</button>
+                        <button id="build-sweet-75%" onclick="selectBuildPart('sweet','75%')" class="build-sweet rounded-2xl bg-white dark:bg-bahariDark border-2 border-bahariCoffee/10 p-3 text-xs font-black tap-scale">75%</button>
+                        <button id="build-sweet-100%" onclick="selectBuildPart('sweet','100%')" class="build-sweet rounded-2xl bg-white dark:bg-bahariDark border-2 border-bahariCoffee/10 p-3 text-xs font-black tap-scale">100%</button>
+                    </div>
+                </div>
+                <div>
+                    <label id="build-finish-label" class="block text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2">4. Finish</label>
+                    <div id="build-finish-options" class="grid grid-cols-2 gap-2">
+                        <div class="col-span-2 rounded-2xl bg-white/70 dark:bg-bahariDark border-2 border-bahariCoffee/10 p-4 text-xs font-black text-center text-zinc-400">Finish options appear after choosing a category.</div>
+                    </div>
+                </div>
+            </div>
+            <button onclick="submitCustomDrink()" class="w-full mt-5 bg-bahariCoffee text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest tap-scale shadow-md flex items-center justify-center gap-2">
+                <i class="fa-brands fa-whatsapp"></i> Order This Creation
+            </button>
+        </div>
+    </div>
+
+    <div id="reviews-modal" class="modal-overlay fixed inset-0 z-[70] flex items-end justify-center px-4">
+        <div class="absolute inset-0 bg-black/65" onclick="closeModal('reviews-modal')"></div>
+        <div class="modal-panel bg-bahariPaper dark:bg-bahariDarkCard w-full max-w-md rounded-t-[2.6rem] p-6 relative pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-2xl border-t-8 border-bahariGold">
+            <button onclick="closeModal('reviews-modal')" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-bahariCoffee/10 dark:bg-white/10"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-black font-playful">Community Reviews</h3>
+            <div class="mt-5 space-y-3">
+                <div class="bg-white dark:bg-bahariDark p-4 rounded-2xl border border-bahariCoffee/10">
+                    <div class="text-amber-500 text-xs mb-1">★★★★★</div>
+                    <p class="text-sm font-semibold">"The matcha is smooth and the fizzy drinks are so fresh."</p>
+                </div>
+                <div class="bg-white dark:bg-bahariDark p-4 rounded-2xl border border-bahariCoffee/10">
+                    <div class="text-amber-500 text-xs mb-1">★★★★★</div>
+                    <p class="text-sm font-semibold">"Spanish Latte and Biscoff Latte are a must order."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="order-modal" class="modal-overlay fixed inset-0 z-[80] flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/80" onclick="closeModal('order-modal')"></div>
+        <div class="order-modal-content bg-bahariPaper dark:bg-bahariDark w-full max-w-md rounded-t-[2.45rem] relative flex flex-col" style="height:94vh;max-height:94vh;">
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-bahariCoffee/10 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-bahariBlue rounded-xl flex items-center justify-center text-lg">🌊</div>
+                    <div>
+                        <h3 class="text-base font-black leading-none">Order</h3>
+                        <p class="text-[9px] text-bahariCoffee dark:text-bahariBlue uppercase tracking-widest font-black">Bahari Café</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="step-dot active" id="sd1"></div>
+                    <div class="step-dot" id="sd2"></div>
+                    <div class="step-dot" id="sd3"></div>
+                    <div class="step-dot" id="sd4"></div>
+                </div>
+                <button onclick="closeModal('order-modal')" class="w-9 h-9 rounded-full bg-bahariCoffee/10 text-bahariCoffee dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto no-scrollbar px-5" id="order-body">
+                <div id="screen-1" class="order-screen active pt-4 pb-4">
+                    <h4 class="text-2xl font-black font-playful mb-0.5">Pick your drink 🥤</h4>
+                    <p class="text-zinc-400 text-xs font-black uppercase tracking-wider mb-4">Tap a card to add it</p>
+                    <div class="relative mb-4">
+                        <input type="text" id="menu-search" class="search-input" placeholder="Search latte, matcha, mango..." oninput="handleSearch(this.value)" autocomplete="off" spellcheck="false">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-bahariCoffee/45"></i>
+                        <button class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-bahariCoffee/10 text-xs" id="search-clear-btn" onclick="clearSearch()" aria-label="Clear">×</button>
+                    </div>
+                    <div id="search-results" class="hidden"></div>
+                    <div id="browse-view">
+                        <div class="flex gap-2 overflow-x-auto no-scrollbar pb-3 mb-2" id="cat-pills"></div>
+                        <div id="item-grid" class="grid grid-cols-2 gap-3"></div>
+                    </div>
+                </div>
+
+                <div id="screen-2" class="order-screen pt-4 pb-4">
+                    <h4 class="text-2xl font-black font-playful mb-0.5">Your Order 🛒</h4>
+                    <p class="text-zinc-400 text-xs font-black uppercase tracking-wider mb-5">Adjust before checkout</p>
+                    <div id="cart-review-list"></div>
+                    <div class="mt-4 pt-4 border-t border-bahariCoffee/10 flex justify-between">
+                        <span class="text-xs font-black uppercase text-zinc-400 tracking-wider">Service</span>
+                        <span class="text-sm font-black text-bahariGreen dark:text-bahariBlue">Confirm on WhatsApp</span>
+                    </div>
+                    <div class="flex justify-between mt-2">
+                        <span class="text-base font-black uppercase">Total</span>
+                        <span class="text-xl font-black text-bahariCoffee dark:text-bahariBlue" id="cart-total-2">TZS 0</span>
+                    </div>
+                </div>
+
+                <div id="screen-3" class="order-screen pt-4 pb-4">
+                    <h4 class="text-2xl font-black font-playful mb-0.5">Your Details 📋</h4>
+                    <p class="text-zinc-400 text-xs font-black uppercase tracking-wider mb-5">So Bahari can confirm</p>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Your Name</label>
+                            <input type="text" id="cust-name" placeholder="e.g. Amina Ali" class="w-full bg-white dark:bg-bahariDarkCard p-4 dark:text-white text-sm font-bold border-2 border-bahariCoffee/15 focus:border-bahariCoffee outline-none rounded-2xl transition-all">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Phone Number</label>
+                            <input type="tel" id="cust-phone" placeholder="e.g. 0788 693 881" class="w-full bg-white dark:bg-bahariDarkCard p-4 dark:text-white text-sm font-bold border-2 border-bahariCoffee/15 focus:border-bahariCoffee outline-none rounded-2xl transition-all">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Delivery or Pickup?</label>
+                            <div class="flex gap-3">
+                                <button onclick="setOrderType('Delivery')" id="btn-delivery" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-bahariCoffee bg-bahariBlue/25 text-bahariCoffee transition-all">🛵 Delivery</button>
+                                <button onclick="setOrderType('Pickup')" id="btn-pickup" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 text-zinc-400 transition-all">🚶 Pickup</button>
+                            </div>
+                        </div>
+                        <div id="addr-field">
+                            <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Delivery Address</label>
+                            <input type="text" id="cust-addr" placeholder="Area, street, landmark..." class="w-full bg-white dark:bg-bahariDarkCard p-4 dark:text-white text-sm font-bold border-2 border-bahariCoffee/15 focus:border-bahariCoffee outline-none rounded-2xl transition-all">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Special Requests</label>
+                            <textarea id="cust-notes" placeholder="e.g. Less ice, 50% sweet..." rows="2" class="w-full bg-white dark:bg-bahariDarkCard p-4 dark:text-white text-sm font-bold border-2 border-bahariCoffee/15 focus:border-bahariCoffee outline-none rounded-2xl transition-all resize-none"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-3">Payment</label>
+                        <div class="pay-opt selected" id="pay-cash" onclick="selectPayment('cash')">
+                            <div class="radio-dot"></div><div class="text-3xl">💵</div>
+                            <div><div class="font-black text-sm">Cash / On Confirmation</div><div class="text-[10px] text-zinc-400 font-bold uppercase">Confirm with Bahari</div></div>
+                        </div>
+                        <div class="pay-opt mt-2" id="pay-mpesa" onclick="selectPayment('mpesa')">
+                            <div class="radio-dot"></div><div class="text-3xl">📱</div>
+                            <div><div class="font-black text-sm">M-Pesa</div><div class="text-[10px] text-zinc-400 font-bold uppercase">Request payment details</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="screen-4" class="order-screen pt-4 pb-4">
+                    <h4 class="text-2xl font-black font-playful mb-0.5">Review & Send ✅</h4>
+                    <p class="text-zinc-400 text-xs font-black uppercase tracking-wider mb-5">WhatsApp opens with your order</p>
+                    <div class="bg-white dark:bg-bahariDarkCard rounded-2xl p-5 mb-4 border-2 border-bahariCoffee/10">
+                        <div class="text-[10px] font-black uppercase text-zinc-400 tracking-wider mb-3">Order Summary</div>
+                        <div id="final-order-items"></div>
+                        <div class="flex justify-between mt-3 pt-3 border-t border-bahariCoffee/10">
+                            <span class="font-black uppercase text-sm">Total</span>
+                            <span class="font-black text-bahariCoffee dark:text-bahariBlue text-lg" id="final-total"></span>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-bahariDarkCard rounded-2xl p-5 mb-4 border-2 border-bahariCoffee/10">
+                        <div class="text-[10px] font-black uppercase text-zinc-400 tracking-wider mb-3">Customer Details</div>
+                        <div id="final-customer-info"></div>
+                    </div>
+                    <div class="bg-green-500/10 border-2 border-green-500/20 rounded-2xl p-4 text-center">
+                        <p class="text-[11px] font-black text-green-700 dark:text-green-300 uppercase tracking-wider">Tap send order to open WhatsApp 🟢</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-shrink-0 px-5 py-4 border-t border-bahariCoffee/10">
+                <div id="footer-1" class="flex items-center justify-between gap-3">
+                    <div class="flex-1">
+                        <div class="text-[10px] text-zinc-400 font-black uppercase tracking-wider">Cart</div>
+                        <div class="font-black text-sm" id="cart-summary-pill">0 items · TZS 0</div>
+                    </div>
+                    <button onclick="goToScreen(2)" id="btn-to-cart" class="bg-bahariCoffee text-white font-black text-sm uppercase px-6 py-4 rounded-2xl tap-scale shadow-lg disabled:opacity-40 disabled:cursor-not-allowed" disabled>View Order →</button>
+                </div>
+                <div id="footer-2" class="hidden flex gap-3">
+                    <button onclick="goToScreen(1)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-bahariCoffee/25 tap-scale">← Edit</button>
+                    <button onclick="goToScreen(3)" class="flex-[2] bg-bahariCoffee text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale shadow-lg">Details →</button>
+                </div>
+                <div id="footer-3" class="hidden flex gap-3">
+                    <button onclick="goToScreen(2)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-bahariCoffee/25 tap-scale">← Back</button>
+                    <button onclick="goToScreen(4)" class="flex-[2] bg-bahariCoffee text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale shadow-lg">Review →</button>
+                </div>
+                <div id="footer-4" class="hidden flex gap-3">
+                    <button onclick="goToScreen(3)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-bahariCoffee/25 tap-scale">← Back</button>
+                    <button onclick="sendToWhatsApp()" class="flex-[2] bg-[#25D366] text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale flex items-center justify-center gap-2 shadow-lg"><i class="fa-brands fa-whatsapp text-lg"></i> Send Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: .1, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+        function openInNewTab(url) { window.open(url, '_blank', 'noopener,noreferrer'); }
+        const ASSET_BASE = 'https://www.skani.space/bahari-cafe/';
+        function openMenuPDF() { openInNewTab(`${ASSET_BASE}bahari-cafe-menu.pdf`); }
+        function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = ''; }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { const active = document.querySelector('.modal-overlay.active'); if (active) closeModal(active.id); } });
+
+        function showBanner(message) {
+            const existing = document.getElementById('bahari-banner');
+            if (existing) existing.remove();
+            const banner = document.createElement('div');
+            banner.id = 'bahari-banner';
+            banner.className = 'fixed top-6 left-1/2 -translate-x-1/2 z-[100] bg-bahariCoffee text-white font-black text-xs py-3 px-5 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2';
+            banner.innerHTML = `🌊 <span>${message}</span>`;
+            document.body.appendChild(banner);
+            setTimeout(() => {
+                banner.style.opacity = '0';
+                banner.style.transform = 'translate(-50%, -10px)';
+                setTimeout(() => banner.remove(), 350);
+            }, 2800);
+        }
+
+        function updateStoreStatus() {
+            const now = new Date();
+            const day = now.getDay();
+            const hour = now.getHours() + now.getMinutes() / 60;
+            const open = ![0, 4].includes(day) && hour >= 11 && hour < 17;
+            const badge = document.getElementById('store-status-badge');
+            badge.innerHTML = open
+                ? '<span class="px-3 py-1.5 rounded-full bg-green-100 text-green-700 text-[10px] font-black uppercase tracking-wider">Open Now</span>'
+                : '<span class="px-3 py-1.5 rounded-full bg-rose-100 text-rose-600 text-[10px] font-black uppercase tracking-wider">Closed Now</span>';
+        }
+        updateStoreStatus();
+
+        async function handleSuggestion(e) {
+            e.preventDefault();
+            const form = document.getElementById('suggestion-form');
+            const feedback = document.getElementById('suggestion-feedback');
+            const submitBtn = document.getElementById('submit-btn');
+            const suggestion = document.getElementById('suggestion-text').value.trim();
+            if (!suggestion) return;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycby6l1_8WHArGhbuztSRW0uEhKSenlD_opoG0QaJhYo2ZJWWCpIuOsk96SV4ip_1V0u6KA/exec';
+            document.getElementById('suggestion-submit-frame').src = `${scriptUrl}?suggestion=${encodeURIComponent(suggestion)}&t=${Date.now()}`;
+            form.style.opacity = '0';
+            setTimeout(() => { form.classList.add('hidden'); feedback.classList.remove('hidden'); }, 250);
+            setTimeout(() => {
+                feedback.classList.add('hidden');
+                form.classList.remove('hidden');
+                form.style.opacity = '1';
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Submit Idea';
+                e.target.reset();
+            }, 5000);
+        }
+
+        const MENU = {
+            coffee: {
+                label: 'Coffee', emoji: '☕',
+                items: [
+                    { name: 'Americano', price: 10000, emoji: '☕', desc: 'Clean iced coffee classic' },
+                    { name: 'Iced Vanilla Latte', price: 10000, emoji: '🍦', desc: 'Vanilla, milk and espresso' },
+                    { name: 'Iced Latte', price: 10000, emoji: '🥛', desc: 'Smooth espresso latte' },
+                    { name: 'Strawberry Latte', price: 12000, emoji: '🍓', desc: 'Berry cream coffee' },
+                    { name: 'Spanish Latte', price: 12000, emoji: '☕', desc: 'Sweet creamy signature' },
+                    { name: 'Iced Bronze Foam', price: 12000, emoji: '☁️', desc: 'Coffee with bronze foam' },
+                    { name: 'Biscoff Latte', price: 15000, emoji: '🍪', desc: 'Dessert style latte' },
+                    { name: 'Choco Latte', price: 15000, emoji: '🍫', desc: 'Chocolate coffee blend' }
+                ]
+            },
+            matcha: {
+                label: 'Matcha', emoji: '🍵',
+                items: [
+                    { name: 'Classic Matcha', price: 10000, emoji: '🍵', desc: 'Japanese matcha base' },
+                    { name: 'Vanilla Matcha', price: 12000, emoji: '🍦', desc: 'Soft vanilla finish' },
+                    { name: 'Strawberry Matcha', price: 12000, emoji: '🍓', desc: 'Berry layered matcha' },
+                    { name: 'Blueberry Matcha', price: 12000, emoji: '🫐', desc: 'Blueberry matcha swirl' },
+                    { name: 'Mango Matcha', price: 12000, emoji: '🥭', desc: 'Tropical matcha blend' },
+                    { name: 'Kiwi Matcha', price: 12000, emoji: '🥝', desc: 'Fresh kiwi matcha' },
+                    { name: 'Choco Matcha', price: 15000, emoji: '🍫', desc: 'Chocolate and green tea' },
+                    { name: 'Pistachio Matcha', price: 15000, emoji: '🥜', desc: 'Nutty creamy matcha' },
+                    { name: 'Dirty Matcha', price: 15000, emoji: '☕', desc: 'Matcha with espresso' },
+                    { name: 'Biscoff Matcha', price: 15000, emoji: '🍪', desc: 'Cookie matcha treat' }
+                ]
+            },
+            fizzy: {
+                label: 'Fizzy', emoji: '🥤',
+                items: [
+                    { name: 'Strawberry Fizzy', price: 12000, emoji: '🍓', desc: 'Sparkling strawberry fruit' },
+                    { name: 'Blueberry Fizzy', price: 12000, emoji: '🫐', desc: 'Sparkling blueberry fruit' },
+                    { name: 'Mango Fizzy', price: 12000, emoji: '🥭', desc: 'Sparkling mango fruit' },
+                    { name: 'Kiwi Fizzy', price: 12000, emoji: '🥝', desc: 'Sparkling kiwi fruit' }
+                ]
+            }
+        };
+
+        let activeCat = 'coffee';
+        let cart = {};
+        let currentScreen = 1;
+        let orderType = 'Delivery';
+        let selectedPayment = 'cash';
+
+        function cartKey(cat, name) { return `${cat}||${name}`; }
+        function getCartTotal() { return Object.values(cart).reduce((sum, item) => sum + item.price * item.qty, 0); }
+        function getCartCount() { return Object.values(cart).reduce((sum, item) => sum + item.qty, 0); }
+        function money(value) { return `TZS ${value.toLocaleString()}`; }
+
+        function renderCategoryPills() {
+            document.getElementById('cat-pills').innerHTML = Object.entries(MENU).map(([key, data]) =>
+                `<button class="cat-pill ${key === activeCat ? 'active' : 'inactive'}" onclick="switchCat('${key}')">${data.emoji} ${data.label}</button>`
+            ).join('');
+        }
+        function switchCat(cat) {
+            activeCat = cat;
+            renderCategoryPills();
+            renderGrid(cat);
+            document.getElementById('order-body').scrollTop = 0;
+        }
+        function renderGrid(cat) {
+            document.getElementById('item-grid').innerHTML = MENU[cat].items.map(item => renderItemCard(cat, item)).join('');
+        }
+        function renderItemCard(cat, item) {
+            const key = cartKey(cat, item.name);
+            const inCart = cart[key];
+            return `
+                <div class="item-card ${inCart ? 'in-cart' : ''}">
+                    <div class="item-visual">
+                        <span class="animate-float">${item.emoji}</span>
+                        ${inCart ? `<span class="badge-cart">${inCart.qty}</span>` : ''}
+                    </div>
+                    <div class="item-card-body">
+                        <div class="font-black text-sm leading-tight">${item.name}</div>
+                        <div class="text-[10px] text-zinc-400 font-semibold mt-1 min-h-[28px]">${item.desc}</div>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="font-black text-xs text-bahariCoffee dark:text-bahariBlue">${money(item.price)}</span>
+                            ${inCart
+                                ? `<div class="qty-ctrl">
+                                    <button class="qty-btn" onclick="changeQty('${cat}','${item.name}',-1)">−</button>
+                                    <span class="qty-num">${inCart.qty}</span>
+                                    <button class="qty-btn" onclick="changeQty('${cat}','${item.name}',1)">+</button>
+                                   </div>`
+                                : `<button class="add-btn-card" onclick="addItem('${cat}','${item.name}',${item.price},'${item.emoji}','${item.desc}')">+</button>`
+                            }
+                        </div>
+                    </div>
+                </div>`;
+        }
+        function addItem(cat, name, price, emoji, desc) {
+            const key = cartKey(cat, name);
+            if (cart[key]) cart[key].qty += 1;
+            else cart[key] = { cat, name, price, emoji, desc, qty: 1 };
+            saveCart();
+            renderGrid(activeCat);
+            const searchVal = document.getElementById('menu-search')?.value || '';
+            if (searchVal) handleSearch(searchVal);
+        }
+        function changeQty(cat, name, delta) {
+            const key = cartKey(cat, name);
+            if (!cart[key]) return;
+            cart[key].qty = Math.max(0, cart[key].qty + delta);
+            if (cart[key].qty === 0) delete cart[key];
+            saveCart();
+            renderGrid(activeCat);
+            renderCartReview();
+            const searchVal = document.getElementById('menu-search')?.value || '';
+            if (searchVal) handleSearch(searchVal);
+        }
+        function saveCart() {
+            try { sessionStorage.setItem('bahari_cart', JSON.stringify(cart)); } catch(e) {}
+            updateCartSummary();
+            updateBadges();
+        }
+        function updateCartSummary() {
+            const count = getCartCount();
+            const total = getCartTotal();
+            const pill = document.getElementById('cart-summary-pill');
+            if (pill) pill.textContent = `${count} item${count !== 1 ? 's' : ''} · ${money(total)}`;
+            const button = document.getElementById('btn-to-cart');
+            if (button) button.disabled = count === 0;
+        }
+        function updateBadges() {
+            const count = getCartCount();
+            ['bottom-badge', 'cta-badge'].forEach(id => {
+                const badge = document.getElementById(id);
+                if (!badge) return;
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.classList.remove('hidden');
+                    badge.classList.add('flex');
+                } else {
+                    badge.classList.add('hidden');
+                    badge.classList.remove('flex');
+                }
+            });
+        }
+        function renderCartReview() {
+            const list = document.getElementById('cart-review-list');
+            const entries = Object.entries(cart);
+            if (!list) return;
+            if (!entries.length) {
+                list.innerHTML = '<p class="text-zinc-400 text-sm text-center py-8 font-bold">Your cart is empty 🥤</p>';
+            } else {
+                list.innerHTML = entries.map(([key, item]) => `
+                    <div class="flex items-center gap-3 py-3 border-b border-bahariCoffee/10">
+                        <div class="w-[3.25rem] h-[3.25rem] min-w-[3.25rem] rounded-2xl bg-bahariBlue/25 flex items-center justify-center text-2xl">${item.emoji}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-black text-sm leading-tight">${item.name}</div>
+                            <div class="text-[11px] font-black text-bahariCoffee dark:text-bahariBlue">${money(item.price)} each</div>
+                        </div>
+                        <div class="qty-ctrl">
+                            <button class="qty-btn" onclick="cartChangeQty('${key}',-1)">−</button>
+                            <span class="qty-num">${item.qty}</span>
+                            <button class="qty-btn" onclick="cartChangeQty('${key}',1)">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            const totalEl = document.getElementById('cart-total-2');
+            if (totalEl) totalEl.textContent = money(getCartTotal());
+        }
+        function cartChangeQty(key, delta) {
+            if (!cart[key]) return;
+            cart[key].qty = Math.max(0, cart[key].qty + delta);
+            if (cart[key].qty === 0) delete cart[key];
+            saveCart();
+            renderGrid(activeCat);
+            renderCartReview();
+        }
+        function goToScreen(n) {
+            if (n === 2 && getCartCount() === 0) return;
+            [1,2,3,4].forEach(i => {
+                document.getElementById(`screen-${i}`).classList.remove('active');
+                document.getElementById(`footer-${i}`).classList.add('hidden');
+                document.getElementById(`sd${i}`).className = `step-dot${i < n ? ' done' : i === n ? ' active' : ''}`;
+            });
+            document.getElementById(`screen-${n}`).classList.add('active');
+            document.getElementById(`footer-${n}`).classList.remove('hidden');
+            document.getElementById('order-body').scrollTop = 0;
+            currentScreen = n;
+            if (n === 1) updateCartSummary();
+            if (n === 2) renderCartReview();
+            if (n === 4) renderFinalReview();
+        }
+        function setOrderType(type) {
+            orderType = type;
+            const active = 'flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-bahariCoffee bg-bahariBlue/25 text-bahariCoffee transition-all';
+            const inactive = 'flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 text-zinc-400 transition-all';
+            document.getElementById('btn-delivery').className = type === 'Delivery' ? active : inactive;
+            document.getElementById('btn-pickup').className = type === 'Pickup' ? active : inactive;
+            document.getElementById('addr-field').style.display = type === 'Delivery' ? 'block' : 'none';
+        }
+        function selectPayment(method) {
+            selectedPayment = method;
+            document.getElementById('pay-cash').className = `pay-opt${method === 'cash' ? ' selected' : ''}`;
+            document.getElementById('pay-mpesa').className = `pay-opt mt-2${method === 'mpesa' ? ' selected' : ''}`;
+        }
+        function renderFinalReview() {
+            const items = Object.values(cart);
+            document.getElementById('final-order-items').innerHTML = items.map(item =>
+                `<div class="summary-row"><span>${item.name} × ${item.qty}</span><span class="font-black">${money(item.price * item.qty)}</span></div>`
+            ).join('');
+            document.getElementById('final-total').textContent = money(getCartTotal());
+            const name = document.getElementById('cust-name').value || '—';
+            const phone = document.getElementById('cust-phone').value || '—';
+            const addr = document.getElementById('cust-addr').value || '';
+            const notes = document.getElementById('cust-notes').value || '';
+            const payLabel = selectedPayment === 'mpesa' ? 'M-Pesa - request payment details' : 'Cash / On Confirmation';
+            document.getElementById('final-customer-info').innerHTML = `
+                <div class="summary-row"><span class="text-zinc-400">Name</span><span class="font-black">${name}</span></div>
+                <div class="summary-row"><span class="text-zinc-400">Phone</span><span class="font-black">${phone}</span></div>
+                <div class="summary-row"><span class="text-zinc-400">Type</span><span class="font-black">${orderType}${addr ? ' - ' + addr : ''}</span></div>
+                <div class="summary-row"><span class="text-zinc-400">Payment</span><span class="font-black">${payLabel}</span></div>
+                ${notes ? `<div class="summary-row"><span class="text-zinc-400">Notes</span><span class="font-black">${notes}</span></div>` : ''}`;
+        }
+        function generateOrderNumber() { return `BC-${Date.now().toString(36).toUpperCase().slice(-6)}`; }
+        function sendToWhatsApp() {
+            const items = Object.values(cart);
+            if (!items.length) return showBanner('Please add at least one drink.');
+            const name = document.getElementById('cust-name').value.trim() || 'Customer';
+            const phone = document.getElementById('cust-phone').value.trim() || '-';
+            const addr = document.getElementById('cust-addr').value.trim();
+            const notes = document.getElementById('cust-notes').value.trim();
+            const payment = selectedPayment === 'mpesa' ? 'M-Pesa - please send payment details' : 'Cash / On Confirmation';
+            const orderNo = generateOrderNumber();
+            const now = new Date();
+            const timestamp = now.toLocaleDateString('en-TZ', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + now.toLocaleTimeString('en-TZ', { hour: '2-digit', minute: '2-digit' });
+
+            const pad = (value, length) => {
+                const text = String(value);
+                return text.length >= length ? text.slice(0, length) : text + ' '.repeat(length - text.length);
+            };
+            const padLeft = (value, length) => {
+                const text = String(value);
+                return text.length >= length ? text.slice(-length) : ' '.repeat(length - text.length) + text;
+            };
+            const divider = '--------------------------------';
+            const itemLines = items.map(item => {
+                const itemName = pad(item.name, 20);
+                const qty = pad(`x${item.qty}`, 4);
+                const subtotal = padLeft((item.price * item.qty).toLocaleString(), 8);
+                return `${itemName} ${qty} ${subtotal}`;
+            }).join('\n');
+            const serviceLine = orderType === 'Delivery' ? 'Delivery' : 'Pickup';
+            const message =
+`🌊 *BAHARI CAFÉ - NEW ORDER*
+
+🔖 Order: *#${orderNo}*
+🕐 Time: *${timestamp}*
+
+👤 Name: *${name}*
+📱 Phone: *${phone}*
+📦 Type: *${orderType}${addr ? ' - ' + addr : ''}*
+💳 Payment: *${payment}*
+${notes ? `📝 Notes: _${notes}_\n` : ''}
+\`\`\`
+${divider}
+ITEM                 QTY  SUBTOTAL
+${divider}
+${itemLines}
+${divider}
+${pad(serviceLine, 23)}${padLeft('Confirm', 9)}
+${pad('TOTAL (TZS)', 23)}${padLeft(getCartTotal().toLocaleString(), 9)}
+${divider}
+\`\`\`
+
+💙 *Bahari Treat:* Buy any 2 full-size drinks and get 1 small drink FREE.
+🟢 *Please confirm this order*`;
+            openInNewTab(`https://wa.me/255788693881?text=${encodeURIComponent(message)}`);
+            cart = {};
+            try { sessionStorage.removeItem('bahari_cart'); } catch(e) {}
+            saveCart();
+            clearSearch();
+            closeModal('order-modal');
+        }
+        function handleSearch(value) {
+            const query = value.trim().toLowerCase();
+            const clearBtn = document.getElementById('search-clear-btn');
+            const resultsEl = document.getElementById('search-results');
+            const browse = document.getElementById('browse-view');
+            if (!query) {
+                clearSearch();
+                return;
+            }
+            clearBtn.classList.remove('hidden');
+            resultsEl.classList.remove('hidden');
+            browse.classList.add('hidden');
+            const matches = [];
+            Object.entries(MENU).forEach(([cat, data]) => {
+                data.items.forEach(item => {
+                    if (`${item.name} ${item.desc} ${data.label}`.toLowerCase().includes(query)) {
+                        matches.push({ cat, item });
+                    }
+                });
+            });
+            if (!matches.length) {
+                resultsEl.innerHTML = `<div class="text-center py-10 text-zinc-400"><div class="text-4xl mb-2">🔍</div><p class="font-black text-sm">No drinks found for "${value}"</p></div>`;
+                return;
+            }
+            resultsEl.innerHTML = `<div class="grid grid-cols-2 gap-3">${matches.map(({cat, item}) => renderItemCard(cat, item)).join('')}</div>`;
+        }
+        function clearSearch() {
+            const input = document.getElementById('menu-search');
+            const clearBtn = document.getElementById('search-clear-btn');
+            const resultsEl = document.getElementById('search-results');
+            const browse = document.getElementById('browse-view');
+            if (input) input.value = '';
+            if (clearBtn) clearBtn.classList.add('hidden');
+            if (resultsEl) resultsEl.classList.add('hidden');
+            if (browse) browse.classList.remove('hidden');
+        }
+        function openOrderBot(category) {
+            if (category) activeCat = category;
+            openModal('order-modal');
+            renderCategoryPills();
+            renderGrid(activeCat);
+            updateCartSummary();
+            goToScreen(1);
+        }
+        function quickAddAndOpen(cat, name) {
+            const item = MENU[cat].items.find(i => i.name === name);
+            if (item) addItem(cat, item.name, item.price, item.emoji, item.desc);
+            openOrderBot(cat);
+        }
+
+        const buildState = { category: '', drink: '', sweet: '', finish: '' };
+        const buildOptions = {
+            Coffee: {
+                label: '2. Choose Coffee',
+                drinks: [
+                    ['Americano', '☕'], ['Iced Vanilla Latte', '🍦'], ['Iced Latte', '🥛'], ['Strawberry Latte', '🍓'],
+                    ['Spanish Latte', '☕'], ['Iced Bronze Foam', '☁️'], ['Biscoff Latte', '🍪'], ['Choco Latte', '🍫']
+                ],
+                finishes: [['Normal Ice', '🧊'], ['Less Ice', '🧊'], ['Extra Foam', '☁️'], ['Extra Espresso', '☕']]
+            },
+            Matcha: {
+                label: '2. Choose Matcha',
+                drinks: [
+                    ['Classic Matcha', '🍵'], ['Vanilla Matcha', '🍦'], ['Strawberry Matcha', '🍓'], ['Blueberry Matcha', '🫐'],
+                    ['Mango Matcha', '🥭'], ['Kiwi Matcha', '🥝'], ['Choco Matcha', '🍫'], ['Pistachio Matcha', '🥜'],
+                    ['Dirty Matcha', '☕'], ['Biscoff Matcha', '🍪']
+                ],
+                finishes: [['Normal Ice', '🧊'], ['Less Ice', '🧊'], ['Extra Matcha', '🍵'], ['Oat Milk', '🥛']]
+            },
+            Fizzy: {
+                label: '2. Choose Fizzy',
+                drinks: [['Strawberry Fizzy', '🍓'], ['Blueberry Fizzy', '🫐'], ['Mango Fizzy', '🥭'], ['Kiwi Fizzy', '🥝']],
+                finishes: [['Normal Ice', '🧊'], ['Less Ice', '🧊'], ['Extra Fruit', '🍓'], ['Mint', '🌿']]
+            }
+        };
+        const buildEmoji = {
+            Coffee: '☕', Matcha: '🍵', Fizzy: '🥤',
+            '25%': '▫️', '50%': '◽', '75%': '◻️', '100%': '⬜',
+            'Normal Ice': '🧊', 'Less Ice': '🧊', 'Extra Foam': '☁️', 'Extra Espresso': '☕',
+            'Extra Matcha': '🍵', 'Oat Milk': '🥛', 'Extra Fruit': '🍓', Mint: '🌿'
+        };
+        function safeId(value) {
+            return value.replace(/[^a-zA-Z0-9]/g, '-');
+        }
+        function renderBuilderCategory(category) {
+            const config = buildOptions[category];
+            document.getElementById('build-flavor-label').textContent = config.label;
+            document.getElementById('build-flavor-options').innerHTML = config.drinks.map(([name, emoji]) =>
+                `<button id="build-drink-${safeId(name)}" onclick="selectBuildPart('drink','${name.replace(/'/g, "\\'")}')" class="build-drink rounded-2xl bg-white dark:bg-bahariDark border-2 border-bahariCoffee/10 p-3 text-xs font-black tap-scale">${emoji} ${name}</button>`
+            ).join('');
+            document.getElementById('build-finish-label').textContent = `4. ${category} finish`;
+            document.getElementById('build-finish-options').innerHTML = config.finishes.map(([name, emoji]) =>
+                `<button id="build-finish-${safeId(name)}" onclick="selectBuildPart('finish','${name.replace(/'/g, "\\'")}')" class="build-finish rounded-2xl bg-white dark:bg-bahariDark border-2 border-bahariCoffee/10 p-3 text-xs font-black tap-scale">${emoji} ${name}</button>`
+            ).join('');
+        }
+        function selectBuildPart(type, value) {
+            buildState[type] = value;
+            if (type === 'category') {
+                buildState.drink = '';
+                buildState.finish = '';
+                renderBuilderCategory(value);
+            }
+            document.querySelectorAll(`.build-${type}`).forEach(btn => btn.classList.remove('border-bahariCoffee', 'bg-bahariBlue/25'));
+            const selected = document.getElementById(`build-${type}-${safeId(value)}`) || document.getElementById(`build-${type}-${value}`);
+            if (selected) selected.classList.add('border-bahariCoffee', 'bg-bahariBlue/25');
+            updateBuilderPreview();
+        }
+        function updateBuilderPreview() {
+            const drinkEmoji = buildOptions[buildState.category]?.drinks.find(([name]) => name === buildState.drink)?.[1];
+            const parts = [buildState.category, buildState.drink, buildState.sweet, buildState.finish].filter(Boolean);
+            const visualParts = [
+                buildEmoji[buildState.category],
+                drinkEmoji,
+                buildEmoji[buildState.sweet],
+                buildEmoji[buildState.finish]
+            ].filter(Boolean);
+            document.getElementById('builder-visual').innerHTML = visualParts.length ? visualParts.join(' ') : '🥤';
+            document.getElementById('mini-builder-preview').innerHTML = visualParts.length ? visualParts.join(' ') : '☕ 🍵 🥤';
+            document.getElementById('builder-summary').textContent = parts.length
+                ? `${buildState.drink || buildState.category} · ${buildState.sweet || 'Sweetness'} · ${buildState.finish || 'Finish'}`
+                : 'Choose your drink style';
+        }
+        function submitCustomDrink() {
+            if (!buildState.category || !buildState.drink || !buildState.sweet || !buildState.finish) {
+                showBanner('Please choose all drink parts first.');
+                return;
+            }
+            const message =
+`Hello Bahari Café! 🌊
+
+I want to order a custom drink:
+- Style: ${buildState.category}
+- Drink: ${buildState.drink}
+- Sweetness: ${buildState.sweet}
+- Finish: ${buildState.finish}
+
+Please confirm the price and availability.`;
+            openInNewTab(`https://wa.me/255788693881?text=${encodeURIComponent(message)}`);
+            closeModal('customizer-modal');
+        }
+
+        renderCategoryPills();
+        renderGrid(activeCat);
+        updateCartSummary();
+        updateBadges();
+        selectOrderTypeInit();
+        function selectOrderTypeInit() { setOrderType('Delivery'); selectPayment('cash'); }
+        try {
+            const saved = sessionStorage.getItem('bahari_cart');
+            if (saved) {
+                cart = JSON.parse(saved);
+                updateCartSummary();
+                updateBadges();
+            }
+        } catch(e) {}
+    </script>
+</body>
+</html>
