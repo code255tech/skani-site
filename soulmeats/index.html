@@ -637,6 +637,11 @@ function isIosDevice() {
     return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
 }
 
+function isChromiumInstallCandidate() {
+    const ua = window.navigator.userAgent;
+    return !isIosDevice() && /android|windows|macintosh|linux/i.test(ua) && /chrome|chromium|edg|opr/i.test(ua);
+}
+
 function canShowPwaPrompt() {
     const dismissedUntil = Number(localStorage.getItem('sm_pwa_prompt_dismissed_until') || 0);
     return !isSoulMeatsInstalled() && Date.now() > dismissedUntil;
@@ -644,6 +649,10 @@ function canShowPwaPrompt() {
 
 function schedulePwaInstallPrompt() {
     if (!canShowPwaPrompt() || pwaPromptTimer) return;
+    const canUseNativePrompt = Boolean(deferredInstallPrompt);
+    const shouldShowManualFallback = isIosDevice() || !isChromiumInstallCandidate() || pwaUrlParams.has('pwaPromptNow');
+    if (!canUseNativePrompt && !shouldShowManualFallback) return;
+
     pwaPromptTimer = setTimeout(() => {
         showPwaInstallPrompt();
     }, pwaUrlParams.has('pwaPromptNow') ? 2000 : PWA_PROMPT_DELAY);
@@ -651,6 +660,7 @@ function schedulePwaInstallPrompt() {
 
 function showPwaInstallPrompt() {
     if (!canShowPwaPrompt()) return;
+    if (!deferredInstallPrompt && isChromiumInstallCandidate() && !pwaUrlParams.has('pwaPromptNow')) return;
 
     const toast = document.getElementById('pwa-install-toast');
     const title = document.getElementById('pwa-install-title');
