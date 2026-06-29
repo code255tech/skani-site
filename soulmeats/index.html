@@ -623,6 +623,12 @@ const PWA_PROMPT_COOLDOWN = 7 * 24 * 60 * 60 * 1000;
 let deferredInstallPrompt = null;
 let pwaPromptTimer = null;
 
+const pwaUrlParams = new URLSearchParams(window.location.search);
+if (pwaUrlParams.has('resetPwaPrompt')) {
+    localStorage.removeItem('sm_pwa_prompt_dismissed_until');
+    localStorage.removeItem('sm_pwa_installed');
+}
+
 function isSoulMeatsInstalled() {
     return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 }
@@ -640,7 +646,7 @@ function schedulePwaInstallPrompt() {
     if (!canShowPwaPrompt() || pwaPromptTimer) return;
     pwaPromptTimer = setTimeout(() => {
         showPwaInstallPrompt();
-    }, PWA_PROMPT_DELAY);
+    }, pwaUrlParams.has('pwaPromptNow') ? 2000 : PWA_PROMPT_DELAY);
 }
 
 function showPwaInstallPrompt() {
@@ -1646,7 +1652,7 @@ ${D}
 // Init
 document.addEventListener('DOMContentLoaded', () => {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+        navigator.serviceWorker.register('/soulmeats/service-worker.js', { scope: '/soulmeats/' }).catch(() => {});
     }
 
     schedulePwaInstallPrompt();

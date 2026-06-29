@@ -1,10 +1,10 @@
-const CACHE_NAME = 'soulmeats-pwa-v2';
+const CACHE_NAME = 'soulmeats-pwa-v3';
 const APP_SHELL = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icons/soulmeats-192.png',
-  './icons/soulmeats-512.png'
+  '/soulmeats/',
+  '/soulmeats/index.html',
+  '/soulmeats/manifest.json',
+  '/soulmeats/icons/soulmeats-192.png',
+  '/soulmeats/icons/soulmeats-512.png'
 ];
 
 self.addEventListener('install', event => {
@@ -40,7 +40,7 @@ self.addEventListener('fetch', event => {
         return response;
       }).catch(() => {
         if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
+          return caches.match('/soulmeats/');
         }
         return undefined;
       });

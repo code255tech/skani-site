@@ -1,10 +1,10 @@
 {
-  "id": "./index.html",
+  "id": "/soulmeats/",
   "name": "SoulMeats",
   "short_name": "SoulMeats",
   "description": "Order food, reserve a table, view menus, and connect with SoulMeats.",
-  "start_url": "./index.html",
-  "scope": "./",
+  "start_url": "/soulmeats/",
+  "scope": "/soulmeats/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#EAB308",
@@ -12,13 +12,13 @@
   "categories": ["food", "lifestyle"],
   "icons": [
     {
-      "src": "./icons/soulmeats-192.png",
+      "src": "/soulmeats/icons/soulmeats-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./icons/soulmeats-512.png",
+      "src": "/soulmeats/icons/soulmeats-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -29,10 +29,10 @@
       "name": "Order Now",
       "short_name": "Order",
       "description": "Open SoulMeats ordering",
-      "url": "./index.html?action=order",
+      "url": "/soulmeats/?action=order",
       "icons": [
         {
-          "src": "./icons/soulmeats-192.png",
+          "src": "/soulmeats/icons/soulmeats-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -42,10 +42,10 @@
       "name": "Reserve Table",
       "short_name": "Reserve",
       "description": "Reserve a table at SoulMeats",
-      "url": "./index.html?action=reserve",
+      "url": "/soulmeats/?action=reserve",
       "icons": [
         {
-          "src": "./icons/soulmeats-192.png",
+          "src": "/soulmeats/icons/soulmeats-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
