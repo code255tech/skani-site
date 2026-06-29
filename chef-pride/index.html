@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Chef's Pride Skani</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTla7hmVIpO3srutElLWX8w-VBJ5bUwGHpRbuh3tWYJ5Wcf8bHs-fsg0znt&s=10" type="image/png">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts: Premium Outfit & Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght=300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        chefsRed: '#EB1F20',         // Primary vibrant brand red
+                        chefsCream: '#FCF0F0',       // Main cozy light background
+                        chefsYellow: '#F6F506',      // Premium yellow highlights
+                        chefsAccent: '#C81A1B',      // Darker rich crimson
+                        chefsDark: '#1C1917',        // Charcoal base text / dark card bg
+                        chefsDarkBody: '#0F0D0C',    // True midnight body bg for dark mode
+                        chefsSand: '#FAF5ED'         // Neutral warm contrast base
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-gentle': 'pulseGentle 4s ease-in-out infinite',
+                        'float-soft': 'floatSoft 3.5s ease-in-out infinite',
+                        'bounce-little': 'bounceLittle 2s infinite'
+                    },
+                    keyframes: {
+                        pulseGentle: {
+                            '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+                            '50%': { opacity: '0.94', transform: 'scale(0.98)' }
+                        },
+                        floatSoft: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-6px)' }
+                        },
+                        bounceLittle: {
+                            '0%, 100%': { transform: 'translateY(0)', animationTimingFunction: 'cubic-bezier(0.8,0,1,1)' },
+                            '50%': { transform: 'translateY(-4px)', animationTimingFunction: 'cubic-bezier(0,0,0.2,1)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sab: env(safe-area-inset-bottom);
+        }
+
+        body {
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        /* Prevents scrollbar visual clutter in horizontal layouts */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Safeguard standard iOS viewport scale changes */
+        input, textarea, select { 
+            font-size: 16px !important; 
+        }
+
+        /* Fluid bottom modal sheet animations */
+        .modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(0px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            backdrop-filter: blur(12px);
+        }
+        .modal-content {
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+        .order-modal-content {
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.active .order-modal-content {
+            transform: translateY(0);
+        }
+        @media (min-width: 640px) {
+            .modal-content {
+                transform: scale(0.95) translateY(20px);
+            }
+            .modal-overlay.active .modal-content {
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Scroll intersection reveals */
+        .reveal {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Smooth scales for tapping controls */
+        .tap-scale { transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1); }
+        .tap-scale:active { transform: scale(0.95); }
+
+        /* Order Bot Elements */
+        .cat-pill { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 999px; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; border: 1.5px solid transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; }
+        .cat-pill.active { background: #EB1F20; color: #fff; border-color: #EB1F20; }
+        .cat-pill.inactive { background: transparent; color: #71717a; border-color: #e4e4e7; }
+        .dark .cat-pill.inactive { color: #a1a1aa; border-color: #3f3f46; }
+        .cat-pill.inactive:hover { border-color: #71717a; color: #1c1917; }
+        .dark .cat-pill.inactive:hover { color: #e4e4e7; border-color: #71717a; }
+        
+        .item-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(0,0,0,0.06); gap: 12px; }
+        .dark .item-row { border-bottom-color: rgba(255,255,255,0.06); }
+        
+        .add-btn { width: 34px; height: 34px; border-radius: 50%; background: #EB1F20; color: #fff; font-size: 20px; font-weight: 900; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; line-height: 1; }
+        .add-btn:hover { transform: scale(1.1); }
+        .add-btn:active { transform: scale(0.9); }
+        
+        .qty-ctrl { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .qty-btn { width: 30px; height: 30px; border-radius: 50%; background: #e4e4e7; color: #1c1917; font-size: 16px; font-weight: 900; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+        .dark .qty-btn { background: #27272a; color: #fff; }
+        .qty-btn:hover { background: #d4d4d8; }
+        .dark .qty-btn:hover { background: #3f3f46; }
+        .qty-num { min-width: 22px; text-align: center; font-size: 15px; font-weight: 900; color: #1c1917; }
+        .dark .qty-num { color: #fff; }
+        
+        .cart-badge { position: absolute; top: -4px; right: -4px; background: #EB1F20; color: #fff; border-radius: 999px; font-size: 9px; font-weight: 900; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; padding: 0 3px; }
+        .step-dot { width: 8px; height: 8px; border-radius: 50%; background: #d4d4d8; transition: all 0.3s; }
+        .dark .step-dot { background: #3f3f46; }
+        .step-dot.done { background: #22c55e; }
+        .step-dot.active { background: #EB1F20; width: 24px; border-radius: 4px; }
+        
+        .slide-left { animation: slideLeft 0.3s cubic-bezier(0.22,1,0.36,1) both; }
+        .slide-right { animation: slideRight 0.3s cubic-bezier(0.22,1,0.36,1) both; }
+        @keyframes slideLeft { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideRight { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+        
+        .search-wrap { position: relative; margin-bottom: 14px; }
+        .search-input { width: 100%; box-sizing: border-box; background: #f4f4f5; border: 1.5px solid #d4d4d8; border-radius: 16px; padding: 12px 16px 12px 42px; font-size: 14px !important; font-weight: 700; color: #1c1917; outline: none; transition: border-color 0.2s; }
+        .dark .search-input { background: #18181b; border-color: #3f3f46; color: #fff; }
+        .search-input:focus { border-color: #EB1F20; }
+        .search-input::placeholder { color: #a1a1aa; font-weight: 600; }
+        .dark .search-input::placeholder { color: #52525b; }
+        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #71717a; font-size: 15px; pointer-events: none; transition: color 0.2s; }
+        .search-input:focus ~ .search-icon { color: #EB1F20; }
+        .search-clear { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: #e4e4e7; border: none; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #71717a; font-size: 11px; transition: all 0.15s; }
+        .dark .search-clear { background: #3f3f46; color: #a1a1aa; }
+        .search-clear:hover { background: #d4d4d8; color: #1c1917; }
+        .search-cat-label { display: inline-block; background: #e4e4e7; color: #71717a; border-radius: 6px; padding: 2px 7px; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; margin-left: 6px; vertical-align: middle; }
+        .dark .search-cat-label { background: #27272a; color: #a1a1aa; }
+        .search-empty { text-align: center; padding: 40px 20px; color: #71717a; }
+        
+        .pay-opt { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 16px; border: 1.5px solid #d4d4d8; cursor: pointer; transition: all 0.2s; margin-bottom: 10px; }
+        .dark .pay-opt { border-color: #3f3f46; }
+        .pay-opt.selected { border-color: #EB1F20; background: rgba(235,31,32,0.08); }
+        .pay-opt .radio-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #a1a1aa; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+        .pay-opt.selected .radio-dot { border-color: #EB1F20; background: #EB1F20; }
+        .pay-opt.selected .radio-dot::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #fff; }
+        
+        .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 7px 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .dark .summary-row { border-bottom-color: rgba(255,255,255,0.06); }
+        .summary-row:last-of-type { border-bottom: none; }
+        .order-screen { display: none; }
+        .order-screen.active { display: block; }
+    </style>
+</head>
+<body class="bg-chefsCream dark:bg-chefsDarkBody text-chefsDark dark:text-zinc-100 transition-colors duration-500">
+
+    <div class="min-h-screen pb-36">
+        
+        <!-- 1. STICKY HEADER -->
+        <header class="sticky top-0 z-40 bg-chefsCream/90 dark:bg-chefsDarkBody/90 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-chefsRed/10 dark:border-zinc-800/40 pt-[calc(1rem+env(safe-area-inset-top))] transition-all">
+            <div class="flex items-center gap-3">
+                <!-- Branding Circular Frame -->
+                <div class="w-12 h-12 bg-white dark:bg-chefsDark rounded-2xl p-0.5 overflow-hidden flex items-center justify-center shadow-md rotate-2 border border-chefsRed/20">
+                    <img 
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTla7hmVIpO3srutElLWX8w-VBJ5bUwGHpRbuh3tWYJ5Wcf8bHs-fsg0znt&s=10" 
+                        alt="Chef's Pride Logo" 
+                        class="w-full h-full object-contain"
+                        onerror="this.src='https://placehold.co/100x100/EB1F20/white?text=CP'"
+                    >
+                </div>
+                <div>
+                    <h1 class="text-base font-black tracking-tight leading-none text-chefsRed font-display">Chef's Pride</h1>
+                    <p class="text-[9px] text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-[0.12em] mt-1">Swahili • Continental Cuisine</p>
+                </div>
+            </div>
+            
+            <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white dark:bg-chefsDark text-chefsRed dark:text-chefsYellow shadow-sm active:scale-90 transition-all border border-chefsRed/5">
+                <i id="theme-icon" class="fa-solid fa-moon"></i>
+            </button>
+        </header>
+
+        <!-- 2. HIGH-FIDELITY HERO BANNER (Clean banner, buttons fully removed) -->
+        <section class="px-4 py-3 reveal">
+            <div class="relative w-full h-[45vh] min-h-[300px] rounded-[2.5rem] overflow-hidden shadow-xl border border-chefsRed/10">
+                <!-- Immersive plating of traditional Swahili Seafood/Meat dishes -->
+                <img 
+                    src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80" 
+                    alt="Aesthetic Swahili Plating" 
+                    class="absolute inset-0 w-full h-full object-cover"
+                >
+                <div class="absolute inset-0 bg-gradient-to-t from-[#1C1917]/95 via-black/40 to-black/10"></div>
+                
+                <div class="absolute bottom-6 left-6 right-6 text-white">
+                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-chefsRed text-white text-[9px] font-black uppercase tracking-widest rounded-full mb-3 shadow-md">
+                        <span class="w-1.5 h-1.5 bg-chefsYellow rounded-full animate-ping"></span> 👨🏽‍🍳 Experience the Pride
+                    </span>
+                    <h2 class="text-3xl font-extrabold font-display leading-[0.95] tracking-tight mb-2 text-white">
+                        Experience the Pride<br>of Great Food
+                    </h2>
+                    <p class="text-xs font-semibold text-zinc-300 uppercase tracking-widest leading-none mt-2">
+                        Authentic Swahili & Continental
+                    </p>
+                    <p class="text-[10px] text-zinc-400 mt-1">Fresh • Flavorful • Memorable</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. QUICK ACTIONS GRID -->
+        <section class="px-4 py-4 grid grid-cols-3 gap-3">
+            <!-- Action 1: Menu PDF (Highlighted with red attention border) -->
+            <a href="https://www.skani.space/soulmeats/soulmeats-menu.pdf" target="_blank" rel="noopener noreferrer"
+                class="reveal tap-scale bg-white dark:bg-chefsDark p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-md border-2 border-chefsRed">
+                <div class="w-9 h-9 bg-chefsCream dark:bg-chefsRed/10 text-chefsRed rounded-xl flex items-center justify-center mb-1.5">
+                    <i class="fa-solid fa-utensils text-sm animate-pulse"></i>
+                </div>
+                <span class="font-extrabold text-[11px] tracking-tight dark:text-zinc-200">Menu</span>
+                <span class="text-[8px] font-bold text-chefsRed dark:text-chefsYellow uppercase tracking-wide">Browse Now</span>
+            </a>
+
+            <!-- Action 2: WiFi Modal -->
+            <button onclick="openModal('wifi-modal')" 
+                class="reveal tap-scale bg-white dark:bg-chefsDark p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm border border-chefsRed/5 dark:border-zinc-800/40">
+                <div class="w-9 h-9 bg-amber-50 dark:bg-zinc-850 text-amber-500 rounded-xl flex items-center justify-center mb-1.5">
+                    <i class="fa-solid fa-wifi text-sm"></i>
+                </div>
+                <span class="font-extrabold text-[11px] tracking-tight dark:text-zinc-200">WiFi</span>
+                <span class="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wide">Connect Free</span>
+            </button>
+
+            <!-- Action 3: Table Reservation -->
+            <button onclick="openModal('reserve-modal')" 
+                class="reveal tap-scale bg-white dark:bg-chefsDark p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm border border-chefsRed/5 dark:border-zinc-800/40">
+                <div class="w-9 h-9 bg-red-50 dark:bg-zinc-850 text-chefsRed rounded-xl flex items-center justify-center mb-1.5">
+                    <i class="fa-solid fa-chair text-sm"></i>
+                </div>
+                <span class="font-extrabold text-[11px] tracking-tight dark:text-zinc-200">Reserve</span>
+                <span class="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wide">Book Table</span>
+            </button>
+
+            <!-- Action 4: Google Reviews -->
+            <a href="https://www.google.com" target="_blank" rel="noopener noreferrer" 
+                class="reveal tap-scale bg-white dark:bg-chefsDark p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm border border-chefsRed/5 dark:border-zinc-800/40">
+                <div class="w-9 h-9 bg-yellow-50 dark:bg-zinc-850 text-yellow-500 rounded-xl flex items-center justify-center mb-1.5">
+                    <i class="fa-regular fa-star text-sm"></i>
+                </div>
+                <span class="font-extrabold text-[11px] tracking-tight dark:text-zinc-200">Reviews</span>
+                <span class="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wide">Top Rated</span>
+            </a>
+
+            <!-- Action 5: Explore Restaurant Virtual Tour -->
+            <a href="https://kuulastudio.com/post/7qzpN/collection/7lP9q" target="_blank" rel="noopener noreferrer" 
+                class="reveal tap-scale bg-white dark:bg-chefsDark p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm border border-chefsRed/5 dark:border-zinc-800/40">
+                <div class="w-9 h-9 bg-red-50 dark:bg-zinc-850 text-red-600 rounded-xl flex items-center justify-center mb-1.5">
+                    <i class="fa-solid fa-street-view text-sm"></i>
+                </div>
+                <span class="font-extrabold text-[11px] tracking-tight dark:text-zinc-200">Explore</span>
+                <span class="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wide">Virtual Tour</span>
+            </a>
+
+            <!-- Action 6: Direct WhatsApp Support -->
+            <a href="https://wa.me/255754657364" target="_blank" rel="noopener noreferrer" 
+                class="reveal tap-scale bg-white dark:bg-chefsDark p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm border border-chefsRed/5 dark:border-zinc-800/40">
+                <div class="w-9 h-9 bg-emerald-50 dark:bg-zinc-850 text-[#25D366] rounded-xl flex items-center justify-center mb-1.5">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                </div>
+                <span class="font-extrabold text-[11px] tracking-tight dark:text-zinc-200">WhatsApp</span>
+                <span class="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wide">Chat Live</span>
+            </a>
+        </section>
+
+        <!-- PREMIUM ORDER NOW CTA (V2 behavior, opens custom order modal panel) -->
+        <section class="px-4 mt-2 reveal">
+            <button onclick="openOrderBot()"
+                class="w-full bg-chefsRed p-6 rounded-[2rem] text-left text-white flex justify-between items-center group overflow-hidden relative shadow-lg hover:shadow-xl transition-all tap-scale">
+                <div class="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                <div class="relative z-10 flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-chefsYellow animate-bounce-little">
+                        <i class="fa-solid fa-bag-shopping text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black font-display tracking-tight leading-none uppercase">Order Now</h3>
+                        <p class="text-white/80 text-[10px] font-bold uppercase tracking-wider mt-1.5">Fresh Delivery & Pickup in Seconds</p>
+                    </div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white relative z-10">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </div>
+            </button>
+        </section>
+
+        <!-- DYNAMIC VISIT CARD (Relocated below the Order Now CTA) -->
+        <section class="mt-4 px-4 reveal">
+            <div class="bg-white dark:bg-chefsDark rounded-[2.25rem] p-5 border border-chefsRed/10 shadow-sm">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="w-12 h-12 bg-chefsCream dark:bg-zinc-850 text-chefsRed rounded-2xl flex items-center justify-center text-xl flex-shrink-0 shadow-inner">
+                        📍
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-extrabold text-sm dark:text-white">Visit Chef's Pride</h4>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">1 Chagga Street, Dar es Salaam</p>
+                        
+                        <!-- Dynamic operational status badge updated in JavaScript -->
+                        <div class="mt-2.5 flex items-center gap-1.5">
+                            <span id="operating-status-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span id="operating-status-text" class="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-500">Checking Hours...</span>
+                        </div>
+                        <span class="block text-[9px] text-zinc-400 font-bold mt-1">Open Daily: 8:00 AM – 11:00 PM</span>
+                    </div>
+                </div>
+                
+                <a href="https://maps.app.goo.gl/bofXykwL7BtLyAGL6" target="_blank" rel="noopener noreferrer" class="w-full bg-chefsCream dark:bg-zinc-800 text-chefsRed dark:text-chefsYellow py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 shadow-inner border border-chefsRed/5">
+                    <i class="fa-solid fa-map-location-dot"></i> Get Directions on Map
+                </a>
+            </div>
+        </section>
+
+        <!-- 4. CHEF'S RECOMMENDATION PRESTIGE CARD -->
+        <section class="px-4 py-4 reveal relative" id="chef-slider-section">
+            <div id="chefs-slider-container" class="relative bg-white dark:bg-chefsDark rounded-[2.25rem] p-6 shadow-lg border border-chefsRed/10 overflow-hidden">
+                <!-- Slider Wrapper -->
+                <div id="chefs-slider-inner" class="flex transition-transform duration-500 ease-in-out">
+                    <!-- Slides will be injected by the script below -->
+                </div>
+
+                <!-- Navigation Arrows -->
+                <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/20 dark:bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center text-white tap-scale">
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/20 dark:bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center text-white tap-scale">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </button>
+
+                <!-- Navigation Dots -->
+                <div id="chefs-dots" class="flex justify-center gap-2 mt-4">
+                    <!-- Dots will be injected -->
+                </div>
+            </div>
+
+            <script>
+                (function() {
+                    const picks = [
+                        { name: "Grilled Red Snapper", price: "28,500 TZS", desc: "Fresh off the Swahili coast, marinated in wild local spices, char-grilled to juicy tenderness, and served with velvety traditional coconut rice.", emoji: "🐟" },
+                        { name: "Flame-Grilled T-Bone", price: "32,000 TZS", desc: "Premium age-cured beef cut char-roasted to your liking, served with seasoned potato wedges and a velvety wild mushroom reduction.", emoji: "🥩" },
+                        { name: "Coconut Seafood Kalamu", price: "26,000 TZS", desc: "An aromatic, rich simmer of fresh prawns, tender calamari, and red snapper slow-cooked in traditional thick-pressed Swahili coconut gravy.", emoji: "🍲" }
+                    ];
+
+                    const sliderInner = document.getElementById('chefs-slider-inner');
+                    const dotsContainer = document.getElementById('chefs-dots');
+                    let currentSlide = 0;
+
+                    // Initialize
+                    sliderInner.innerHTML = picks.map(p => `
+                        <div class="min-w-full flex flex-col items-center text-center px-2">
+                            <div class="w-16 h-16 bg-chefsRed text-white rounded-2xl flex items-center justify-center text-3xl shadow-md mb-4">${p.emoji}</div>
+                            <h4 class="text-xl font-extrabold font-display leading-tight dark:text-white">${p.name}</h4>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2 leading-normal px-4">${p.desc}</p>
+                            <div class="mt-4 text-base font-black text-chefsRed dark:text-chefsYellow">${p.price}</div>
+                        </div>
+                    `).join('');
+
+                    dotsContainer.innerHTML = picks.map((_, i) => `
+                        <button onclick="goToSlide(${i})" class="w-2 h-2 rounded-full transition-all ${i === 0 ? 'bg-chefsRed w-6' : 'bg-zinc-300 dark:bg-zinc-700'}"></button>
+                    `).join('');
+
+                    window.goToSlide = function(n) {
+                        currentSlide = n;
+                        sliderInner.style.transform = `translateX(-${n * 100}%)`;
+                        document.querySelectorAll('#chefs-dots button').forEach((dot, i) => {
+                            dot.className = `w-2 h-2 rounded-full transition-all ${i === n ? 'bg-chefsRed w-6' : 'bg-zinc-300 dark:bg-zinc-700'}`;
+                        });
+                    };
+
+                    window.nextSlide = function() { goToSlide((currentSlide + 1) % picks.length); };
+                    window.prevSlide = function() { goToSlide((currentSlide - 1 + picks.length) % picks.length); };
+
+                    // Auto-play
+                    setInterval(nextSlide, 6000);
+
+                    // Touch Swipe
+                    let startX = 0;
+                    const container = document.getElementById('chefs-slider-container');
+                    container.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+                    container.addEventListener('touchend', e => {
+                        const endX = e.changedTouches[0].clientX;
+                        if (startX - endX > 50) nextSlide();
+                        else if (endX - startX > 50) prevSlide();
+                    });
+                })();
+            </script>
+        </section>
+
+        <!-- 8. WHY DINE WITH US? (Distinct Service Experiences) -->
+        <section class="mt-8 px-4">
+            <h3 class="reveal text-xs font-black dark:text-white mb-4 uppercase tracking-widest flex items-center gap-2">
+                <span class="w-1.5 h-4 bg-chefsRed rounded-full"></span> Why Dine With Us?
+            </h3>
+            
+            <div class="space-y-3">
+                <!-- Experience Option 1 -->
+                <div class="reveal bg-white dark:bg-chefsDark rounded-2xl border border-chefsRed/5 dark:border-zinc-800/40 p-4 transition-all hover:shadow-md">
+                    <button onclick="toggleServiceAccordion('serv-ayce')" class="w-full flex items-center justify-between text-left">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 bg-chefsCream dark:bg-zinc-850 text-chefsRed rounded-xl flex items-center justify-center text-lg">
+                                🍽️
+                            </span>
+                            <div>
+                                <h4 class="font-extrabold text-xs dark:text-zinc-100">All You Can Eat</h4>
+                                <p class="text-[9px] text-zinc-400">Available every Saturday</p>
+                            </div>
+                        </div>
+                        <i id="serv-ayce-icon" class="fa-solid fa-chevron-down text-zinc-400 text-xs transition-transform duration-300"></i>
+                    </button>
+                    <!-- Explanatory description -->
+                    <div id="serv-ayce" class="hidden mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-850 text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        Gather friends and treat your appetite to our majestic Saturday Swahili & Continental buffet feast. Features unlimited pilau stations, savory charcoal-roasted meats, fresh seafood broth, and seasonal traditional fruit sweets.
+                    </div>
+                </div>
+
+                <!-- Experience Option 2 -->
+                <div class="reveal bg-white dark:bg-chefsDark rounded-2xl border border-chefsRed/5 dark:border-zinc-800/40 p-4 transition-all hover:shadow-md">
+                    <button onclick="toggleServiceAccordion('serv-happy')" class="w-full flex items-center justify-between text-left">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 bg-chefsCream dark:bg-zinc-850 text-chefsRed rounded-xl flex items-center justify-center text-lg">
+                                🥳
+                            </span>
+                            <div>
+                                <h4 class="font-extrabold text-xs dark:text-zinc-100">Happy Hour Food Specials</h4>
+                                <p class="text-[9px] text-zinc-400">Weekdays 4:00 PM – 7:00 PM</p>
+                            </div>
+                        </div>
+                        <i id="serv-happy-icon" class="fa-solid fa-chevron-down text-zinc-400 text-xs transition-transform duration-300"></i>
+                    </button>
+                    <div id="serv-happy" class="hidden mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-850 text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        Kick back after work and grab special discounted prices on mini mishkaki boards, spicy cassava fries, samosas, and our specialty fresh fruit juices. Perfect way to beat Dar traffic!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. LARGE CONVERSION CTA BANNER -->
+        <section class="mt-8 px-4 reveal">
+            <div class="bg-white dark:bg-chefsDark rounded-[2.5rem] p-6 border border-chefsRed/10 shadow-sm relative overflow-hidden">
+                <div class="absolute -right-12 -bottom-12 w-32 h-32 bg-chefsRed/5 rounded-full pointer-events-none"></div>
+                <div class="flex items-start gap-4">
+                    <div class="w-14 h-14 bg-chefsCream dark:bg-zinc-800 rounded-2xl flex items-center justify-center text-chefsRed dark:text-chefsYellow shadow-sm flex-shrink-0 text-3xl">
+                        🪑
+                    </div>
+                    
+                    <div class="flex-1">
+                        <span class="text-[8px] font-black uppercase tracking-widest text-chefsRed bg-chefsCream px-2.5 py-0.5 rounded-full mb-1 inline-block">Secure Dine-In Space</span>
+                        <h3 class="text-xl font-extrabold tracking-tight dark:text-white mt-1">Planning a Gathering?</h3>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1.5 leading-relaxed">
+                            Be it a family lunch, private business proposal, or a festive birthday dinner, we make sure everything is prepared with prestige.
+                        </p>
+                        
+                        <button onclick="openModal('reserve-modal')" 
+                            class="w-full mt-5 bg-chefsRed hover:bg-chefsAccent text-white font-black py-4 px-6 rounded-2xl text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-md tap-scale">
+                            <i class="fa-solid fa-calendar-days"></i> Reserve Your Table
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 12. COMMUNITY TABLE SUGGESTIONS -->
+        <section class="mt-8 px-4 reveal">
+            <div class="bg-chefsCream dark:bg-chefsDark/40 p-6 rounded-[2.5rem] border-2 border-dashed border-chefsRed/20 dark:border-zinc-800 transition-all">
+                <h3 class="font-black font-display text-lg dark:text-white mb-1 tracking-tight">
+                    🍴 Community Table
+                </h3>
+                <p class="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-black mb-4">Which traditional or modern dish would you love to see next?</p>
+                
+                <div id="suggestion-feedback" class="py-6 text-center hidden">
+                    <span class="text-4xl block mb-2 animate-bounce">🍛</span>
+                    <p class="text-chefsRed dark:text-chefsYellow font-black text-sm">Thank you! Your dish recommendation has been submitted to the Chef. 💙</p>
+                </div>
+                
+                <form id="suggestion-form" onsubmit="handleSuggestion(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-[9px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-400 mb-1.5 pl-1">Recipe / Flavor Recommendation</label>
+                        <textarea id="suggestion-text" name="suggestion" placeholder="e.g. Swahili Coconut Prawns Pilau, Zanzibar Pizza..." required class="w-full bg-white dark:bg-chefsDark border border-chefsRed/10 dark:border-zinc-800 focus:border-chefsRed focus:ring-4 focus:ring-chefsRed/10 rounded-2xl p-4 text-sm dark:text-white min-h-[90px] outline-none transition-all placeholder:text-zinc-400 shadow-sm"></textarea>
+                    </div>
+                    
+                    <button type="submit" id="submit-btn" class="w-full bg-chefsRed hover:bg-chefsAccent text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest tap-scale transition-all shadow-md">
+                        Submit Dish Idea
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 13. REVENUE FOCUS DUAL FLOATING CONTROL BASE -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-4 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pointer-events-none">
+            <div class="max-w-md mx-auto bg-white/95 dark:bg-chefsDark/95 backdrop-blur-2xl rounded-[2.25rem] p-3 flex items-center justify-between border border-chefsRed/10 pointer-events-auto shadow-[0_24px_50px_rgba(235,31,32,0.15)]">
+                <!-- VIEW ORDER BASKET / CART BUTTON -->
+                <button onclick="openOrderBot()" class="flex-1 flex items-center justify-center gap-2 bg-chefsCream hover:bg-[#FBE8E8] dark:bg-zinc-850 text-chefsRed dark:text-white font-black text-[11px] uppercase py-4 rounded-[1.5rem] tap-scale shadow border border-chefsRed/10 relative">
+                    <i class="fa-solid fa-cart-shopping text-sm text-chefsRed dark:text-chefsYellow"></i> 
+                    <span>My Order</span>
+                    <span id="cart-badge" class="hidden absolute -top-1.5 -right-1.5 bg-chefsRed text-white text-[8px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white dark:border-chefsDark scale-up">0</span>
+                </button>
+                
+                <div class="w-3"></div>
+                
+                <!-- BOOK A TABLE CONVERSION -->
+                <button onclick="openModal('reserve-modal')" class="flex-[1.2] flex items-center justify-center gap-2 bg-chefsRed hover:bg-chefsAccent text-white font-black text-[11px] uppercase py-4 rounded-[1.5rem] tap-scale shadow-lg border-t border-white/10">
+                    <i class="fa-solid fa-chair text-sm"></i> Book a Table
+                </button>
+            </div>
+        </nav>
+
+        <!-- Platform Footer Powered Branding Footnote -->
+        <div class="fixed bottom-[calc(0.5rem+env(safe-area-inset-bottom))] left-0 right-0 z-[51] px-6 pointer-events-none">
+            <div class="max-w-md mx-auto flex justify-end">
+                <a href="https://www.skani.space/"
+                    target="_blank"
+                    rel="noopener"
+                    class="pointer-events-auto text-[7px] font-black uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 bg-white/85 dark:bg-chefsDark/85 backdrop-blur-md border border-zinc-200/50 dark:border-zinc-800 px-2.5 py-1 rounded-full shadow-lg opacity-40 hover:opacity-100 transition-opacity duration-300 hover:text-chefsRed">
+                    Powered by Skani.space
+                </a>
+            </div>
+        </div>
+
+        <!-- ================== MODALS AND SHEETS ================== -->
+
+        <!-- A. FREE WIFI SYSTEM MODAL -->
+        <div id="wifi-modal" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
+            <div class="absolute inset-0 bg-black/60" onclick="closeModal('wifi-modal')"></div>
+            <div class="modal-content bg-white dark:bg-chefsDark w-full max-w-sm rounded-[2.5rem] p-6 sm:p-8 relative border-t-8 border-chefsRed shadow-2xl">
+                <button onclick="closeModal('wifi-modal')" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center bg-zinc-200/50 dark:bg-zinc-850 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+                
+                <h3 class="text-2xl font-black font-display dark:text-white mb-1.5 leading-tight">WiFi Connection</h3>
+                <p class="text-zinc-500 dark:text-zinc-400 text-[10px] font-black uppercase mb-6 tracking-wider">Fast Unlimited Connection</p>
+                
+                <div class="space-y-4">
+                    <div class="bg-chefsCream dark:bg-chefsDarkBody p-4 rounded-2xl border border-chefsRed/10 shadow-sm">
+                        <label class="text-[9px] font-black uppercase text-zinc-400 mb-0.5 block tracking-wider">Network Name (SSID)</label>
+                        <div class="text-lg font-black dark:text-white tracking-tight">Chefs_Pride_Guest</div>
+                    </div>
+                    
+                    <div class="bg-chefsCream dark:bg-chefsDarkBody p-4 rounded-2xl border border-chefsRed/10 shadow-sm flex justify-between items-center">
+                        <div class="flex-1">
+                            <label class="text-[9px] font-black uppercase text-zinc-400 mb-0.5 block tracking-wider">Password</label>
+                            <div class="text-lg font-black dark:text-white tracking-tight">chefspride</div>
+                        </div>
+                        <button id="copy-btn" onclick="copyWifiText('chefspride')" class="w-11 h-11 bg-chefsRed text-white rounded-xl tap-scale transition-all flex items-center justify-center shadow-lg border-b-2 border-red-800">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- B. RESERVATION BOOKING SYSTEM MODAL -->
+        <div id="reserve-modal" class="modal-overlay fixed inset-0 z-[60] flex items-end sm:items-center justify-center px-4">
+            <div class="absolute inset-0 bg-black/60" onclick="closeModal('reserve-modal')"></div>
+            <div class="modal-content bg-white dark:bg-chefsDark w-full max-w-sm rounded-t-[3rem] sm:rounded-[3rem] p-6 sm:p-8 relative border-t-8 border-chefsRed pb-[calc(2rem+env(safe-area-inset-bottom))] shadow-2xl">
+                <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-850 rounded-full mx-auto mb-5 sm:hidden"></div>
+                
+                <button onclick="closeModal('reserve-modal')" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center bg-zinc-200/50 dark:bg-zinc-850 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+                
+                <h3 class="text-2xl font-black font-display dark:text-white mb-1.5 leading-tight">Book a Table</h3>
+                <p class="text-zinc-500 dark:text-zinc-400 text-[9px] font-bold uppercase mb-5 tracking-wider">Enjoy Authentic Coastal Gastronomy</p>
+                
+                <form onsubmit="handleReserveSubmit(event)" class="space-y-3.5">
+                    <div>
+                        <label class="block text-[9px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1 pl-1">Full Name</label>
+                        <input type="text" id="reserve-name" required placeholder="Enter full name" class="w-full bg-chefsCream dark:bg-chefsDarkBody p-3.5 px-4 dark:text-white text-sm font-semibold border border-transparent focus:border-chefsRed focus:ring-4 focus:ring-chefsRed/10 outline-none rounded-xl transition-all shadow-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[9px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1 pl-1">Phone Number</label>
+                        <input type="tel" id="reserve-phone" required placeholder="e.g. +255 754 657 364" class="w-full bg-chefsCream dark:bg-chefsDarkBody p-3.5 px-4 dark:text-white text-sm font-semibold border border-transparent focus:border-chefsRed focus:ring-4 focus:ring-chefsRed/10 outline-none rounded-xl transition-all shadow-sm">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[9px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1 pl-1">Date</label>
+                            <input type="date" id="reserve-date" required class="w-full bg-chefsCream dark:bg-chefsDarkBody p-3.5 px-4 dark:text-white text-sm font-semibold border border-transparent focus:border-chefsRed outline-none rounded-xl transition-all shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1 pl-1">Arrival Time</label>
+                            <input type="time" id="reserve-time" required class="w-full bg-chefsCream dark:bg-chefsDarkBody p-3.5 px-4 dark:text-white text-sm font-semibold border border-transparent focus:border-chefsRed outline-none rounded-xl transition-all shadow-sm">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[9px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1 pl-1">Expected Guests</label>
+                            <input type="number" id="reserve-guests" required min="1" placeholder="e.g. 4" class="w-full bg-chefsCream dark:bg-chefsDarkBody p-3.5 px-4 dark:text-white text-sm font-semibold border border-transparent focus:border-chefsRed outline-none rounded-xl transition-all shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1 pl-1">Occasion / Notes</label>
+                            <input type="text" id="reserve-occasion" placeholder="e.g. Birthday, Work" class="w-full bg-chefsCream dark:bg-chefsDarkBody p-3.5 px-4 dark:text-white text-sm font-semibold border border-transparent focus:border-chefsRed outline-none rounded-xl transition-all shadow-sm">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-chefsRed hover:bg-chefsAccent text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest tap-scale transition-all shadow-md mt-2">
+                        Reserve Table
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- C. INTERACTIVE ORDER BOT FULL-PAGE MODAL (Adapted from V2 structure with Chef's Pride branding) -->
+        <div id="order-modal" class="modal-overlay fixed inset-0 z-[70] flex items-end justify-center">
+            <div class="absolute inset-0 bg-black/80" onclick="confirmCloseOrder()"></div>
+            <div class="order-modal-content bg-chefsCream dark:bg-zinc-950 w-full max-w-md rounded-t-[2.5rem] relative flex flex-col h-[94vh] max-h-[94vh]">
+
+                <!-- ORDER MODAL HEADER -->
+                <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-zinc-200 dark:border-zinc-800 flex-shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-chefsRed rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-bag-shopping text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-black dark:text-white tracking-tight leading-none">Order</h3>
+                            <p class="text-[9px] text-zinc-500 uppercase tracking-widest font-black">Chef's Pride</p>
+                        </div>
+                    </div>
+                    <!-- Step indicators -->
+                    <div class="flex items-center gap-2" id="step-indicators">
+                        <div class="step-dot active" id="sd1"></div>
+                        <div class="step-dot" id="sd2"></div>
+                        <div class="step-dot" id="sd3"></div>
+                        <div class="step-dot" id="sd4"></div>
+                    </div>
+                    <button onclick="confirmCloseOrder()" class="w-9 h-9 flex items-center justify-center bg-zinc-200/50 dark:bg-zinc-800 rounded-full dark:text-white tap-scale text-sm">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- SCROLLABLE BODY -->
+                <div class="flex-1 overflow-y-auto no-scrollbar px-6" id="order-body">
+
+                    <!-- SCREEN 1: BROWSE & ADD -->
+                    <div id="screen-1" class="order-screen active pt-5 pb-4">
+                        <h4 class="text-2xl font-black dark:text-white tracking-tighter mb-1">What are you having? 🍽️</h4>
+                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-4">Tap items to add to your order</p>
+
+                        <!-- Search bar -->
+                        <div class="search-wrap">
+                            <input type="text" id="menu-search" class="search-input" placeholder="Search dish: pilau, biryani, steak..." oninput="handleSearch(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <button class="search-clear hidden" id="search-clear-btn" onclick="clearSearch()" aria-label="Clear search">✕</button>
+                        </div>
+
+                        <!-- Search results -->
+                        <div id="search-results" class="hidden"></div>
+
+                        <!-- Normal browse view -->
+                        <div id="browse-view">
+                            <!-- Category pills -->
+                            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-3 mb-2" id="cat-pills"></div>
+                            <!-- Item list -->
+                            <div id="item-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- SCREEN 2: CART REVIEW -->
+                    <div id="screen-2" class="order-screen pt-5 pb-4">
+                        <h4 class="text-2xl font-black dark:text-white tracking-tighter mb-1">Your Order 🛒</h4>
+                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-5">Adjust quantities before checkout</p>
+                        <div id="cart-review-list"></div>
+                        <div class="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex justify-between items-center">
+                            <span class="text-xs font-black uppercase text-zinc-500 tracking-wider">Delivery</span>
+                            <span class="text-sm font-black text-green-500">FREE</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-base font-black dark:text-white uppercase tracking-tight">Total</span>
+                            <span class="text-xl font-black text-chefsRed dark:text-chefsYellow" id="cart-total-2">TZS 0</span>
+                        </div>
+                    </div>
+
+                    <!-- SCREEN 3: CUSTOMER DETAILS -->
+                    <div id="screen-3" class="order-screen pt-5 pb-4">
+                        <h4 class="text-2xl font-black dark:text-white tracking-tighter mb-1">Your Details 📋</h4>
+                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-5">So we know where to bring your meal</p>
+
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Full Name</label>
+                                <input type="text" id="cust-name" placeholder="e.g. Amani Juma" class="w-full bg-zinc-100 dark:bg-zinc-900 p-4 dark:text-white text-sm font-bold border border-transparent focus:border-chefsRed outline-none rounded-2xl transition-all">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Phone Number</label>
+                                <input type="tel" id="cust-phone" placeholder="e.g. 0754 657 364" class="w-full bg-zinc-100 dark:bg-zinc-900 p-4 dark:text-white text-sm font-bold border border-transparent focus:border-chefsRed outline-none rounded-2xl transition-all">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Order Type</label>
+                                <div class="flex gap-3">
+                                    <button onclick="setOrderType('Delivery')" id="btn-delivery" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-chefsRed bg-chefsRed/10 text-chefsRed transition-all">🛵 Delivery</button>
+                                    <button onclick="setOrderType('Pickup')" id="btn-pickup" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-zinc-300 dark:border-zinc-700 text-zinc-500 transition-all">🏃 Pickup</button>
+                                </div>
+                            </div>
+                            <div id="addr-field">
+                                <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Delivery Address / Area</label>
+                                <input type="text" id="cust-addr" placeholder="e.g. Masaki, Upanga, Oyster Bay..." class="w-full bg-zinc-100 dark:bg-zinc-900 p-4 dark:text-white text-sm font-bold border border-transparent focus:border-chefsRed outline-none rounded-2xl transition-all">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Special Instructions (optional)</label>
+                                <textarea id="cust-notes" placeholder="e.g. Medium steak, extra biryani gravy..." rows="2" class="w-full bg-zinc-100 dark:bg-zinc-900 p-4 dark:text-white text-sm font-bold border border-transparent focus:border-chefsRed outline-none rounded-2xl transition-all resize-none"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- PAYMENT -->
+                        <div class="mt-6">
+                            <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-3">Payment Method</label>
+                            <div class="pay-opt selected" id="pay-cash" onclick="selectPayment('cash')">
+                                <div class="radio-dot"></div>
+                                <div class="text-3xl">💵</div>
+                                <div>
+                                    <div class="font-black text-sm dark:text-white">Cash on Delivery</div>
+                                    <div class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Pay when it arrives</div>
+                                </div>
+                            </div>
+                            <div class="pay-opt" id="pay-mpesa" onclick="selectPayment('mpesa')">
+                                <div class="radio-dot"></div>
+                                <div class="text-3xl">📱</div>
+                                <div>
+                                    <div class="font-black text-sm dark:text-white">M-Pesa / Lipa Namba</div>
+                                    <div class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Lipa namba available</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SCREEN 4: REVIEW & SEND -->
+                    <div id="screen-4" class="order-screen pt-5 pb-4">
+                        <h4 class="text-2xl font-black dark:text-white tracking-tighter mb-1">Review & Send ✅</h4>
+                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-5">Confirm your Swahili & Continental order</p>
+
+                        <div class="bg-zinc-100 dark:bg-zinc-900 rounded-2xl p-5 mb-4">
+                            <div class="text-[10px] font-black uppercase text-zinc-400 tracking-wider mb-3">Order Summary</div>
+                            <div id="final-order-items"></div>
+                            <div class="mt-3 pt-3 border-t border-zinc-300 dark:border-zinc-700 flex justify-between">
+                                <span class="text-xs text-zinc-500 font-black uppercase">Delivery</span>
+                                <span class="text-sm font-black text-green-500">FREE</span>
+                            </div>
+                            <div class="flex justify-between mt-1">
+                                <span class="font-black dark:text-white uppercase text-sm">Total</span>
+                                <span class="font-black text-chefsRed dark:text-chefsYellow text-lg" id="final-total"></span>
+                            </div>
+                        </div>
+
+                        <div class="bg-zinc-100 dark:bg-zinc-900 rounded-2xl p-5 mb-4">
+                            <div class="text-[10px] font-black uppercase text-zinc-400 tracking-wider mb-3">Customer Details</div>
+                            <div id="final-customer-info" class="space-y-1"></div>
+                        </div>
+
+                        <div class="bg-chefsRed/10 border border-chefsRed/30 rounded-2xl p-4 text-center">
+                            <p class="text-[11px] font-black text-chefsRed dark:text-chefsYellow uppercase tracking-wider">Clicking send will open WhatsApp to submit your order! 🖨️🟢</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- FOOTER ACTIONS -->
+                <div class="flex-shrink-0 px-6 py-4 border-t border-zinc-200 dark:border-zinc-800" id="order-footer">
+                    <!-- Screen 1 footer -->
+                    <div id="footer-1" class="flex items-center justify-between gap-3">
+                        <div class="flex-1">
+                            <div class="text-[10px] text-zinc-500 font-black uppercase tracking-wider">Cart</div>
+                            <div class="font-black dark:text-white text-xs" id="cart-summary-pill">0 items · TZS 0</div>
+                        </div>
+                        <button onclick="goToScreen(2)" id="btn-to-cart" class="bg-chefsRed text-white font-black text-xs uppercase px-5 py-4 rounded-2xl tap-scale disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+                            View Order →
+                        </button>
+                    </div>
+                    <!-- Screen 2 footer -->
+                    <div id="footer-2" class="hidden flex gap-3">
+                        <button onclick="goToScreen(1)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 dark:text-white tap-scale">← Edit</button>
+                        <button onclick="goToScreen(3)" class="flex-[2] bg-chefsRed text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale">My Details →</button>
+                    </div>
+                    <!-- Screen 3 footer -->
+                    <div id="footer-3" class="hidden flex gap-3">
+                        <button onclick="goToScreen(2)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 dark:text-white tap-scale">← Back</button>
+                        <button onclick="goToScreen(4)" class="flex-[2] bg-chefsRed text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale">Review →</button>
+                    </div>
+                    <!-- Screen 4 footer -->
+                    <div id="footer-4" class="hidden flex gap-3">
+                        <button onclick="goToScreen(3)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 dark:text-white tap-scale">← Back</button>
+                        <button onclick="sendToWhatsApp()" class="flex-[2] bg-[#25D366] text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-lg"></i> Send Order
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Hidden redirection iframe safely backing telemetry forwards -->
+    <iframe id="suggestion-submit-frame" name="suggestion-submit-frame" class="hidden" aria-hidden="true"></iframe>
+
+    <!-- ================== PORTAL JAVASCRIPT LOGIC ================== -->
+    <script>
+        // 1. DYNAMIC IN-VIEW OBSERVER
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -40px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { 
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible'); 
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // 2. REALTIME ORDER/CART DATA LAYER (Unified with the Order Bot system)
+        let cart = {}; // key: "CategoryName||itemName" -> { name, price, qty, cat }
+        let activeCat = "Swahili";
+        let selectedPayment = "cash";
+        let orderType = "Delivery";
+        let currentScreen = 1;
+
+        // Chef's Pride Skani Embedded Menu Database
+        const MENU = {
+            "Swahili": {
+                emoji: "🇹🇿",
+                items: [
+                    { name: "Swahili Mishkaki Skewers", price: 14000, desc: "Tender, flame-grilled marinated beef cubes with local tamarind dip" },
+                    { name: "Coconut Seafood Stew (Kalamu)", price: 26000, desc: "Assorted catch of prawns, calamari, & fish simmered in thick coastal coconut gravy" },
+                    { name: "Spiced Chicken Pilau Rice", price: 16000, desc: "Aromatic traditional spiced rice plated with delicious chicken" },
+                    { name: "Charcoal Sea Fish", price: 19500, desc: "Sensational fresh sea fish char-roasted with local coastal herbs" },
+                    { name: "Beef Biryani", price: 22000, desc: "Served with traditional spicy Kachumbari salad and homemade chili curd" },
+                    { name: "Premium Ocean Catch Platter", price: 45000, desc: "Lavish sharing platter loaded with premium prawns, calamari, and red snapper" }
+                ]
+            },
+            "Continental": {
+                emoji: "🌍",
+                items: [
+                    { name: "Char-Grilled T-Bone Steak", price: 32000, desc: "Premium beef cut served with seasoned baby potatoes and herbed mushroom sauce" },
+                    { name: "Tuscan Creamy Chicken Pasta", price: 22000, desc: "Pennete tossed in rich sun-dried tomato garlic sauce, herbed chicken fillets" },
+                    { name: "Madagascar Beef Pepper Steak", price: 24500, desc: "Fleshy roasted steak cut marinated in thick wild black pepper juice" }
+                ]
+            },
+            "Light Meals": {
+                emoji: "🍔",
+                items: [
+                    { name: "The Pride Gourmet Burger", price: 18500, desc: "Double prime beef patties, grilled cheddar cheese, crispy potato string toppings, house glaze" }
+                ]
+            },
+            "Drinks & Chai": {
+                emoji: "🥤",
+                items: [
+                    { name: "Traditional Spiced Chai", price: 6500, desc: "Warm milk black tea simmered with fresh cloves, ginger, cardamom and cinnamon pod" },
+                    { name: "Fresh Passion Juice", price: 5000, desc: "Deliciously pure, freshly squeezed sweet passion juice" }
+                ]
+            },
+            "Desserts": {
+                emoji: "🍰",
+                items: [
+                    { name: "Passion Fruit Curd Tart", price: 11000, desc: "Zesty fresh coastal passion fruit curd, light sweet butter-biscuit tart crust" }
+                ]
+            }
+        };
+
+        // 3. STYLISH LIGHT/DARK MOTIF
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.body.classList.toggle('light-mode', !isDark);
+            const icon = document.getElementById('theme-icon');
+            icon.style.transform = 'scale(0) rotate(90deg)';
+            setTimeout(() => {
+                icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+                icon.style.transform = 'scale(1) rotate(0deg)';
+            }, 150);
+        }
+
+        // 4. ACCORDION ENGINES
+        function toggleMenuAccordion(id) {
+            const container = document.getElementById(id);
+            const icon = document.getElementById(`${id}-icon`);
+            const isOpen = !container.classList.contains('hidden');
+            
+            // Close all first to keep layout clean and tidy
+            document.querySelectorAll('[id^="acc-"]').forEach(el => {
+                el.classList.add('hidden');
+            });
+            document.querySelectorAll('[id$="-icon"]').forEach(el => {
+                el.style.transform = 'rotate(0deg)';
+            });
+
+            if (!isOpen) {
+                container.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+                container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function toggleServiceAccordion(id) {
+            const container = document.getElementById(id);
+            const icon = document.getElementById(`${id}-icon`);
+            const isOpen = !container.classList.contains('hidden');
+            
+            document.querySelectorAll('[id^="serv-"]').forEach(el => {
+                el.classList.add('hidden');
+            });
+            document.querySelectorAll('[id$="-icon"]').forEach(el => {
+                el.style.transform = 'rotate(0deg)';
+            });
+
+            if (!isOpen) {
+                container.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // 5. APP-LEVEL MODAL CONSTRUCTS
+        function openModal(id) { 
+            const overlay = document.getElementById(id);
+            overlay.classList.add('active'); 
+            document.body.style.overflow = 'hidden'; 
+        }
+        function closeModal(id) { 
+            const overlay = document.getElementById(id);
+            overlay.classList.remove('active'); 
+            document.body.style.overflow = ''; 
+        }
+
+        function openInNewTab(url) { 
+            window.open(url, '_blank', 'noopener,noreferrer'); 
+        }
+
+        // 6. RICH STEP-BY-STEP ORDER BOT CONTROLLER
+        function openOrderBot() {
+            try {
+                const saved = sessionStorage.getItem('cp_cart');
+                if (saved) cart = JSON.parse(saved);
+            } catch(e) { cart = {}; }
+            
+            openModal('order-modal');
+            clearSearch();
+            renderCategoryPills();
+            renderItems(activeCat);
+            updateCartSummary();
+            goToScreen(1, false);
+        }
+
+        function confirmCloseOrder() {
+            closeModal('order-modal');
+        }
+
+        function saveCart() {
+            try { sessionStorage.setItem('cp_cart', JSON.stringify(cart)); } catch(e){}
+            updateCartSummary();
+            updateBadges();
+        }
+
+        function cartKey(cat, name) {
+            return `${cat}||${name}`;
+        }
+
+        function getCartTotal() {
+            return Object.values(cart).reduce((s, v) => s + v.price * v.qty, 0);
+        }
+        
+        function getCartCount() {
+            return Object.values(cart).reduce((s, v) => s + v.qty, 0);
+        }
+
+        function renderCategoryPills() {
+            const el = document.getElementById('cat-pills');
+            el.innerHTML = Object.entries(MENU).map(([cat, data]) => {
+                const active = cat === activeCat ? 'active' : 'inactive';
+                return `<div class="cat-pill ${active}" onclick="switchCat('${cat}')" id="pill-${CSS.escape(cat)}">${data.emoji} ${cat}</div>`;
+            }).join('');
+        }
+
+        function switchCat(cat) {
+            activeCat = cat;
+            renderCategoryPills();
+            renderItems(cat);
+            document.getElementById('order-body').scrollTop = 0;
+        }
+
+        function renderItems(cat) {
+            const catData = MENU[cat];
+            const el = document.getElementById('item-list');
+            el.innerHTML = catData.items.map(item => renderItemRow(cat, item)).join('');
+        }
+
+        function renderItemRow(cat, item) {
+            const key = cartKey(cat, item.name);
+            const inCart = cart[key];
+            const priceStr = `${item.price.toLocaleString()} TZS`;
+            return `
+            <div class="item-row" id="row-${btoa(key).replace(/=/g,'')}">
+                <div style="flex:1; min-width:0;">
+                    <div class="font-black text-sm dark:text-white leading-tight">${item.name}</div>
+                    ${item.desc ? `<div class="text-[11px] text-zinc-500 mt-0.5 leading-tight">${item.desc}</div>` : ''}
+                    <div class="text-xs font-black text-chefsRed dark:text-chefsYellow mt-1">${priceStr}</div>
+                </div>
+                ${inCart ? `
+                <div class="qty-ctrl">
+                    <button class="qty-btn" onclick="changeQty('${cat}','${item.name}',-1)">−</button>
+                    <span class="qty-num">${inCart.qty}</span>
+                    <button class="qty-btn" onclick="changeQty('${cat}','${item.name}',1)">+</button>
+                </div>` : `
+                <button class="add-btn animate-pulse-gentle" onclick="addItem('${cat}','${item.name}',${item.price})">+</button>`}
+            </div>`;
+        }
+
+        function addItem(cat, name, price) {
+            const key = cartKey(cat, name);
+            cart[key] = { name, price, qty: 1, cat };
+            saveCart();
+            renderItems(activeCat);
+            showSnoToast(`Added ${name} to order! 🍛`);
+        }
+
+        function changeQty(cat, name, delta) {
+            const key = cartKey(cat, name);
+            if (!cart[key]) return;
+            cart[key].qty = Math.max(0, cart[key].qty + delta);
+            if (cart[key].qty === 0) delete cart[key];
+            saveCart();
+            renderItems(activeCat);
+        }
+
+        function updateCartSummary() {
+            const count = getCartCount();
+            const total = getCartTotal();
+            const pill = document.getElementById('cart-summary-pill');
+            if (pill) pill.textContent = `${count} item${count!==1?'s':''} · TZS ${total.toLocaleString()}`;
+            const btn = document.getElementById('btn-to-cart');
+            if (btn) btn.disabled = count === 0;
+        }
+
+        function updateBadges() {
+            const count = getCartCount();
+            const badge = document.getElementById('cart-badge');
+            if (badge) {
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+        }
+
+        function renderCartReview() {
+            const el = document.getElementById('cart-review-list');
+            const entries = Object.entries(cart);
+            if (entries.length === 0) { el.innerHTML = '<p class="text-zinc-500 text-sm text-center py-6">Your order basket is empty.</p>'; return; }
+            el.innerHTML = entries.map(([key, item]) => `
+            <div class="summary-row" style="padding: 10px 0;">
+                <div style="flex:1;">
+                    <div class="font-black text-sm dark:text-white">${item.name}</div>
+                    <div class="text-xs text-chefsRed dark:text-chefsYellow font-black">TZS ${item.price.toLocaleString()} each</div>
+                </div>
+                <div class="qty-ctrl ml-3">
+                    <button class="qty-btn" onclick="cartChangeQty('${key}',-1)">−</button>
+                    <span class="qty-num">${item.qty}</span>
+                    <button class="qty-btn" onclick="cartChangeQty('${key}',1)">+</button>
+                </div>
+                <div class="ml-3 text-right" style="min-width:80px;">
+                    <div class="font-black text-sm dark:text-white">TZS ${(item.price*item.qty).toLocaleString()}</div>
+                </div>
+            </div>`).join('');
+            document.getElementById('cart-total-2').textContent = `TZS ${getCartTotal().toLocaleString()}`;
+        }
+
+        function cartChangeQty(key, delta) {
+            if (!cart[key]) return;
+            cart[key].qty = Math.max(0, cart[key].qty + delta);
+            if (cart[key].qty === 0) delete cart[key];
+            saveCart();
+            renderCartReview();
+            renderItems(activeCat);
+        }
+
+        function setOrderType(type) {
+            orderType = type;
+            document.getElementById('btn-delivery').className = type === 'Delivery'
+                ? 'flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-chefsRed bg-chefsRed/10 text-chefsRed transition-all'
+                : 'flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-zinc-300 dark:border-zinc-700 text-zinc-500 transition-all';
+            document.getElementById('btn-pickup').className = type === 'Pickup'
+                ? 'flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-chefsRed bg-chefsRed/10 text-chefsRed transition-all'
+                : 'flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-zinc-300 dark:border-zinc-700 text-zinc-500 transition-all';
+            document.getElementById('addr-field').style.display = type === 'Delivery' ? 'block' : 'none';
+        }
+
+        function selectPayment(method) {
+            selectedPayment = method;
+            document.getElementById('pay-cash').className = 'pay-opt' + (method==='cash' ? ' selected' : '');
+            document.getElementById('pay-mpesa').className = 'pay-opt' + (method==='mpesa' ? ' selected' : '');
+        }
+
+        function renderFinalReview() {
+            const items = Object.values(cart);
+            document.getElementById('final-order-items').innerHTML = items.map(item =>
+                `<div class="summary-row"><span class="dark:text-zinc-300">${item.name} × ${item.qty}</span><span class="font-black dark:text-white">TZS ${(item.price*item.qty).toLocaleString()}</span></div>`
+            ).join('');
+            document.getElementById('final-total').textContent = `TZS ${getCartTotal().toLocaleString()}`;
+
+            const name = document.getElementById('cust-name').value || '—';
+            const phone = document.getElementById('cust-phone').value || '—';
+            const addr = document.getElementById('cust-addr').value || '';
+            const notes = document.getElementById('cust-notes').value || '';
+            const payLabel = selectedPayment === 'mpesa' ? 'M-Pesa Mobile Money' : 'Cash on Delivery';
+
+            document.getElementById('final-customer-info').innerHTML = `
+                <div class="summary-row"><span class="text-zinc-500">Name</span><span class="font-black dark:text-white">${name}</span></div>
+                <div class="summary-row"><span class="text-zinc-500">Phone</span><span class="font-black dark:text-white">${phone}</span></div>
+                <div class="summary-row"><span class="text-zinc-500">Type</span><span class="font-black dark:text-white">${orderType}${addr?' — '+addr:''}</span></div>
+                <div class="summary-row"><span class="text-zinc-500">Payment</span><span class="font-black dark:text-white">${payLabel}</span></div>
+                ${notes ? `<div class="summary-row"><span class="text-zinc-500">Notes</span><span class="font-black dark:text-white">${notes}</span></div>` : ''}
+            `;
+        }
+
+        function goToScreen(n, animate=true) {
+            if (n === 3 && getCartCount() === 0) return;
+
+            [1,2,3,4].forEach(i => {
+                document.getElementById(`screen-${i}`).classList.remove('active');
+                document.getElementById(`footer-${i}`).classList.add('hidden');
+                document.getElementById(`sd${i}`).className = 'step-dot' + (i < n ? ' done' : i === n ? ' active' : '');
+            });
+
+            const s = document.getElementById(`screen-${n}`);
+            s.classList.add('active');
+            if (animate) s.className = `order-screen active ${n >= currentScreen ? 'slide-left' : 'slide-right'}`;
+            document.getElementById(`footer-${n}`).classList.remove('hidden');
+            document.getElementById('order-body').scrollTop = 0;
+            currentScreen = n;
+
+            if (n === 1) { updateCartSummary(); }
+            if (n === 2) { renderCartReview(); }
+            if (n === 4) { renderFinalReview(); }
+        }
+
+        // 7. REAL-TIME MENU SEARCH ENGINE
+        function handleSearch(val) {
+            const query = val.trim().toLowerCase();
+            const clearBtn = document.getElementById('search-clear-btn');
+            const searchResults = document.getElementById('search-results');
+            const browseView = document.getElementById('browse-view');
+
+            if (!query) {
+                clearSearch();
+                return;
+            }
+
+            clearBtn.classList.remove('hidden');
+            searchResults.classList.remove('hidden');
+            browseView.classList.add('hidden');
+
+            const results = [];
+            Object.entries(MENU).forEach(([cat, data]) => {
+                data.items.forEach(item => {
+                    if (item.name.toLowerCase().includes(query) || (item.desc && item.desc.toLowerCase().includes(query))) {
+                        results.push({ cat, item });
+                    }
+                });
+            });
+
+            if (results.length === 0) {
+                searchResults.innerHTML = `
+                    <div class="search-empty">
+                        <div class="text-3xl mb-2">🔍</div>
+                        <p class="dark:text-zinc-500 font-bold">No results found for "${val}"</p>
+                    </div>`;
+                return;
+            }
+
+            searchResults.innerHTML = results.map(r => {
+                const key = cartKey(r.cat, r.item.name);
+                const inCart = cart[key];
+                return `
+                <div class="item-row">
+                    <div style="flex:1; min-width:0;">
+                        <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
+                            <span class="font-black text-sm dark:text-white">${r.item.name}</span>
+                            <span class="search-cat-label">${r.cat}</span>
+                        </div>
+                        ${r.item.desc ? `<div class="text-[11px] text-zinc-500 mt-0.5">${r.item.desc}</div>` : ''}
+                        <div class="text-xs font-black text-chefsRed dark:text-chefsYellow mt-1">TZS ${r.item.price.toLocaleString()}</div>
+                    </div>
+                    ${inCart ? `
+                    <div class="qty-ctrl">
+                        <button class="qty-btn" onclick="changeQty('${r.cat}','${r.item.name}',-1);handleSearch(document.getElementById('menu-search').value)">−</button>
+                        <span class="qty-num">${inCart.qty}</span>
+                        <button class="qty-btn" onclick="changeQty('${r.cat}','${r.item.name}',1);handleSearch(document.getElementById('menu-search').value)">+</button>
+                    </div>` : `
+                    <button class="add-btn" onclick="addItem('${r.cat}','${r.item.name}',${r.item.price});handleSearch(document.getElementById('menu-search').value)">+</button>`}
+                </div>`;
+            }).join('');
+        }
+
+        function clearSearch() {
+            document.getElementById('menu-search').value = '';
+            document.getElementById('search-clear-btn').classList.add('hidden');
+            document.getElementById('search-results').classList.add('hidden');
+            document.getElementById('browse-view').classList.remove('hidden');
+        }
+
+        // 8. WHATSAPP & CLIPBOARD SECURE HANDLERS
+        function copyWifiText(text) {
+            const btn = document.getElementById('copy-btn');
+            const originalHTML = btn.innerHTML;
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            document.body.appendChild(textArea);
+            
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                btn.classList.replace('bg-chefsRed', 'bg-green-600');
+                showSnoToast('WiFi Password Copied!');
+            } catch (err) {
+                console.error('Clipboard copy sequence exception:', err);
+            }
+            
+            document.body.removeChild(textArea);
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.replace('bg-green-600', 'bg-chefsRed');
+            }, 2000);
+        }
+
+        function handleReserveSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('reserve-name').value;
+            const phone = document.getElementById('reserve-phone').value;
+            const date = document.getElementById('reserve-date').value;
+            const time = document.getElementById('reserve-time').value;
+            const guests = document.getElementById('reserve-guests').value;
+            const occasion = document.getElementById('reserve-occasion').value || "General Dine In";
+
+            const message = `Hello Chef's Pride! 👨🏽‍🍳🪑\n\nI would like to reserve a table.\n\n- Name: ${name}\n- Phone: ${phone}\n- Date: ${date}\n- Time: ${time}\n- Number of Guests: ${guests}\n- Occasion / Notes: ${occasion}`;
+            openInNewTab(`https://wa.me/255754657364?text=${encodeURIComponent(message)}`);
+            closeModal('reserve-modal');
+        }
+
+        function generateOrderNumber() {
+            const ts = Date.now().toString(36).toUpperCase();
+            return `CP-${ts.slice(-6)}`;
+        }
+
+        function sendToWhatsApp() {
+            const name = document.getElementById('cust-name').value.trim() || 'Guest';
+            const phone = document.getElementById('cust-phone').value.trim() || '—';
+            const addr = document.getElementById('cust-addr').value.trim();
+            const notes = document.getElementById('cust-notes').value.trim();
+            const payLabel = selectedPayment === 'mpesa' ? 'Mobile Money — Pay when Prompted' : 'Cash on Delivery';
+
+            const items = Object.values(cart);
+            const total = getCartTotal();
+            const orderNo = generateOrderNumber();
+            
+            const pad  = (str, len) => String(str).length >= len ? String(str).slice(0, len) : String(str) + ' '.repeat(len - String(str).length);
+            const padL = (str, len) => String(str).length >= len ? String(str).slice(-len) : ' '.repeat(len - String(str).length) + String(str);
+
+            const itemLines = items.map(i => {
+                const label    = pad(i.name, 22);
+                const qty      = pad(`x${i.qty}`, 4);
+                const subtotal = padL((i.price * i.qty).toLocaleString(), 9);
+                return `${label} ${qty} ${subtotal}`;
+            }).join('\n');
+
+            const separator = '--------------------------------';
+            const freeLine  = pad('Delivery', 27) + padL('FREE', 9);
+            const totalLine = pad('TOTAL (TZS)', 27) + padL(total.toLocaleString(), 9);
+
+            const msg = `👨🏽‍🍳 *CHEF'S PRIDE — NEW SKANI ORDER*
+
+🔖 Order: *#${orderNo}*
+👤 Name: *${name}*
+📱 Phone: *${phone}*
+📦 Type: *${orderType}${addr ? ' — ' + addr : ''}*
+💳 Payment: *${payLabel}*
+${notes ? `📝 Notes: _${notes}_` : ''}
+
+\`\`\`
+${separator}
+ITEM                   QTY  SUBTOTAL
+${separator}
+${itemLines}
+${separator}
+${freeLine}
+${totalLine}
+${separator}
+\`\`\`
+🟢 *Please confirm this order via WhatsApp*`;
+
+            openInNewTab(`https://wa.me/255754657364?text=${encodeURIComponent(msg)}`);
+
+            // Clear Cart on successful send
+            cart = {};
+            try { sessionStorage.removeItem('cp_cart'); } catch(e){}
+            updateBadges();
+            clearSearch();
+            closeModal('order-modal');
+        }
+
+        async function handleSuggestion(e) {
+            e.preventDefault();
+            const form = document.getElementById('suggestion-form');
+            const feedback = document.getElementById('suggestion-feedback');
+            const submitBtn = document.getElementById('submit-btn');
+            const text = document.getElementById('suggestion-text').value.trim();
+            const telemetryUrl = 'https://script.google.com/macros/s/AKfycby6l1_8WHArGhbuztSRW0uEhKSenlD_opoG0QaJhYo2ZJWWCpIuOsk96SV4ip_1V0u6KA/exec';
+            const frame = document.getElementById('suggestion-submit-frame');
+
+            if (!text) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Submitting...';
+
+            try {
+                frame.src = `${telemetryUrl}?suggestion=${encodeURIComponent(text)}&t=${Date.now()}`;
+
+                form.style.opacity = '0';
+                setTimeout(() => {
+                    form.classList.add('hidden');
+                    feedback.classList.remove('hidden');
+                    feedback.style.opacity = '1';
+                }, 300);
+
+                setTimeout(() => {
+                    feedback.classList.add('hidden');
+                    form.classList.remove('hidden');
+                    form.style.opacity = '1';
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Submit Dish Idea';
+                    e.target.reset();
+                }, 5000);
+
+            } catch (err) {
+                console.error('Error reporting dish telemetry recommendation:', err);
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Network error. Try again';
+                setTimeout(() => { submitBtn.innerText = 'Submit Dish Idea'; }, 2000);
+            }
+        }
+
+        // 10. REAL-TIME CALENDAR CLOCK STATUS GENERATOR
+        function updateOperatingStatus() {
+            const statusDot = document.getElementById('operating-status-dot');
+            const statusText = document.getElementById('operating-status-text');
+            
+            const now = new Date();
+            const hours = now.getHours();
+            
+            if (hours >= 8 && hours < 23) {
+                statusDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
+                statusText.className = 'text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-500';
+                statusText.innerText = 'Open Now';
+            } else {
+                statusDot.className = 'w-2.5 h-2.5 rounded-full bg-zinc-400';
+                statusText.className = 'text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400';
+                statusText.innerText = 'Closed Now';
+            }
+        }
+        
+        updateOperatingStatus();
+        setInterval(updateOperatingStatus, 60000);
+
+        // 11. CUSTOM HIGH-CONTRAST SNACKBAR/TOAST FEEDBACK
+        function showSnoToast(msg) {
+            let existing = document.getElementById('chefs-notif-toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'chefs-notif-toast';
+            toast.className = 'fixed top-6 left-1/2 -translate-x-1/2 z-[100] bg-chefsRed text-white font-black text-xs py-3.5 px-6 rounded-full shadow-2xl transition-all duration-300 backdrop-blur-md flex items-center gap-2 border border-white/10 scale-up';
+            toast.innerHTML = `👨🏽‍🍳 <span>${msg}</span>`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, -12px)';
+                setTimeout(() => toast.remove(), 400);
+            }, 2500);
+        }
+
+        document.addEventListener('keydown', (e) => { 
+            if (e.key === 'Escape') { 
+                const active = document.querySelector('.modal-overlay.active'); 
+                if (active) closeModal(active.id); 
+            } 
+        });
+
+        // Load basket session state if present
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const saved = sessionStorage.getItem('cp_cart');
+                if (saved) { cart = JSON.parse(saved); updateBadges(); }
+            } catch(e){}
+        });
+    </script>
+</body>
+</html>
