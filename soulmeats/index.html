@@ -182,7 +182,7 @@
 
         <!-- ACTION GRID -->
         <section class="px-6 grid grid-cols-2 gap-4">
-            <button onclick="openModal('menu-options-modal')" class="reveal tap-scale card-shimmer bg-yellow-500 p-5 rounded-3xl flex flex-col items-center justify-center text-black shadow-lg shadow-yellow-500/20">
+            <button onclick="openInNewTab('https://www.skani.space/soulmeats/soulmeats-menu.pdf')" class="reveal tap-scale card-shimmer bg-yellow-500 p-5 rounded-3xl flex flex-col items-center justify-center text-black shadow-lg shadow-yellow-500/20">
                 <i class="fa-solid fa-utensils text-2xl mb-1 animate-float"></i>
                 <span class="font-black text-lg tracking-tight">Menu</span>
                 <span class="text-[10px] font-bold opacity-80 uppercase tracking-tight">Taste the vibe</span>
@@ -331,34 +331,6 @@
         </div>
 
         <!-- ===================== MODALS ===================== -->
-
-        <!-- MENU OPTIONS MODAL -->
-        <div id="menu-options-modal" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
-            <div class="absolute inset-0 bg-black/60" onclick="closeModal('menu-options-modal')"></div>
-            <div class="modal-content bg-cream dark:bg-zinc-950 w-full max-w-sm rounded-[3rem] p-8 relative border-t-8 border-yellow-500 shadow-2xl">
-                <button onclick="closeModal('menu-options-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
-                <h3 class="text-3xl font-black dark:text-white mb-2 tracking-tighter italic">Select Menu</h3>
-                <p class="text-zinc-500 text-[10px] font-black uppercase mb-8 tracking-widest leading-tight">Pick your dining experience</p>
-                <div class="space-y-4">
-                    <button onclick="openInNewTab('https://www.skani.space/soulmeats/soulmeats-menu.pdf')"
-                        class="w-full tap-scale bg-yellow-500 p-6 rounded-2xl flex items-center gap-4 text-black shadow-lg shadow-yellow-500/10">
-                        <div class="w-12 h-12 bg-black/10 rounded-xl flex items-center justify-center text-2xl"><i class="fa-solid fa-utensils"></i></div>
-                        <div class="text-left">
-                            <span class="block font-black text-lg leading-tight">Main Menu</span>
-                            <span class="text-[9px] font-bold uppercase opacity-70 tracking-tighter">Explore full selection</span>
-                        </div>
-                    </button>
-                    <button onclick="openInNewTab('http://skani.space/SoulMeats%20Special%20Menu%20Offers.pdf')"
-                        class="w-full tap-scale bg-zinc-100 dark:bg-zinc-900 p-6 rounded-2xl flex items-center gap-4 border border-zinc-200 dark:border-zinc-800">
-                        <div class="w-12 h-12 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 rounded-xl flex items-center justify-center text-2xl"><i class="fa-solid fa-fire-flame-curved"></i></div>
-                        <div class="text-left">
-                            <span class="block font-black text-lg leading-tight dark:text-white">Daily Offers</span>
-                            <span class="text-[9px] font-bold uppercase opacity-60 dark:text-zinc-400 tracking-tighter">Today's specials</span>
-                        </div>
-                    </button>
-                </div>
-            </div>
-        </div>
 
         <!-- WIFI MODAL -->
         <div id="wifi-modal" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center px-6">
