@@ -126,13 +126,15 @@
         .item-card.in-cart { border-color: #A9D8EF; box-shadow: 0 10px 24px rgba(169,216,239,.22); }
         .item-visual {
             aspect-ratio: 1 / .82;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 44px;
-            background:
-                radial-gradient(circle at 70% 30%, rgba(255,255,255,.7), transparent 34%),
-                linear-gradient(135deg, rgba(169,216,239,.38), rgba(247,241,222,.95));
+            position: relative;
+            overflow: hidden;
+            background: #F7F1DE;
+        }
+        .item-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
         .item-card-body { padding: 11px 12px 12px; }
         .add-btn-card, .qty-btn {
@@ -210,10 +212,6 @@
         <main>
             <section class="pt-6 reveal">
                 <div class="relative overflow-hidden rounded-[2.35rem] bg-bahariCoffee text-white shadow-xl">
-                    <div class="absolute inset-0 opacity-30">
-                        <img src="https://www.skani.space/bahari-cafe/menu-image-1.jpeg" alt="" class="w-full h-full object-cover">
-                    </div>
-                    <div class="absolute inset-0 bg-gradient-to-br from-bahariCoffee/95 via-bahariCoffee/70 to-bahariGreen/70"></div>
                     <div class="relative z-10 min-h-[390px] p-6 flex flex-col justify-between">
                         <div class="flex justify-between items-start">
                             <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-bahariBlue text-bahariInk text-[10px] font-black uppercase tracking-wider">
@@ -324,42 +322,6 @@
                             <div class="text-[10px] font-black uppercase tracking-wider text-zinc-400">Fruit sparkle drinks</div>
                         </div>
                     </button>
-                </div>
-            </section>
-
-            <section class="mt-8 reveal">
-                <div class="rounded-[2.35rem] bg-bahariGreen text-white p-6 overflow-hidden relative shadow-lg">
-                    <div class="absolute -right-12 -top-12 w-36 h-36 rounded-full bg-white/10"></div>
-                    <div class="flex items-start gap-4 relative">
-                        <div class="w-14 h-14 rounded-2xl bg-white/14 flex items-center justify-center text-3xl">🍵</div>
-                        <div>
-                            <span class="text-[9px] font-black uppercase tracking-widest text-bahariGold">House Favorite</span>
-                            <h3 class="text-2xl font-black font-playful mt-1">Dirty Matcha + Biscoff</h3>
-                            <p class="text-xs font-semibold text-white/75 mt-1.5 leading-relaxed">Creamy green tea, espresso depth, and dessert-style richness.</p>
-                            <button onclick="quickAddAndOpen('matcha','Dirty Matcha')" class="mt-4 bg-bahariBlue text-bahariInk px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider tap-scale">Add to Order</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="mt-8 reveal">
-                <div class="rounded-[2.35rem] bg-bahariCoffee text-white p-6 overflow-hidden relative shadow-xl border border-white/10">
-                    <div class="absolute -right-14 -top-14 w-40 h-40 rounded-full bg-bahariBlue/20"></div>
-                    <div class="absolute -left-12 -bottom-14 w-36 h-36 rounded-full bg-bahariGold/10"></div>
-                    <div class="relative">
-                        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-bahariBlue text-bahariInk text-[10px] font-black uppercase tracking-wider">
-                            🌊 Bahari Treat
-                        </span>
-                        <h3 class="font-playful font-black text-3xl leading-tight mt-4">Buy 2, get 1 small drink FREE 💙</h3>
-                        <p class="text-sm font-semibold text-white/80 mt-2 leading-relaxed">Order any 2 full-size drinks and Bahari adds 1 small drink on the house.</p>
-                        <div class="mt-5 flex items-center justify-between gap-3 rounded-2xl bg-white/10 border border-white/10 px-4 py-3">
-                            <span class="text-[10px] font-black uppercase tracking-widest text-bahariGold">Promo dates</span>
-                            <span class="text-xs font-black text-white">29 June - 11 July</span>
-                        </div>
-                        <button onclick="openOrderBot()" class="w-full mt-4 bg-bahariBlue text-bahariInk py-4 rounded-2xl font-black text-xs uppercase tracking-widest tap-scale shadow-md flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cart-shopping"></i> Order the Treat
-                        </button>
-                    </div>
                 </div>
             </section>
 
@@ -530,7 +492,7 @@
 
             <div class="flex-1 overflow-y-auto no-scrollbar px-5" id="order-body">
                 <div id="screen-1" class="order-screen active pt-4 pb-4">
-                    <h4 class="text-2xl font-black font-playful mb-0.5">Pick your drink 🥤</h4>
+                    <h4 class="text-2xl font-black font-playful mb-0.5">Pick your drink</h4>
                     <p class="text-zinc-400 text-xs font-black uppercase tracking-wider mb-4">Tap a card to add it</p>
                     <div class="relative mb-4">
                         <input type="text" id="menu-search" class="search-input" placeholder="Search latte, matcha, mango..." oninput="handleSearch(this.value)" autocomplete="off" spellcheck="false">
@@ -545,7 +507,7 @@
                 </div>
 
                 <div id="screen-2" class="order-screen pt-4 pb-4">
-                    <h4 class="text-2xl font-black font-playful mb-0.5">Your Order 🛒</h4>
+                    <h4 class="text-2xl font-black font-playful mb-0.5">Your Order</h4>
                     <p class="text-zinc-400 text-xs font-black uppercase tracking-wider mb-5">Adjust before checkout</p>
                     <div id="cart-review-list"></div>
                     <div class="mt-4 pt-4 border-t border-bahariCoffee/10 flex justify-between">
@@ -559,7 +521,7 @@
                 </div>
 
                 <div id="screen-3" class="order-screen pt-4 pb-4">
-                    <h4 class="text-2xl font-black font-playful mb-0.5">Your Details 📋</h4>
+                    <h4 class="text-2xl font-black font-playful mb-0.5">Your Details</h4>
                     <p class="text-zinc-400 text-xs font-black uppercase tracking-wider mb-5">So Bahari can confirm</p>
                     <div class="space-y-3">
                         <div>
@@ -573,8 +535,8 @@
                         <div>
                             <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Delivery or Pickup?</label>
                             <div class="flex gap-3">
-                                <button onclick="setOrderType('Delivery')" id="btn-delivery" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-bahariCoffee bg-bahariBlue/25 text-bahariCoffee transition-all">🛵 Delivery</button>
-                                <button onclick="setOrderType('Pickup')" id="btn-pickup" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 text-zinc-400 transition-all">🚶 Pickup</button>
+                                <button onclick="setOrderType('Delivery')" id="btn-delivery" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-bahariCoffee bg-bahariBlue/25 text-bahariCoffee transition-all">Delivery</button>
+                                <button onclick="setOrderType('Pickup')" id="btn-pickup" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 text-zinc-400 transition-all">Pickup</button>
                             </div>
                         </div>
                         <div id="addr-field">
@@ -600,7 +562,7 @@
                 </div>
 
                 <div id="screen-4" class="order-screen pt-4 pb-4">
-                    <h4 class="text-2xl font-black font-playful mb-0.5">Review & Send ✅</h4>
+                    <h4 class="text-2xl font-black font-playful mb-0.5">Review & Send</h4>
                     <p class="text-zinc-400 text-xs font-black uppercase tracking-wider mb-5">WhatsApp opens with your order</p>
                     <div class="bg-white dark:bg-bahariDarkCard rounded-2xl p-5 mb-4 border-2 border-bahariCoffee/10">
                         <div class="text-[10px] font-black uppercase text-zinc-400 tracking-wider mb-3">Order Summary</div>
@@ -712,42 +674,47 @@
             }, 5000);
         }
 
+        const DRINKS_BASE = 'https://www.skani.space/bahari-cafe/drinks/';
+        function drinkImage(fileName) {
+            return `${DRINKS_BASE}${encodeURIComponent(fileName)}`;
+        }
+
         const MENU = {
             coffee: {
-                label: 'Coffee', emoji: '☕',
+                label: 'Coffee',
                 items: [
-                    { name: 'Americano', price: 10000, emoji: '☕', desc: 'Clean iced coffee classic' },
-                    { name: 'Iced Vanilla Latte', price: 10000, emoji: '🍦', desc: 'Vanilla, milk and espresso' },
-                    { name: 'Iced Latte', price: 10000, emoji: '🥛', desc: 'Smooth espresso latte' },
-                    { name: 'Strawberry Latte', price: 12000, emoji: '🍓', desc: 'Berry cream coffee' },
-                    { name: 'Spanish Latte', price: 12000, emoji: '☕', desc: 'Sweet creamy signature' },
-                    { name: 'Iced Bronze Foam', price: 12000, emoji: '☁️', desc: 'Coffee with bronze foam' },
-                    { name: 'Biscoff Latte', price: 15000, emoji: '🍪', desc: 'Dessert style latte' },
-                    { name: 'Choco Latte', price: 15000, emoji: '🍫', desc: 'Chocolate coffee blend' }
+                    { name: 'Americano', price: 10000, image: drinkImage('Iced Americano.jpeg'), desc: 'Clean iced coffee classic' },
+                    { name: 'Iced Vanilla Latte', price: 10000, image: drinkImage('Iced Vanilla Latte.jpeg'), desc: 'Vanilla, milk and espresso' },
+                    { name: 'Iced Latte', price: 10000, image: drinkImage('Iced Latte.jpeg'), desc: 'Smooth espresso latte' },
+                    { name: 'Strawberry Latte', price: 12000, image: drinkImage('Iced Strawberry Latte.jpeg'), desc: 'Berry cream coffee' },
+                    { name: 'Spanish Latte', price: 12000, image: drinkImage('Iced Spanish Latte.jpeg'), desc: 'Sweet creamy signature' },
+                    { name: 'Iced Bronze Foam', price: 12000, image: drinkImage('Iced Bronze Foam.jpeg'), desc: 'Coffee with bronze foam' },
+                    { name: 'Biscoff Latte', price: 15000, image: drinkImage('Iced Biscoff Latte.jpeg'), desc: 'Dessert style latte' },
+                    { name: 'Choco Latte', price: 15000, image: drinkImage('Iced Choco Latte.jpeg'), desc: 'Chocolate coffee blend' }
                 ]
             },
             matcha: {
-                label: 'Matcha', emoji: '🍵',
+                label: 'Matcha',
                 items: [
-                    { name: 'Classic Matcha', price: 10000, emoji: '🍵', desc: 'Japanese matcha base' },
-                    { name: 'Vanilla Matcha', price: 12000, emoji: '🍦', desc: 'Soft vanilla finish' },
-                    { name: 'Strawberry Matcha', price: 12000, emoji: '🍓', desc: 'Berry layered matcha' },
-                    { name: 'Blueberry Matcha', price: 12000, emoji: '🫐', desc: 'Blueberry matcha swirl' },
-                    { name: 'Mango Matcha', price: 12000, emoji: '🥭', desc: 'Tropical matcha blend' },
-                    { name: 'Kiwi Matcha', price: 12000, emoji: '🥝', desc: 'Fresh kiwi matcha' },
-                    { name: 'Choco Matcha', price: 15000, emoji: '🍫', desc: 'Chocolate and green tea' },
-                    { name: 'Pistachio Matcha', price: 15000, emoji: '🥜', desc: 'Nutty creamy matcha' },
-                    { name: 'Dirty Matcha', price: 15000, emoji: '☕', desc: 'Matcha with espresso' },
-                    { name: 'Biscoff Matcha', price: 15000, emoji: '🍪', desc: 'Cookie matcha treat' }
+                    { name: 'Classic Matcha', price: 10000, image: drinkImage('ICED CLASSIC MATCHA.jpeg'), desc: 'Japanese matcha base' },
+                    { name: 'Vanilla Matcha', price: 12000, image: drinkImage('ICED VANILLA MATCHA.jpeg'), desc: 'Soft vanilla finish' },
+                    { name: 'Strawberry Matcha', price: 12000, image: drinkImage('ICED STRAWBERRY MATCHA.jpeg'), desc: 'Berry layered matcha' },
+                    { name: 'Blueberry Matcha', price: 12000, image: drinkImage('ICED BLUEBERRY MATCHA.jpeg'), desc: 'Blueberry matcha swirl' },
+                    { name: 'Mango Matcha', price: 12000, image: drinkImage('ICED MANGO MATCHA.jpeg'), desc: 'Tropical matcha blend' },
+                    { name: 'Kiwi Matcha', price: 12000, image: drinkImage('ICED KIWI MATCHA.jpeg'), desc: 'Fresh kiwi matcha' },
+                    { name: 'Choco Matcha', price: 15000, image: drinkImage('ICED CHOCO MATCHA.jpeg'), desc: 'Chocolate and green tea' },
+                    { name: 'Pistachio Matcha', price: 15000, image: drinkImage('ICED PISTACHIO MATCHA.jpeg'), desc: 'Nutty creamy matcha' },
+                    { name: 'Dirty Matcha', price: 15000, image: drinkImage('ICED DIRTY MATCHA.jpeg'), desc: 'Matcha with espresso' },
+                    { name: 'Biscoff Matcha', price: 15000, image: drinkImage('ICED BISCOFF MATCHA.jpeg'), desc: 'Cookie matcha treat' }
                 ]
             },
             fizzy: {
-                label: 'Fizzy', emoji: '🥤',
+                label: 'Fizzy',
                 items: [
-                    { name: 'Strawberry Fizzy', price: 12000, emoji: '🍓', desc: 'Sparkling strawberry fruit' },
-                    { name: 'Blueberry Fizzy', price: 12000, emoji: '🫐', desc: 'Sparkling blueberry fruit' },
-                    { name: 'Mango Fizzy', price: 12000, emoji: '🥭', desc: 'Sparkling mango fruit' },
-                    { name: 'Kiwi Fizzy', price: 12000, emoji: '🥝', desc: 'Sparkling kiwi fruit' }
+                    { name: 'Strawberry Fizzy', price: 12000, image: drinkImage('ICED STRAWBERRY FIZZY DRINK.jpeg'), desc: 'Sparkling strawberry fruit' },
+                    { name: 'Blueberry Fizzy', price: 12000, image: drinkImage('ICED BLUEBERRY FIZZY DRINK.jpeg'), desc: 'Sparkling blueberry fruit' },
+                    { name: 'Mango Fizzy', price: 12000, image: drinkImage('ICED MANGO FIZZY DRINK.jpeg'), desc: 'Sparkling mango fruit' },
+                    { name: 'Kiwi Fizzy', price: 12000, image: `${ASSET_BASE}menu-image-4.jpeg`, desc: 'Sparkling kiwi fruit' }
                 ]
             }
         };
@@ -765,7 +732,7 @@
 
         function renderCategoryPills() {
             document.getElementById('cat-pills').innerHTML = Object.entries(MENU).map(([key, data]) =>
-                `<button class="cat-pill ${key === activeCat ? 'active' : 'inactive'}" onclick="switchCat('${key}')">${data.emoji} ${data.label}</button>`
+                `<button class="cat-pill ${key === activeCat ? 'active' : 'inactive'}" onclick="switchCat('${key}')">${data.label}</button>`
             ).join('');
         }
         function switchCat(cat) {
@@ -783,7 +750,7 @@
             return `
                 <div class="item-card ${inCart ? 'in-cart' : ''}">
                     <div class="item-visual">
-                        <span class="animate-float">${item.emoji}</span>
+                        <img src="${item.image}" alt="${item.name}" class="item-img" loading="lazy" onerror="this.style.opacity='0';">
                         ${inCart ? `<span class="badge-cart">${inCart.qty}</span>` : ''}
                     </div>
                     <div class="item-card-body">
@@ -797,16 +764,16 @@
                                     <span class="qty-num">${inCart.qty}</span>
                                     <button class="qty-btn" onclick="changeQty('${cat}','${item.name}',1)">+</button>
                                    </div>`
-                                : `<button class="add-btn-card" onclick="addItem('${cat}','${item.name}',${item.price},'${item.emoji}','${item.desc}')">+</button>`
+                                : `<button class="add-btn-card" onclick="addItem('${cat}','${item.name}',${item.price},'${item.image}','${item.desc}')">+</button>`
                             }
                         </div>
                     </div>
                 </div>`;
         }
-        function addItem(cat, name, price, emoji, desc) {
+        function addItem(cat, name, price, image, desc) {
             const key = cartKey(cat, name);
             if (cart[key]) cart[key].qty += 1;
-            else cart[key] = { cat, name, price, emoji, desc, qty: 1 };
+            else cart[key] = { cat, name, price, image, desc, qty: 1 };
             saveCart();
             renderGrid(activeCat);
             const searchVal = document.getElementById('menu-search')?.value || '';
@@ -860,7 +827,7 @@
             } else {
                 list.innerHTML = entries.map(([key, item]) => `
                     <div class="flex items-center gap-3 py-3 border-b border-bahariCoffee/10">
-                        <div class="w-[3.25rem] h-[3.25rem] min-w-[3.25rem] rounded-2xl bg-bahariBlue/25 flex items-center justify-center text-2xl">${item.emoji}</div>
+                        <img src="${item.image || ''}" alt="${item.name}" class="w-[3.25rem] h-[3.25rem] min-w-[3.25rem] rounded-2xl object-cover bg-bahariBlue/20" onerror="this.style.opacity='0';">
                         <div class="flex-1 min-w-0">
                             <div class="font-black text-sm leading-tight">${item.name}</div>
                             <div class="text-[11px] font-black text-bahariCoffee dark:text-bahariBlue">${money(item.price)} each</div>
@@ -923,10 +890,12 @@
             const addr = document.getElementById('cust-addr').value || '';
             const notes = document.getElementById('cust-notes').value || '';
             const payLabel = selectedPayment === 'mpesa' ? 'M-Pesa - request payment details' : 'Cash / On Confirmation';
+            const locationText = addr || (orderType === 'Delivery' ? 'Not provided' : 'Pickup');
             document.getElementById('final-customer-info').innerHTML = `
                 <div class="summary-row"><span class="text-zinc-400">Name</span><span class="font-black">${name}</span></div>
                 <div class="summary-row"><span class="text-zinc-400">Phone</span><span class="font-black">${phone}</span></div>
-                <div class="summary-row"><span class="text-zinc-400">Type</span><span class="font-black">${orderType}${addr ? ' - ' + addr : ''}</span></div>
+                <div class="summary-row"><span class="text-zinc-400">Type</span><span class="font-black">${orderType}</span></div>
+                <div class="summary-row"><span class="text-zinc-400">Location</span><span class="font-black">${locationText}</span></div>
                 <div class="summary-row"><span class="text-zinc-400">Payment</span><span class="font-black">${payLabel}</span></div>
                 ${notes ? `<div class="summary-row"><span class="text-zinc-400">Notes</span><span class="font-black">${notes}</span></div>` : ''}`;
         }
@@ -939,6 +908,7 @@
             const addr = document.getElementById('cust-addr').value.trim();
             const notes = document.getElementById('cust-notes').value.trim();
             const payment = selectedPayment === 'mpesa' ? 'M-Pesa - please send payment details' : 'Cash / On Confirmation';
+            const locationText = addr || (orderType === 'Delivery' ? 'Not provided' : 'Pickup');
             const orderNo = generateOrderNumber();
             const now = new Date();
             const timestamp = now.toLocaleDateString('en-TZ', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + now.toLocaleTimeString('en-TZ', { hour: '2-digit', minute: '2-digit' });
@@ -967,7 +937,8 @@
 
 👤 Name: *${name}*
 📱 Phone: *${phone}*
-📦 Type: *${orderType}${addr ? ' - ' + addr : ''}*
+📦 Type: *${orderType}*
+📍 Location: *${locationText}*
 💳 Payment: *${payment}*
 ${notes ? `📝 Notes: _${notes}_\n` : ''}
 \`\`\`
@@ -981,7 +952,6 @@ ${pad('TOTAL (TZS)', 23)}${padLeft(getCartTotal().toLocaleString(), 9)}
 ${divider}
 \`\`\`
 
-💙 *Bahari Treat:* Buy any 2 full-size drinks and get 1 small drink FREE.
 🟢 *Please confirm this order*`;
             openInNewTab(`https://wa.me/255788693881?text=${encodeURIComponent(message)}`);
             cart = {};
@@ -1036,7 +1006,7 @@ ${divider}
         }
         function quickAddAndOpen(cat, name) {
             const item = MENU[cat].items.find(i => i.name === name);
-            if (item) addItem(cat, item.name, item.price, item.emoji, item.desc);
+            if (item) addItem(cat, item.name, item.price, item.image, item.desc);
             openOrderBot(cat);
         }
 
