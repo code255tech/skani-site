@@ -746,12 +746,14 @@
         const FLAVOR_EMOJI = {
             'Healtho': '🌿', 'Cream': '🥛', 'Pineapple': '🍍', 'Passion': '💜',
             'Apple': '🍏', 'Orange': '🍊', 'Club Soda': '🫧', 'Rozah': '🌹',
-            'Rose': '🌹', 'Strawberry': '🍓', 'Deposit': '📦'
+            'Rose': '🌹', 'Strawberry': '🍓', 'Deposit': '📦',
+            'Lime': '🍋', 'Soda Water': '💦'
         };
         const FLAVOR_COLOR = {
             'Healtho': '#3E8E5A', 'Cream': '#D9A441', 'Pineapple': '#F2B705', 'Passion': '#8E44AD',
             'Apple': '#5FA052', 'Orange': '#F2790C', 'Club Soda': '#3AA6D8', 'Rozah': '#D9527A',
-            'Rose': '#D9527A', 'Strawberry': '#E1304A', 'Deposit': '#6B7280'
+            'Rose': '#D9527A', 'Strawberry': '#E1304A', 'Deposit': '#6B7280',
+            'Lime': '#5FA845', 'Soda Water': '#8FB6C9'
         };
         function placeholderImg(flavor) {
             const color = FLAVOR_COLOR[flavor] || '#E1261C';
@@ -766,13 +768,28 @@
             </svg>`;
             return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
         }
+        const IMG_BASE = 'https://www.skani.space/anjari/drinks/';
+        const FLAVOR_IMAGE = {
+            'Healtho': 'healtho.png',
+            'Cream': 'cream-soda.png',
+            'Pineapple': 'pineapple-soda.png',
+            'Passion': 'passion-soda.png',
+            'Club Soda': 'club-soda.png',
+            'Orange': 'orange-soda.png',
+            'Apple': 'carbonated-soft-drink.png',
+            'Lime': 'lime-soda.png',
+            'Soda Water': 'soda-water.png'
+        };
+        function productImage(flavor) {
+            return FLAVOR_IMAGE[flavor] ? `${IMG_BASE}${FLAVOR_IMAGE[flavor]}` : placeholderImg(flavor);
+        }
 
         const CATEGORIES = {
             rgb: {
                 label: 'RGB Glass 300ml', shortLabel: 'RGB Glass 300ml', sub: '24 bottles per crate',
                 tiers: { retail: 1000, ctn: 12000, bulk: 11000 },
                 unit: { retail: 'per bottle', ctn: 'per crate', bulk: 'per crate' },
-                flavors: ['Healtho', 'Cream', 'Pineapple', 'Passion', 'Apple', 'Orange', 'Club Soda']
+                flavors: ['Healtho', 'Cream', 'Pineapple', 'Passion', 'Apple', 'Orange', 'Club Soda', 'Lime', 'Soda Water']
             },
             deposit: {
                 label: 'RGB Glass Crate/Bottle Deposit', shortLabel: 'Deposit', sub: 'Swap empty for full — no deposit needed',
@@ -859,7 +876,7 @@
             return `
                 <div class="item-card ${inCart ? 'in-cart' : ''}">
                     <div class="item-visual">
-                        <img src="${placeholderImg(flavor)}" alt="${name}" class="item-img" loading="lazy">
+                        <img src="${productImage(flavor)}" alt="${name}" class="item-img" loading="lazy" onerror="this.onerror=null;this.src='${placeholderImg(flavor)}';">
                         <span class="tier-tag">${TIER_SHORT[activeTier]}</span>
                         ${inCart ? `<span class="badge-cart">${inCart.qty}</span>` : ''}
                     </div>
@@ -892,7 +909,7 @@
                 price: config.tiers[tier],
                 unit: config.unit[tier],
                 name: itemName(cat, flavor),
-                image: placeholderImg(flavor)
+                image: productImage(flavor)
             };
             saveCart();
             renderGrid(activeCat);
@@ -947,7 +964,7 @@
             } else {
                 list.innerHTML = entries.map(([key, item]) => `
                     <div class="flex items-center gap-3 py-3 border-b border-anjariInk/10">
-                        <img src="${item.image || ''}" alt="${item.name}" class="w-[3.25rem] h-[3.25rem] min-w-[3.25rem] rounded-2xl object-cover bg-anjariCream">
+                        <img src="${item.image || placeholderImg(item.flavor)}" alt="${item.name}" class="w-[3.25rem] h-[3.25rem] min-w-[3.25rem] rounded-2xl object-cover bg-anjariCream" data-flavor="${item.flavor}" onerror="this.onerror=null;this.src=placeholderImg(this.dataset.flavor);">
                         <div class="flex-1 min-w-0">
                             <div class="font-black text-sm leading-tight">${item.name}</div>
                             <div class="text-[10px] font-bold text-zinc-400 uppercase tracking-wide">${CATEGORIES[item.cat].shortLabel} · ${TIER_LABEL[item.tier]}</div>
