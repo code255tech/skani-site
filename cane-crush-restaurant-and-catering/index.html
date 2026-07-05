@@ -257,6 +257,19 @@
                 <span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-400 uppercase tracking-wide">Instant Connection</span>
             </button>
 
+            <!-- CARD — EXPLORE THE RESTAURANT IN 360 (FULL WIDTH) -->
+            <button onclick="openModal('tour-modal')" 
+                class="reveal tap-scale card-shimmer col-span-2 bg-gradient-to-r from-caneDark to-zinc-900 dark:from-caneDark dark:to-black p-5 rounded-[2rem] flex items-center gap-4 shadow-lg shadow-black/10 border border-canePrimary/20">
+                <div class="w-14 h-14 bg-canePrimary/15 rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-vr-cardboard text-2xl text-canePrimary"></i>
+                </div>
+                <div class="flex-1 text-left min-w-0">
+                    <span class="font-extrabold text-base tracking-tight text-white block">Explore the Restaurant in 360°</span>
+                    <span class="text-[9px] font-bold text-zinc-400 uppercase tracking-wide">Take a virtual walkthrough</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-canePrimary/70 flex-shrink-0"></i>
+            </button>
+
             <!-- CARD 3 — REVIEWS -->
             <button onclick="openInNewTab('https://www.google.com/search?sca_esv=1a28dc1a6e7e6465&sxsrf=APpeQnur8y3VPNZkgOAhoF3obKxpSmxxig:1782384164739&si=APenkKm7iecQ4G6P-TsbSMFKIQtv3EFIqRAFw-i8uEbk55Z-_xPuVTIL7BfCZRZT-Uo6ez4Jk_G9GJAF8H3wqyLeXLIj8w3IGZeYcjXHS8DGMvZVworsbntuANFY9Ys4em6NHSEbh6z6ygIq4MtnN6ETAc-G-Th1kxN4p6x_LmeZ74Ih1mYn4sI%3D&q=Cane+Crush+Restaurant+%26+Catering+Reviews&sa=X&ved=2ahUKEwjC-_e3mqKVAxWpNfsDHZpZKX8Q0bkNegQIJhAD')" 
                 class="reveal tap-scale card-shimmer bg-white dark:bg-caneDark text-zinc-900 dark:text-white p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-canePrimary/10">
@@ -514,23 +527,45 @@
                 <button onclick="closeModal('wifi-modal')" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-200/50 dark:bg-zinc-800 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
                 
                 <h3 class="text-3xl font-black dark:text-white mb-1.5 tracking-tight">WiFi Access</h3>
-                <p class="text-zinc-500 text-[10px] font-bold uppercase mb-6 tracking-wider">Fast & Free Customer Connection</p>
+                <p class="text-zinc-500 text-[10px] font-bold uppercase mb-5 tracking-wider">Fast & Free Customer Connection</p>
+
+                <!-- NETWORK SELECTOR -->
+                <div class="grid grid-cols-2 gap-2 mb-5 bg-white dark:bg-caneDark p-1.5 rounded-2xl border border-canePrimary/10">
+                    <button id="wifi-tab-1" onclick="selectWifi(1)" class="py-2.5 rounded-xl text-xs font-black uppercase tracking-wide transition-all bg-canePrimary text-zinc-950">WiFi 1</button>
+                    <button id="wifi-tab-2" onclick="selectWifi(2)" class="py-2.5 rounded-xl text-xs font-black uppercase tracking-wide transition-all text-zinc-500 dark:text-zinc-400">WiFi 2</button>
+                </div>
                 
                 <div class="space-y-4">
                     <div class="bg-white dark:bg-caneDark p-5 rounded-2xl border border-canePrimary/10">
                         <label class="text-[9px] font-black uppercase text-zinc-400 dark:text-zinc-400 mb-1 block tracking-wider">Network Name (SSID)</label>
-                        <div class="text-xl font-black dark:text-white tracking-tight">CANECRUSH_WIFI</div>
+                        <div id="wifi-ssid" class="text-xl font-black dark:text-white tracking-tight">BQC</div>
                     </div>
                     
                     <div class="bg-white dark:bg-caneDark p-5 rounded-2xl border border-canePrimary/10 flex justify-between items-center">
                         <div class="flex-1">
                             <label class="text-[9px] font-black uppercase text-zinc-400 dark:text-zinc-400 mb-1 block tracking-wider">Password</label>
-                            <div class="text-xl font-black dark:text-white tracking-tight">canecrushfresh</div>
+                            <div id="wifi-password" class="text-xl font-black dark:text-white tracking-tight">jbqc2152</div>
                         </div>
-                        <button id="copy-btn" onclick="copyWifiText('canecrushfresh')" class="w-12 h-12 bg-canePrimary text-zinc-950 rounded-2xl tap-scale transition-all flex items-center justify-center shadow-lg shadow-canePrimary/10">
+                        <button id="copy-btn" onclick="copyWifiText(document.getElementById('wifi-password').textContent)" class="w-12 h-12 bg-canePrimary text-zinc-950 rounded-2xl tap-scale transition-all flex items-center justify-center shadow-lg shadow-canePrimary/10">
                             <i class="fa-solid fa-copy"></i>
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- A2. VIRTUAL TOUR MODAL -->
+        <div id="tour-modal" class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center">
+            <div class="absolute inset-0 bg-black/90" onclick="closeModal('tour-modal')"></div>
+            <div class="modal-content bg-black w-full h-full sm:h-[88vh] sm:max-w-2xl sm:rounded-[2rem] relative overflow-hidden flex flex-col sm-scaled">
+                <div class="flex items-center justify-between p-4 sm:p-5 bg-caneDark flex-shrink-0 pt-[calc(1rem+env(safe-area-inset-top))] sm:pt-5">
+                    <h3 class="text-white font-black text-base sm:text-lg tracking-tight flex items-center gap-2">
+                        <i class="fa-solid fa-vr-cardboard text-canePrimary"></i> 360° Virtual Tour
+                    </h3>
+                    <button onclick="closeModal('tour-modal')" class="w-10 h-10 flex items-center justify-center bg-white/10 rounded-full text-white tap-scale flex-shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="flex-1 relative bg-black">
+                    <iframe id="tour-iframe" src="" title="Cane Crush Restaurant Virtual Tour" class="absolute inset-0 w-full h-full border-0" allow="fullscreen; xr-spatial-tracking; gyroscope; accelerometer" allowfullscreen loading="lazy"></iframe>
                 </div>
             </div>
         </div>
@@ -825,6 +860,12 @@
             if (content && window.innerWidth >= 640 && content.classList.contains('modal-content')) {
                 content.classList.add('sm-scaled');
             }
+
+            if (id === 'wifi-modal') selectWifi(1);
+            if (id === 'tour-modal') {
+                const iframe = document.getElementById('tour-iframe');
+                if (iframe && !iframe.src) iframe.src = 'https://255virtualtours.skani.space/cane-crush-restaurant/';
+            }
         }
         function closeModal(id) { 
             const overlay = document.getElementById(id);
@@ -832,6 +873,30 @@
             document.body.style.overflow = ''; 
             const content = overlay.querySelector('.modal-content, .order-modal-content');
             if (content) content.classList.remove('sm-scaled');
+
+            if (id === 'tour-modal') {
+                const iframe = document.getElementById('tour-iframe');
+                if (iframe) iframe.src = 'https://255virtualtours.skani.space/cane-crush-restaurant/';
+            }
+        }
+
+        // 4B. WIFI NETWORK SELECTOR
+        const WIFI_NETWORKS = {
+            1: { ssid: 'BQC', password: 'jbqc2152' },
+            2: { ssid: 'Cane Crush', password: 'cc1234567' }
+        };
+        function selectWifi(n) {
+            const net = WIFI_NETWORKS[n];
+            document.getElementById('wifi-ssid').textContent = net.ssid;
+            document.getElementById('wifi-password').textContent = net.password;
+
+            const tab1 = document.getElementById('wifi-tab-1');
+            const tab2 = document.getElementById('wifi-tab-2');
+            [tab1, tab2].forEach(t => t.classList.remove('bg-canePrimary', 'text-zinc-950'));
+            [tab1, tab2].forEach(t => t.classList.add('text-zinc-500', 'dark:text-zinc-400'));
+            const active = (n === 1) ? tab1 : tab2;
+            active.classList.add('bg-canePrimary', 'text-zinc-950');
+            active.classList.remove('text-zinc-500', 'dark:text-zinc-400');
         }
 
         // 5. CLIPBOARD WIFI LOGIC
