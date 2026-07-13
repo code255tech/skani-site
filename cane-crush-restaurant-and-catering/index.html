@@ -187,6 +187,35 @@
         .light-mode .qty-btn { background: #e4e4e7; color: #18181b; }
         .light-mode .item-row, .light-mode .summary-row { border-bottom-color: rgba(0,0,0,0.08); }
         .light-mode .search-input { background: #fff; color: #18181b; border-color: #d4d4d8; }
+
+        /* Horizontal scroll affordance (swipe hint) */
+        .scroll-affordance { position: relative; }
+        .scroll-fade { position: absolute; top: 0; right: 0; height: 100%; width: 52px; display: flex; align-items: center; justify-content: flex-end; padding-right: 4px; padding-bottom: 12px; pointer-events: none; background: linear-gradient(90deg, rgba(232,252,244,0), #E8FCF4 70%); transition: opacity 0.25s; }
+        html.dark .scroll-fade { background: linear-gradient(90deg, rgba(9,9,11,0), #09090b 70%); }
+        .scroll-fade i { color: #A9CE1F; font-size: 14px; animation: nudge 1.4s ease-in-out infinite; }
+        .scroll-fade.at-end { opacity: 0; }
+        @keyframes nudge { 0%,100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+
+        /* Mode selector cards */
+        .mode-card.selected { border-color: #A9CE1F; background: rgba(169,206,31,0.10); }
+
+        /* Item customize button */
+        .customize-btn { display: inline-flex; align-items: center; gap: 5px; background: #1C3629; color: #A9CE1F; font-size: 12px; font-weight: 900; border: none; cursor: pointer; padding: 8px 14px; border-radius: 999px; flex-shrink: 0; transition: all 0.15s; }
+        .customize-btn:active { transform: scale(0.94); }
+        .light-mode .customize-btn { background: #eef7d9; color: #4d6b12; }
+
+        /* Options bottom sheet */
+        .opt-group { margin-bottom: 18px; }
+        .opt-group-label { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: #A9CE1F; margin-bottom: 10px; }
+        .opt-choices { display: flex; flex-wrap: wrap; gap: 8px; }
+        .opt-choice { padding: 10px 16px; border-radius: 14px; font-size: 13px; font-weight: 800; border: 2px solid #3f3f46; color: #a1a1aa; cursor: pointer; transition: all 0.15s; background: transparent; }
+        .opt-choice.selected { border-color: #A9CE1F; background: rgba(169,206,31,0.12); color: #A9CE1F; }
+        .light-mode .opt-choice { border-color: #d4d4d8; color: #52525b; }
+        .light-mode .opt-choice.selected { color: #4d6b12; }
+        .cat-header { font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; color: #A9CE1F; padding: 16px 0 4px; }
+        .cat-header:first-child { padding-top: 4px; }
+        .cat-subnote { font-size: 11px; font-weight: 600; color: #71717a; padding-bottom: 4px; text-transform: none; letter-spacing: 0; }
+        .cat-banner { display: flex; align-items: center; gap: 8px; background: rgba(169,206,31,0.10); border: 1px solid rgba(169,206,31,0.3); color: #A9CE1F; font-size: 11px; font-weight: 800; padding: 10px 12px; border-radius: 12px; margin-bottom: 12px; }
     </style>
 </head>
 <body class="bg-caneLight dark:bg-caneDarkBg text-zinc-900 dark:text-zinc-100 transition-colors duration-500 pb-44">
@@ -646,7 +675,43 @@
                 </div>
 
                 <div class="flex-1 overflow-y-auto no-scrollbar px-6" id="order-body">
+                    <div id="screen-0" class="order-screen pt-6 pb-4">
+                        <h4 class="text-2xl font-black dark:text-white tracking-tight mb-1">How are you dining?</h4>
+                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-6">Choose how you'd like your order</p>
+                        <div class="space-y-3">
+                            <button onclick="chooseMode('Dine In')" class="mode-card w-full text-left flex items-center gap-4 p-5 rounded-2xl border-2 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-caneDarkBg tap-scale transition-all">
+                                <div class="w-12 h-12 rounded-2xl bg-canePrimary/15 flex items-center justify-center text-2xl flex-shrink-0">🍽️</div>
+                                <div class="flex-1">
+                                    <div class="font-black text-base dark:text-white">Dine In</div>
+                                    <div class="text-[11px] text-zinc-500 font-bold">Eat with us • menu prices</div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-zinc-400"></i>
+                            </button>
+                            <button onclick="chooseMode('Take Away')" class="mode-card w-full text-left flex items-center gap-4 p-5 rounded-2xl border-2 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-caneDarkBg tap-scale transition-all">
+                                <div class="w-12 h-12 rounded-2xl bg-canePrimary/15 flex items-center justify-center text-2xl flex-shrink-0">🥡</div>
+                                <div class="flex-1">
+                                    <div class="font-black text-base dark:text-white">Take Away</div>
+                                    <div class="text-[11px] text-zinc-500 font-bold">Pick up packed • +TZS 500 packing on some items</div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-zinc-400"></i>
+                            </button>
+                            <button onclick="chooseMode('Delivery')" class="mode-card w-full text-left flex items-center gap-4 p-5 rounded-2xl border-2 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-caneDarkBg tap-scale transition-all">
+                                <div class="w-12 h-12 rounded-2xl bg-canePrimary/15 flex items-center justify-center text-2xl flex-shrink-0">🛵</div>
+                                <div class="flex-1">
+                                    <div class="font-black text-base dark:text-white">Delivery</div>
+                                    <div class="text-[11px] text-zinc-500 font-bold">Brought to you • packing + delivery charge</div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-zinc-400"></i>
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-zinc-400 text-center font-semibold mt-6 leading-relaxed">You can change this anytime while you order.</p>
+                    </div>
+
                     <div id="screen-1" class="order-screen active pt-5 pb-4">
+                        <button onclick="goToScreen(0)" id="mode-chip" class="inline-flex items-center gap-2 mb-3 px-3 py-1.5 rounded-full bg-canePrimary/10 border border-canePrimary/25 text-caneDark dark:text-canePrimary text-[11px] font-black uppercase tracking-wide tap-scale">
+                            <span id="mode-chip-icon">🍽️</span><span id="mode-chip-label">Dine In</span>
+                            <i class="fa-solid fa-pen text-[9px] opacity-70"></i>
+                        </button>
                         <h4 class="text-2xl font-black dark:text-white tracking-tight mb-1">What are you having?</h4>
                         <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-4">Tap items to add to your order</p>
                         <div class="search-wrap">
@@ -656,7 +721,10 @@
                         </div>
                         <div id="search-results" class="hidden"></div>
                         <div id="browse-view">
-                            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-3 mb-2" id="cat-pills"></div>
+                            <div class="scroll-affordance">
+                                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-3 mb-2" id="cat-pills" onscroll="updateScrollHint(this)"></div>
+                                <div class="scroll-fade" id="cat-fade"><i class="fa-solid fa-chevron-right"></i></div>
+                            </div>
                             <div id="item-list"></div>
                         </div>
                     </div>
@@ -665,14 +733,7 @@
                         <h4 class="text-2xl font-black dark:text-white tracking-tight mb-1">Your Order</h4>
                         <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-5">Adjust quantities before checkout</p>
                         <div id="cart-review-list"></div>
-                        <div class="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex justify-between items-center">
-                            <span class="text-xs font-black uppercase text-zinc-500 tracking-wider">Delivery</span>
-                            <span class="text-sm font-black text-green-500">Confirm on WhatsApp</span>
-                        </div>
-                        <div class="flex justify-between items-center mt-2">
-                            <span class="text-base font-black dark:text-white uppercase tracking-tight">Total</span>
-                            <span class="text-xl font-black text-canePrimary" id="cart-total-2">TZS 0</span>
-                        </div>
+                        <div id="cart-totals" class="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-800"></div>
                     </div>
 
                     <div id="screen-3" class="order-screen pt-5 pb-4">
@@ -689,12 +750,16 @@
                             </div>
                             <div>
                                 <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Order Type</label>
-                                <div class="flex gap-3">
-                                    <button onclick="setOrderType('Delivery')" id="btn-delivery" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-canePrimary bg-canePrimary/10 text-caneDark dark:text-canePrimary transition-all">Delivery</button>
-                                    <button onclick="setOrderType('Pickup')" id="btn-pickup" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-zinc-300 dark:border-zinc-700 text-zinc-500 transition-all">Pickup</button>
-                                </div>
+                                <button onclick="goToScreen(0)" class="w-full flex items-center gap-3 p-4 rounded-2xl border-2 border-canePrimary bg-canePrimary/10 text-left tap-scale transition-all">
+                                    <span id="detail-mode-icon" class="text-2xl">🍽️</span>
+                                    <div class="flex-1">
+                                        <div class="font-black text-sm text-caneDark dark:text-canePrimary" id="detail-mode-label">Dine In</div>
+                                        <div class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider" id="detail-mode-sub">Eat with us</div>
+                                    </div>
+                                    <span class="text-[10px] font-black uppercase text-canePrimary flex items-center gap-1"><i class="fa-solid fa-pen text-[9px]"></i> Change</span>
+                                </button>
                             </div>
-                            <div id="addr-field">
+                            <div id="addr-field" style="display:none;">
                                 <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Delivery Location</label>
                                 <input type="text" id="cust-addr" placeholder="e.g. hotel, street, room number..." class="w-full bg-white dark:bg-caneDarkBg p-4 dark:text-white text-sm font-bold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary outline-none rounded-2xl transition-all">
                             </div>
@@ -708,12 +773,48 @@
                             <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-3">Payment Method</label>
                             <div class="pay-opt selected" id="pay-cash" onclick="selectPayment('cash')">
                                 <div class="radio-dot"></div>
-                                <div class="text-3xl">TZS</div>
+                                <div class="w-9 text-center font-black text-canePrimary text-sm">TZS</div>
                                 <div>
-                                    <div class="font-black text-sm dark:text-white">Cash on Delivery / Pickup</div>
-                                    <div class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Pay when confirmed</div>
+                                    <div class="font-black text-sm dark:text-white">Cash</div>
+                                    <div class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Pay on delivery / pickup</div>
                                 </div>
                             </div>
+                            <div class="pay-opt" id="pay-momo" onclick="selectPayment('momo')">
+                                <div class="radio-dot"></div>
+                                <div class="w-9 flex items-center justify-center text-canePrimary text-2xl"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                                <div>
+                                    <div class="font-black text-sm dark:text-white">Mobile Money / Card</div>
+                                    <div class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Selcom Pay • Lipa kwa simu</div>
+                                </div>
+                            </div>
+
+                            <div id="momo-details" class="hidden mt-1 rounded-2xl overflow-hidden border-2 border-canePrimary/40 bg-white dark:bg-caneDarkBg">
+                                <div class="bg-[#e0271d] px-5 py-4 text-center">
+                                    <div class="text-white/80 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Selcom Pay</div>
+                                    <div class="text-white text-3xl font-black tracking-widest">6105 6622</div>
+                                    <div class="text-white text-sm font-black tracking-wide mt-0.5">CANE CRUSH DDF</div>
+                                </div>
+                                <div class="p-4 space-y-3">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <div>
+                                            <div class="text-[9px] font-black uppercase text-zinc-400 tracking-wider">Lipa kwa simu (USSD)</div>
+                                            <div class="text-lg font-black dark:text-white tracking-wide">*150*50*1#</div>
+                                        </div>
+                                        <button type="button" onclick="copyMomo('6105 6622')" id="momo-copy-btn" class="bg-canePrimary text-caneDark font-black text-[11px] uppercase px-4 py-2.5 rounded-xl tap-scale flex items-center gap-1.5">
+                                            <i class="fa-solid fa-copy"></i> Copy No.
+                                        </button>
+                                    </div>
+                                    <p class="text-[11px] text-zinc-500 font-semibold leading-relaxed">Pay via mobile money, card or bank to <span class="font-black text-canePrimary">6105 6622 (Cane Crush DDF)</span>, then send us the confirmation on WhatsApp. Prices are the same — no extra fees.</p>
+                                    <img src="https://www.skani.space/cane-crush-restaurant-and-catering/cane-crush-selcom.jpg" alt="Cane Crush Selcom Pay details" class="w-full rounded-xl border border-zinc-200 dark:border-zinc-800" loading="lazy" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="delivery-ack-wrap" class="hidden mt-5">
+                            <label class="flex items-start gap-3 p-4 rounded-2xl border-2 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-caneDarkBg cursor-pointer tap-scale">
+                                <input type="checkbox" id="delivery-ack" onchange="updateSendState()" class="mt-0.5 w-5 h-5 accent-[#A9CE1F] flex-shrink-0">
+                                <span class="text-xs font-semibold text-zinc-600 dark:text-zinc-300 leading-relaxed">I understand a <span class="font-black dark:text-white">delivery charge may apply</span> depending on my location, confirmed on WhatsApp.</span>
+                            </label>
                         </div>
                     </div>
 
@@ -723,14 +824,7 @@
                         <div class="bg-white dark:bg-caneDarkBg rounded-2xl p-5 mb-4 border border-zinc-200 dark:border-zinc-800">
                             <div class="text-[10px] font-black uppercase text-zinc-400 tracking-wider mb-3">Order Summary</div>
                             <div id="final-order-items"></div>
-                            <div class="mt-3 pt-3 border-t border-zinc-300 dark:border-zinc-700 flex justify-between">
-                                <span class="text-xs text-zinc-500 font-black uppercase">Delivery</span>
-                                <span class="text-sm font-black text-green-500">Confirm on WhatsApp</span>
-                            </div>
-                            <div class="flex justify-between mt-1">
-                                <span class="font-black dark:text-white uppercase text-sm">Total</span>
-                                <span class="font-black text-canePrimary text-lg" id="final-total"></span>
-                            </div>
+                            <div id="final-totals" class="mt-3 pt-3 border-t border-zinc-300 dark:border-zinc-700"></div>
                         </div>
                         <div class="bg-white dark:bg-caneDarkBg rounded-2xl p-5 mb-4 border border-zinc-200 dark:border-zinc-800">
                             <div class="text-[10px] font-black uppercase text-zinc-400 tracking-wider mb-3">Customer Details</div>
@@ -753,14 +847,39 @@
                     </div>
                     <div id="footer-3" class="hidden flex gap-3">
                         <button onclick="goToScreen(2)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 dark:text-white tap-scale">Back</button>
-                        <button onclick="goToScreen(4)" class="flex-[2] bg-canePrimary text-caneDark font-black text-sm uppercase py-4 rounded-2xl tap-scale">Review</button>
+                        <button onclick="goToScreen(4)" id="btn-review" class="flex-[2] bg-canePrimary text-caneDark font-black text-sm uppercase py-4 rounded-2xl tap-scale disabled:opacity-40 disabled:cursor-not-allowed">Review</button>
                     </div>
                     <div id="footer-4" class="hidden flex gap-3">
                         <button onclick="goToScreen(3)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 dark:text-white tap-scale">Back</button>
-                        <button onclick="sendToWhatsApp()" class="flex-[2] bg-[#25D366] text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale flex items-center justify-center gap-2">
+                        <button onclick="sendToWhatsApp()" id="btn-send" class="flex-[2] bg-[#25D366] text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
                             <i class="fa-brands fa-whatsapp text-lg"></i> Send Order
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- C2. ITEM CUSTOMIZE BOTTOM SHEET -->
+        <div id="opt-sheet" class="modal-overlay fixed inset-0 z-[80] flex items-end justify-center">
+            <div class="absolute inset-0 bg-black/70" onclick="closeOptSheet()"></div>
+            <div class="modal-content bg-caneLight dark:bg-zinc-950 w-full max-w-md rounded-t-[2rem] relative flex flex-col" style="max-height: 88vh;">
+                <div class="flex items-start justify-between px-6 pt-6 pb-3 flex-shrink-0">
+                    <div class="flex-1 min-w-0 pr-3">
+                        <h3 class="text-xl font-black dark:text-white tracking-tight leading-tight" id="opt-title">Customize</h3>
+                        <p class="text-[11px] text-zinc-500 font-bold mt-0.5" id="opt-desc"></p>
+                    </div>
+                    <button onclick="closeOptSheet()" class="w-9 h-9 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-full dark:text-white tap-scale text-sm flex-shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="flex-1 overflow-y-auto no-scrollbar px-6 py-2" id="opt-groups"></div>
+                <div class="flex-shrink-0 px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center gap-3 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+                    <div class="qty-ctrl">
+                        <button class="qty-btn" onclick="optQty(-1)">-</button>
+                        <span class="qty-num" id="opt-qty">1</span>
+                        <button class="qty-btn" onclick="optQty(1)">+</button>
+                    </div>
+                    <button onclick="addOptToCart()" class="flex-1 bg-canePrimary text-caneDark font-black text-sm uppercase py-4 rounded-2xl tap-scale flex items-center justify-center gap-2">
+                        Add <span id="opt-add-price"></span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -943,249 +1062,310 @@
             closeModal('booking-modal');
         }
 
-        // 8. ORDER BOT MENU + CART FLOW
+        // 8. ORDER BOT — 2026 MENU + SMART CART FLOW
+        // Reusable option templates
+        const OPT = {
+            momo: { groups: [
+                { id: 'meat',    label: 'Choose meat',   choices: [{ l: 'Chicken' }, { l: 'Beef' }] },
+                { id: 'portion', label: 'Portion',       choices: [{ l: '6 pieces', price: 8000 }, { l: '12 pieces', price: 15000 }] },
+                { id: 'prep',    label: 'Preparation',   choices: [{ l: 'Steamed' }, { l: 'Fried' }] }
+            ]},
+            chineseNV: { groups: [
+                { id: 'meat',  label: 'Choose meat', choices: [{ l: 'Chicken' }, { l: 'Beef' }] },
+                { id: 'style', label: 'Style',       choices: [{ l: 'Dry' }, { l: 'Gravy' }] }
+            ]},
+            chineseNVc: { groups: [
+                { id: 'meat', label: 'Choose meat', choices: [{ l: 'Chicken' }, { l: 'Beef' }] }
+            ]},
+            chineseSF: { groups: [
+                { id: 'meat', label: 'Choose seafood', choices: [{ l: 'Fish' }, { l: 'Prawn' }] }
+            ]},
+            tawa: { groups: [
+                { id: 'meat', label: 'Choose', choices: [{ l: 'Chicken', price: 13000 }, { l: 'Beef', price: 15000 }, { l: 'Fish', price: 20000 }, { l: 'Prawns', price: 24000 }] }
+            ]},
+            steak: { groups: [
+                { id: 'meat', label: 'Choose meat', choices: [{ l: 'Chicken' }, { l: 'Beef' }] }
+            ]}
+        };
+
         const MENU = {
-            "Zanzibar Pizza": {
-                emoji: "*",
-                items: [
-                    { name: "Vegetable Zanzibar Pizza", price: 4000 },
-                    { name: "Chicken Zanzibar Pizza", price: 4000 },
-                    { name: "Beef Zanzibar Pizza", price: 4000 },
-                    { name: "Vegetable & Cheese Zanzibar Pizza", price: 5000 },
-                    { name: "Chicken & Cheese Zanzibar Pizza", price: 5000 },
-                    { name: "Beef & Cheese Zanzibar Pizza", price: 5000 }
-                ]
-            },
-            "Snacks & Bites": {
-                emoji: "*",
-                items: [
-                    { name: "Samosa - Beef", price: 1000 },
-                    { name: "Samosa - Chicken", price: 1500 },
-                    { name: "Beef Kebab (3 pcs)", price: 4000 },
-                    { name: "Egg Chop (Beef)", price: 1500 },
-                    { name: "Nylon Bhajiya (Plate)", price: 2000 },
-                    { name: "Puri Paratha", price: 2000 },
-                    { name: "African Chapati", price: 1000 },
-                    { name: "Ajam", price: 1000 }
-                ]
-            },
-            "Momos & Rolls": {
-                emoji: "*",
-                items: [
-                    { name: "Chicken Momos (6 pcs)", price: 8000 },
-                    { name: "Beef Momos (6 pcs)", price: 8000 },
-                    { name: "Chicken Momos (12 pcs)", price: 15000 },
-                    { name: "Beef Momos (12 pcs)", price: 15000 },
-                    { name: "Chicken Tawa Roll", price: 4000 },
-                    { name: "Beef Tawa Roll", price: 4000 },
-                    { name: "Chicken & Cheese Tawa Roll", price: 5000 },
-                    { name: "Beef & Cheese Tawa Roll", price: 5000 }
-                ]
-            },
-            "Zege & Fries": {
-                emoji: "*",
-                items: [
-                    { name: "Plain Zege", price: 3000 },
-                    { name: "Fiery Poussin Zege", price: 3000 },
-                    { name: "Garlic Zege", price: 3000 },
-                    { name: "Cheesy Bliss Zege", price: 4000 },
-                    { name: "Beef Supreme Zege", price: 5000 },
-                    { name: "Chicken Supreme Zege", price: 5000 },
-                    { name: "Plain Fries", price: 2000 },
-                    { name: "Masala Fries", price: 3000 },
-                    { name: "Poussin Fries", price: 3000 },
-                    { name: "Garlic Fries", price: 3000 },
-                    { name: "Schezwan Fries", price: 3000 },
-                    { name: "Peri Peri Fries", price: 3000 },
-                    { name: "Cheesy Fries", price: 4000 }
-                ]
-            },
-            "Beverages": {
-                emoji: "*",
-                items: [
-                    { name: "Sugarcane Juice", price: 2000 },
-                    { name: "Fresh Juice - 500ml", price: 4000 },
-                    { name: "Soda", price: 1000 },
-                    { name: "Water", price: 1000 },
-                    { name: "Milk Tea (Full)", price: 2000 },
-                    { name: "Milk Tea (Takeaway)", price: 2500 },
-                    { name: "Milk Coffee (Full)", price: 2000 },
-                    { name: "Milk Coffee (Takeaway)", price: 2500 }
-                ]
-            },
-            "BBQ & Steaks": {
-                emoji: "*",
-                items: [
-                    { name: "Sururu", price: 150 },
-                    { name: "Gajjar Sururu", price: 150 },
-                    { name: "Ndizi Choma", price: 1000 },
-                    { name: "BBQ Ajam", price: 1000 },
-                    { name: "Beef Mishkaki", price: 9000 },
-                    { name: "Beef Nundu", price: 9000 },
-                    { name: "Beef Peri Peri Mishkaki", price: 9000 },
-                    { name: "Beef Peri Peri Nundu", price: 9000 },
-                    { name: "Tornado Steak & Fries", price: 18000 },
-                    { name: "Pepper Steak & Fries", price: 18000 },
-                    { name: "Ausberg Steak & Fries", price: 18000 },
-                    { name: "Lemon Steak & Fries", price: 18000 },
-                    { name: "Garlic Steak & Fries", price: 18000 },
-                    { name: "Creamy Mushroom Steak & Fries", price: 18000 },
-                    { name: "Poussin Steak & Fries", price: 18000 }
-                ]
-            },
-            "Bowls & Nundu": {
-                emoji: "*",
-                items: [
-                    { name: "Beef Vuruga Bowl", price: 17000 },
-                    { name: "Chicken Vuruga Bowl", price: 17000 },
-                    { name: "Fusion Vuruga Bowl", price: 17000 },
-                    { name: "Chicken Poutine Bowl", price: 17000 },
-                    { name: "Beef Poutine Bowl", price: 17000 },
-                    { name: "Fusion Poutine Bowl", price: 17000 },
-                    { name: "Original Nundu", price: 10000 },
-                    { name: "Masala Nundu", price: 10000 },
-                    { name: "Pepper Nundu", price: 10000 },
-                    { name: "Peri Peri Nundu", price: 10000 },
-                    { name: "Poussin Nundu", price: 10000 },
-                    { name: "Chinese Nundu", price: 10000 },
-                    { name: "Schezwan Nundu", price: 10000 }
-                ]
-            },
-            "Chicken BBQ": {
-                emoji: "*",
-                items: [
-                    { name: "1/2 Sekela & Fries", price: 8000 },
-                    { name: "1/2 Gajjar Chicken & Fries", price: 8000 },
-                    { name: "1/2 Lemon Chicken & Fries", price: 8000 },
-                    { name: "1/2 Choma Chicken & Fries", price: 8000 },
-                    { name: "1/2 Peri Peri Chicken & Fries", price: 8000 },
-                    { name: "Chicken Tikka Boti", price: 10000 },
-                    { name: "Chicken Gajjar Tikka Boti", price: 10000 },
-                    { name: "Chicken Malai Boti", price: 10000 },
-                    { name: "Chicken Lasooni Boti", price: 10000 },
-                    { name: "Chicken Peri Peri Boti", price: 10000 }
-                ]
-            },
-            "Continental": {
-                emoji: "???",
-                items: [
-                    { name: "Tikka Wings - 6 pcs", price: 10000 },
-                    { name: "Buffalo Wings - 6 pcs", price: 10000 },
-                    { name: "Poussin Wings - 6 pcs", price: 10000 },
-                    { name: "BBQ Wings - 6 pcs", price: 10000 },
-                    { name: "1/4 Fried Chicken & Fries", price: 6000 },
-                    { name: "1/2 Fried Chicken & Fries", price: 10000 },
-                    { name: "1/4 Poussin Fried Chicken & Fries", price: 8000 },
-                    { name: "1/2 Poussin Fried Chicken & Fries", price: 12000 },
-                    { name: "Chicken Schnitzel & Fries", price: 16000 },
-                    { name: "Beef Schnitzel & Fries", price: 16000 }
-                ]
-            },
-            "Chinese": {
-                emoji: "*",
-                items: [
-                    { name: "Manchurian Dry / Gravy", price: 14000, desc: "Available in chicken or beef" },
-                    { name: "Schezwan Dry / Gravy", price: 14000, desc: "Available in chicken or beef" },
-                    { name: "Chilli Garlic Dry / Gravy", price: 14000, desc: "Available in chicken or beef" },
-                    { name: "Sweet & Sour Dry / Gravy", price: 14000, desc: "Available in chicken or beef" },
-                    { name: "Salt & Pepper Dry / Gravy", price: 14000, desc: "Available in chicken or beef" },
-                    { name: "Crispy Delight", price: 14000, desc: "Available in chicken or beef" },
-                    { name: "Egg Fried Rice", price: 6000 },
-                    { name: "Vegetable Fried Rice", price: 6000 },
-                    { name: "Schezwan Fried Rice", price: 6000 },
-                    { name: "Manchurian Fried Rice", price: 6000 },
-                    { name: "Chicken Fried Rice", price: 9000 },
-                    { name: "Egg Hakka Noodles", price: 6000 },
-                    { name: "Vegetable Hakka Noodles", price: 6000 },
-                    { name: "Schezwan Hakka Noodles", price: 6000 },
-                    { name: "Manchurian Hakka Noodles", price: 6000 },
-                    { name: "Chicken Hakka Noodles", price: 9000 }
-                ]
-            },
-            "Bombay Tawa": {
-                emoji: "*",
-                items: [
-                    { name: "Bombay Tawa Delight - Chicken", price: 13000, desc: "Served with puri paratha" },
-                    { name: "Bombay Tawa Delight - Beef", price: 15000, desc: "Served with puri paratha" },
-                    { name: "Bombay Tawa Delight - Fish", price: 20000, desc: "Served with puri paratha" },
-                    { name: "Bombay Tawa Delight - Prawns", price: 22000, desc: "Served with puri paratha" }
-                ]
-            },
-            "Seafood": {
-                emoji: "*",
-                items: [
-                    { name: "Golden Fried Prawns & Fries", price: 22000 },
-                    { name: "Garlic Prawns & Fries", price: 22000 },
-                    { name: "Peri Peri Prawns & Fries", price: 22000 },
-                    { name: "Poussin Prawns & Fries", price: 22000 },
-                    { name: "Tandoori Prawns & Fries", price: 22000 },
-                    { name: "Gajjar Prawns", price: 22000 },
-                    { name: "Paprika Prawns & Fries", price: 22000 },
-                    { name: "Lemon Prawns & Fries", price: 22000 },
-                    { name: "Pilipili Prawns & Puri Paratha", price: 22000 },
-                    { name: "Masala Prawns & Puri Paratha", price: 22000 },
-                    { name: "Fish Manchurian Gravy", price: 18000 },
-                    { name: "Fish Schezwan Gravy", price: 18000 },
-                    { name: "Fish Chilli Garlic Gravy", price: 18000 },
-                    { name: "Fish Sweet & Sour Gravy", price: 18000 },
-                    { name: "Fish Salt & Pepper Gravy", price: 18000 },
-                    { name: "Fish Crispy Delight", price: 18000 }
-                ]
-            },
-            "Fish": {
-                emoji: "*",
-                items: [
-                    { name: "Tandoori Fish Fillet & Fries", price: 20000 },
-                    { name: "Peri Peri Fish & Fries", price: 20000 },
-                    { name: "Gajjar Fish Fillet & Fries", price: 20000 },
-                    { name: "Poussin Fish Fillet & Fries", price: 20000 },
-                    { name: "English Fried Fish & Fries", price: 20000 },
-                    { name: "Lemon Fish Fillet & Fries", price: 20000 },
-                    { name: "Grilled Fish Fillet & Fries", price: 20000 },
-                    { name: "Garlic Fish Fillet & Fries", price: 20000 },
-                    { name: "Sweet Garlic Fish & Fries", price: 20000 },
-                    { name: "Fish Fingers & Fries", price: 20000 },
-                    { name: "Kingfish Slice", price: 25000 },
-                    { name: "Changu", price: 25000 },
-                    { name: "Red Snapper", price: 25000 },
-                    { name: "Bluefish", price: 25000 }
-                ]
-            }
+            "Zanzibar Pizza": { emoji: "🍕", surcharge: 500, items: [
+                { n: "Vegetable", p: 4000 },
+                { n: "Chicken", p: 4000 },
+                { n: "Beef", p: 4000 },
+                { n: "Vegetable & Cheese", p: 5000 },
+                { n: "Chicken & Cheese", p: 5000 },
+                { n: "Beef & Cheese", p: 5000 }
+            ]},
+            "Momos": { emoji: "🥟", surcharge: 500, items: [
+                { n: "Momos", from: 8000, opt: "momo", desc: "Chicken or beef · steamed or fried · 6 or 12 pcs" }
+            ]},
+            "Tawa Rolls": { emoji: "🌯", surcharge: 500, items: [
+                { header: "Bombay Special Tawa Roll" },
+                { n: "Chicken", p: 4000 },
+                { n: "Beef", p: 4000 },
+                { n: "Chicken & Cheese", p: 5000 },
+                { n: "Beef & Cheese", p: 5000 }
+            ]},
+            "Zege & Fries": { emoji: "🍳", items: [
+                { header: "Zege" },
+                { n: "Plain Zege", p: 3000 },
+                { n: "Fiery Poussin Zege", p: 3000, spicy: true },
+                { n: "Garlic Zege", p: 3000 },
+                { n: "Cheesy Bliss Zege", p: 4000 },
+                { n: "Beef Supreme Zege", p: 5000 },
+                { n: "Chicken Supreme Zege", p: 5000 },
+                { header: "Fries" },
+                { n: "Plain Fries", p: 2000 },
+                { n: "Masala Fries", p: 3000 },
+                { n: "Poussin Fries", p: 3000, spicy: true },
+                { n: "Garlic Fries", p: 3000 },
+                { n: "Schezwan Fries", p: 3000 },
+                { n: "Peri Peri Fries", p: 3000 },
+                { n: "Cheesy Fries", p: 4000 }
+            ]},
+            "Snacks & Bites": { emoji: "🍢", items: [
+                { header: "Snacks & Bites" },
+                { n: "Samosa - Beef", p: 1000 },
+                { n: "Samosa - Chicken", p: 1500 },
+                { n: "Beef Kebab (3 pcs)", p: 4000 },
+                { n: "Nylon Bhajiya (Plate)", p: 2000 },
+                { header: "Roti / Chapati" },
+                { n: "Puri Paratha", p: 2000 },
+                { n: "African Chapati", p: 1000 }
+            ]},
+            "BBQ & Steaks": { emoji: "🔥", items: [
+                { header: "BBQ - Sururu" },
+                { n: "Sururu", p: 150 },
+                { n: "Gajjar Sururu", p: 150, spicy: true },
+                { n: "Ndizi Choma", p: 1000 },
+                { n: "Ajam", p: 1000 },
+                { header: "BBQ" },
+                { n: "1/2 Sekela & Fries", p: 10000 },
+                { n: "1/2 Gajjar Chicken & Fries", p: 10000, spicy: true },
+                { n: "1/2 Lemon Chicken & Fries", p: 10000 },
+                { n: "1/2 Choma Chicken & Fries", p: 10000 },
+                { n: "1/2 Peri Peri Chicken & Fries", p: 11000 },
+                { n: "Chicken Tikka Boti", p: 11000 },
+                { n: "Chicken Gajjar Tikka Boti", p: 11000, spicy: true },
+                { n: "Chicken Malai Boti", p: 11000 },
+                { n: "Chicken Lasooni Boti", p: 11000 },
+                { n: "Chicken Peri Peri Boti", p: 11000 },
+                { n: "Beef Mishkaki", p: 10000 },
+                { n: "Beef Nundu", p: 10000 },
+                { n: "Beef Peri Peri Mishkaki", p: 10000 },
+                { n: "Beef Peri Peri Nundu", p: 10000 },
+                { n: "Beef Gajjar Mishkaki", p: 10000, spicy: true },
+                { n: "Beef Gajjar Nundu", p: 10000, spicy: true },
+                { n: "Beef Poussin Mishkaki", p: 10000, spicy: true },
+                { n: "Beef Poussin Nundu", p: 10000, spicy: true },
+                { header: "Stir-Fry Nundu" },
+                { n: "Original Nundu", p: 10000 },
+                { n: "Masala Nundu", p: 10000 },
+                { n: "Pepper Nundu", p: 10000 },
+                { n: "Peri Peri Nundu", p: 10000 },
+                { n: "Poussin Nundu", p: 10000, spicy: true },
+                { n: "Chinese Nundu", p: 10000 },
+                { n: "Schezwan Nundu", p: 10000 },
+                { header: "Bowls" },
+                { n: "Beef Vuruga Bowl", p: 18000 },
+                { n: "Chicken Vuruga Bowl", p: 18000 },
+                { n: "Fusion Vuruga Bowl", p: 18000 },
+                { n: "Chicken Poutine Bowl", p: 18000 },
+                { n: "Beef Poutine Bowl", p: 18000 },
+                { n: "Fusion Poutine Bowl", p: 18000 },
+                { header: "Steaks", note: "Choose chicken or beef" },
+                { n: "Tornado Steak & Fries", from: 20000, opt: "steak" },
+                { n: "Pepper Steak & Fries", from: 20000, opt: "steak" },
+                { n: "Ausberg Steak & Fries", from: 20000, opt: "steak" },
+                { n: "Lemon Steak & Fries", from: 20000, opt: "steak" },
+                { n: "Garlic Steak & Fries", from: 20000, opt: "steak" },
+                { n: "Creamy Mushroom Steak & Fries", from: 20000, opt: "steak" },
+                { n: "Poussin Steak & Fries", from: 20000, opt: "steak", spicy: true }
+            ]},
+            "Continental": { emoji: "🍗", items: [
+                { n: "Tikka Wings (6 pcs)", p: 10000 },
+                { n: "Buffalo Wings (6 pcs)", p: 10000 },
+                { n: "Poussin Wings (6 pcs)", p: 10000, spicy: true },
+                { n: "BBQ Wings (6 pcs)", p: 10000 },
+                { n: "1/4 Fried Chicken & Fries", p: 6000 },
+                { n: "1/2 Fried Chicken & Fries", p: 10000 },
+                { n: "1/4 Poussin Fried Chicken & Fries", p: 8000, spicy: true },
+                { n: "1/2 Poussin Fried Chicken & Fries", p: 12000, spicy: true },
+                { n: "Chicken Schnitzel & Fries", p: 18000 },
+                { n: "Beef Schnitzel & Fries", p: 18000 }
+            ]},
+            "Bombay Tawa": { emoji: "🍛", items: [
+                { n: "Bombay Tawa Delight", from: 13000, opt: "tawa", desc: "Served with puri paratha · chicken, beef, fish or prawns" }
+            ]},
+            "Chinese": { emoji: "🥢", items: [
+                { header: "Non-Veg", note: "Available in chicken or beef" },
+                { n: "Manchurian", from: 15000, opt: "chineseNV" },
+                { n: "Schezwan", from: 15000, opt: "chineseNV" },
+                { n: "Chilli Garlic", from: 15000, opt: "chineseNV" },
+                { n: "Sweet & Sour", from: 15000, opt: "chineseNV" },
+                { n: "Salt & Pepper", from: 15000, opt: "chineseNV" },
+                { n: "Crispy Delight", from: 15000, opt: "chineseNVc" },
+                { header: "Seafood", note: "Gravy · choose fish or prawn" },
+                { n: "Manchurian Gravy", from: 20000, opt: "chineseSF" },
+                { n: "Schezwan Gravy", from: 20000, opt: "chineseSF" },
+                { n: "Chilli Garlic Gravy", from: 20000, opt: "chineseSF" },
+                { n: "Sweet & Sour Gravy", from: 20000, opt: "chineseSF" },
+                { n: "Salt & Pepper Gravy", from: 20000, opt: "chineseSF" },
+                { n: "Crispy Delight (Seafood)", from: 20000, opt: "chineseSF" },
+                { header: "Rice & Noodles" },
+                { n: "Egg Fried Rice", p: 6000 },
+                { n: "Vegetable Fried Rice", p: 6000 },
+                { n: "Schezwan Fried Rice", p: 6000 },
+                { n: "Manchurian Fried Rice", p: 6000 },
+                { n: "Chicken Fried Rice", p: 10000 },
+                { n: "Egg Hakka Noodles", p: 6000 },
+                { n: "Vegetable Hakka Noodles", p: 6000 },
+                { n: "Schezwan Hakka Noodles", p: 6000 },
+                { n: "Manchurian Hakka Noodles", p: 6000 },
+                { n: "Chicken Hakka Noodles", p: 10000 }
+            ]},
+            "Seafood": { emoji: "🦐", items: [
+                { header: "Fish Fillet (Halal)" },
+                { n: "Fish Fingers & Fries", p: 22000 },
+                { n: "Tandoori Fish Fillet & Fries", p: 22000 },
+                { n: "Peri Peri Fish & Fries", p: 22000 },
+                { n: "Gajjar Fish Fillet & Fries", p: 22000, spicy: true },
+                { n: "Poussin Fish Fillet & Fries", p: 22000, spicy: true },
+                { n: "English Fried Fish & Fries", p: 22000 },
+                { n: "Lemon Fish Fillet & Fries", p: 22000 },
+                { n: "Grilled Fish Fillet & Fries", p: 22000 },
+                { n: "Garlic Fish Fillet & Fries", p: 22000 },
+                { n: "Sweet Garlic Fish & Fries", p: 22000 },
+                { header: "Whole Fish (Halal)", note: "Ask staff for availability: Kingfish Slice, Changu, Red Snapper, Bluefish" },
+                { n: "Tandoori Whole Fish & Fries", p: 25000 },
+                { n: "Fried Whole Fish & Fries", p: 25000 },
+                { n: "Peri Peri Whole Fish & Fries", p: 25000 },
+                { n: "Poussin Whole Fish & Fries", p: 25000, spicy: true },
+                { header: "Prawns (Halal)" },
+                { n: "Golden Fried Prawns & Fries", p: 25000 },
+                { n: "Garlic Prawns & Fries", p: 25000 },
+                { n: "Peri Peri Prawns & Fries", p: 25000 },
+                { n: "Poussin Prawns & Fries", p: 25000, spicy: true },
+                { n: "Tandoori Prawns & Fries", p: 25000 },
+                { n: "Gajjar Prawns", p: 25000 },
+                { n: "Paprika Prawns & Fries", p: 25000 },
+                { n: "Lemon Prawns & Fries", p: 25000 },
+                { n: "Pilipili Prawns & Puri Paratha", p: 25000 },
+                { n: "Masala Prawns & Puri Paratha", p: 25000 }
+            ]},
+            "All Day Lunch": { emoji: "🍽️", items: [
+                { header: "All Day Lunch", note: "Served with rice, ugali, fries, or 2 pcs African chapati" },
+                { n: "Chicken Makange", p: 15000 },
+                { n: "Chicken Stew", p: 15000 },
+                { n: "Chicken Curry", p: 15000 },
+                { n: "1/2 Fried Chicken w/ Fries (KFC)", p: 15000 },
+                { n: "Beef Makange", p: 15000 },
+                { n: "Beef Stew", p: 15000 },
+                { n: "Beef Curry", p: 15000 },
+                { n: "Maini Roast", p: 15000 },
+                { n: "Fish (Samaki) Makange", p: 23000 },
+                { n: "Fish (Samaki) Curry", p: 23000 },
+                { header: "Chef's Special", note: "Served with rice, ugali, fries, or 2 pcs African chapati" },
+                { n: "Kuku (Chicken) wa Kupaka", p: 15000 },
+                { n: "Beef (Nyama) wa Kupaka", p: 15000 },
+                { n: "Samaki (Fish) wa Kupaka", p: 23000 }
+            ]},
+            "Beverages": { emoji: "🥤", items: [
+                { header: "Cold Beverages" },
+                { n: "Sugarcane Juice", p: 2000 },
+                { n: "Fresh Juice - 500ml", p: 4000 },
+                { n: "Soda", p: 1000 },
+                { n: "Water", p: 1000 },
+                { header: "Hot Beverages" },
+                { n: "Milk Tea (Full)", p: 2000 },
+                { n: "Milk Tea (Takeaway)", p: 2500 },
+                { n: "Milk Coffee (Full)", p: 2000 },
+                { n: "Milk Coffee (Takeaway)", p: 2500 }
+            ]}
+        };
+
+        const MODES = {
+            'Dine In':    { icon: '🍽️', sub: 'Eat with us' },
+            'Take Away':  { icon: '🥡', sub: 'Pick up packed' },
+            'Delivery':   { icon: '🛵', sub: 'To your location' }
         };
 
         let cart = {};
         let activeCat = "Zanzibar Pizza";
         let selectedPayment = "cash";
-        let orderType = "Delivery";
+        let orderMode = null;          // 'Dine In' | 'Take Away' | 'Delivery'
         let currentScreen = 1;
+        let pendingOpt = null;         // { cat, item, sel:{}, qty }
 
         const jsArg = (value) => JSON.stringify(value).replace(/'/g, "&#39;");
+        const money = (n) => 'TZS ' + n.toLocaleString();
+        const takeawayActive = () => orderMode === 'Take Away' || orderMode === 'Delivery';
+        const catSurcharge = (cat) => MENU[cat] && MENU[cat].surcharge ? MENU[cat].surcharge : 0;
 
         function openOrderBot() {
-            try {
-                const saved = sessionStorage.getItem('cc_cart');
-                if (saved) cart = JSON.parse(saved);
-            } catch(e) { cart = {}; }
+            try { const s = sessionStorage.getItem('cc_cart'); if (s) cart = JSON.parse(s); } catch(e) { cart = {}; }
+            try { const m = sessionStorage.getItem('cc_mode'); if (m && MODES[m]) orderMode = m; } catch(e) {}
             openModal('order-modal');
             clearSearch();
             renderCategoryPills();
             renderItems(activeCat);
+            updateModeUI();
             updateCartSummary();
-            goToScreen(1, false);
+            if (orderMode) goToScreen(1, false); else goToScreen(0, false);
         }
 
         function confirmCloseOrder() { closeModal('order-modal'); }
         function saveCart() { try { sessionStorage.setItem('cc_cart', JSON.stringify(cart)); } catch(e){} updateCartSummary(); updateBadges(); }
-        function cartKey(cat, name) { return `${cat}||${name}`; }
-        function getCartTotal() { return Object.values(cart).reduce((sum, item) => sum + item.price * item.qty, 0); }
-        function getCartCount() { return Object.values(cart).reduce((sum, item) => sum + item.qty, 0); }
+        function getCartTotal() { return Object.values(cart).reduce((s, i) => s + lineUnit(i) * i.qty, 0); }
+        function getSubtotal() { return Object.values(cart).reduce((s, i) => s + i.base * i.qty, 0); }
+        function getPackaging() { return Object.values(cart).reduce((s, i) => s + ((takeawayActive() && i.sur) ? i.sur * i.qty : 0), 0); }
+        function getCartCount() { return Object.values(cart).reduce((s, i) => s + i.qty, 0); }
+        function lineUnit(i) { return i.base + ((takeawayActive() && i.sur) ? i.sur : 0); }
 
+        // ---- Mode ----
+        function chooseMode(mode) {
+            orderMode = mode;
+            try { sessionStorage.setItem('cc_mode', mode); } catch(e) {}
+            updateModeUI();
+            if (currentScreen === 0) goToScreen(1);
+        }
+
+        function updateModeUI() {
+            const info = orderMode ? MODES[orderMode] : MODES['Dine In'];
+            const lbl = orderMode || 'Dine In';
+            const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+            set('mode-chip-icon', info.icon); set('mode-chip-label', lbl);
+            set('detail-mode-icon', info.icon); set('detail-mode-label', lbl); set('detail-mode-sub', info.sub);
+            document.querySelectorAll('#screen-0 .mode-card').forEach(c => {
+                const isSel = c.getAttribute('onclick') === `chooseMode('${lbl}')`;
+                c.classList.toggle('selected', isSel);
+            });
+            const addr = document.getElementById('addr-field');
+            if (addr) addr.style.display = orderMode === 'Delivery' ? 'block' : 'none';
+            const ack = document.getElementById('delivery-ack-wrap');
+            if (ack) ack.classList.toggle('hidden', orderMode !== 'Delivery');
+            // Prices depend on mode → re-render current views
+            if (currentScreen === 1) { renderItems(activeCat); if (searchQuery) handleSearch(document.getElementById('menu-search').value); }
+            if (currentScreen === 2) renderCartReview();
+            updateSendState();
+        }
+
+        // ---- Category pills + scroll hint ----
         function renderCategoryPills() {
             const el = document.getElementById('cat-pills');
             el.innerHTML = Object.entries(MENU).map(([cat, data]) => {
                 const active = cat === activeCat ? 'active' : 'inactive';
                 return `<button class="cat-pill ${active}" onclick='switchCat(${jsArg(cat)})'>${data.emoji} ${cat}</button>`;
             }).join('');
+            setTimeout(() => updateScrollHint(el), 60);
+        }
+
+        function updateScrollHint(el) {
+            const fade = document.getElementById('cat-fade');
+            if (!fade) return;
+            const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 6;
+            fade.classList.toggle('at-end', atEnd);
         }
 
         function switchCat(cat) {
@@ -1195,38 +1375,67 @@
             document.getElementById('order-body').scrollTop = 0;
         }
 
+        // ---- Item rendering ----
         function renderItems(cat) {
             const data = MENU[cat];
-            document.getElementById('item-list').innerHTML = data.items.map(item => renderItemRow(cat, item)).join('');
+            let html = '';
+            if (data.surcharge && takeawayActive()) {
+                html += `<div class="cat-banner"><i class="fa-solid fa-box"></i> +${money(data.surcharge)} packing per item is included in the prices below (${orderMode}).</div>`;
+            }
+            html += data.items.map(item => {
+                if (item.header) return `<div class="cat-header">${item.header}</div>${item.note ? `<div class="cat-subnote">${item.note}</div>` : ''}`;
+                return item.opt ? renderOptionRow(cat, item) : renderItemRow(cat, item);
+            }).join('');
+            document.getElementById('item-list').innerHTML = html;
         }
 
+        function priceTag(cat, food) {
+            const sur = (takeawayActive() ? catSurcharge(cat) : 0);
+            return money(food + sur);
+        }
+
+        function nameHtml(item) { return `${item.n}${item.spicy ? ' 🌶️' : ''}`; }
+
         function renderItemRow(cat, item) {
-            const key = cartKey(cat, item.name);
+            const key = `${cat}||${item.n}`;
             const inCart = cart[key];
             return `<div class="item-row">
                 <div style="flex:1; min-width:0;">
-                    <div class="font-black text-sm dark:text-white leading-tight">${item.name}</div>
+                    <div class="font-black text-sm dark:text-white leading-tight">${nameHtml(item)}</div>
                     ${item.desc ? `<div class="text-[11px] text-zinc-500 mt-0.5 leading-tight">${item.desc}</div>` : ''}
-                    <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">TZS ${item.price.toLocaleString()}</div>
+                    <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">${priceTag(cat, item.p)}</div>
                 </div>
                 ${inCart ? `<div class="qty-ctrl">
-                    <button class="qty-btn" onclick='changeQty(${jsArg(cat)},${jsArg(item.name)},-1)'>-</button>
+                    <button class="qty-btn" onclick='changeQty(${jsArg(key)},-1)'>-</button>
                     <span class="qty-num">${inCart.qty}</span>
-                    <button class="qty-btn" onclick='changeQty(${jsArg(cat)},${jsArg(item.name)},1)'>+</button>
-                </div>` : `<button class="add-btn" onclick='addItem(${jsArg(cat)},${jsArg(item.name)},${item.price})'>+</button>`}
+                    <button class="qty-btn" onclick='changeQty(${jsArg(key)},1)'>+</button>
+                </div>` : `<button class="add-btn" onclick='addSimple(${jsArg(cat)},${jsArg(item.n)},${item.p})'>+</button>`}
             </div>`;
         }
 
-        function addItem(cat, name, price) {
-            const key = cartKey(cat, name);
-            cart[key] = { cat, name, price, qty: 1 };
+        function renderOptionRow(cat, item) {
+            const count = Object.values(cart).filter(i => i.cat === cat && i.name === item.n).reduce((s, i) => s + i.qty, 0);
+            return `<div class="item-row">
+                <div style="flex:1; min-width:0;">
+                    <div class="font-black text-sm dark:text-white leading-tight">${nameHtml(item)}</div>
+                    ${item.desc ? `<div class="text-[11px] text-zinc-500 mt-0.5 leading-tight">${item.desc}</div>` : ''}
+                    <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">from ${priceTag(cat, item.from)}</div>
+                </div>
+                <button class="customize-btn" onclick='openOptSheet(${jsArg(cat)},${jsArg(item.n)})'>
+                    <i class="fa-solid fa-sliders"></i> ${count ? `${count} added` : 'Choose'}
+                </button>
+            </div>`;
+        }
+
+        function addSimple(cat, name, price) {
+            const key = `${cat}||${name}`;
+            cart[key] = { cat, name, base: price, label: name, qty: 1, sur: catSurcharge(cat) };
             saveCart();
             renderItems(activeCat);
             if (searchQuery) handleSearch(document.getElementById('menu-search').value);
         }
 
-        function changeQty(cat, name, delta) {
-            const key = cartKey(cat, name);
+        function changeQty(key, delta) {
             if (!cart[key]) return;
             cart[key].qty = Math.max(0, cart[key].qty + delta);
             if (cart[key].qty === 0) delete cart[key];
@@ -1235,11 +1444,89 @@
             if (searchQuery) handleSearch(document.getElementById('menu-search').value);
         }
 
+        // ---- Options bottom sheet ----
+        function findItem(cat, name) { return MENU[cat].items.find(i => i.n === name); }
+
+        function openOptSheet(cat, name) {
+            const item = findItem(cat, name);
+            if (!item) return;
+            const groups = OPT[item.opt].groups;
+            const sel = {};
+            groups.forEach(g => sel[g.id] = 0);
+            pendingOpt = { cat, item, sel, qty: 1 };
+            document.getElementById('opt-title').textContent = item.n;
+            document.getElementById('opt-desc').textContent = item.desc || '';
+            document.getElementById('opt-qty').textContent = '1';
+            renderOptGroups();
+            openModal('opt-sheet');
+        }
+
+        function renderOptGroups() {
+            const { item, sel } = pendingOpt;
+            const groups = OPT[item.opt].groups;
+            document.getElementById('opt-groups').innerHTML = groups.map(g => `
+                <div class="opt-group">
+                    <div class="opt-group-label">${g.label}</div>
+                    <div class="opt-choices">
+                        ${g.choices.map((c, i) => `<button class="opt-choice ${sel[g.id] === i ? 'selected' : ''}" onclick='selectOpt(${jsArg(g.id)},${i})'>${c.l}${c.price ? ` · ${money(c.price + (takeawayActive() ? catSurcharge(pendingOpt.cat) : 0))}` : ''}</button>`).join('')}
+                    </div>
+                </div>`).join('');
+            updateOptPrice();
+        }
+
+        function selectOpt(groupId, idx) {
+            pendingOpt.sel[groupId] = idx;
+            renderOptGroups();
+        }
+
+        function optQty(delta) {
+            pendingOpt.qty = Math.max(1, pendingOpt.qty + delta);
+            document.getElementById('opt-qty').textContent = pendingOpt.qty;
+        }
+
+        function computeOptFood() {
+            const { item, sel } = pendingOpt;
+            let price = item.from;
+            OPT[item.opt].groups.forEach(g => {
+                const c = g.choices[sel[g.id]];
+                if (c.price != null) price = c.price;
+                if (c.add) price += c.add;
+            });
+            return price;
+        }
+
+        function optLabelParts() {
+            const { item, sel } = pendingOpt;
+            return OPT[item.opt].groups.map(g => g.choices[sel[g.id]].l);
+        }
+
+        function updateOptPrice() {
+            const food = computeOptFood();
+            const unit = food + (takeawayActive() ? catSurcharge(pendingOpt.cat) : 0);
+            document.getElementById('opt-add-price').textContent = '· ' + money(unit);
+        }
+
+        function closeOptSheet() { closeModal('opt-sheet'); pendingOpt = null; }
+
+        function addOptToCart() {
+            const { cat, item, sel, qty } = pendingOpt;
+            const parts = optLabelParts();
+            const label = `${item.n} (${parts.join(', ')})`;
+            const key = `${cat}||${item.n}||${parts.join('|')}`;
+            const food = computeOptFood();
+            if (cart[key]) cart[key].qty += qty;
+            else cart[key] = { cat, name: item.n, base: food, label, qty, sur: catSurcharge(cat) };
+            saveCart();
+            closeOptSheet();
+            renderItems(activeCat);
+            if (searchQuery) handleSearch(document.getElementById('menu-search').value);
+        }
+
+        // ---- Summaries ----
         function updateCartSummary() {
             const count = getCartCount();
-            const total = getCartTotal();
             const pill = document.getElementById('cart-summary-pill');
-            if (pill) pill.textContent = `${count} item${count !== 1 ? 's' : ''} - TZS ${total.toLocaleString()}`;
+            if (pill) pill.textContent = `${count} item${count !== 1 ? 's' : ''} · ${money(getCartTotal())}`;
             const btn = document.getElementById('btn-to-cart');
             if (btn) btn.disabled = count === 0;
         }
@@ -1255,11 +1542,15 @@
         function renderCartReview() {
             const el = document.getElementById('cart-review-list');
             const entries = Object.entries(cart);
-            if (!entries.length) { el.innerHTML = '<p class="text-zinc-500 text-sm text-center py-6">Your cart is empty.</p>'; return; }
+            if (!entries.length) {
+                el.innerHTML = '<p class="text-zinc-500 text-sm text-center py-6">Your cart is empty.</p>';
+                document.getElementById('cart-totals').innerHTML = '';
+                return;
+            }
             el.innerHTML = entries.map(([key, item]) => `<div class="summary-row" style="padding: 10px 0;">
                 <div style="flex:1;">
-                    <div class="font-black text-sm dark:text-white">${item.name}</div>
-                    <div class="text-xs text-caneAccent dark:text-canePrimary font-black">TZS ${item.price.toLocaleString()} each</div>
+                    <div class="font-black text-sm dark:text-white">${item.label}</div>
+                    <div class="text-xs text-caneAccent dark:text-canePrimary font-black">${money(lineUnit(item))} each</div>
                 </div>
                 <div class="qty-ctrl ml-3">
                     <button class="qty-btn" onclick='cartChangeQty(${jsArg(key)},-1)'>-</button>
@@ -1267,10 +1558,19 @@
                     <button class="qty-btn" onclick='cartChangeQty(${jsArg(key)},1)'>+</button>
                 </div>
                 <div class="ml-3 text-right" style="min-width:80px;">
-                    <div class="font-black text-sm dark:text-white">TZS ${(item.price * item.qty).toLocaleString()}</div>
+                    <div class="font-black text-sm dark:text-white">${money(lineUnit(item) * item.qty)}</div>
                 </div>
             </div>`).join('');
-            document.getElementById('cart-total-2').textContent = `TZS ${getCartTotal().toLocaleString()}`;
+            document.getElementById('cart-totals').innerHTML = totalsHtml();
+        }
+
+        function totalsHtml() {
+            const pack = getPackaging();
+            let h = `<div class="summary-row"><span class="text-zinc-500 font-bold">Subtotal</span><span class="font-black dark:text-white">${money(getSubtotal())}</span></div>`;
+            if (pack > 0) h += `<div class="summary-row"><span class="text-zinc-500 font-bold">Packing (${orderMode})</span><span class="font-black dark:text-white">${money(pack)}</span></div>`;
+            if (orderMode === 'Delivery') h += `<div class="summary-row"><span class="text-zinc-500 font-bold">Delivery</span><span class="font-black text-green-500">Confirmed on WhatsApp</span></div>`;
+            h += `<div class="flex justify-between items-center mt-2 pt-2"><span class="text-base font-black dark:text-white uppercase tracking-tight">Total</span><span class="text-xl font-black text-canePrimary">${money(getCartTotal())}</span></div>`;
+            return h;
         }
 
         function cartChangeQty(key, delta) {
@@ -1282,55 +1582,81 @@
             renderItems(activeCat);
         }
 
-        function setOrderType(type) {
-            orderType = type;
-            document.getElementById('btn-delivery').className = type === 'Delivery'
-                ? 'flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-canePrimary bg-canePrimary/10 text-caneDark dark:text-canePrimary transition-all'
-                : 'flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-zinc-300 dark:border-zinc-700 text-zinc-500 transition-all';
-            document.getElementById('btn-pickup').className = type === 'Pickup'
-                ? 'flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-canePrimary bg-canePrimary/10 text-caneDark dark:text-canePrimary transition-all'
-                : 'flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border-2 border-zinc-300 dark:border-zinc-700 text-zinc-500 transition-all';
-            document.getElementById('addr-field').style.display = type === 'Delivery' ? 'block' : 'none';
+        // ---- Payment ----
+        function selectPayment(method) {
+            selectedPayment = method;
+            document.getElementById('pay-cash').classList.toggle('selected', method === 'cash');
+            document.getElementById('pay-momo').classList.toggle('selected', method === 'momo');
+            document.getElementById('momo-details').classList.toggle('hidden', method !== 'momo');
         }
 
-        function selectPayment(method) { selectedPayment = method; }
+        function copyMomo(text) {
+            const btn = document.getElementById('momo-copy-btn');
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+            document.body.appendChild(ta); ta.focus(); ta.select();
+            try { document.execCommand('copy'); btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied'; }
+            catch(e) {}
+            document.body.removeChild(ta);
+            setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy No.'; }, 2000);
+        }
 
-        function renderFinalReview() {
-            const items = Object.values(cart);
-            document.getElementById('final-order-items').innerHTML = items.map(item =>
-                `<div class="summary-row"><span class="dark:text-zinc-300">${item.name} x ${item.qty}</span><span class="font-black dark:text-white">TZS ${(item.price * item.qty).toLocaleString()}</span></div>`
-            ).join('');
-            document.getElementById('final-total').textContent = `TZS ${getCartTotal().toLocaleString()}`;
-            const name = document.getElementById('cust-name').value || '-';
-            const phone = document.getElementById('cust-phone').value || '-';
-            const addr = document.getElementById('cust-addr').value || '';
-            const notes = document.getElementById('cust-notes').value || '';
-            document.getElementById('final-customer-info').innerHTML = `
-                <div class="summary-row"><span class="text-zinc-500">Name</span><span class="font-black dark:text-white">${name}</span></div>
-                <div class="summary-row"><span class="text-zinc-500">Phone</span><span class="font-black dark:text-white">${phone}</span></div>
-                <div class="summary-row"><span class="text-zinc-500">Type</span><span class="font-black dark:text-white">${orderType}${addr ? ' - ' + addr : ''}</span></div>
-                ${notes ? `<div class="summary-row"><span class="text-zinc-500">Notes</span><span class="font-black dark:text-white">${notes}</span></div>` : ''}
-            `;
+        // ---- Screen navigation ----
+        function updateSendState() {
+            const ack = document.getElementById('delivery-ack');
+            const needAck = orderMode === 'Delivery';
+            const blocked = getCartCount() === 0 || (needAck && ack && !ack.checked);
+            const send = document.getElementById('btn-send');
+            const review = document.getElementById('btn-review');
+            if (send) send.disabled = blocked;
+            if (review) review.disabled = blocked;
         }
 
         function goToScreen(n, animate = true) {
-            if (n === 3 && getCartCount() === 0) return;
+            if (n >= 2 && getCartCount() === 0) return;
+            const footer = document.getElementById('order-footer');
+            [0,1,2,3,4].forEach(i => {
+                const s = document.getElementById(`screen-${i}`); if (s) s.classList.remove('active');
+                const f = document.getElementById(`footer-${i}`); if (f) f.classList.add('hidden');
+            });
             [1,2,3,4].forEach(i => {
-                document.getElementById(`screen-${i}`).classList.remove('active');
-                document.getElementById(`footer-${i}`).classList.add('hidden');
-                document.getElementById(`sd${i}`).className = 'step-dot' + (i < n ? ' done' : i === n ? ' active' : '');
+                document.getElementById(`sd${i}`).className = 'step-dot' + (n === 0 ? '' : (i < n ? ' done' : i === n ? ' active' : ''));
             });
             const screen = document.getElementById(`screen-${n}`);
             screen.classList.add('active');
             if (animate) screen.className = `order-screen active ${n >= currentScreen ? 'slide-left' : 'slide-right'}`;
-            document.getElementById(`footer-${n}`).classList.remove('hidden');
+            if (n === 0) { footer.style.display = 'none'; }
+            else { footer.style.display = ''; const f = document.getElementById(`footer-${n}`); if (f) f.classList.remove('hidden'); }
             document.getElementById('order-body').scrollTop = 0;
             currentScreen = n;
-            if (n === 1) updateCartSummary();
+            if (n === 1) { updateModeUI(); updateCartSummary(); const cp = document.getElementById('cat-pills'); if (cp) setTimeout(() => updateScrollHint(cp), 50); }
             if (n === 2) renderCartReview();
+            if (n === 3) updateModeUI();
             if (n === 4) renderFinalReview();
         }
 
+        function renderFinalReview() {
+            const items = Object.values(cart);
+            document.getElementById('final-order-items').innerHTML = items.map(i =>
+                `<div class="summary-row"><span class="dark:text-zinc-300">${i.label} × ${i.qty}</span><span class="font-black dark:text-white">${money(lineUnit(i) * i.qty)}</span></div>`
+            ).join('');
+            document.getElementById('final-totals').innerHTML = totalsHtml();
+            const name = document.getElementById('cust-name').value || '-';
+            const phone = document.getElementById('cust-phone').value || '-';
+            const addr = document.getElementById('cust-addr').value || '';
+            const notes = document.getElementById('cust-notes').value || '';
+            const payLabel = selectedPayment === 'momo' ? 'Selcom Pay · 6105 6622 (Cane Crush DDF)' : 'Cash';
+            document.getElementById('final-customer-info').innerHTML = `
+                <div class="summary-row"><span class="text-zinc-500">Name</span><span class="font-black dark:text-white">${name}</span></div>
+                <div class="summary-row"><span class="text-zinc-500">Phone</span><span class="font-black dark:text-white">${phone}</span></div>
+                <div class="summary-row"><span class="text-zinc-500">Type</span><span class="font-black dark:text-white">${orderMode || 'Dine In'}${addr ? ' · ' + addr : ''}</span></div>
+                <div class="summary-row"><span class="text-zinc-500">Payment</span><span class="font-black dark:text-white text-right">${payLabel}</span></div>
+                ${notes ? `<div class="summary-row"><span class="text-zinc-500">Notes</span><span class="font-black dark:text-white">${notes}</span></div>` : ''}
+            `;
+            updateSendState();
+        }
+
+        // ---- Search ----
         let searchQuery = '';
         function handleSearch(value) {
             searchQuery = value.trim().toLowerCase();
@@ -1343,25 +1669,36 @@
             browseView.classList.add('hidden');
             const results = [];
             Object.entries(MENU).forEach(([cat, data]) => data.items.forEach(item => {
-                if (item.name.toLowerCase().includes(searchQuery) || (item.desc && item.desc.toLowerCase().includes(searchQuery))) results.push({ cat, item });
+                if (item.header) return;
+                if (item.n.toLowerCase().includes(searchQuery) || (item.desc && item.desc.toLowerCase().includes(searchQuery))) results.push({ cat, item });
             }));
             if (!results.length) {
-                searchResults.innerHTML = `<div class="search-empty"><div class="se-icon">*</div><p>No results for "<strong>${value}</strong>"</p></div>`;
+                searchResults.innerHTML = `<div class="search-empty"><div class="se-icon"><i class="fa-solid fa-magnifying-glass"></i></div><p>No results for "<strong>${value}</strong>"</p></div>`;
                 return;
             }
             searchResults.innerHTML = `<div class="text-[11px] font-black text-zinc-500 uppercase tracking-wider mb-2">${results.length} result${results.length !== 1 ? 's' : ''}</div>${results.map(r => renderSearchRow(r.cat, r.item)).join('')}`;
         }
 
         function renderSearchRow(cat, item) {
-            const key = cartKey(cat, item.name);
+            if (item.opt) {
+                const count = Object.values(cart).filter(i => i.cat === cat && i.name === item.n).reduce((s, i) => s + i.qty, 0);
+                return `<div class="item-row">
+                    <div style="flex:1;min-width:0;">
+                        <div class="font-black text-sm dark:text-white">${nameHtml(item)}<span class="search-cat-label">${cat}</span></div>
+                        <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">from ${priceTag(cat, item.from)}</div>
+                    </div>
+                    <button class="customize-btn" onclick='openOptSheet(${jsArg(cat)},${jsArg(item.n)})'><i class="fa-solid fa-sliders"></i> ${count ? `${count} added` : 'Choose'}</button>
+                </div>`;
+            }
+            const key = `${cat}||${item.n}`;
             const inCart = cart[key];
             return `<div class="item-row">
                 <div style="flex:1;min-width:0;">
-                    <div class="font-black text-sm dark:text-white">${item.name}<span class="search-cat-label">${cat}</span></div>
+                    <div class="font-black text-sm dark:text-white">${nameHtml(item)}<span class="search-cat-label">${cat}</span></div>
                     ${item.desc ? `<div class="text-[11px] text-zinc-500 mt-0.5">${item.desc}</div>` : ''}
-                    <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">TZS ${item.price.toLocaleString()}</div>
+                    <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">${priceTag(cat, item.p)}</div>
                 </div>
-                ${inCart ? `<div class="qty-ctrl"><button class="qty-btn" onclick='changeQty(${jsArg(cat)},${jsArg(item.name)},-1)'>-</button><span class="qty-num">${inCart.qty}</span><button class="qty-btn" onclick='changeQty(${jsArg(cat)},${jsArg(item.name)},1)'>+</button></div>` : `<button class="add-btn" onclick='addItem(${jsArg(cat)},${jsArg(item.name)},${item.price})'>+</button>`}
+                ${inCart ? `<div class="qty-ctrl"><button class="qty-btn" onclick='changeQty(${jsArg(key)},-1)'>-</button><span class="qty-num">${inCart.qty}</span><button class="qty-btn" onclick='changeQty(${jsArg(key)},1)'>+</button></div>` : `<button class="add-btn" onclick='addSimple(${jsArg(cat)},${jsArg(item.n)},${item.p})'>+</button>`}
             </div>`;
         }
 
@@ -1382,17 +1719,28 @@
             const addr = document.getElementById('cust-addr').value.trim();
             const notes = document.getElementById('cust-notes').value.trim();
             const items = Object.values(cart);
-            const total = getCartTotal();
             const orderNo = generateOrderNumber();
-            const itemLines = items.map(item => `- ${item.qty}x ${item.name} - TZS ${(item.price * item.qty).toLocaleString()}`).join('\n');
-            const message = `Hello Cane Crush,\n\nI would like to place an order.\n\nOrder: #${orderNo}\nName: ${name}\nPhone: ${phone}\nType: ${orderType}${addr ? ' - ' + addr : ''}\n${notes ? `Notes: ${notes}\n` : ''}\nItems:\n${itemLines}\n\nTotal: TZS ${total.toLocaleString()}\n\nPlease confirm this order.`;
-            openInNewTab(`https://wa.me/255757249910?text=${encodeURIComponent(message)}`);
+            const itemLines = items.map(i => `- ${i.qty}x ${i.label} - ${money(lineUnit(i) * i.qty)}`).join('\n');
+            const pack = getPackaging();
+            const payLine = selectedPayment === 'momo'
+                ? 'Payment: Selcom Pay / Mobile Money to 6105 6622 (Cane Crush DDF), USSD *150*50*1#'
+                : 'Payment: Cash';
+            let msg = `Hello Cane Crush,\n\nI would like to place an order.\n\nOrder: #${orderNo}\nName: ${name}\nPhone: ${phone}\nType: ${orderMode || 'Dine In'}`;
+            if (orderMode === 'Delivery' && addr) msg += `\nLocation: ${addr}`;
+            if (notes) msg += `\nNotes: ${notes}`;
+            msg += `\n\nItems:\n${itemLines}\n\nSubtotal: ${money(getSubtotal())}`;
+            if (pack > 0) msg += `\nPacking: ${money(pack)}`;
+            msg += `\nTotal: ${money(getCartTotal())}`;
+            if (orderMode === 'Delivery') msg += `\n(Delivery charge may apply depending on location - please confirm.)`;
+            msg += `\n${payLine}\n\nPlease confirm this order.`;
+            openInNewTab(`https://wa.me/255757249910?text=${encodeURIComponent(msg)}`);
             cart = {};
             try { sessionStorage.removeItem('cc_cart'); } catch(e) {}
             updateBadges();
             clearSearch();
             closeModal('order-modal');
         }
+
 
         // 9. CATERING QUOTATION SUBMISSION COMPILER
         function handleCateringSubmit(e) {
