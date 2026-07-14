@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f3f0fb">
+  <title>Abdulhaliym Aman — Digital Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    /* ============================================================
+       DIGITAL PROFILE SYSTEM — LIGHT MODE
+       Airy light canvas. Purple is the Code255 brand colour and it
+       leads: avatar, feature cards, CTA, buttons. On light it reads
+       as confident brand accent, not an overwhelming wall of purple.
+       ============================================================ */
+    :root{
+      --bg:#f3f0fb; --surface:#ffffff; --surface-2:#faf8ff;
+      --line:rgba(124,58,237,.14); --line-2:rgba(124,58,237,.24);
+      --ink:#1b1230; --muted:#6f6788; --faint:#a49bb8;
+      --violet:#7c3aed; --violet-2:#8b5cf6; --violet-ink:#5b21b6;
+      --violet-soft:rgba(124,58,237,.10); --indigo:#6366f1; --mint:#10b981;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0; color:var(--ink); font-family:Manrope,sans-serif;
+      -webkit-tap-highlight-color:transparent;
+      background:
+        radial-gradient(760px 460px at 84% -8%,rgba(124,58,237,.18),transparent 58%),
+        radial-gradient(680px 480px at -12% 26%,rgba(99,102,241,.12),transparent 55%),
+        var(--bg);
+    }
+    /* faint dotted profile grid, fading out down the page */
+    body:before{
+      content:'';position:fixed;inset:0;z-index:-1;opacity:.55;
+      background-image:radial-gradient(rgba(124,58,237,.14) 1px,transparent 1.4px);
+      background-size:26px 26px;
+      -webkit-mask-image:linear-gradient(to bottom,#000,transparent 74%);
+              mask-image:linear-gradient(to bottom,#000,transparent 74%);
+    }
+    .mono{font-family:'DM Mono',monospace}
+    .hide{display:none!important}
+    .sheet{animation:sheet .28s cubic-bezier(.2,.8,.2,1) both}
+    @keyframes sheet{from{opacity:0;transform:translateY(42px)}to{opacity:1;transform:translateY(0)}}
+    main{max-width:29rem;margin:0 auto;padding:8px 16px 120px}
+
+    /* ---------- PROFILE HERO ---------- */
+    .profile{
+      position:relative;overflow:hidden;border-radius:26px;padding:20px 22px 22px;
+      background:linear-gradient(168deg,#ffffff 0%,#f6f1ff 58%,#efe7ff 100%);
+      border:1px solid var(--line-2);
+      box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 20px 46px -22px rgba(91,33,182,.35);
+    }
+    .profile__glow{position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;
+      background:radial-gradient(circle,rgba(124,58,237,.28),transparent 62%);filter:blur(4px);pointer-events:none}
+    .profile__ring{position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;
+      border:1px solid rgba(124,58,237,.20);pointer-events:none}
+    .profile>*{position:relative;z-index:1}
+    .profile__glow,.profile__ring{position:absolute;z-index:0} /* re-assert: keep decor out of layout flow */
+    .profile__top{display:flex;align-items:flex-start;justify-content:space-between}
+    .avatar{position:relative;display:grid;place-items:center;height:66px;width:66px;border-radius:20px;
+      font-size:22px;font-weight:800;letter-spacing:-.02em;color:#fff;
+      background:linear-gradient(150deg,#a78bfa,#7c3aed 55%,#5b21b6);
+      box-shadow:0 12px 26px -8px rgba(124,58,237,.6),0 0 0 1px rgba(255,255,255,.35) inset}
+    .avatar:after{content:'';position:absolute;inset:-5px;border-radius:24px;border:1px solid rgba(124,58,237,.24)}
+    .chip{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;color:var(--violet-ink);
+      border:1px solid var(--line-2);background:rgba(124,58,237,.06);border-radius:999px;padding:6px 11px}
+    .status{display:inline-flex;align-items:center;gap:7px;margin-top:18px;font-size:11px;font-weight:700;
+      color:#047857;background:rgba(16,185,129,.10);border:1px solid rgba(16,185,129,.30);
+      border-radius:999px;padding:5px 11px}
+    .status__dot{width:7px;height:7px;border-radius:50%;background:var(--mint);
+      box-shadow:0 0 0 0 rgba(16,185,129,.55);animation:pulse 2.4s infinite}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,.5)}70%{box-shadow:0 0 0 7px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+    .profile__name{margin:12px 0 0;font-size:33px;font-weight:800;letter-spacing:-.045em;line-height:1.02;color:var(--ink)}
+    .profile__role{margin:8px 0 0;font-size:13px;font-weight:700;color:var(--violet-ink)}
+    .profile__role span{color:var(--faint);margin:0 5px}
+    .profile__meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+    .profile__meta i{color:var(--violet);font-size:11px;margin-right:6px}
+    .tag{display:inline-flex;align-items:center;font-size:10.5px;font-weight:600;color:var(--muted);
+      border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:5px 9px}
+    .profile__bio{margin:16px 0 0;max-width:20rem;font-size:13.5px;line-height:1.6;color:#4c4360}
+
+    .quick-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:22px}
+    .quick{display:flex;min-height:60px;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+      border:1px solid var(--line);border-radius:15px;background:var(--surface);color:var(--ink);
+      font-size:10px;font-weight:700;cursor:pointer;transition:.2s;box-shadow:0 4px 12px -8px rgba(91,33,182,.4)}
+    .quick i{color:var(--violet);font-size:15px;transition:.2s}
+    .quick:hover{border-color:var(--violet);background:var(--violet);color:#fff;transform:translateY(-2px)}
+    .quick:hover i{color:#fff;transform:scale(1.08)}
+    .social-row{display:flex;align-items:center;gap:9px;margin-top:16px}
+    .social-row .lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase;margin-right:2px}
+    .social{display:grid;height:33px;width:33px;place-items:center;border:1px solid var(--line);
+      border-radius:10px;background:var(--surface);color:var(--violet-ink);font-size:13px;transition:.2s}
+    .social:hover{border-color:var(--violet);color:#fff;background:var(--violet)}
+
+    /* ---------- SECTIONS ---------- */
+    .skani-section{margin-top:40px}
+    .section-title{display:flex;align-items:flex-end;justify-content:space-between;
+      margin:0 2px 16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+    .section-title p{margin:0;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--violet)}
+    .section-title h2{margin:6px 0 0;font-size:21px;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+    .section-title>span{color:var(--violet-2);font-size:14px}
+
+    .card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+    .skani-card{position:relative;display:flex;min-height:150px;flex-direction:column;align-items:flex-start;
+      border:1px solid var(--line);border-radius:18px;background:var(--surface);padding:16px;
+      text-align:left;color:var(--ink);text-decoration:none;cursor:pointer;transition:.2s;
+      box-shadow:0 6px 16px -12px rgba(91,33,182,.35)}
+    .skani-card:hover{border-color:var(--violet);background:#fff;transform:translateY(-3px);
+      box-shadow:0 18px 30px -18px rgba(124,58,237,.45)}
+    .skani-card>i{display:grid;place-items:center;height:38px;width:38px;margin-bottom:auto;border-radius:12px;
+      background:var(--violet-soft);color:var(--violet);font-size:16px;transition:.2s}
+    .skani-card:hover>i{background:var(--violet);color:#fff}
+    .skani-card b{margin-top:18px;font-size:14px;font-weight:800;line-height:1.15}
+    .skani-card small{margin-top:5px;color:var(--muted);font-size:10.5px;line-height:1.4}
+    .skani-card em{position:absolute;right:15px;top:15px;color:var(--faint);font-size:15px;font-style:normal;transition:.2s}
+    .skani-card:hover em{color:var(--violet);transform:translateX(2px)}
+    /* products are the brand moment — filled purple with light content */
+    .product{background:linear-gradient(155deg,#7c3aed,#5b21b6);border-color:transparent;color:#fff;
+      box-shadow:0 14px 28px -14px rgba(124,58,237,.7)}
+    .product:hover{background:linear-gradient(155deg,#8b5cf6,#6d28d9)}
+    .product>i{background:rgba(255,255,255,.16);color:#fff}
+    .product:hover>i{background:rgba(255,255,255,.24)}
+    .product small{color:rgba(255,255,255,.78)}
+    .product em{color:rgba(255,255,255,.82)}
+    .product:hover em{color:#fff}
+
+    /* ---------- MEETING CTA ---------- */
+    .cta{position:relative;overflow:hidden;margin-top:48px;border-radius:24px;padding:32px 24px;text-align:center;
+      border:1px solid transparent;color:#fff;
+      background:linear-gradient(150deg,#6d28d9 0%,#7c3aed 48%,#8b5cf6 100%);
+      box-shadow:0 22px 44px -20px rgba(91,33,182,.7)}
+    .cta:before{content:'';position:absolute;right:-70px;top:-80px;width:220px;height:220px;border-radius:50%;
+      background:radial-gradient(circle,rgba(255,255,255,.18),transparent 62%);pointer-events:none}
+    .cta>*{position:relative}
+    .cta .k{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.16em;color:rgba(255,255,255,.82)}
+    .cta h2{margin:12px 0 0;font-size:24px;font-weight:800;letter-spacing:-.03em;color:#fff}
+    .cta p{margin:12px auto 0;max-width:22rem;font-size:13px;line-height:1.6;color:rgba(255,255,255,.85)}
+    .cta__btn{display:inline-flex;align-items:center;gap:8px;margin-top:22px;border:0;border-radius:13px;
+      padding:13px 22px;font-size:13px;font-weight:800;cursor:pointer;color:var(--violet-ink);background:#fff;
+      box-shadow:0 10px 24px -10px rgba(0,0,0,.35);transition:.2s}
+    .cta__btn:hover{transform:translateY(-2px);box-shadow:0 16px 30px -10px rgba(0,0,0,.4)}
+
+    footer{padding-bottom:120px;text-align:center;font-family:'DM Mono',monospace;font-size:9px;
+      letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+
+    /* ---------- STICKY BAR ---------- */
+    #sticky-bar{position:fixed;bottom:16px;left:16px;right:16px;z-index:40;margin:0 auto;max-width:27rem;
+      display:grid;grid-template-columns:1fr 1fr;gap:9px;border-radius:16px;padding:9px;
+      border:1px solid var(--line-2);background:rgba(255,255,255,.82);backdrop-filter:blur(18px);
+      box-shadow:0 18px 40px -14px rgba(91,33,182,.5)}
+    #sticky-bar button,#sticky-bar a{border-radius:11px;padding:13px 12px;font-size:12px;font-weight:800;
+      text-align:center;text-decoration:none;cursor:pointer;transition:.2s}
+    #sticky-bar button{border:0;background:linear-gradient(135deg,var(--violet),#6d28d9);color:#fff}
+    #sticky-bar a{border:1px solid var(--line-2);background:var(--surface);color:var(--violet-ink)}
+    #sticky-bar a:hover,#sticky-bar button:hover{transform:translateY(-1px)}
+
+    /* ---------- BOTTOM SHEET ---------- */
+    #sheet-overlay{position:fixed;inset:0;z-index:50;background:rgba(27,18,48,.42);backdrop-filter:blur(5px)}
+    .sheet{position:absolute;bottom:0;left:0;right:0;margin:0 auto;max-width:29rem;max-height:88vh;overflow-y:auto;
+      border-radius:26px 26px 0 0;border:1px solid var(--line-2);border-bottom:0;padding:20px 20px 34px;
+      background:linear-gradient(180deg,#ffffff,#faf7ff)}
+    .sheet__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .sheet__grip{height:5px;width:42px;border-radius:999px;background:var(--line-2)}
+    .sheet__close{display:grid;height:36px;width:36px;place-items:center;border-radius:999px;
+      border:1px solid var(--line-2);background:var(--surface-2);color:var(--muted);cursor:pointer}
+    .sheet__close:hover{color:#fff;background:var(--violet);border-color:var(--violet)}
+
+    /* sheet content (built by JS) — mapped into the light + purple system */
+    #sheet-content h2{margin:12px 0 0;font-size:24px;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+    #sheet-content .mono{color:var(--violet)!important}
+    #sheet-content .text-violet-300,#sheet-content .text-violet-200{color:var(--violet-ink)!important}
+    #sheet-content .text-violet-100\/75,#sheet-content .text-violet-100\/70{color:var(--muted)!important}
+    .feature{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:11px;
+      padding:11px;color:var(--ink);font-size:12px;background:var(--surface-2)}
+    .feature i{color:var(--violet)}
+    .accordion{overflow:hidden;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);margin-top:8px}
+    .accordion summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none;
+      padding:13px;font-size:12.5px;font-weight:800;color:var(--ink)}
+    .accordion summary::-webkit-details-marker{display:none}
+    .accordion summary i{color:var(--violet);font-size:11px;transition:transform .2s}
+    .accordion[open] summary i{transform:rotate(45deg)}
+    .accordion-body{border-top:1px solid var(--line);padding:6px 13px 12px}
+    .accordion-body p{display:flex;gap:9px;margin:9px 0;color:#4c4360;font-size:11.5px;line-height:1.55}
+    .accordion-body p i{margin-top:3px;color:var(--violet);font-size:8px}
+    .sheet-button{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:12px;
+      padding:13px 16px;font-size:12.5px;font-weight:800;cursor:pointer;color:#fff;
+      background:linear-gradient(135deg,var(--violet),#6d28d9)}
+    .sheet-button.secondary{background:var(--surface-2);border:1px solid var(--line-2);color:var(--violet-ink)}
+    label{display:block;color:var(--ink);font-size:11px;font-weight:700;margin-top:2px}
+    label b{color:var(--violet)}
+    label span{color:var(--faint);font-weight:500}
+    input,select,textarea{display:block;width:100%;margin-top:6px;border:1px solid var(--line-2);border-radius:10px;
+      background:#fff;padding:11px;color:var(--ink);font:inherit;font-size:12.5px;outline:0;transition:.2s}
+    input::placeholder,textarea::placeholder{color:var(--faint)}
+    input:focus,select:focus,textarea:focus{border-color:var(--violet);box-shadow:0 0 0 3px var(--violet-soft)}
+    select option{background:#fff}
+    ::selection{background:var(--violet);color:#fff}
+  </style>
+</head>
+<body>
+  <main>
+    <!-- The hero is styled as a personal digital profile card. -->
+    <section id="hero" class="profile">
+      <div class="profile__glow"></div><div class="profile__ring"></div>
+      <div class="profile__top">
+        <div class="avatar">AA</div>
+        <span class="chip">SKANI · 01</span>
+      </div>
+      <div class="status"><span class="status__dot"></span>Open to new projects</div>
+      <h1 class="profile__name">Abdulhaliym Aman</h1>
+      <p class="profile__role">Co-Founder <span>·</span> Developer <span>·</span> Code255</p>
+      <div class="profile__meta">
+        <span class="tag"><i class="fa-solid fa-code"></i>Digital Solutions</span>
+        <span class="tag"><i class="fa-solid fa-location-dot"></i>Tanzania</span>
+      </div>
+      <p class="profile__bio">Building digital solutions that help businesses grow through websites, immersive experiences, and innovative technology.</p>
+      <div class="quick-row">
+        <a class="quick" href="tel:+255629717285" aria-label="Call Abdulhaliym"><i class="fa-solid fa-phone"></i><span>Call</span></a>
+        <a class="quick" href="https://wa.me/255629717285" target="_blank" rel="noopener" aria-label="WhatsApp Abdulhaliym"><i class="fa-brands fa-whatsapp"></i><span>Chat</span></a>
+        <a class="quick" href="mailto:code255tech@gmail.com" aria-label="Email Abdulhaliym"><i class="fa-solid fa-envelope"></i><span>Email</span></a>
+        <button class="quick" onclick="saveContact()" aria-label="Save Abdulhaliym contact"><i class="fa-solid fa-download"></i><span>Save</span></button>
+      </div>
+      <div class="social-row">
+        <span class="lbl">Find me</span>
+        <a class="social" href="https://www.instagram.com/code255.tech/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a class="social" href="https://www.tiktok.com/@code255.tech" target="_blank" rel="noopener" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+        <a class="social" href="mailto:code255tech@gmail.com" aria-label="Email Code255"><i class="fa-solid fa-envelope"></i></a>
+      </div>
+    </section>
+
+    <section class="skani-section"><div class="section-title"><div><p>02 / ABOUT</p><h2>About Code255</h2></div><span>✦</span></div><div class="card-grid"><button class="skani-card" onclick="openSheet('who')"><i class="fa-solid fa-cubes"></i><b>Who We Are</b><small>Technology company</small><em>→</em></button><button class="skani-card" onclick="openSheet('mission')"><i class="fa-solid fa-bullseye"></i><b>Mission</b><small>Technology for everyone</small><em>→</em></button><button class="skani-card" onclick="openSheet('vision')"><i class="fa-solid fa-eye"></i><b>Vision</b><small>Digital Africa</small><em>→</em></button><button class="skani-card" onclick="openSheet('why')"><i class="fa-solid fa-sparkles"></i><b>Why Choose Us</b><small>Built to partner</small><em>→</em></button></div></section>
+
+    <section id="products" class="skani-section"><div class="section-title"><div><p>03 / PRODUCTS</p><h2>Code255 Products</h2></div><span>✦</span></div><div class="card-grid"><button class="skani-card product" onclick="openSheet('skani')"><i class="fa-solid fa-qrcode"></i><b>SKANI</b><small>Business Experience Platform</small><em>→</em></button><button class="skani-card product" onclick="openSheet('tours')"><i class="fa-solid fa-vr-cardboard"></i><b>255 Virtual Tours</b><small>Immersive Experiences</small><em>→</em></button></div></section>
+
+    <section id="services" class="skani-section"><div class="section-title"><div><p>04 / SERVICES</p><h2>How we can help</h2></div><span>✦</span></div><div class="card-grid"><button class="skani-card" onclick="openSheet('websites')"><i class="fa-solid fa-globe"></i><b>Websites</b><small>Modern online presence</small><em>→</em></button><button class="skani-card" onclick="openSheet('apps')"><i class="fa-solid fa-mobile-screen-button"></i><b>Mobile Apps</b><small>Powerful experiences</small><em>→</em></button><button class="skani-card" onclick="openSheet('ai')"><i class="fa-solid fa-robot"></i><b>AI Solutions</b><small>Smarter operations</small><em>→</em></button><button class="skani-card" onclick="openSheet('software')"><i class="fa-solid fa-gears"></i><b>Custom Software</b><small>Built around your work</small><em>→</em></button></div></section>
+
+    <section class="skani-section"><div class="section-title"><div><p>05 / CODE255</p><h2>Connect with Code255</h2></div><span>✦</span></div><div class="card-grid"><a class="skani-card link-card" href="https://www.instagram.com/code255.tech/" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i><b>Instagram</b><small>@code255.tech</small><em>↗</em></a><a class="skani-card link-card" href="https://www.tiktok.com/@code255.tech" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i><b>TikTok</b><small>@code255.tech</small><em>↗</em></a><a class="skani-card link-card" href="#meeting"><i class="fa-solid fa-globe"></i><b>Website</b><small>Coming soon</small><em>→</em></a><a class="skani-card link-card" href="mailto:code255tech@gmail.com"><i class="fa-solid fa-envelope"></i><b>Email</b><small>code255tech@gmail.com</small><em>↗</em></a></div></section>
+
+    <section id="meeting" class="cta"><p class="k">06 / START A PROJECT</p><h2>Let’s build something remarkable together.</h2><p>Whether you need a website, SKANI experience, AI solution, or virtual tour, I’d love to hear about your project.</p><button onclick="openSheet('meeting')" class="cta__btn"><i class="fa-solid fa-calendar-days"></i>Schedule Meeting</button></section>
+  </main>
+  <footer>Powered by SKANI &nbsp;·&nbsp; Created by Code255</footer>
+
+  <div id="sticky-bar" class="hide"><button onclick="openSheet('meeting')"><i class="fa-solid fa-calendar-days"></i> Meeting</button><a href="https://wa.me/255629717285" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a></div>
+
+  <!-- One reusable bottom sheet keeps every information interaction inside SKANI. -->
+  <div id="sheet-overlay" class="hide" onclick="if(event.target===this)closeSheet()"><section class="sheet"><div class="sheet__head"><div class="sheet__grip"></div><button onclick="closeSheet()" class="sheet__close" aria-label="Close modal"><i class="fa-solid fa-xmark"></i></button></div><div id="sheet-content"></div></section></div>
+  <script>
+    const richSheets={
+      who:{title:'Who We Are',eyebrow:'BUILDING DIGITAL SOLUTIONS THAT MAKE A DIFFERENCE',intro:'Code255 is a technology company dedicated to helping businesses embrace digital transformation through innovative software, immersive digital experiences, and intelligent solutions.',blocks:[['Our Promise',['We simplify. We innovate. We transform. You grow. Everything we create is guided by this philosophy.']],['What We Do',['Website Development','Mobile Applications','SKANI Experiences','255 Virtual Tours','AI Solutions','Custom Software','Branding & UI/UX','Digital Transformation']],['Industries We Serve',['Hospitality','Education','Businesses','Real Estate','Restaurants','Healthcare','Retail']],['Why We Exist',['Technology should empower businesses — not overwhelm them. Our goal is to create practical digital solutions that help organizations operate more efficiently, engage customers more effectively, and grow with confidence.']]],actions:[['Explore Products',"go('products')"],['Schedule Meeting',"openSheet('meeting')"]]},
+      mission:{title:'Our Mission',eyebrow:'MAKING TECHNOLOGY PRACTICAL, ACCESSIBLE, AND VALUABLE',intro:'Our mission is to make digital transformation achievable for businesses of every size. Whether you’re a startup, school, hotel, restaurant, or established organization, we believe technology should be simple to adopt and focused on delivering real results.',blocks:[['We Believe Technology Should…',['Solve real business challenges','Improve customer experiences','Save time and resources','Be intuitive and easy to use','Support long-term business growth']],['Every Project We Deliver',['Starts with understanding your business','Is designed around your users','Is built for performance','Is focused on measurable impact','Includes long-term support']],['Our Commitment',['We don’t sell technology for the sake of technology. We build solutions that create meaningful value.']]],actions:[['View Services',"go('services')"],['Let’s Talk',"openSheet('meeting')"]]},
+      vision:{title:'Our Vision',eyebrow:'EMPOWERING AFRICA THROUGH INNOVATION',intro:'We envision a future where businesses across Africa thrive through accessible, innovative, and world-class digital solutions. Code255 aims to become a trusted technology partner known for building products and experiences that transform how organizations connect, operate, and grow.',blocks:[['Our Vision in Action',['Empower African businesses','Create globally competitive products','Drive digital transformation','Build long-term partnerships','Deliver meaningful innovation']],['Looking Ahead',['We’re continuously investing in new products, smarter technologies, and better experiences that help businesses stay ahead in a rapidly evolving digital world.']],['Building Africa’s Digital Future',['One solution at a time.']]],actions:[['Explore Products',"go('products')"],['Schedule Meeting',"openSheet('meeting')"]]},
+      why:{title:'Why Businesses Choose Code255',eyebrow:'MORE THAN A SERVICE PROVIDER',intro:'We believe successful projects are built on trust, collaboration, and long-term partnerships. When you work with Code255, you gain a team invested in your success from the first conversation to long after launch.',blocks:[['What Sets Us Apart',['Mobile-First Thinking','Exceptional User Experience','Innovative Solutions','Future-Ready Technology','Tailored Around Your Business','Dedicated Partnership']],['Our Process',['Discover — We understand your business and goals.','Strategize — We recommend the right solution.','Design — We create intuitive user experiences.','Develop — We build reliable, scalable technology.','Launch & Support — We continue supporting your growth.']],['Why Businesses Stay With Us',['Because we’re committed to helping businesses grow — not simply delivering projects.']]],actions:[['View Services',"go('services')"],['Schedule Meeting',"openSheet('meeting')"]]},
+      skani:{title:'SKANI',eyebrow:'BUSINESS EXPERIENCE PLATFORM',intro:'SKANI is a mobile-first business experience platform that helps businesses present everything they offer through one simple scan. It brings together contact information, products, services, media, virtual tours, booking links, social platforms, and much more into one guided digital experience.',blocks:[['What Makes SKANI Different?',['Unlike a traditional website or link page, SKANI is designed to create meaningful interactions. It guides visitors through your business in a structured, engaging, and action-oriented experience.']],['Perfect For',['Hotels & Resorts','Restaurants','Schools','Businesses','Real Estate','Retail','Professionals']],['Core Features',['Mobile-First Design','QR & Shareable Links','Interactive Experience Cards','Visitor Analytics','Brand Customization','Multi-language Ready','AI-Ready Architecture','Lightweight & Fast']],['Why Businesses Love SKANI',['Impress customers','Increase engagement','Simplify customer journeys','Replace traditional brochures','Share everything through one experience']],['Looking Ahead',['SKANI is continuously evolving with AI-powered assistance, smarter recommendations, advanced analytics, and deeper business integrations.']]],actions:[['Explore Demo',"openSheet('meeting')"],['Request a SKANI',"openSheet('meeting')"],['Schedule Meeting',"openSheet('meeting')"]]},
+      tours:{title:'255 Virtual Tours',eyebrow:'EXPERIENCE BEFORE YOU ARRIVE',intro:'255 Virtual Tours allows businesses to showcase physical spaces through immersive 360° interactive experiences that customers can explore from anywhere.',blocks:[['Why It Matters',['People make better decisions when they can experience a place before visiting. Virtual tours build confidence, increase engagement, and help businesses stand out.']],['Ideal For',['Hotels & Resorts','Schools','Real Estate','Office Spaces','Showrooms','Restaurants','Healthcare Facilities']],['Features',['High-Quality 360° Photography','Interactive Hotspots','Information Pop-ups','Images & Videos','Floor Navigation','Share Anywhere','Mobile Friendly']],['Business Benefits',['Build Trust','Increase Bookings & Enquiries','Reach More Customers','Save Time on Physical Tours','Deliver Premium Experiences']],['Perfect Together',['255 Virtual Tours integrates seamlessly with SKANI, allowing visitors to discover your spaces as part of a complete digital business experience.']]],actions:[['View Examples',"openSheet('meeting')"],['Request a Virtual Tour',"openSheet('meeting')"],['Schedule Meeting',"openSheet('meeting')"]]}
+    };
+    const sheets={
+      who:['Who We Are','Technology company','Code255 is a technology company focused on helping businesses embrace digital transformation through innovative software, immersive experiences, and modern digital solutions. From websites and mobile apps to SKANI and Virtual Tours, we build technology that creates real business value.'],
+      mission:['Mission','Accessible digital transformation','To simplify technology and make digital transformation accessible for businesses of every size.'],
+      vision:['Vision','Digital experiences for Africa','To become one of Africa’s leading creators of digital experiences that transform how businesses connect with customers.'],
+      why:['Why Choose Code255','Built for lasting value','Modern Solutions|Mobile First|User-Focused Design|Long-Term Partnership|Innovative Thinking'],
+      websites:['Website Development','Modern digital foundations','Responsive websites designed to establish credibility, attract customers, and help businesses grow online.','Responsive design|Clear customer journeys|Modern UI/UX|Content-ready builds','Discuss project'],
+      apps:['Mobile App Development','Experiences in your customer’s hand','Mobile applications that give businesses and their customers powerful, useful digital experiences.','Product planning|Mobile-first UX|Customer tools|Business workflows','Discuss project'],
+      ai:['AI Solutions','Practical intelligence for operations','Helping businesses integrate Artificial Intelligence into their operations in useful, understandable ways.','AI chatbots|Knowledge assistants|Business automation|AI workflows','Discuss project'],
+      software:['Custom Software','Built around how you work','Tailored systems designed around specific business needs, workflows, and operations.','Workflow mapping|Custom systems|Operations tools|Scalable foundations','Discuss project'],
+    };
+    function esc(s){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+    function openSheet(key){if(key==='meeting'){meetingSheet();return}if(richSheets[key]){renderRichSheet(richSheets[key]);showSheet();return}const d=sheets[key];if(!d)return;const features=d[3];document.querySelector('#sheet-content').innerHTML=`<p class="mono text-[10px] uppercase tracking-[.16em] text-violet-300">SKANI / DETAIL</p><h2 class="mt-3 text-2xl font-extrabold">${esc(d[0])}</h2><p class="mt-1 font-semibold text-violet-200">${esc(d[1])}</p><p class="mt-4 text-sm leading-6 text-violet-100/75">${esc(d[2])}</p>${features?`<div class="mt-5 space-y-2">${features.split('|').map(x=>`<div class="feature"><i class="fa-solid fa-check"></i>${esc(x)}</div>`).join('')}</div>`:''}${d[4]?`<button onclick="closeSheet();openSheet('meeting')" class="sheet-button mt-6">${esc(d[4])}<i class="fa-solid fa-arrow-right"></i></button>`:''}`;showSheet()}
+    function renderRichSheet(d){const blocks=d.blocks.map((b,i)=>`<details class="accordion" ${i===0?'open':''}><summary>${esc(b[0])}<i class="fa-solid fa-plus"></i></summary><div class="accordion-body">${b[1].map(x=>`<p><i class="fa-solid fa-check"></i>${esc(x)}</p>`).join('')}</div></details>`).join('');const actions=d.actions.map((a,i)=>`<button onclick="${a[1]}" class="${i===0?'sheet-button':'sheet-button secondary'}">${esc(a[0])}<i class="fa-solid fa-arrow-right"></i></button>`).join('');document.querySelector('#sheet-content').innerHTML=`<p class="mono text-[10px] uppercase tracking-[.16em] text-violet-300">SKANI / DETAIL</p><h2 class="mt-3 text-2xl font-extrabold">${esc(d.title)}</h2><p class="mt-1 text-xs font-bold tracking-wide text-violet-200">${esc(d.eyebrow)}</p><p class="mt-4 text-sm leading-6 text-violet-100/75">${esc(d.intro)}</p><div class="mt-5 space-y-2">${blocks}</div><div class="mt-6 flex flex-wrap gap-2">${actions}</div>`}
+    function go(id){closeSheet();document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'})}
+    function meetingSheet(){document.querySelector('#sheet-content').innerHTML=`<p class="mono text-[10px] uppercase tracking-[.16em] text-violet-300">SKANI / MEETING</p><h2 class="mt-3 text-2xl font-extrabold">Schedule a Meeting</h2><p class="mt-2 text-sm leading-6 text-violet-100/70">Your request opens in WhatsApp for you to review before sending.</p><form onsubmit="sendRequest(event)" class="mt-6 space-y-3"><label>Full Name <b>*</b><input required name="name" placeholder="Your name"></label><label>Company <span>Optional</span><input name="company" placeholder="Company or organization"></label><label>Email <span>Optional</span><input name="email" type="email" placeholder="you@email.com"></label><label>Project Type<select name="type"><option>SKANI</option><option>Website Development</option><option>Mobile App Development</option><option>Virtual Tour</option><option>AI Solution</option><option>Custom Software Solution</option><option>Digital Transformation Consulting</option><option>Branding & UI/UX</option><option>Other</option></select></label><label>Meeting Method<select name="method"><option>WhatsApp Call</option><option>Phone Call</option><option>Google Meet</option><option>Microsoft Teams</option><option>In Person</option></select></label><div class="grid grid-cols-2 gap-3"><label>Preferred Date<input name="date" type="date"></label><label>Preferred Time<input name="time" type="time"></label></div><label>Project Details<textarea name="details" rows="3" placeholder="Tell us about your project."></textarea></label><button class="sheet-button w-full" type="submit">Send Request <i class="fa-brands fa-whatsapp"></i></button></form>`;showSheet()}
+    function showSheet(){document.querySelector('#sheet-overlay').classList.remove('hide');document.body.style.overflow='hidden'}function closeSheet(){document.querySelector('#sheet-overlay').classList.add('hide');document.body.style.overflow=''}document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+    function sendRequest(e){e.preventDefault();let f=new FormData(e.target),v=k=>encodeURIComponent(f.get(k)||'—');let m=`Hello Abdulhaliym!\n\nNew meeting request\nName: ${f.get('name')}\nCompany: ${f.get('company')||'—'}\nEmail: ${f.get('email')||'—'}\nProject: ${f.get('type')}\nMethod: ${f.get('method')}\nDate: ${f.get('date')||'Flexible'}\nTime: ${f.get('time')||'Flexible'}\n\nDetails:\n${f.get('details')||'—'}`;window.open('https://wa.me/255629717285?text='+encodeURIComponent(m),'_blank')}
+    function saveContact(){let v='BEGIN:VCARD\nVERSION:3.0\nFN:Abdulhaliym Aman\nORG:Code255\nTITLE:Co-Founder; Developer\nTEL;TYPE=CELL:+255629717285\nEMAIL:code255tech@gmail.com\nEND:VCARD',a=document.createElement('a');a.href=URL.createObjectURL(new Blob([v],{type:'text/vcard'}));a.download='Abdulhaliym-Aman.vcf';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),0)}
+    new IntersectionObserver(([entry])=>document.querySelector('#sticky-bar').classList.toggle('hide',entry.isIntersecting),{threshold:.1}).observe(document.querySelector('#hero'));
+  </script>
+</body>
+</html>
