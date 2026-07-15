@@ -1,0 +1,921 @@
+
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Vista Print — Your No.1 Printing Partner</title>
+    <meta name="description" content="Vista Print Tanzania — Digital · Offset · Large Format · Promotions · Signages. Order printing & branded products on WhatsApp.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        vistaPaper:  '#EFF5F7',
+                        vistaCloud:  '#F7FBFC',
+                        vistaTeal:   '#1C7C97',
+                        vistaDeep:   '#0D4E62',
+                        vistaNavy:   '#082C39',
+                        vistaSky:    '#23A7DC',
+                        vistaYellow: '#FFCE2E',
+                        vistaCoral:  '#EF5D7A',
+                        vistaViolet: '#6C4BB6',
+                        vistaInk:    '#0E2A33',
+                        vistaDark:   '#071C24',
+                        vistaDarkCard:'#0C2A34'
+                    },
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                        display: ['Sora', 'sans-serif']
+                    },
+                    animation: {
+                        float: 'float 4s ease-in-out infinite',
+                        'float-delayed': 'float 4.6s ease-in-out 1.4s infinite',
+                        'bounce-soft': 'bounceSoft 2.6s ease-in-out infinite',
+                        'spin-slow': 'spin 22s linear infinite',
+                        'spin-rev': 'spinRev 26s linear infinite'
+                    },
+                    keyframes: {
+                        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-8px)' } },
+                        bounceSoft: { '0%,100%': { transform: 'translateY(0) scale(1)' }, '50%': { transform: 'translateY(-5px) scale(1.04)' } },
+                        spinRev: { '0%': { transform: 'rotate(0)' }, '100%': { transform: 'rotate(-360deg)' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            background:
+                radial-gradient(circle at 90% -4%, rgba(35,167,220,.24), transparent 24rem),
+                radial-gradient(circle at 4% 12%, rgba(28,124,151,.12), transparent 20rem),
+                linear-gradient(180deg, #EFF5F7 0%, #E4EFF2 100%);
+            color: #0E2A33;
+            font-family: 'Manrope', sans-serif;
+        }
+        .dark body {
+            background:
+                radial-gradient(circle at 90% -4%, rgba(35,167,220,.16), transparent 24rem),
+                linear-gradient(180deg, #071C24 0%, #0A222B 100%);
+            color: #E7F1F4;
+        }
+        /* faint blueprint grid, echoing the "printing" world */
+        body::before {
+            content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .55; z-index: 0;
+            background-image:
+                linear-gradient(rgba(13,78,98,.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(13,78,98,.045) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .dark body::before {
+            background-image:
+                linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        input, textarea, select { font-size: 16px !important; }
+        .tap-scale { transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease; }
+        .tap-scale:active { transform: scale(.96); }
+        .reveal { opacity: 0; transform: translateY(18px); transition: all .65s cubic-bezier(.16,1,.3,1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        .modal-overlay { opacity: 0; visibility: hidden; transition: all .35s cubic-bezier(.16,1,.3,1); backdrop-filter: blur(0); }
+        .modal-overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(14px); }
+        .modal-panel, .order-modal-content { transform: translateY(100%); transition: transform .45s cubic-bezier(.16,1,.3,1); }
+        .modal-overlay.active .modal-panel, .modal-overlay.active .order-modal-content { transform: translateY(0); }
+
+        .glass { background: rgba(255,255,255,.72); box-shadow: inset 0 0 0 1px rgba(13,78,98,.08); }
+        .dark .glass { background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1px rgba(255,255,255,.07); }
+
+        .hero-title { letter-spacing: -0.02em; }
+
+        .cat-pill {
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 15px; border-radius: 999px;
+            font-size: 11px; font-weight: 800; text-transform: uppercase; white-space: nowrap;
+            border: 2px solid transparent; cursor: pointer; transition: all .2s; font-family: 'Manrope', sans-serif;
+        }
+        .cat-pill.active { background: #0D4E62; color: #FFCE2E; border-color: #0D4E62; }
+        .cat-pill.inactive { background: rgba(255,255,255,.7); color: #0D4E62; border-color: rgba(13,78,98,.16); }
+        .dark .cat-pill.inactive { background: rgba(255,255,255,.05); color: #cfe6ee; border-color: rgba(255,255,255,.1); }
+
+        .item-card {
+            border-radius: 18px; border: 2px solid rgba(13,78,98,.1); background: rgba(255,255,255,.85);
+            overflow: hidden; cursor: pointer; transition: all .2s; position: relative;
+        }
+        .dark .item-card { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.08); }
+        .item-card.in-cart { border-color: #1C7C97; box-shadow: 0 10px 24px rgba(28,124,151,.22); }
+        .item-visual { aspect-ratio: 1 / .9; position: relative; overflow: hidden; background: #E8F1F4; }
+        .dark .item-visual { background: #0E323E; }
+        .item-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .item-fallback {
+            position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+            font-family: 'Sora', sans-serif; font-weight: 800; font-size: 34px; color: #fff;
+            background: linear-gradient(135deg, #1C7C97, #0D4E62);
+        }
+        .item-card-body { padding: 11px 12px 12px; }
+
+        .add-btn-card, .qty-btn {
+            width: 32px; height: 32px; border-radius: 50%; border: 0; display: inline-flex;
+            align-items: center; justify-content: center; font-weight: 900; transition: all .15s;
+        }
+        .add-btn-card { background: #1C7C97; color: #fff; box-shadow: 0 6px 14px rgba(28,124,151,.32); }
+        .qty-btn { background: rgba(35,167,220,.16); color: #0D4E62; border: 1px solid rgba(13,78,98,.14); }
+        .dark .qty-btn { color: #cfe6ee; }
+        .qty-ctrl { display: flex; align-items: center; gap: 7px; }
+        .qty-num { min-width: 18px; text-align: center; font-size: 13px; font-weight: 900; }
+
+        .badge-cart {
+            position: absolute; top: 8px; right: 8px; min-width: 20px; height: 20px; padding: 0 6px;
+            border-radius: 999px; background: #1C7C97; color: #fff; display: flex; align-items: center;
+            justify-content: center; font-size: 10px; font-weight: 900;
+        }
+        .price-tag {
+            position: absolute; top: 8px; left: 8px; padding: 3px 9px; border-radius: 999px;
+            background: rgba(8,44,57,.82); color: #FFCE2E; font-size: 10px; font-weight: 800; letter-spacing: .01em;
+        }
+
+        .step-dot { width: 8px; height: 8px; border-radius: 999px; background: rgba(13,78,98,.2); transition: all .25s; }
+        .dark .step-dot { background: rgba(255,255,255,.18); }
+        .step-dot.done, .step-dot.active { background: #1C7C97; }
+        .step-dot.active { width: 24px; }
+
+        .order-screen { display: none; }
+        .order-screen.active { display: block; }
+        .summary-row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(13,78,98,.1); font-size: 13px; }
+        .dark .summary-row { border-color: rgba(255,255,255,.1); }
+        .pay-opt { display: flex; align-items: center; gap: 12px; padding: 14px; border: 2px solid rgba(13,78,98,.14); border-radius: 18px; cursor: pointer; transition: all .2s; }
+        .dark .pay-opt { border-color: rgba(255,255,255,.12); }
+        .pay-opt.selected { border-color: #1C7C97; background: rgba(28,124,151,.08); }
+        .radio-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(13,78,98,.45); flex-shrink: 0; }
+        .dark .radio-dot { border-color: rgba(255,255,255,.35); }
+        .pay-opt.selected .radio-dot { background: #1C7C97; box-shadow: inset 0 0 0 4px #fff; }
+
+        .search-input {
+            width: 100%; border: 2px solid rgba(13,78,98,.14); background: rgba(255,255,255,.8);
+            border-radius: 18px; padding: 13px 42px; outline: none; font-weight: 700;
+        }
+        .dark .search-input { background: rgba(255,255,255,.06); color: #fff; border-color: rgba(255,255,255,.1); }
+        .field {
+            width: 100%; background: #fff; padding: 14px; font-size: 14px; font-weight: 700;
+            border: 2px solid rgba(13,78,98,.15); border-radius: 16px; outline: none; transition: all .2s;
+        }
+        .dark .field { background: #0C2A34; color: #fff; }
+        .field:focus { border-color: #1C7C97; box-shadow: 0 0 0 4px rgba(28,124,151,.12); }
+        .font-display { font-family: 'Sora', sans-serif; }
+
+        /* signature Bauhaus geometric band */
+        .geo-band { position: absolute; top: 0; left: 0; right: 0; height: 74px; opacity: .95; }
+        .quick-card { scroll-snap-align: start; }
+    </style>
+</head>
+<body class="text-vistaInk dark:text-zinc-100 transition-colors duration-300">
+    <div class="relative z-10 max-w-md mx-auto px-4 sm:px-6 pb-40">
+
+        <!-- ============ HEADER: logo left · call button right ============ -->
+        <header class="sticky top-0 z-40 -mx-4 sm:-mx-6 px-4 sm:px-6 pt-[calc(0.9rem+env(safe-area-inset-top))] pb-3 bg-vistaPaper/85 dark:bg-vistaDark/85 backdrop-blur-xl border-b border-vistaDeep/10">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-11 h-11 rounded-2xl bg-white dark:bg-white/10 border border-vistaDeep/10 shadow-sm flex items-center justify-center">
+                        <!-- V tick mark -->
+                        <svg viewBox="0 0 48 48" class="w-7 h-7"><path d="M6 10 L20 38 L28 20 Z" fill="#1C7C97"/><path d="M22 10 L34 10 L26 26 Z" fill="#0D4E62"/><circle cx="34" cy="13" r="4" fill="#FFCE2E"/></svg>
+                    </div>
+                    <div>
+                        <h1 class="font-display font-extrabold text-[17px] leading-none">
+                            <span class="text-vistaTeal">Vista</span><span class="text-vistaDeep dark:text-white">Print</span>
+                        </h1>
+                        <p class="text-[8.5px] font-black uppercase tracking-[0.14em] text-vistaDeep/70 dark:text-vistaSky mt-1">Your No.1 Printing Partner</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl bg-white/80 dark:bg-white/10 border border-vistaDeep/10 flex items-center justify-center text-vistaDeep dark:text-vistaSky shadow-sm tap-scale" aria-label="Toggle theme">
+                        <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
+                    </button>
+                    <a href="tel:+255682492849" class="tap-scale flex items-center gap-2 bg-vistaTeal text-white pl-3 pr-4 h-10 rounded-xl font-black text-xs shadow-lg shadow-vistaTeal/25">
+                        <i class="fa-solid fa-phone-volume"></i>
+                        <span class="hidden xs:inline sm:inline">Call Now</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- ============ WELCOME HERO ============ -->
+            <section class="pt-6 reveal">
+                <div class="relative overflow-hidden rounded-[2.35rem] bg-vistaNavy text-white shadow-2xl">
+                    <!-- geometric band (Bauhaus, echoes the flyers) -->
+                    <svg class="geo-band" viewBox="0 0 400 74" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="74" fill="#0D4E62"/>
+                        <path d="M0 0 h50 v37 h-50 Z" fill="#0E3B4A"/>
+                        <path d="M0 37 L25 12 L50 37 L25 62 Z" fill="#1C7C97"/>
+                        <rect x="50" y="0" width="50" height="74" fill="#0E3B4A"/>
+                        <path d="M50 74 A50 50 0 0 1 100 24 L100 74 Z" fill="#23A7DC"/>
+                        <circle cx="125" cy="20" r="20" fill="#1C7C97"/>
+                        <path d="M105 74 A20 20 0 0 1 145 74 Z" fill="#0E3B4A"/>
+                        <rect x="150" y="0" width="50" height="74" fill="#146277"/>
+                        <circle cx="175" cy="37" r="15" fill="#082C39"/>
+                        <path d="M200 0 A40 40 0 0 1 240 40 L200 40 Z" fill="#23A7DC"/>
+                        <path d="M240 74 A40 40 0 0 1 200 34 L240 34 Z" fill="#1C7C97"/>
+                        <rect x="240" width="40" height="74" fill="#0E3B4A"/>
+                        <path d="M280 0 h40 v74 h-40 Z" fill="#146277"/>
+                        <path d="M280 0 A40 40 0 0 1 320 40 L320 0 Z" fill="#082C39"/>
+                        <path d="M280 74 A40 40 0 0 1 320 34 L280 34 Z" fill="#23A7DC"/>
+                        <!-- petals -->
+                        <path d="M320 37 A37 37 0 0 1 357 0 A37 37 0 0 1 320 37 Z" fill="#1C7C97"/>
+                        <path d="M357 74 A37 37 0 0 1 320 37 A37 37 0 0 1 357 74 Z" fill="#0E3B4A"/>
+                        <path d="M400 37 A37 37 0 0 1 363 74 A37 37 0 0 1 400 37 Z" fill="#23A7DC"/>
+                        <path d="M363 0 A37 37 0 0 1 400 37 A37 37 0 0 1 363 0 Z" fill="#146277"/>
+                    </svg>
+
+                    <div class="relative z-10 px-6 pb-7" style="padding-top:88px">
+                        <div class="flex items-center justify-between">
+                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-vistaYellow text-vistaNavy text-[10px] font-black uppercase tracking-wider">
+                                <span class="w-2 h-2 rounded-full bg-vistaCoral animate-pulse"></span> Let's Brand · Dar es Salaam
+                            </span>
+                            <span class="text-4xl animate-float">🖨️</span>
+                        </div>
+
+                        <h2 class="hero-title mt-5 text-[2.7rem] leading-[.92] font-display font-extrabold">
+                            Karibu.<br><span class="text-vistaSky">We print</span><br><span class="text-vistaYellow">everything.</span>
+                        </h2>
+                        <p class="mt-4 text-[11.5px] font-black uppercase tracking-wider text-white/75">
+                            Digital · Offset · Large Format · Promotions · Signages
+                        </p>
+
+                        <div class="mt-5 grid grid-cols-3 gap-2">
+                            <div class="glass rounded-2xl p-3 text-center"><div class="text-2xl">🏆</div><div class="text-[9px] font-black uppercase mt-1 text-white/85">Awards</div></div>
+                            <div class="glass rounded-2xl p-3 text-center"><div class="text-2xl">👕</div><div class="text-[9px] font-black uppercase mt-1 text-white/85">Apparel</div></div>
+                            <div class="glass rounded-2xl p-3 text-center"><div class="text-2xl">🪧</div><div class="text-[9px] font-black uppercase mt-1 text-white/85">Signage</div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ ACTION-BASED GRID ============ -->
+            <section class="grid grid-cols-2 gap-3.5 mt-5">
+                <button onclick="openModal('services-modal')" class="reveal tap-scale bg-vistaYellow p-5 rounded-[2rem] flex flex-col items-center justify-center text-vistaNavy shadow-md border border-white/70">
+                    <div class="w-11 h-11 rounded-2xl bg-white/50 flex items-center justify-center mb-2 text-xl">🧰</div>
+                    <span class="font-display font-semibold text-base">Our Services</span>
+                    <span class="text-[9px] font-black opacity-75 uppercase tracking-wide">11 print divisions</span>
+                </button>
+                <button onclick="openModal('pricelist-modal')" class="reveal tap-scale bg-white/85 dark:bg-vistaDarkCard p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-vistaDeep/10">
+                    <div class="w-11 h-11 rounded-2xl bg-vistaSky/15 flex items-center justify-center mb-2 text-xl">📋</div>
+                    <span class="font-display font-semibold text-base">Price List</span>
+                    <span class="text-[9px] font-black text-zinc-400 uppercase tracking-wide">Popular items</span>
+                </button>
+                <button onclick="openModal('quote-modal')" class="reveal tap-scale bg-white/85 dark:bg-vistaDarkCard p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-vistaDeep/10">
+                    <div class="w-11 h-11 rounded-2xl bg-vistaViolet/15 flex items-center justify-center mb-2 text-xl">✏️</div>
+                    <span class="font-display font-semibold text-base">Get a Quote</span>
+                    <span class="text-[9px] font-black text-zinc-400 uppercase tracking-wide">Custom job? Ask us</span>
+                </button>
+                <a href="https://wa.me/255682492849" target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-white/85 dark:bg-vistaDarkCard p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-vistaDeep/10 text-center">
+                    <div class="w-11 h-11 rounded-2xl bg-green-100 dark:bg-green-500/10 flex items-center justify-center mb-2 text-xl"><i class="fa-brands fa-whatsapp text-[#25D366]"></i></div>
+                    <span class="font-display font-semibold text-base">WhatsApp</span>
+                    <span class="text-[9px] font-black text-zinc-400 uppercase tracking-wide">Chat with us</span>
+                </a>
+
+                <!-- primary order CTA (full width) -->
+                <button onclick="openOrderBot()" class="reveal tap-scale col-span-2 bg-vistaTeal text-white p-5 rounded-[2rem] flex items-center justify-between shadow-xl shadow-vistaTeal/30 relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-[0.18] bg-[radial-gradient(circle_at_88%_50%,#fff,transparent_32%)]"></div>
+                    <div class="relative text-left">
+                        <div class="text-2xl font-display font-semibold leading-none">Start Your Order 🛒</div>
+                        <div class="text-[10px] font-black uppercase tracking-widest text-white/80 mt-1.5">Pick items · confirm on WhatsApp</div>
+                    </div>
+                    <div class="relative flex items-center gap-2">
+                        <span id="cta-badge" class="hidden bg-vistaYellow text-vistaNavy text-[10px] font-black rounded-full min-w-[22px] h-[22px] items-center justify-center px-1.5"></span>
+                        <div class="w-[3.25rem] h-[3.25rem] min-w-[3.25rem] rounded-full bg-white/15 flex items-center justify-center text-3xl animate-bounce-soft">🖨️</div>
+                    </div>
+                </button>
+            </section>
+
+            <!-- ============ SMART / QUICK ORDERING ============ -->
+            <section class="mt-9">
+                <h3 class="reveal text-lg font-display font-semibold uppercase tracking-tight flex items-center gap-2">
+                    <span class="text-vistaTeal">⚡</span> Quick Order
+                    <span class="text-[9px] font-black uppercase tracking-widest bg-vistaSky/15 text-vistaTeal px-2 py-1 rounded-full">Jump straight in</span>
+                </h3>
+                <div class="flex gap-3 overflow-x-auto no-scrollbar pt-4 pb-1 -mx-4 px-4 sm:-mx-6 sm:px-6" style="scroll-snap-type:x mandatory">
+                    <button onclick="openOrderBot('crystal')" class="quick-card reveal tap-scale min-w-[172px] text-left bg-white/85 dark:bg-vistaDarkCard rounded-[1.8rem] p-3 border border-vistaDeep/10 shadow-sm">
+                        <div class="rounded-2xl overflow-hidden h-24 bg-vistaSky/10 flex items-center justify-center text-4xl">🏆</div>
+                        <div class="mt-2.5 px-1"><div class="font-display font-semibold text-sm leading-tight">Crystal Awards</div><div class="text-[10px] font-black text-vistaTeal mt-0.5">From TZS 100,000</div></div>
+                    </button>
+                    <button onclick="openOrderBot('drink')" class="quick-card reveal tap-scale min-w-[172px] text-left bg-white/85 dark:bg-vistaDarkCard rounded-[1.8rem] p-3 border border-vistaDeep/10 shadow-sm">
+                        <div class="rounded-2xl overflow-hidden h-24 bg-vistaViolet/10 flex items-center justify-center text-4xl">🥤</div>
+                        <div class="mt-2.5 px-1"><div class="font-display font-semibold text-sm leading-tight">Branded Drinkware</div><div class="text-[10px] font-black text-vistaTeal mt-0.5">From TZS 6,000</div></div>
+                    </button>
+                    <button onclick="openOrderBot('id')" class="quick-card reveal tap-scale min-w-[172px] text-left bg-white/85 dark:bg-vistaDarkCard rounded-[1.8rem] p-3 border border-vistaDeep/10 shadow-sm">
+                        <div class="rounded-2xl overflow-hidden h-24 bg-vistaYellow/20 flex items-center justify-center text-4xl">🎟️</div>
+                        <div class="mt-2.5 px-1"><div class="font-display font-semibold text-sm leading-tight">ID & Lanyards</div><div class="text-[10px] font-black text-vistaTeal mt-0.5">From TZS 1,500</div></div>
+                    </button>
+                    <button onclick="openOrderBot('display')" class="quick-card reveal tap-scale min-w-[172px] text-left bg-white/85 dark:bg-vistaDarkCard rounded-[1.8rem] p-3 border border-vistaDeep/10 shadow-sm">
+                        <div class="rounded-2xl overflow-hidden h-24 bg-vistaCoral/10 flex items-center justify-center text-4xl">🪧</div>
+                        <div class="mt-2.5 px-1"><div class="font-display font-semibold text-sm leading-tight">Display & Signage</div><div class="text-[10px] font-black text-vistaTeal mt-0.5">From TZS 15,000</div></div>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ============ POPULAR PICKS (smart ordering, 1-by-1 add) ============ -->
+            <section class="mt-8 reveal">
+                <h3 class="text-lg font-display font-semibold uppercase tracking-tight flex items-center gap-2">
+                    <span class="text-vistaYellow">★</span> Popular Right Now
+                </h3>
+                <p class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 mt-1">Tap <span class="text-vistaTeal font-black">＋</span> to add — build your order one item at a time.</p>
+                <div id="popular-grid" class="grid grid-cols-2 gap-3 mt-4"></div>
+            </section>
+
+            <!-- ============ TRUST / INFO ============ -->
+            <section class="mt-9 reveal">
+                <div class="rounded-[2rem] bg-vistaDeep text-white p-6 relative overflow-hidden">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-vistaSky/20 animate-spin-slow"></div>
+                    <div class="absolute -left-10 -bottom-10 w-28 h-28 rounded-full border-[10px] border-vistaYellow/20 animate-spin-rev"></div>
+                    <h3 class="relative font-display font-bold text-xl">Why brands print with us</h3>
+                    <div class="relative mt-4 grid grid-cols-2 gap-3 text-[12px] font-bold">
+                        <div class="glass rounded-2xl p-3.5"><i class="fa-solid fa-bolt text-vistaYellow"></i><div class="mt-1.5">Fast turnaround</div></div>
+                        <div class="glass rounded-2xl p-3.5"><i class="fa-solid fa-swatchbook text-vistaSky"></i><div class="mt-1.5">Full-colour quality</div></div>
+                        <div class="glass rounded-2xl p-3.5"><i class="fa-solid fa-truck-fast text-vistaSky"></i><div class="mt-1.5">Delivery in Dar</div></div>
+                        <div class="glass rounded-2xl p-3.5"><i class="fa-solid fa-handshake-angle text-vistaYellow"></i><div class="mt-1.5">Bulk & corporate</div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ FOOTER ============ -->
+            <footer class="mt-9 reveal text-center">
+                <div class="rounded-[2rem] glass p-6">
+                    <div class="flex items-center justify-center gap-2 mb-3">
+                        <svg viewBox="0 0 48 48" class="w-7 h-7"><path d="M6 10 L20 38 L28 20 Z" fill="#1C7C97"/><path d="M22 10 L34 10 L26 26 Z" fill="#0D4E62"/><circle cx="34" cy="13" r="4" fill="#FFCE2E"/></svg>
+                        <span class="font-display font-extrabold text-lg"><span class="text-vistaTeal">Vista</span><span class="text-vistaDeep dark:text-white">Print</span></span>
+                    </div>
+                    <p class="text-[12px] font-bold text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        Block 9, Matumbi "A" Street — Fire Area<br>Dar es Salaam, Tanzania
+                    </p>
+                    <div class="flex items-center justify-center gap-3 mt-4">
+                        <a href="tel:+255682492849" class="tap-scale w-11 h-11 rounded-xl bg-vistaTeal/10 text-vistaTeal flex items-center justify-center"><i class="fa-solid fa-phone"></i></a>
+                        <a href="https://wa.me/255682492849" target="_blank" rel="noopener noreferrer" class="tap-scale w-11 h-11 rounded-xl bg-green-500/10 text-[#25D366] flex items-center justify-center"><i class="fa-brands fa-whatsapp text-lg"></i></a>
+                        <a href="mailto:accounts@vistagroup.co.tz" class="tap-scale w-11 h-11 rounded-xl bg-vistaSky/10 text-vistaSky flex items-center justify-center"><i class="fa-solid fa-envelope"></i></a>
+                        <a href="https://vistaprint.tz" target="_blank" rel="noopener noreferrer" class="tap-scale w-11 h-11 rounded-xl bg-vistaViolet/10 text-vistaViolet flex items-center justify-center"><i class="fa-solid fa-globe"></i></a>
+                    </div>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-5">@vistaprint_tz · vistagroup.co.tz</p>
+                </div>
+                <p class="text-[10px] font-bold text-zinc-400 mt-4">Digital menu by Skani · Tap ＋ to order</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- ================= SERVICES MODAL ================= -->
+    <div id="services-modal" class="modal-overlay fixed inset-0 z-[70] flex items-end justify-center px-4">
+        <div class="modal-panel w-full max-w-md bg-vistaCloud dark:bg-vistaDark rounded-t-[2.4rem] p-6 max-h-[85vh] overflow-y-auto no-scrollbar shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-display font-bold text-xl">Our Services</h3>
+                <button onclick="closeModal('services-modal')" class="w-9 h-9 rounded-full bg-vistaDeep/10 dark:bg-white/10 text-lg tap-scale">×</button>
+            </div>
+            <div id="services-list" class="grid grid-cols-2 gap-3"></div>
+            <button onclick="closeModal('services-modal'); openOrderBot()" class="mt-5 w-full bg-vistaTeal text-white py-4 rounded-2xl font-black text-sm uppercase tracking-wider tap-scale shadow-lg">Browse & Order →</button>
+        </div>
+    </div>
+
+    <!-- ================= PRICE LIST MODAL ================= -->
+    <div id="pricelist-modal" class="modal-overlay fixed inset-0 z-[70] flex items-end justify-center px-4">
+        <div class="modal-panel w-full max-w-md bg-vistaCloud dark:bg-vistaDark rounded-t-[2.4rem] p-6 max-h-[85vh] overflow-y-auto no-scrollbar shadow-2xl">
+            <div class="flex items-center justify-between mb-1">
+                <h3 class="font-display font-bold text-xl">Price List</h3>
+                <button onclick="closeModal('pricelist-modal')" class="w-9 h-9 rounded-full bg-vistaDeep/10 dark:bg-white/10 text-lg tap-scale">×</button>
+            </div>
+            <p class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 mb-4">Popular items — prices in TZS. Bulk rates on request.</p>
+            <div id="pricelist-table" class="space-y-2"></div>
+        </div>
+    </div>
+
+    <!-- ================= QUOTE MODAL ================= -->
+    <div id="quote-modal" class="modal-overlay fixed inset-0 z-[70] flex items-end justify-center px-4">
+        <div class="modal-panel w-full max-w-md bg-vistaCloud dark:bg-vistaDark rounded-t-[2.4rem] p-6 max-h-[85vh] overflow-y-auto no-scrollbar shadow-2xl">
+            <div class="flex items-center justify-between mb-1">
+                <h3 class="font-display font-bold text-xl">Get a Quote</h3>
+                <button onclick="closeModal('quote-modal')" class="w-9 h-9 rounded-full bg-vistaDeep/10 dark:bg-white/10 text-lg tap-scale">×</button>
+            </div>
+            <p class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 mb-4">Custom job — business cards, banners, branding? Tell us and we'll quote on WhatsApp.</p>
+            <form onsubmit="handleQuote(event)" class="space-y-3">
+                <input type="text" id="q-name" placeholder="Your name" required class="field">
+                <input type="text" id="q-item" placeholder="What do you need printed? (e.g. 500 business cards)" required class="field">
+                <textarea id="q-detail" placeholder="Sizes, quantity, colours, deadline..." rows="3" class="field resize-none"></textarea>
+                <button type="submit" class="w-full bg-vistaTeal text-white py-4 rounded-2xl font-black text-sm uppercase tracking-wider tap-scale shadow-lg flex items-center justify-center gap-2"><i class="fa-brands fa-whatsapp text-lg"></i> Send to WhatsApp</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= ORDER MODAL (4-step guided) ================= -->
+    <div id="order-modal" class="modal-overlay fixed inset-0 z-[80] flex items-end justify-center">
+        <div class="order-modal-content w-full max-w-md h-[94vh] bg-vistaCloud dark:bg-vistaDark rounded-t-[2.4rem] flex flex-col shadow-2xl overflow-hidden">
+            <!-- head -->
+            <div class="px-5 pt-4 pb-3 border-b border-vistaDeep/10 dark:border-white/10">
+                <div class="flex items-center justify-between">
+                    <button id="order-back" onclick="orderBack()" class="w-9 h-9 rounded-full bg-vistaDeep/10 dark:bg-white/10 tap-scale hidden"><i class="fa-solid fa-arrow-left text-sm"></i></button>
+                    <div class="flex-1 text-center">
+                        <h3 id="order-title" class="font-display font-bold text-base">Build Your Order</h3>
+                    </div>
+                    <button onclick="closeModal('order-modal')" class="w-9 h-9 rounded-full bg-vistaDeep/10 dark:bg-white/10 text-lg tap-scale">×</button>
+                </div>
+                <div class="flex items-center justify-center gap-1.5 mt-3">
+                    <div class="step-dot active" id="sd1"></div><div class="step-dot" id="sd2"></div><div class="step-dot" id="sd3"></div><div class="step-dot" id="sd4"></div>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto no-scrollbar px-5" id="order-body">
+                <!-- SCREEN 1: browse -->
+                <div id="screen-1" class="order-screen active pt-4 pb-4">
+                    <div class="relative mb-4">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-vistaDeep/40 text-sm"></i>
+                        <input type="text" id="menu-search" class="search-input" placeholder="Search mugs, trophies, lanyards..." oninput="handleSearch(this.value)" autocomplete="off" spellcheck="false">
+                        <button class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-vistaDeep/10 text-xs" id="search-clear-btn" onclick="clearSearch()" aria-label="Clear">×</button>
+                    </div>
+                    <div id="search-results" class="hidden"></div>
+                    <div id="browse-view">
+                        <div class="flex gap-2 overflow-x-auto no-scrollbar pb-3 mb-1" id="cat-pills"></div>
+                        <div id="item-grid" class="grid grid-cols-2 gap-3"></div>
+                    </div>
+                </div>
+
+                <!-- SCREEN 2: cart -->
+                <div id="screen-2" class="order-screen pt-4 pb-4">
+                    <h4 class="font-display font-bold text-lg mb-1">Your Cart</h4>
+                    <p class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 mb-4">Adjust quantities before checkout.</p>
+                    <div id="cart-review-list"></div>
+                    <div class="mt-4 flex items-center justify-between px-1">
+                        <span class="text-xs font-black uppercase tracking-wider text-zinc-500">Total</span>
+                        <span class="text-xl font-black text-vistaTeal" id="cart-total-2">TZS 0</span>
+                    </div>
+                </div>
+
+                <!-- SCREEN 3: details -->
+                <div id="screen-3" class="order-screen pt-4 pb-4">
+                    <h4 class="font-display font-bold text-lg mb-4">Your Details</h4>
+                    <div class="space-y-3">
+                        <div><label class="block text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1.5">Name</label>
+                            <input type="text" id="cust-name" placeholder="e.g. Amina Hassan" class="field"></div>
+                        <div><label class="block text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1.5">Company / Brand (optional)</label>
+                            <input type="text" id="cust-business" placeholder="e.g. Bahari Events Ltd" class="field"></div>
+                        <div><label class="block text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1.5">Phone</label>
+                            <input type="tel" id="cust-phone" placeholder="e.g. 0682 492 849" class="field"></div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1.5">Service</label>
+                            <div class="flex gap-2">
+                                <button onclick="setOrderType('Delivery')" id="btn-delivery" class="flex-1 py-3.5 rounded-2xl font-black text-sm uppercase border-2 border-vistaTeal bg-vistaTeal/10 text-vistaTeal transition-all">Delivery</button>
+                                <button onclick="setOrderType('Pickup')" id="btn-pickup" class="flex-1 py-3.5 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 text-zinc-400 transition-all">Pickup</button>
+                            </div>
+                        </div>
+                        <div id="addr-field">
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1.5">Delivery Address</label>
+                            <input type="text" id="cust-addr" placeholder="Area, street, landmark..." class="field">
+                        </div>
+                        <div><label class="block text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1.5">Notes (optional)</label>
+                            <textarea id="cust-notes" placeholder="Artwork ready? Deadline? Colours?..." rows="2" class="field resize-none"></textarea></div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1.5 mt-1">Payment</label>
+                            <div class="pay-opt selected" id="pay-cash" onclick="selectPayment('cash')">
+                                <div class="radio-dot"></div><div><div class="font-black text-sm">Cash / On Confirmation</div><div class="text-[11px] font-bold text-zinc-400">Pay when we confirm the job</div></div>
+                            </div>
+                            <div class="pay-opt mt-2" id="pay-mobile" onclick="selectPayment('mobile')">
+                                <div class="radio-dot"></div><div><div class="font-black text-sm">Mobile Money</div><div class="text-[11px] font-bold text-zinc-400">We'll send Lipa details</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SCREEN 4: confirm -->
+                <div id="screen-4" class="order-screen pt-4 pb-4">
+                    <div class="text-center mb-4">
+                        <div class="w-16 h-16 mx-auto rounded-full bg-green-500/15 flex items-center justify-center text-3xl mb-2">✅</div>
+                        <h4 class="font-display font-bold text-lg">Review & Send</h4>
+                        <p class="text-zinc-400 text-[11px] font-black uppercase tracking-wider mt-1">WhatsApp opens with your order</p>
+                    </div>
+                    <div class="rounded-2xl glass p-4">
+                        <div id="final-order-items" class="space-y-1.5"></div>
+                        <div class="flex items-center justify-between pt-3 mt-2 border-t border-vistaDeep/10 dark:border-white/10">
+                            <span class="font-black uppercase text-xs tracking-wider">Total</span>
+                            <span class="font-black text-vistaTeal text-lg" id="final-total"></span>
+                        </div>
+                    </div>
+                    <div id="final-customer-info" class="rounded-2xl glass p-4 mt-3 text-[12px] font-bold space-y-1"></div>
+                    <div class="rounded-2xl bg-green-500/10 border border-green-500/20 p-3 mt-3 text-center">
+                        <p class="text-[11px] font-black text-green-700 dark:text-green-300 uppercase tracking-wider">Tap Send Order to open WhatsApp 🟢</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- footers -->
+            <div class="px-5 py-4 border-t border-vistaDeep/10 dark:border-white/10 bg-vistaCloud/90 dark:bg-vistaDark/90" style="padding-bottom:calc(1rem + env(safe-area-inset-bottom))">
+                <div id="footer-1" class="flex gap-3">
+                    <div id="cart-summary-pill" class="flex-1 flex items-center px-4 rounded-2xl bg-vistaSky/10 text-xs font-black text-zinc-500 dark:text-zinc-300">0 items · TZS 0</div>
+                    <button id="btn-to-cart" onclick="goToScreen(2)" disabled class="flex-[1.4] bg-vistaDeep disabled:opacity-40 text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale shadow-lg">View Cart →</button>
+                </div>
+                <div id="footer-2" class="hidden gap-3">
+                    <button onclick="goToScreen(1)" class="flex-1 bg-vistaDeep/10 dark:bg-white/10 font-black text-sm uppercase py-4 rounded-2xl tap-scale">Add More</button>
+                    <button onclick="goToScreen(3)" class="flex-[1.4] bg-vistaTeal text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale shadow-lg">Details →</button>
+                </div>
+                <div id="footer-3" class="hidden gap-3">
+                    <button onclick="goToScreen(2)" class="flex-1 bg-vistaDeep/10 dark:bg-white/10 font-black text-sm uppercase py-4 rounded-2xl tap-scale">Back</button>
+                    <button onclick="goToScreen(4)" class="flex-[1.4] bg-vistaTeal text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale shadow-lg">Review →</button>
+                </div>
+                <div id="footer-4" class="hidden gap-3">
+                    <button onclick="goToScreen(3)" class="flex-1 bg-vistaDeep/10 dark:bg-white/10 font-black text-sm uppercase py-4 rounded-2xl tap-scale">Back</button>
+                    <button onclick="sendToWhatsApp()" class="flex-[2] bg-[#25D366] text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale flex items-center justify-center gap-2 shadow-lg"><i class="fa-brands fa-whatsapp text-lg"></i> Send Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- toast -->
+    <div id="banner" class="fixed left-1/2 -translate-x-1/2 bottom-24 z-[100] hidden bg-vistaNavy text-white text-sm font-black px-5 py-3 rounded-2xl shadow-2xl"></div>
+
+    <script>
+        const WA = '255682492849';
+
+        // ---------- Catalog (scraped from vistaprint.tz) ----------
+        const IMG = 'https://vistagroup.co.tz/storage/app/public/items/';
+        const CATEGORIES = {
+            crystal: { label: 'Crystal Awards',   emoji: '🏆' },
+            trophy:  { label: 'Trophies',         emoji: '⚽' },
+            plaque:  { label: 'Wooden Plaques',   emoji: '🪵' },
+            drink:   { label: 'Drinkware',        emoji: '🥤' },
+            promo:   { label: 'Promo & Office',   emoji: '🖊️' },
+            id:      { label: 'ID & Lanyards',    emoji: '🎟️' },
+            display: { label: 'Display & Signage',emoji: '🪧' }
+        };
+        const PRODUCTS = [
+            // crystal
+            { id:'c1', cat:'crystal', name:'Golden Star Crystal Trophy', price:100000, img:'271/Golden-Star-Crystal-Trophy.jpg', unit:'each', pop:true },
+            { id:'c2', cat:'crystal', name:'Crystal Award — Angular Side', price:100000, img:'272/A-Crystal-Award-with-Angular-side.jpg', unit:'each' },
+            { id:'c3', cat:'crystal', name:'Colour Star Crystal Plaque', price:100000, img:'261/white%20crystal1.jpg', unit:'each' },
+            { id:'c4', cat:'crystal', name:'Blue Crystal Trophy with Star', price:100000, img:'262/Blue-Crystal-Trophy-with3.jpg', unit:'each', pop:true },
+            { id:'c5', cat:'crystal', name:'Gold Star Crystal Award', price:100000, img:'263/Gold-Star-Crystal-Awards2.jpg', unit:'each' },
+            { id:'c6', cat:'crystal', name:'Optical Glass Trophy Plaque', price:100000, img:'273/Optical-glass-trophy-award-plaque4.jpg', unit:'each' },
+            { id:'c7', cat:'crystal', name:'Right-Angle Crystal Trophy', price:100000, img:'274/Right-angle-Crystal-Trophy-with-golden-star4.jpg', unit:'each' },
+            // trophy
+            { id:'t1', cat:'trophy', name:'Football Award', price:150000, img:'291/Football-Award.jpg', unit:'each', pop:true },
+            { id:'t2', cat:'trophy', name:'Golden Football Boot', price:120000, img:'275/Golden-Football-Boot2.jpg', unit:'each' },
+            { id:'t3', cat:'trophy', name:'Football Boot Award', price:100000, img:'276/Football-Boot-award1.jpg', unit:'each' },
+            // plaque
+            { id:'p1', cat:'plaque', name:'Executive Wooden Plaque + Case', price:200000, img:'285/Executive-wooden-Plaques-with-Case.jpg', unit:'each' },
+            { id:'p2', cat:'plaque', name:'Wooden Plaque WP-001', price:80000, img:'280/Wooden-Plaques-with-Case-WP-0012.jpg', unit:'each' },
+            { id:'p3', cat:'plaque', name:'Wooden Plaque WP-002', price:80000, img:'281/Wooden-Plaques-with-Case-WP-0022.jpg', unit:'each' },
+            { id:'p4', cat:'plaque', name:'Wooden Plaque WP-003', price:80000, img:'282/Wooden-Plaques-with-Case-WP-0032.jpg', unit:'each' },
+            { id:'p5', cat:'plaque', name:'Wooden Plaque WP-004', price:130000, img:'283/Wooden-Plaques-with-Case-WP-0042.jpg', unit:'each' },
+            // drink
+            { id:'d1', cat:'drink', name:'Thermos Steel Bottle 500ml', price:40000, img:'264/Thermos-Stainless-Steel-Water-Bottle-500ml.jpg', unit:'each', pop:true },
+            { id:'d2', cat:'drink', name:'Stainless Steel Water Bottle', price:20000, img:'289/Stainless-Steel-Water-Bottle1.jpg', unit:'each' },
+            { id:'d3', cat:'drink', name:'Magic Mug', price:10000, img:'292/magic%20mug2.jpg', unit:'each', pop:true },
+            { id:'d4', cat:'drink', name:'White Mug', price:6000, img:'219/mug4.jpg', unit:'each' },
+            { id:'d5', cat:'drink', name:'Colored Spoon Mug', price:10000, img:'218/spoon9.jpg', unit:'each' },
+            // promo
+            { id:'m1', cat:'promo', name:'Metal Pens', price:9000, img:'100/Pens-3.jpg', unit:'each', pop:true },
+            { id:'m2', cat:'promo', name:'Flagpole', price:1500, img:'270/flagpole.jpg', unit:'each' },
+            { id:'m3', cat:'promo', name:'Wheel Cover', price:20000, img:'77/wheel%20cover2.jpg', unit:'each' },
+            { id:'m4', cat:'promo', name:'Suggestion Box', price:100000, img:'260/Suggestion-Box2.jpg', unit:'each' },
+            // id
+            { id:'i1', cat:'id', name:'Neck Lanyard (Quick Release)', price:1500, img:'267/Neck-Lanyard-Quick-Release-Buckle5.jpg', unit:'each', pop:true },
+            { id:'i2', cat:'id', name:'Plastic ID Card Holder', price:1500, img:'268/Plastic-ID-Card-Holder2.jpg', unit:'each' },
+            { id:'i3', cat:'id', name:'Business Card Holder', price:10000, img:'269/Business-Card-Holder4.jpg', unit:'each' },
+            // display
+            { id:'s1', cat:'display', name:'A-Stand Double Side (Aluminium)', price:150000, img:'266/A-stand.jpg', unit:'each' },
+            { id:'s2', cat:'display', name:'Backlit Banner', price:15000, img:'65/backlight.jpg', unit:'each', pop:true }
+        ];
+        const SERVICES = [
+            { i:'🖨️', t:'Digital Printing', s:'Business cards, flyers, posters' },
+            { i:'📰', t:'Offset Printing', s:'Booklets, brochures, calendars' },
+            { i:'🖼️', t:'Large Format', s:'Banners, stickers, canvas' },
+            { i:'🪧', t:'Advertising Display', s:'Roll-ups, A-stands, flags' },
+            { i:'🎁', t:'Promotional Products', s:'Mugs, pens, bottles, gifts' },
+            { i:'👕', t:'Apparel & Wearables', s:'T-shirts, caps, uniforms' },
+            { i:'🏆', t:'Awards & Plaques', s:'Crystal, wooden, trophies' },
+            { i:'🎟️', t:'ID Solutions', s:'Cards, lanyards, holders' },
+            { i:'🔥', t:'Laser & Engraving', s:'Precision cut & engrave' },
+            { i:'🪟', t:'Signage', s:'3D, 2D, light box, road signs' },
+            { i:'🎨', t:'Branding & Design', s:'Logos, office & car branding' }
+        ];
+
+        // ---------- helpers ----------
+        function money(v){ return 'TZS ' + v.toLocaleString(); }
+        function productById(id){ return PRODUCTS.find(p => p.id === id); }
+        function imgUrl(p){ return IMG + p.img; }
+        function initialsSvg(name){
+            const t = (name||'VP').replace(/[^A-Za-z ]/g,'').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase() || 'VP';
+            return t;
+        }
+
+        // ---------- theme ----------
+        function toggleTheme(){
+            const r = document.documentElement;
+            const dark = r.classList.toggle('dark');
+            r.classList.toggle('light', !dark);
+            document.getElementById('theme-icon').className = dark ? 'fa-solid fa-sun text-sm' : 'fa-solid fa-moon text-sm';
+            try { localStorage.setItem('vp_theme', dark ? 'dark' : 'light'); } catch(e){}
+        }
+        (function(){ try { if(localStorage.getItem('vp_theme')==='dark'){ document.documentElement.classList.add('dark'); document.documentElement.classList.remove('light'); document.addEventListener('DOMContentLoaded',()=>{document.getElementById('theme-icon').className='fa-solid fa-sun text-sm';}); } } catch(e){} })();
+
+        function openModal(id){ document.getElementById(id).classList.add('active'); document.body.style.overflow='hidden'; }
+        function closeModal(id){ document.getElementById(id).classList.remove('active'); document.body.style.overflow=''; }
+        function openInNewTab(url){ window.open(url,'_blank','noopener,noreferrer'); }
+
+        let bannerT;
+        function showBanner(msg){
+            const b = document.getElementById('banner');
+            b.textContent = msg; b.classList.remove('hidden');
+            clearTimeout(bannerT); bannerT = setTimeout(()=>b.classList.add('hidden'), 2200);
+        }
+
+        // ---------- state ----------
+        let cart = {};              // id -> qty
+        let activeCat = 'crystal';
+        let currentScreen = 1;
+        let orderType = 'Delivery';
+        let selectedPayment = 'cash';
+
+        function cartCount(){ return Object.values(cart).reduce((a,b)=>a+b,0); }
+        function cartTotal(){ return Object.entries(cart).reduce((s,[id,q])=> s + productById(id).price*q, 0); }
+
+        // ---------- product card ----------
+        function cardHtml(p){
+            const q = cart[p.id] || 0;
+            const control = q > 0
+                ? `<div class="qty-ctrl">
+                        <button class="qty-btn tap-scale" onclick="event.stopPropagation();changeQty('${p.id}',-1)">−</button>
+                        <span class="qty-num">${q}</span>
+                        <button class="qty-btn tap-scale" onclick="event.stopPropagation();changeQty('${p.id}',1)">+</button>
+                   </div>`
+                : `<button class="add-btn-card tap-scale" onclick="event.stopPropagation();changeQty('${p.id}',1)">＋</button>`;
+            return `<div class="item-card ${q>0?'in-cart':''}" onclick="changeQty('${p.id}',1)" id="card-${p.id}">
+                <div class="item-visual">
+                    <span class="price-tag">${money(p.price)}</span>
+                    ${q>0?`<span class="badge-cart">${q}</span>`:''}
+                    <img class="item-img" src="${imgUrl(p)}" alt="${p.name}" loading="lazy"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="item-fallback">${initialsSvg(p.name)}</div>
+                </div>
+                <div class="item-card-body">
+                    <div class="font-display font-semibold text-[13px] leading-tight min-h-[34px]">${p.name}</div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-[9px] font-black uppercase tracking-wide text-zinc-400">${p.unit}</span>
+                        ${control}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderPopular(){
+            document.getElementById('popular-grid').innerHTML =
+                PRODUCTS.filter(p=>p.pop).map(cardHtml).join('');
+        }
+        function renderCatPills(){
+            document.getElementById('cat-pills').innerHTML = Object.entries(CATEGORIES).map(([k,v])=>
+                `<button class="cat-pill ${k===activeCat?'active':'inactive'}" onclick="switchCat('${k}')">${v.emoji} ${v.label}</button>`
+            ).join('');
+        }
+        function renderGrid(){
+            document.getElementById('item-grid').innerHTML =
+                PRODUCTS.filter(p=>p.cat===activeCat).map(cardHtml).join('');
+        }
+        function switchCat(c){ activeCat=c; renderCatPills(); renderGrid(); }
+
+        // refresh any visible instance of a card (popular grid, browse grid, search)
+        function refreshCards(id){
+            document.querySelectorAll(`#card-${id}`).forEach(el=>{
+                const p = productById(id);
+                el.outerHTML = cardHtml(p);
+            });
+            // popular + grid may both hold it; re-render both for consistency
+            renderPopular();
+            if(document.getElementById('order-modal').classList.contains('active')){
+                const sr = document.getElementById('search-results');
+                if(!sr.classList.contains('hidden')){ handleSearch(document.getElementById('menu-search').value); }
+                else renderGrid();
+            }
+        }
+
+        function changeQty(id, delta){
+            const cur = cart[id] || 0;
+            const next = Math.max(0, cur + delta);
+            if(next===0) delete cart[id]; else cart[id]=next;
+            if(delta>0 && cur===0) showBanner('Added ✓');
+            saveCart(); refreshCards(id); updateOrderUI();
+        }
+
+        function saveCart(){ try{ sessionStorage.setItem('vp_cart', JSON.stringify(cart)); }catch(e){} }
+
+        function updateOrderUI(){
+            const count = cartCount(), total = cartTotal();
+            const badge = document.getElementById('cta-badge');
+            if(count>0){ badge.textContent=count; badge.classList.remove('hidden'); badge.classList.add('flex'); }
+            else { badge.classList.add('hidden'); badge.classList.remove('flex'); }
+            document.getElementById('cart-summary-pill').textContent = `${count} item${count!==1?'s':''} · ${money(total)}`;
+            document.getElementById('btn-to-cart').disabled = count===0;
+            document.getElementById('cart-total-2').textContent = money(total);
+        }
+
+        // ---------- search ----------
+        function handleSearch(v){
+            const val = (v||'').trim().toLowerCase();
+            const clear = document.getElementById('search-clear-btn');
+            const results = document.getElementById('search-results');
+            const browse = document.getElementById('browse-view');
+            if(!val){ clear.classList.add('hidden'); results.classList.add('hidden'); browse.classList.remove('hidden'); return; }
+            clear.classList.remove('hidden'); browse.classList.add('hidden'); results.classList.remove('hidden');
+            const hits = PRODUCTS.filter(p => p.name.toLowerCase().includes(val) || CATEGORIES[p.cat].label.toLowerCase().includes(val));
+            results.innerHTML = hits.length
+                ? `<div class="grid grid-cols-2 gap-3">${hits.map(cardHtml).join('')}</div>`
+                : `<div class="text-center py-12 text-zinc-400 font-bold text-sm">No match. Try "mug", "trophy", "banner"...</div>`;
+        }
+        function clearSearch(){ document.getElementById('menu-search').value=''; handleSearch(''); }
+
+        // ---------- order flow ----------
+        function openOrderBot(cat){
+            if(cat && CATEGORIES[cat]) activeCat = cat;
+            clearSearch(); goToScreen(1);
+            renderCatPills(); renderGrid(); updateOrderUI();
+            openModal('order-modal');
+        }
+        function setFooter(n){
+            [1,2,3,4].forEach(i=>{
+                const f=document.getElementById('footer-'+i);
+                f.classList.toggle('hidden', i!==n);
+                f.classList.toggle('flex', i===n);
+            });
+        }
+        function goToScreen(n){
+            currentScreen=n;
+            document.querySelectorAll('.order-screen').forEach(s=>s.classList.remove('active'));
+            document.getElementById('screen-'+n).classList.add('active');
+            for(let i=1;i<=4;i++){
+                document.getElementById('sd'+i).className = 'step-dot' + (i<n?' done':i===n?' active':'');
+            }
+            const titles={1:'Build Your Order',2:'Your Cart',3:'Your Details',4:'Review & Send'};
+            document.getElementById('order-title').textContent = titles[n];
+            document.getElementById('order-back').classList.toggle('hidden', n===1);
+            setFooter(n);
+            document.getElementById('order-body').scrollTop=0;
+            if(n===2) renderCartReview();
+            if(n===4) renderFinal();
+        }
+        function orderBack(){ if(currentScreen>1) goToScreen(currentScreen-1); }
+
+        function renderCartReview(){
+            const el = document.getElementById('cart-review-list');
+            const ids = Object.keys(cart);
+            if(!ids.length){ el.innerHTML = `<div class="text-center py-12 text-zinc-400 font-bold text-sm">Cart is empty.<br><button onclick="goToScreen(1)" class="mt-3 text-vistaTeal font-black underline">Browse products</button></div>`; return; }
+            el.innerHTML = ids.map(id=>{
+                const p=productById(id), q=cart[id];
+                return `<div class="flex items-center gap-3 py-3 border-b border-vistaDeep/10 dark:border-white/10">
+                    <div class="w-14 h-14 rounded-xl overflow-hidden bg-vistaSky/10 flex-shrink-0 relative">
+                        <img src="${imgUrl(p)}" class="w-full h-full object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                        <div class="item-fallback" style="font-size:16px">${initialsSvg(p.name)}</div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-display font-semibold text-sm leading-tight">${p.name}</div>
+                        <div class="text-[11px] font-black text-vistaTeal mt-0.5">${money(p.price)} · ${money(p.price*q)}</div>
+                    </div>
+                    <div class="qty-ctrl">
+                        <button class="qty-btn tap-scale" onclick="changeQty('${id}',-1)">−</button>
+                        <span class="qty-num">${q}</span>
+                        <button class="qty-btn tap-scale" onclick="changeQty('${id}',1)">+</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function setOrderType(t){
+            orderType=t;
+            const d=document.getElementById('btn-delivery'), p=document.getElementById('btn-pickup');
+            const on='flex-1 py-3.5 rounded-2xl font-black text-sm uppercase border-2 border-vistaTeal bg-vistaTeal/10 text-vistaTeal transition-all';
+            const off='flex-1 py-3.5 rounded-2xl font-black text-sm uppercase border-2 border-zinc-300 dark:border-zinc-700 text-zinc-400 transition-all';
+            d.className = t==='Delivery'?on:off; p.className = t==='Pickup'?on:off;
+            document.getElementById('addr-field').style.display = t==='Delivery'?'block':'none';
+        }
+        function selectPayment(m){
+            selectedPayment=m;
+            document.getElementById('pay-cash').classList.toggle('selected', m==='cash');
+            document.getElementById('pay-mobile').classList.toggle('selected', m==='mobile');
+        }
+
+        function renderFinal(){
+            const items=document.getElementById('final-order-items');
+            items.innerHTML = Object.keys(cart).map(id=>{
+                const p=productById(id),q=cart[id];
+                return `<div class="flex justify-between text-[13px]"><span class="font-bold">${p.name} <span class="text-zinc-400">×${q}</span></span><span class="font-black">${money(p.price*q)}</span></div>`;
+            }).join('');
+            document.getElementById('final-total').textContent = money(cartTotal());
+            const name=(document.getElementById('cust-name').value||'—').trim()||'—';
+            const phone=(document.getElementById('cust-phone').value||'—').trim()||'—';
+            const biz=document.getElementById('cust-business').value.trim();
+            const addr=document.getElementById('cust-addr').value.trim();
+            document.getElementById('final-customer-info').innerHTML =
+                `<div class="flex justify-between"><span class="text-zinc-400">Name</span><span>${name}</span></div>`+
+                (biz?`<div class="flex justify-between"><span class="text-zinc-400">Company</span><span>${biz}</span></div>`:'')+
+                `<div class="flex justify-between"><span class="text-zinc-400">Phone</span><span>${phone}</span></div>`+
+                `<div class="flex justify-between"><span class="text-zinc-400">Service</span><span>${orderType}${orderType==='Delivery'&&addr?' · '+addr:''}</span></div>`+
+                `<div class="flex justify-between"><span class="text-zinc-400">Payment</span><span>${selectedPayment==='mobile'?'Mobile Money':'Cash / On Confirmation'}</span></div>`;
+        }
+
+        function orderNo(){ return 'VP-' + Date.now().toString(36).toUpperCase().slice(-6); }
+
+        function sendToWhatsApp(){
+            if(!Object.keys(cart).length) return showBanner('Add at least one item.');
+            const name=document.getElementById('cust-name').value.trim()||'Customer';
+            const biz=document.getElementById('cust-business').value.trim();
+            const phone=document.getElementById('cust-phone').value.trim()||'-';
+            const addr=document.getElementById('cust-addr').value.trim();
+            const notes=document.getElementById('cust-notes').value.trim();
+            const pay=selectedPayment==='mobile'?'Mobile Money — please send Lipa details':'Cash / On Confirmation';
+            const loc=orderType==='Delivery'?(addr||'Address to confirm'):'Pickup at Vista Print';
+            const no=orderNo();
+            const now=new Date();
+            const ts=now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' '+now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+
+            const pad=(v,l)=>{const t=String(v);return t.length>=l?t.slice(0,l):t+' '.repeat(l-t.length);};
+            const padL=(v,l)=>{const t=String(v);return t.length>=l?t.slice(-l):' '.repeat(l-t.length)+t;};
+            const div='--------------------------------';
+            const lines=Object.keys(cart).map(id=>{
+                const p=productById(id),q=cart[id];
+                return `${pad(p.name,22)} ${pad('x'+q,4)} ${padL((p.price*q).toLocaleString(),8)}`;
+            }).join('\n');
+
+            const msg=
+`🖨️ *VISTA PRINT — NEW ORDER*
+
+🔖 Order: *#${no}*
+🕐 Time: *${ts}*
+
+👤 Name: *${name}*${biz?`\n🏢 Company: *${biz}*`:''}
+📱 Phone: *${phone}*
+🚚 Service: *${orderType}*
+📍 Location: *${loc}*
+💳 Payment: *${pay}*
+${notes?`📝 Notes: _${notes}_\n`:''}
+\`\`\`
+${div}
+ITEM                   QTY  SUBTOTAL
+${div}
+${lines}
+${div}
+${pad('TOTAL (TZS)',22)}     ${padL(cartTotal().toLocaleString(),8)}
+${div}
+\`\`\`
+
+🟢 *Please confirm this order & lead time.*`;
+
+            openInNewTab(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`);
+            cart={}; saveCart(); updateOrderUI(); renderPopular(); clearSearch();
+            closeModal('order-modal');
+            showBanner('Opening WhatsApp… ✅');
+        }
+
+        // ---------- quote ----------
+        function handleQuote(e){
+            e.preventDefault();
+            const n=document.getElementById('q-name').value.trim();
+            const it=document.getElementById('q-item').value.trim();
+            const d=document.getElementById('q-detail').value.trim();
+            const msg=`🖨️ *VISTA PRINT — QUOTE REQUEST*\n\n👤 Name: *${n}*\n🧾 Needs: *${it}*${d?`\n📝 Details: _${d}_`:''}\n\nPlease send me a quote & lead time. Asante!`;
+            openInNewTab(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`);
+            closeModal('quote-modal'); e.target.reset();
+        }
+
+        // ---------- static renders ----------
+        function renderServices(){
+            document.getElementById('services-list').innerHTML = SERVICES.map(s=>
+                `<div class="rounded-2xl glass p-3.5">
+                    <div class="text-2xl">${s.i}</div>
+                    <div class="font-display font-semibold text-[13px] mt-1.5 leading-tight">${s.t}</div>
+                    <div class="text-[10px] font-bold text-zinc-400 mt-0.5 leading-tight">${s.s}</div>
+                </div>`).join('');
+        }
+        function renderPriceList(){
+            const byCat={};
+            PRODUCTS.forEach(p=>{ (byCat[p.cat]=byCat[p.cat]||[]).push(p); });
+            document.getElementById('pricelist-table').innerHTML = Object.entries(byCat).map(([c,items])=>
+                `<div class="rounded-2xl glass overflow-hidden">
+                    <div class="px-4 py-2.5 bg-vistaDeep text-white text-[11px] font-black uppercase tracking-widest flex items-center gap-2">${CATEGORIES[c].emoji} ${CATEGORIES[c].label}</div>
+                    ${items.map(p=>`<div class="flex justify-between items-center px-4 py-2.5 border-b border-vistaDeep/8 dark:border-white/8 last:border-0">
+                        <span class="text-[13px] font-bold">${p.name}</span>
+                        <span class="text-[13px] font-black text-vistaTeal whitespace-nowrap">${money(p.price)}</span>
+                    </div>`).join('')}
+                </div>`).join('');
+        }
+
+        // ---------- reveal on scroll ----------
+        const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});},{threshold:.12});
+        document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+        // ---------- init ----------
+        try{ const s=sessionStorage.getItem('vp_cart'); if(s) cart=JSON.parse(s)||{}; }catch(e){}
+        renderPopular(); renderServices(); renderPriceList();
+        renderCatPills(); renderGrid(); updateOrderUI(); setOrderType('Delivery'); selectPayment('cash');
+    </script>
+</body>
+</html>
