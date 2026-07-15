@@ -337,6 +337,7 @@
                     <div class="mt-4 pt-4 border-t border-bahariCoffee/10 text-xs font-bold text-zinc-500 dark:text-zinc-400 space-y-2">
                         <p class="flex justify-between gap-4"><span>Mon, Tue, Wed, Fri, Sat</span><span class="text-bahariCoffee dark:text-bahariBlue">11:00 AM - 5:00 PM</span></p>
                         <p class="flex justify-between gap-4"><span>Thursday & Sunday</span><span class="text-rose-500">Closed</span></p>
+                        <p id="store-status-note" class="hidden text-rose-500 font-black pt-1"></p>
                     </div>
                 </div>
             </section>
@@ -491,6 +492,9 @@
             </div>
 
             <div class="flex-1 overflow-y-auto no-scrollbar px-5" id="order-body">
+                <div id="order-closed-notice" class="hidden mt-4 bg-rose-500/10 border-2 border-rose-500/20 rounded-2xl p-3.5 text-center">
+                    <p class="text-[11px] font-black text-rose-600 dark:text-rose-300 uppercase tracking-wider"></p>
+                </div>
                 <div id="screen-1" class="order-screen active pt-4 pb-4">
                     <h4 class="text-2xl font-black font-playful mb-0.5">Pick your drink</h4>
                     <p class="text-zinc-400 text-xs font-black uppercase tracking-wider mb-4">Tap a card to add it</p>
@@ -606,6 +610,26 @@
         </div>
     </div>
 
+    <div id="closed-modal" class="modal-overlay fixed inset-0 z-[90] flex items-center justify-center px-5">
+        <div class="absolute inset-0 bg-black/80" onclick="cancelClosedModal()"></div>
+        <div class="modal-panel bg-bahariPaper dark:bg-bahariDark w-full max-w-sm rounded-[2.2rem] relative p-6 shadow-2xl">
+            <div class="text-center">
+                <div class="text-5xl mb-3">😴</div>
+                <h3 class="text-2xl font-black font-playful mb-1">We're closed today</h3>
+                <p id="closed-reason" class="text-sm font-bold text-zinc-500 dark:text-zinc-400 mb-5">We're closed right now.</p>
+            </div>
+            <div class="bg-white dark:bg-bahariDarkCard rounded-2xl p-4 border-2 border-bahariCoffee/10">
+                <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-2">📅 Order in advance for another day</label>
+                <input type="date" id="schedule-date" onchange="validateScheduleDate()" class="w-full bg-bahariPaper dark:bg-bahariDark p-3.5 dark:text-white text-sm font-bold border-2 border-bahariCoffee/15 focus:border-bahariCoffee outline-none rounded-xl transition-all">
+                <p id="schedule-hint" class="text-[11px] font-black mt-2"></p>
+            </div>
+            <div class="flex gap-3 mt-5">
+                <button onclick="cancelClosedModal()" class="flex-1 py-3.5 rounded-2xl font-black text-xs uppercase border-2 border-bahariCoffee/25 tap-scale">Not now</button>
+                <button id="closed-continue-btn" onclick="confirmScheduledOrder()" class="flex-[2] bg-bahariCoffee text-white font-black text-xs uppercase py-3.5 rounded-2xl tap-scale shadow-lg disabled:opacity-40 disabled:cursor-not-allowed">Continue Order →</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
@@ -639,17 +663,163 @@
             }, 2800);
         }
 
+        /* ---- Opening hours & Tanzania public-holiday awareness ---- */
+        const OPEN_FROM = 11, OPEN_TO = 17;        // café hours 11:00 – 17:00
+        const CLOSED_WEEKDAYS = [0, 4];            // Sunday (0) & Thursday (4)
+        const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        // Tanzania public holidays. UPDATE ONCE A YEAR.
+        // Islamic dates (Eid al-Fitr, Eid al-Adha, Maulid) follow moon sighting —
+        // they are best estimates; confirm each year and adjust if needed.
+        const PUBLIC_HOLIDAYS = {
+            '2026-01-01': "New Year's Day",
+            '2026-01-12': "Zanzibar Revolution Day",
+            '2026-03-20': "Eid al-Fitr",
+            '2026-03-21': "Eid al-Fitr",
+            '2026-04-03': "Good Friday",
+            '2026-04-06': "Easter Monday",
+            '2026-04-07': "Karume Day",
+            '2026-04-26': "Union Day",
+            '2026-05-01': "Workers' Day",
+            '2026-05-27': "Eid al-Adha",
+            '2026-07-07': "Saba Saba Day",
+            '2026-08-08': "Nane Nane Day",
+            '2026-08-25': "Maulid Day",
+            '2026-10-14': "Nyerere Day",
+            '2026-12-09': "Independence Day",
+            '2026-12-25': "Christmas Day",
+            '2026-12-26': "Boxing Day",
+            '2027-01-01': "New Year's Day",
+            '2027-01-12': "Zanzibar Revolution Day",
+            '2027-03-10': "Eid al-Fitr",
+            '2027-03-11': "Eid al-Fitr",
+            '2027-03-26': "Good Friday",
+            '2027-03-29': "Easter Monday",
+            '2027-04-07': "Karume Day",
+            '2027-04-26': "Union Day",
+            '2027-05-01': "Workers' Day",
+            '2027-05-17': "Eid al-Adha",
+            '2027-07-07': "Saba Saba Day",
+            '2027-08-08': "Nane Nane Day",
+            '2027-08-15': "Maulid Day",
+            '2027-10-14': "Nyerere Day",
+            '2027-12-09': "Independence Day",
+            '2027-12-25': "Christmas Day",
+            '2027-12-26': "Boxing Day"
+        };
+
+        function toISODate(d) {
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${d.getFullYear()}-${m}-${day}`;
+        }
+        // Returns null if the café operates that weekday, else { type, reason }.
+        function getClosure(d) {
+            const holiday = PUBLIC_HOLIDAYS[toISODate(d)];
+            if (holiday) return { type: 'holiday', reason: holiday };
+            if (CLOSED_WEEKDAYS.includes(d.getDay())) return { type: 'weekly', reason: WEEKDAY_NAMES[d.getDay()] };
+            return null;
+        }
+        function nextOpenDay(from) {
+            const d = new Date(from);
+            d.setHours(0, 0, 0, 0);
+            do { d.setDate(d.getDate() + 1); } while (getClosure(d));
+            return d;
+        }
+        function dayLabel(d) {
+            return d.toLocaleDateString('en-TZ', { weekday: 'short', day: '2-digit', month: 'short' });
+        }
+
         function updateStoreStatus() {
             const now = new Date();
-            const day = now.getDay();
+            const closure = getClosure(now);
             const hour = now.getHours() + now.getMinutes() / 60;
-            const open = ![0, 4].includes(day) && hour >= 11 && hour < 17;
             const badge = document.getElementById('store-status-badge');
-            badge.innerHTML = open
-                ? '<span class="px-3 py-1.5 rounded-full bg-green-100 text-green-700 text-[10px] font-black uppercase tracking-wider">Open Now</span>'
-                : '<span class="px-3 py-1.5 rounded-full bg-rose-100 text-rose-600 text-[10px] font-black uppercase tracking-wider">Closed Now</span>';
+            const note = document.getElementById('store-status-note');
+            let label, cls;
+            if (closure) {
+                label = 'Closed Today'; cls = 'bg-rose-100 text-rose-600';
+            } else if (hour >= OPEN_FROM && hour < OPEN_TO) {
+                label = 'Open Now'; cls = 'bg-green-100 text-green-700';
+            } else {
+                label = 'Closed Now'; cls = 'bg-rose-100 text-rose-600';
+            }
+            badge.innerHTML = `<span class="px-3 py-1.5 rounded-full ${cls} text-[10px] font-black uppercase tracking-wider">${label}</span>`;
+            if (note) {
+                if (closure && closure.type === 'holiday') {
+                    note.textContent = `Closed today — ${closure.reason} 🇹🇿`;
+                    note.classList.remove('hidden');
+                } else {
+                    note.classList.add('hidden');
+                }
+            }
         }
         updateStoreStatus();
+
+        /* ---- Closed-day gate: block same-day orders, offer an advance order ---- */
+        let scheduledDate = null;   // friendly label of a chosen advance date, or null
+        let pendingSender = null;   // order function to resume after scheduling
+
+        // Called by order senders. Returns true if it handled a closure (caller must stop).
+        function requiresSchedule(sender) {
+            if (scheduledDate || !getClosure(new Date())) return false;
+            openClosedModal(sender);
+            return true;
+        }
+        function openClosedModal(sender) {
+            pendingSender = sender;
+            const closure = getClosure(new Date());
+            const reasonEl = document.getElementById('closed-reason');
+            if (closure) {
+                reasonEl.textContent = closure.type === 'holiday'
+                    ? `We're closed today for ${closure.reason}.`
+                    : `We're closed every ${closure.reason}.`;
+            }
+            const input = document.getElementById('schedule-date');
+            input.min = toISODate(new Date());
+            input.value = toISODate(nextOpenDay(new Date()));
+            validateScheduleDate();
+            openModal('closed-modal');
+        }
+        function validateScheduleDate() {
+            const input = document.getElementById('schedule-date');
+            const hint = document.getElementById('schedule-hint');
+            const btn = document.getElementById('closed-continue-btn');
+            if (!input.value) {
+                hint.textContent = 'Please choose a day.';
+                hint.className = 'text-[11px] font-black mt-2 text-rose-500';
+                btn.disabled = true;
+                return;
+            }
+            const picked = new Date(input.value + 'T00:00:00');
+            const closure = getClosure(picked);
+            if (closure) {
+                hint.textContent = closure.type === 'holiday'
+                    ? `${closure.reason} — we're closed. Pick another day.`
+                    : `We're closed on ${closure.reason}s. Pick another day.`;
+                hint.className = 'text-[11px] font-black mt-2 text-rose-500';
+                btn.disabled = true;
+            } else {
+                hint.textContent = `Scheduled for ${dayLabel(picked)} ✓`;
+                hint.className = 'text-[11px] font-black mt-2 text-green-600';
+                btn.disabled = false;
+            }
+        }
+        function confirmScheduledOrder() {
+            const input = document.getElementById('schedule-date');
+            if (!input.value) return;
+            const picked = new Date(input.value + 'T00:00:00');
+            if (getClosure(picked)) return;
+            scheduledDate = dayLabel(picked);
+            closeModal('closed-modal');
+            const sender = pendingSender;
+            pendingSender = null;
+            if (typeof sender === 'function') sender();
+        }
+        function cancelClosedModal() {
+            pendingSender = null;
+            closeModal('closed-modal');
+        }
 
         async function handleSuggestion(e) {
             e.preventDefault();
@@ -903,6 +1073,7 @@
         function sendToWhatsApp() {
             const items = Object.values(cart);
             if (!items.length) return showBanner('Please add at least one drink.');
+            if (requiresSchedule(sendToWhatsApp)) return;
             const name = document.getElementById('cust-name').value.trim() || 'Customer';
             const phone = document.getElementById('cust-phone').value.trim() || '-';
             const addr = document.getElementById('cust-addr').value.trim();
@@ -934,7 +1105,7 @@
 
 🔖 Order: *#${orderNo}*
 🕐 Time: *${timestamp}*
-
+${scheduledDate ? `📅 Requested for: *${scheduledDate}*\n` : ''}
 👤 Name: *${name}*
 📱 Phone: *${phone}*
 📦 Type: *${orderType}*
@@ -959,6 +1130,7 @@ ${divider}
             saveCart();
             clearSearch();
             closeModal('order-modal');
+            scheduledDate = null;
         }
         function handleSearch(value) {
             const query = value.trim().toLowerCase();
@@ -1003,6 +1175,17 @@ ${divider}
             renderGrid(activeCat);
             updateCartSummary();
             goToScreen(1);
+            const notice = document.getElementById('order-closed-notice');
+            const closure = getClosure(new Date());
+            if (closure) {
+                const next = dayLabel(nextOpenDay(new Date()));
+                notice.querySelector('p').textContent = closure.type === 'holiday'
+                    ? `Closed today (${closure.reason}) · order ahead for ${next}`
+                    : `Closed ${closure.reason}s · order ahead for ${next}`;
+                notice.classList.remove('hidden');
+            } else {
+                notice.classList.add('hidden');
+            }
         }
         function quickAddAndOpen(cat, name) {
             const item = MENU[cat].items.find(i => i.name === name);
@@ -1087,6 +1270,7 @@ ${divider}
                 showBanner('Please choose all drink parts first.');
                 return;
             }
+            if (requiresSchedule(submitCustomDrink)) return;
             const message =
 `Hello Bahari Café! 🌊
 
@@ -1095,10 +1279,11 @@ I want to order a custom drink:
 - Drink: ${buildState.drink}
 - Sweetness: ${buildState.sweet}
 - Finish: ${buildState.finish}
-
+${scheduledDate ? `📅 Requested for: ${scheduledDate}\n` : ''}
 Please confirm the price and availability.`;
             openInNewTab(`https://wa.me/255788693881?text=${encodeURIComponent(message)}`);
             closeModal('customizer-modal');
+            scheduledDate = null;
         }
 
         renderCategoryPills();
