@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -223,6 +224,18 @@
                     <span class="font-black text-base font-playful">Google</span>
                     <span class="text-[9px] font-black text-zinc-400 uppercase tracking-wide">Location & reviews</span>
                 </a>
+                <button onclick="openModal('tour-modal')" class="reveal tap-scale col-span-2 panel-card p-5 rounded-[2rem] flex items-center justify-between shadow-sm border border-lumaSea/20">
+                    <div class="flex items-center gap-4 text-left">
+                        <div class="w-12 h-12 rounded-2xl bg-lumaSea/15 flex items-center justify-center text-lumaSea text-xl">
+                            <i class="fa-solid fa-street-view"></i>
+                        </div>
+                        <div>
+                            <div class="text-xl font-black font-playful leading-none">Virtual Tour</div>
+                            <div class="text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-1">Step inside before you visit</div>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-circle-play text-lumaGold text-2xl"></i>
+                </button>
                 <button onclick="openOrderBot()" class="reveal tap-scale col-span-2 bg-lumaGold text-lumaBlack p-5 rounded-[2rem] flex items-center justify-between shadow-xl relative overflow-hidden">
                     <div class="relative text-left">
                         <div class="text-2xl font-black font-playful leading-none">Order Now 🐋</div>
@@ -360,6 +373,27 @@
         <div class="fixed bottom-[calc(.45rem+env(safe-area-inset-bottom))] left-0 right-0 z-[51] px-6 pointer-events-none">
             <div class="max-w-md mx-auto flex justify-end">
                 <a href="https://www.skani.space/" target="_blank" rel="noopener noreferrer" class="pointer-events-auto text-[7px] font-black uppercase tracking-[0.18em] text-zinc-500 bg-lumaBlack/75 backdrop-blur-md border border-lumaGold/10 px-2.5 py-1 rounded-full shadow-lg opacity-45 hover:opacity-100">Powered by Skani.space</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="tour-modal" class="modal-overlay fixed inset-0 z-[70] flex items-end justify-center px-4">
+        <div class="absolute inset-0 bg-black/75" onclick="closeModal('tour-modal')"></div>
+        <div class="modal-panel bg-lumaBlack w-full max-w-md rounded-t-[2.6rem] p-5 relative pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-2xl border-t-8 border-lumaSea">
+            <div class="w-12 h-1.5 bg-white/15 rounded-full mx-auto mb-5"></div>
+            <button onclick="closeModal('tour-modal')" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/10 text-white tap-scale z-10"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-3xl font-black font-playful leading-tight">Virtual Tour</h3>
+            <p class="text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-1 mb-4">Explore the space in 360</p>
+            <div class="rounded-[2rem] overflow-hidden border-2 border-lumaGold/15 shadow-lg bg-lumaPanel">
+                <iframe
+                    src="https://255virtualtours.skani.space/cane-crush-restaurant/"
+                    class="w-full"
+                    style="height:420px;border:0;"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    allow="fullscreen; xr-spatial-tracking; gyroscope; accelerometer"
+                    allowfullscreen
+                    title="Luma Whale virtual tour"></iframe>
             </div>
         </div>
     </div>
