@@ -1,0 +1,1239 @@
+
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>The Ridge Cafe · Skani</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%232E3E9C'/%3E%3Ccircle cx='32' cy='32' r='25' fill='%2320B3B3'/%3E%3Cpolygon points='14,44 26,24 34,44' fill='%23fff'/%3E%3Cpolygon points='30,44 41,27 50,44' fill='%23fff'/%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playpen+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        ridgePaper: '#F4FAFA',
+                        ridgeCream: '#E2F2F2',
+                        ridgeSky: '#9AD5EE',
+                        ridgeNavy: '#2E3E9C',
+                        ridgeTeal: '#12A0A0',
+                        ridgeInk: '#15303A',
+                        ridgeDark: '#0E1B20',
+                        ridgeDarkCard: '#16292F',
+                        ridgeCrema: '#E4B15C'
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        playful: ['Playpen Sans', 'cursive']
+                    },
+                    animation: {
+                        float: 'float 4s ease-in-out infinite',
+                        'float-delayed': 'float 4s ease-in-out 1.8s infinite',
+                        'bounce-soft': 'bounceSoft 2.6s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-8px)' } },
+                        bounceSoft: { '0%,100%': { transform: 'translateY(0) scale(1)' }, '50%': { transform: 'translateY(-5px) scale(1.03)' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            background:
+                radial-gradient(circle at 15% 5%, rgba(18,160,160,.20), transparent 28rem),
+                linear-gradient(180deg, #f4fafa 0%, #e2f2f2 100%);
+            color: #15303A;
+            font-family: 'Outfit', sans-serif;
+        }
+        .dark body {
+            background:
+                radial-gradient(circle at 15% 5%, rgba(18,160,160,.14), transparent 28rem),
+                linear-gradient(180deg, #0E1B20 0%, #132126 100%);
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .30;
+            background-image:
+                linear-gradient(135deg, rgba(46,62,156,.08) 25%, transparent 25%),
+                linear-gradient(225deg, rgba(18,160,160,.09) 25%, transparent 25%),
+                linear-gradient(45deg, rgba(154,213,238,.16) 25%, transparent 25%),
+                linear-gradient(315deg, rgba(46,62,156,.06) 25%, transparent 25%);
+            background-position: 18px 0, 18px 0, 0 0, 0 0;
+            background-size: 36px 36px;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        input, textarea, select { font-size: 16px !important; }
+        .tap-scale { transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease; }
+        .tap-scale:active { transform: scale(.96); }
+        .reveal { opacity: 0; transform: translateY(18px); transition: all .65s cubic-bezier(.16,1,.3,1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .modal-overlay { opacity: 0; visibility: hidden; transition: all .35s cubic-bezier(.16,1,.3,1); backdrop-filter: blur(0); }
+        .modal-overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(14px); }
+        .modal-panel, .order-modal-content { transform: translateY(100%); transition: transform .45s cubic-bezier(.16,1,.3,1); }
+        .modal-overlay.active .modal-panel, .modal-overlay.active .order-modal-content { transform: translateY(0); }
+        .menu-frame { background: rgba(255,255,255,.7); box-shadow: inset 0 0 0 1px rgba(46,62,156,.10); }
+        .dark .menu-frame { background: rgba(255,255,255,.06); }
+        .hero-title { letter-spacing: 0; }
+        .cat-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 15px; border-radius: 999px;
+            font-size: 11px; font-weight: 900; text-transform: uppercase;
+            white-space: nowrap; border: 2px solid transparent; cursor: pointer; transition: all .2s;
+        }
+        .cat-pill.active { background: #2E3E9C; color: #fff; border-color: #2E3E9C; }
+        .cat-pill.inactive { background: rgba(255,255,255,.65); color: #2E3E9C; border-color: rgba(46,62,156,.20); }
+        .dark .cat-pill.inactive { background: rgba(255,255,255,.05); color: #9AD5EE; border-color: rgba(255,255,255,.1); }
+        .item-card {
+            border-radius: 18px; border: 2px solid rgba(46,62,156,.12);
+            background: rgba(255,255,255,.80); overflow: hidden; cursor: pointer;
+            transition: all .2s; position: relative;
+        }
+        .dark .item-card { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.08); }
+        .item-card.in-cart { border-color: #12A0A0; box-shadow: 0 10px 24px rgba(18,160,160,.22); }
+        .item-visual {
+            aspect-ratio: 1 / .82; position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, rgba(18,160,160,.16), rgba(46,62,156,.12));
+        }
+        .item-emoji { font-size: 2.7rem; line-height: 1; filter: drop-shadow(0 4px 8px rgba(0,0,0,.12)); }
+        .item-card-body { padding: 11px 12px 12px; }
+        .add-btn-card, .qty-btn {
+            width: 32px; height: 32px; border-radius: 50%; border: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 900; transition: all .15s;
+        }
+        .add-btn-card { background: #2E3E9C; color: #fff; box-shadow: 0 6px 14px rgba(46,62,156,.28); }
+        .qty-btn { background: rgba(154,213,238,.35); color: #2E3E9C; border: 1px solid rgba(46,62,156,.14); }
+        .qty-ctrl { display: flex; align-items: center; gap: 7px; }
+        .qty-num { min-width: 18px; text-align: center; font-size: 13px; font-weight: 900; color: #2E3E9C; }
+        .badge-cart {
+            position: absolute; top: 8px; right: 8px; min-width: 20px; height: 20px; padding: 0 6px;
+            border-radius: 999px; background: #12A0A0; color: #fff;
+            display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900;
+        }
+        .step-dot { width: 8px; height: 8px; border-radius: 999px; background: rgba(46,62,156,.22); transition: all .25s; }
+        .step-dot.done, .step-dot.active { background: #2E3E9C; }
+        .step-dot.active { width: 24px; }
+        .order-screen { display: none; }
+        .order-screen.active { display: block; }
+        .summary-row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(46,62,156,.12); font-size: 13px; }
+        .pay-opt { display: flex; align-items: center; gap: 12px; padding: 14px; border: 2px solid rgba(46,62,156,.16); border-radius: 18px; cursor: pointer; transition: all .2s; }
+        .pay-opt.selected { border-color: #2E3E9C; background: rgba(154,213,238,.24); }
+        .radio-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(46,62,156,.45); flex-shrink: 0; }
+        .pay-opt.selected .radio-dot { background: #2E3E9C; box-shadow: inset 0 0 0 4px #fff; }
+        .search-input {
+            width: 100%; border: 2px solid rgba(46,62,156,.16); background: rgba(255,255,255,.72);
+            border-radius: 18px; padding: 13px 42px; outline: none; font-weight: 800;
+        }
+        .dark .search-input { background: rgba(255,255,255,.06); color: #fff; border-color: rgba(255,255,255,.1); }
+    </style>
+</head>
+<body class="bg-ridgePaper dark:bg-ridgeDark text-ridgeInk dark:text-zinc-100 transition-colors duration-300">
+    <div class="relative min-h-screen max-w-md mx-auto pb-36 px-4 sm:px-6">
+        <header class="sticky top-0 z-40 -mx-4 sm:-mx-6 px-4 sm:px-6 pt-[calc(1rem+env(safe-area-inset-top))] pb-3 bg-ridgePaper/86 dark:bg-ridgeDark/86 backdrop-blur-xl border-b border-ridgeNavy/10">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl overflow-hidden border-2 border-white shadow-lg rotate-[-3deg]">
+                        <svg viewBox="0 0 64 64" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="32" cy="32" r="32" fill="#2E3E9C"/>
+                            <circle cx="32" cy="32" r="26" fill="#20B3B3"/>
+                            <polygon points="13,45 26,23 35,45" fill="#2E5F9E"/>
+                            <polygon points="26,23 31,32 24,37" fill="#1E4E86"/>
+                            <polygon points="30,45 42,26 51,45" fill="#4FA3DD"/>
+                            <polygon points="42,26 47,34 39,38" fill="#357FC0"/>
+                            <path d="M12 45 L52 45" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="font-black text-base uppercase leading-none text-ridgeNavy dark:text-ridgeSky">The Ridge Cafe</h1>
+                        <p class="text-[9px] font-black uppercase tracking-[0.16em] text-ridgeTeal dark:text-ridgeCrema mt-1">100% Tanzanian Coffee</p>
+                    </div>
+                </div>
+                <button onclick="toggleTheme()" class="w-11 h-11 rounded-2xl bg-white/80 dark:bg-white/10 border border-ridgeNavy/10 flex items-center justify-center text-ridgeNavy dark:text-ridgeSky shadow-sm tap-scale" aria-label="Toggle theme">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <section class="pt-6 reveal">
+                <div class="relative overflow-hidden rounded-[2.35rem] text-white shadow-xl" style="background:linear-gradient(150deg,#12A0A0 0%,#2E3E9C 100%);">
+                    <div class="absolute inset-0 opacity-[0.16]" style="background:radial-gradient(circle at 80% 15%,#fff,transparent 40%);"></div>
+                    <div class="relative z-10 min-h-[390px] p-6 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-ridgeSky text-ridgeInk text-[10px] font-black uppercase tracking-wider">
+                                <span class="w-2 h-2 rounded-full bg-ridgeNavy animate-pulse"></span> ⛰️ Chole Plaza · Masaki
+                            </span>
+                            <span class="text-5xl animate-float">☕</span>
+                        </div>
+                        <div>
+                            <h2 class="hero-title text-[3.35rem] leading-[.88] font-black text-white">
+                                Sip the<br>
+                                <span class="font-playful text-ridgeSky">Ridge Way</span>
+                            </h2>
+                            <p class="mt-4 text-[12px] font-black uppercase tracking-wider text-white/85">
+                                Single Origin · Roasted in Mbeya · Specialty Coffee
+                            </p>
+                            <div class="mt-5 grid grid-cols-3 gap-2">
+                                <div class="menu-frame rounded-2xl p-3 text-center">
+                                    <div class="text-2xl">☕</div>
+                                    <div class="text-[10px] font-black uppercase mt-1">Espresso</div>
+                                </div>
+                                <div class="menu-frame rounded-2xl p-3 text-center">
+                                    <div class="text-2xl">🧊</div>
+                                    <div class="text-[10px] font-black uppercase mt-1">Cold Brew</div>
+                                </div>
+                                <div class="menu-frame rounded-2xl p-3 text-center">
+                                    <div class="text-2xl">🥪</div>
+                                    <div class="text-[10px] font-black uppercase mt-1">Food</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-2 gap-3.5 mt-5">
+                <button onclick="openOrderBot()" class="reveal tap-scale bg-ridgeSky p-5 rounded-[2rem] flex flex-col items-center justify-center text-ridgeInk shadow-md border border-white/70">
+                    <div class="w-11 h-11 rounded-2xl bg-white/45 flex items-center justify-center mb-2 text-xl">📋</div>
+                    <span class="font-black text-base font-playful">Menu</span>
+                    <span class="text-[9px] font-black opacity-75 uppercase tracking-wide">Coffee & food</span>
+                </button>
+                <button onclick="openTour()" class="reveal tap-scale bg-white/80 dark:bg-ridgeDarkCard p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-ridgeNavy/10">
+                    <div class="w-11 h-11 rounded-2xl bg-ridgeTeal/20 flex items-center justify-center mb-2 text-xl">🎥</div>
+                    <span class="font-black text-base font-playful">Virtual Tour</span>
+                    <span class="text-[9px] font-black text-zinc-400 uppercase tracking-wide">Explore in 360° ⭐</span>
+                </button>
+                <button onclick="openModal('reviews-modal')" class="reveal tap-scale bg-white/80 dark:bg-ridgeDarkCard p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-ridgeNavy/10">
+                    <div class="w-11 h-11 rounded-2xl bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center mb-2 text-xl">⭐</div>
+                    <span class="font-black text-base font-playful">Reviews</span>
+                    <span class="text-[9px] font-black text-zinc-400 uppercase tracking-wide">Loved in Dar</span>
+                </button>
+                <a href="https://wa.me/255672263333" target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-white/80 dark:bg-ridgeDarkCard p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-ridgeNavy/10 text-center">
+                    <div class="w-11 h-11 rounded-2xl bg-green-100 dark:bg-green-500/10 flex items-center justify-center mb-2 text-xl"><i class="fa-brands fa-whatsapp text-[#25D366]"></i></div>
+                    <span class="font-black text-base font-playful">WhatsApp</span>
+                    <span class="text-[9px] font-black text-zinc-400 uppercase tracking-wide">Order or Ask</span>
+                </a>
+                <button onclick="openOrderBot()" class="reveal tap-scale col-span-2 text-white p-5 rounded-[2rem] flex items-center justify-between shadow-xl relative overflow-hidden" style="background:linear-gradient(120deg,#2E3E9C,#12A0A0);">
+                    <div class="absolute inset-0 opacity-[0.16] bg-[radial-gradient(circle_at_85%_50%,#fff,transparent_30%)]"></div>
+                    <div class="relative text-left">
+                        <div class="text-2xl font-black font-playful leading-none">Order Now ☕</div>
+                        <div class="text-[10px] font-black uppercase tracking-widest text-white/75 mt-1">Pick from The Ridge menu</div>
+                    </div>
+                    <div class="relative flex items-center gap-2">
+                        <span id="cta-badge" class="hidden bg-ridgeSky text-ridgeInk text-[10px] font-black rounded-full min-w-[22px] h-[22px] items-center justify-center px-1.5"></span>
+                        <div class="w-[3.25rem] h-[3.25rem] min-w-[3.25rem] rounded-full bg-white/15 flex items-center justify-center text-3xl animate-bounce-soft">☕</div>
+                    </div>
+                </button>
+            </section>
+
+            <!-- VIRTUAL TOUR SHOWCASE -->
+            <section class="mt-8 reveal">
+                <div onclick="openTour()" class="tap-scale cursor-pointer rounded-[2.35rem] overflow-hidden border-2 border-ridgeSky/55 shadow-md relative text-white" style="background:linear-gradient(150deg,#15303A,#2E3E9C);">
+                    <div class="absolute -right-10 -top-12 w-40 h-40 rounded-full bg-ridgeTeal/25"></div>
+                    <div class="relative p-5 flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-3xl bg-white/12 flex items-center justify-center text-4xl shadow-inner">🎥</div>
+                        <div class="flex-1 min-w-0">
+                            <span class="inline-flex px-2.5 py-1 rounded-full bg-ridgeSky/90 text-ridgeInk text-[9px] font-black uppercase tracking-widest">Step inside</span>
+                            <h3 class="font-playful font-black text-2xl leading-tight mt-2">Take a Virtual Tour</h3>
+                            <p class="text-xs font-semibold text-white/75 mt-1 leading-relaxed">Explore our cosy Chole Plaza space, bookshelf & co-working corner in an immersive 360° walkthrough.</p>
+                        </div>
+                        <i class="fa-solid fa-circle-play text-4xl text-ridgeSky"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CRAFT YOUR COFFEE SHOWCASE -->
+            <section class="mt-6 reveal">
+                <div onclick="openModal('customizer-modal')" class="tap-scale cursor-pointer rounded-[2.35rem] bg-white/82 dark:bg-ridgeDarkCard border-2 border-ridgeTeal/45 p-5 shadow-md relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-12 w-32 h-32 rounded-full bg-ridgeTeal/15"></div>
+                    <div class="flex items-start gap-4 relative">
+                        <div class="w-16 h-16 rounded-3xl bg-ridgeTeal/20 flex items-center justify-center text-4xl shadow-inner">☕</div>
+                        <div class="flex-1 min-w-0">
+                            <span class="inline-flex px-2.5 py-1 rounded-full bg-ridgeCrema/50 text-ridgeInk text-[9px] font-black uppercase tracking-widest">Build your cup</span>
+                            <h3 class="font-playful font-black text-2xl leading-tight mt-2">Craft Your Coffee</h3>
+                            <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">Choose a brew method, milk, strength and finish. Your cup builds with emoji as you go.</p>
+                            <div id="mini-builder-preview" class="mt-4 rounded-2xl bg-ridgeCream dark:bg-white/5 border border-ridgeNavy/10 px-4 py-3 text-center text-2xl">☕ 🥛 ✨</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-9">
+                <h3 class="reveal text-xl font-black font-playful uppercase tracking-tight flex items-center gap-2">
+                    <span class="w-1.5 h-6 rounded-full bg-ridgeNavy"></span> Our Coffee
+                </h3>
+                <div class="mt-5 flex gap-4 overflow-x-auto no-scrollbar pb-3 px-1">
+                    <button onclick="openOrderBot('hot')" class="reveal tap-scale min-w-[200px] text-left bg-white/78 dark:bg-ridgeDarkCard rounded-[2rem] p-3 border border-ridgeNavy/10 shadow-sm">
+                        <div class="w-full aspect-[4/3] rounded-[1.45rem] flex items-center justify-center text-5xl" style="background:linear-gradient(135deg,rgba(46,62,156,.14),rgba(18,160,160,.16));">☕</div>
+                        <div class="px-2 pt-3 pb-1">
+                            <div class="font-black text-ridgeNavy dark:text-ridgeSky">Hot Coffee</div>
+                            <div class="text-[10px] font-black uppercase tracking-wider text-zinc-400">Espresso to Latte</div>
+                        </div>
+                    </button>
+                    <button onclick="openOrderBot('cold')" class="reveal tap-scale min-w-[200px] text-left bg-white/78 dark:bg-ridgeDarkCard rounded-[2rem] p-3 border border-ridgeNavy/10 shadow-sm">
+                        <div class="w-full aspect-[4/3] rounded-[1.45rem] flex items-center justify-center text-5xl" style="background:linear-gradient(135deg,rgba(154,213,238,.30),rgba(18,160,160,.16));">🧊</div>
+                        <div class="px-2 pt-3 pb-1">
+                            <div class="font-black text-ridgeTeal dark:text-ridgeSky">Cold Brew</div>
+                            <div class="text-[10px] font-black uppercase tracking-wider text-zinc-400">Signature 13-hr brew</div>
+                        </div>
+                    </button>
+                    <button onclick="openOrderBot('food')" class="reveal tap-scale min-w-[200px] text-left bg-white/78 dark:bg-ridgeDarkCard rounded-[2rem] p-3 border border-ridgeNavy/10 shadow-sm">
+                        <div class="w-full aspect-[4/3] rounded-[1.45rem] flex items-center justify-center text-5xl" style="background:linear-gradient(135deg,rgba(228,177,92,.22),rgba(46,62,156,.10));">🥪</div>
+                        <div class="px-2 pt-3 pb-1">
+                            <div class="font-black text-ridgeNavy dark:text-ridgeCrema">Food</div>
+                            <div class="text-[10px] font-black uppercase tracking-wider text-zinc-400">Sandwiches & salads</div>
+                        </div>
+                    </button>
+                </div>
+            </section>
+
+            <section class="mt-8 reveal">
+                <div class="bg-white/75 dark:bg-ridgeDarkCard rounded-[2.2rem] p-5 border border-ridgeNavy/10">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-black font-playful text-xl">Today's Status</h4>
+                            <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mt-1">Café opening hours</p>
+                        </div>
+                        <div id="store-status-badge"></div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-ridgeNavy/10 text-xs font-bold text-zinc-500 dark:text-zinc-400 space-y-2">
+                        <p class="flex justify-between gap-4"><span>Every day</span><span class="text-ridgeNavy dark:text-ridgeSky">7:30 AM - 7:00 PM</span></p>
+                        <p class="flex justify-between gap-4"><span>Free WiFi · Co-working</span><span class="text-ridgeTeal dark:text-ridgeCrema">All day</span></p>
+                        <p id="store-status-note" class="hidden text-rose-500 font-black pt-1"></p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-8 reveal">
+                <div class="bg-white/78 dark:bg-ridgeDarkCard rounded-[2.35rem] p-5 border border-ridgeNavy/10 shadow-sm">
+                    <div class="flex items-end justify-between gap-4 mb-4">
+                        <div>
+                            <span class="text-[9px] font-black uppercase tracking-widest text-ridgeTeal dark:text-ridgeCrema">Let's connect</span>
+                            <h3 class="font-playful font-black text-2xl leading-tight mt-1">Connect with us</h3>
+                        </div>
+                        <span class="text-3xl">⛰️</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="https://wa.me/255672263333" target="_blank" rel="noopener noreferrer" class="tap-scale rounded-2xl bg-green-50 dark:bg-green-500/10 border border-green-500/15 p-4 flex flex-col">
+                            <i class="fa-brands fa-whatsapp text-[#25D366] text-2xl mb-3"></i>
+                            <span class="font-black text-sm">WhatsApp</span>
+                            <span class="text-[9px] font-black uppercase tracking-wide text-zinc-400 mt-1">Order or ask</span>
+                        </a>
+                        <a href="https://www.instagram.com/theridgedar/" target="_blank" rel="noopener noreferrer" class="tap-scale rounded-2xl bg-rose-50 dark:bg-rose-500/10 border border-rose-500/15 p-4 flex flex-col">
+                            <i class="fa-brands fa-instagram text-[#E4405F] text-2xl mb-3"></i>
+                            <span class="font-black text-sm">Instagram</span>
+                            <span class="text-[9px] font-black uppercase tracking-wide text-zinc-400 mt-1">@theridgedar</span>
+                        </a>
+                        <a href="https://maps.google.com/?q=The+Ridge+Cafe+Chole+Plaza+Masaki+Dar+es+Salaam" target="_blank" rel="noopener noreferrer" class="tap-scale rounded-2xl bg-ridgeSky/20 border border-ridgeNavy/15 p-4 flex flex-col">
+                            <i class="fa-solid fa-location-dot text-ridgeNavy dark:text-ridgeSky text-2xl mb-3"></i>
+                            <span class="font-black text-sm">Location</span>
+                            <span class="text-[9px] font-black uppercase tracking-wide text-zinc-400 mt-1">Chole Plaza, Masaki</span>
+                        </a>
+                        <a href="tel:+255672263333" class="tap-scale rounded-2xl bg-ridgeTeal/15 border border-ridgeTeal/25 p-4 flex flex-col">
+                            <i class="fa-solid fa-phone text-ridgeTeal text-2xl mb-3"></i>
+                            <span class="font-black text-sm">Call Us</span>
+                            <span class="text-[9px] font-black uppercase tracking-wide text-zinc-400 mt-1">+255 672 263 333</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-8 reveal">
+                <div class="bg-ridgeCream/80 dark:bg-ridgeDarkCard/70 p-6 rounded-[2.35rem] border-2 border-dashed border-ridgeNavy/20">
+                    <h3 class="font-black font-playful text-xl mb-1">☕ Community Cup</h3>
+                    <p class="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-black mb-4">What should The Ridge brew next?</p>
+                    <div id="suggestion-feedback" class="py-6 text-center hidden">
+                        <span class="text-4xl block mb-2 animate-bounce-soft">⛰️</span>
+                        <p class="text-ridgeNavy dark:text-ridgeSky font-black text-sm">Great idea recorded. Asante sana!</p>
+                    </div>
+                    <form id="suggestion-form" onsubmit="handleSuggestion(event)" class="space-y-4">
+                        <textarea id="suggestion-text" name="suggestion" placeholder="A single-origin you'd love, a new signature brew..." required class="w-full bg-white dark:bg-ridgeDark border border-ridgeNavy/10 focus:border-ridgeNavy focus:ring-4 focus:ring-ridgeNavy/10 rounded-2xl p-4 text-sm dark:text-white min-h-[95px] outline-none transition-all placeholder:text-zinc-400 shadow-sm"></textarea>
+                        <button type="submit" id="submit-btn" class="w-full bg-ridgeNavy text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest tap-scale shadow-md">Submit Idea</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-4 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pointer-events-none">
+            <div class="max-w-md mx-auto bg-white/94 dark:bg-ridgeDarkCard/94 backdrop-blur-2xl rounded-[2rem] p-3 flex items-center gap-3 border border-ridgeNavy/10 shadow-[0_24px_50px_rgba(21,48,58,.18)] pointer-events-auto">
+                <button onclick="openTour()" class="flex-1 flex items-center justify-center gap-2 bg-ridgeCream dark:bg-white/6 text-ridgeNavy dark:text-white font-black text-[11px] uppercase py-4 rounded-[1.35rem] tap-scale">
+                    <i class="fa-solid fa-circle-play text-ridgeTeal"></i> Tour
+                </button>
+                <button onclick="openOrderBot()" class="flex-[1.35] flex items-center justify-center gap-2 bg-ridgeNavy text-white font-black text-[11px] uppercase py-4 rounded-[1.35rem] tap-scale shadow-lg relative">
+                    <span id="bottom-badge" class="hidden absolute -top-2 -right-1 bg-ridgeSky text-ridgeInk text-[10px] font-black rounded-full min-w-[22px] h-[22px] items-center justify-center px-1.5"></span>
+                    <i class="fa-solid fa-mug-hot"></i> Order Now
+                </button>
+            </div>
+        </nav>
+
+        <div class="fixed bottom-[calc(.45rem+env(safe-area-inset-bottom))] left-0 right-0 z-[51] px-6 pointer-events-none">
+            <div class="max-w-md mx-auto flex justify-end">
+                <a href="https://www.skani.space/" target="_blank" rel="noopener noreferrer" class="pointer-events-auto text-[7px] font-black uppercase tracking-[0.18em] text-zinc-500 bg-white/75 dark:bg-ridgeDarkCard/75 backdrop-blur-md border border-ridgeNavy/10 px-2.5 py-1 rounded-full shadow-lg opacity-45 hover:opacity-100">Powered by Skani.space</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIRTUAL TOUR MODAL -->
+    <div id="tour-modal" class="modal-overlay fixed inset-0 z-[70] flex items-end justify-center px-4">
+        <div class="absolute inset-0 bg-black/65" onclick="closeModal('tour-modal')"></div>
+        <div class="modal-panel bg-ridgePaper dark:bg-ridgeDarkCard w-full max-w-md rounded-t-[2.6rem] p-6 relative pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-2xl border-t-8 border-ridgeSky">
+            <div class="w-12 h-1.5 bg-ridgeNavy/20 dark:bg-white/15 rounded-full mx-auto mb-5"></div>
+            <button onclick="closeModal('tour-modal')" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-ridgeNavy/10 dark:bg-white/10 text-ridgeNavy dark:text-white tap-scale z-10"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-3xl font-black font-playful leading-tight">Virtual Tour</h3>
+            <p class="text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-1 mb-4">Explore The Ridge in 360° 🎥</p>
+            <div class="rounded-[2rem] overflow-hidden border-2 border-ridgeNavy/10 shadow-lg">
+                <iframe id="tour-frame"
+                    src="https://www.google.com/maps?q=Chole+Plaza,+Chole+Road,+Masaki,+Dar+es+Salaam&output=embed"
+                    class="w-full" style="height:300px;border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                    title="The Ridge Cafe virtual tour"></iframe>
+            </div>
+            <div class="mt-4 flex items-center gap-3 rounded-2xl bg-white dark:bg-ridgeDark p-4 border border-ridgeNavy/10">
+                <div class="w-11 h-11 rounded-2xl bg-ridgeTeal/20 flex items-center justify-center text-xl">📍</div>
+                <div class="flex-1">
+                    <div class="font-black text-sm">Chole Plaza, Ground Floor</div>
+                    <div class="text-[11px] text-zinc-400 font-bold">Chole Road, Masaki · Dar es Salaam</div>
+                </div>
+            </div>
+            <a href="https://maps.google.com/?q=The+Ridge+Cafe+Chole+Plaza+Masaki+Dar+es+Salaam" target="_blank" rel="noopener noreferrer" class="w-full mt-4 bg-ridgeNavy text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest tap-scale shadow-md flex items-center justify-center gap-2">
+                <i class="fa-solid fa-diamond-turn-right"></i> Get Directions
+            </a>
+        </div>
+    </div>
+
+    <div id="customizer-modal" class="modal-overlay fixed inset-0 z-[70] flex items-end justify-center px-4">
+        <div class="absolute inset-0 bg-black/65" onclick="closeModal('customizer-modal')"></div>
+        <div class="modal-panel bg-ridgePaper dark:bg-ridgeDarkCard w-full max-w-md rounded-t-[2.6rem] p-6 relative pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-2xl border-t-8 border-ridgeTeal">
+            <div class="w-12 h-1.5 bg-ridgeNavy/20 dark:bg-white/15 rounded-full mx-auto mb-5"></div>
+            <button onclick="closeModal('customizer-modal')" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-ridgeNavy/10 dark:bg-white/10 text-ridgeNavy dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-3xl font-black font-playful leading-tight">Craft Your Coffee</h3>
+            <p class="text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-1 mb-5">Your cup, your way ☕</p>
+
+            <div class="rounded-[2rem] bg-white dark:bg-ridgeDark p-5 border border-ridgeNavy/10 mb-5 text-center">
+                <div id="builder-visual" class="text-4xl min-h-[52px] flex items-center justify-center gap-2">☕</div>
+                <p id="builder-summary" class="mt-3 text-xs font-black text-ridgeNavy dark:text-ridgeSky">Choose your brew style</p>
+            </div>
+
+            <div class="max-h-[52vh] overflow-y-auto no-scrollbar space-y-5 pr-1">
+                <div>
+                    <label class="block text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2">1. Brew Style</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button id="build-category-Hot" onclick="selectBuildPart('category','Hot')" class="build-category rounded-2xl bg-white dark:bg-ridgeDark border-2 border-ridgeNavy/10 p-3 text-xs font-black tap-scale">☕ Hot</button>
+                        <button id="build-category-Cold" onclick="selectBuildPart('category','Cold')" class="build-category rounded-2xl bg-white dark:bg-ridgeDark border-2 border-ridgeNavy/10 p-3 text-xs font-black tap-scale">🧊 Cold</button>
+                        <button id="build-category-Pour" onclick="selectBuildPart('category','Pour')" class="build-category rounded-2xl bg-white dark:bg-ridgeDark border-2 border-ridgeNavy/10 p-3 text-xs font-black tap-scale">💧 Pour</button>
+                    </div>
+                </div>
+                <div>
+                    <label id="build-flavor-label" class="block text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2">2. Choose a style first</label>
+                    <div id="build-flavor-options" class="grid grid-cols-2 gap-2">
+                        <div class="col-span-2 rounded-2xl bg-white/70 dark:bg-ridgeDark border-2 border-ridgeNavy/10 p-4 text-xs font-black text-center text-zinc-400">Pick Hot, Cold, or Pour to see the right options.</div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2">3. Sweetness</label>
+                    <div class="grid grid-cols-4 gap-2">
+                        <button id="build-sweet-None" onclick="selectBuildPart('sweet','None')" class="build-sweet rounded-2xl bg-white dark:bg-ridgeDark border-2 border-ridgeNavy/10 p-3 text-xs font-black tap-scale">None</button>
+                        <button id="build-sweet-Low" onclick="selectBuildPart('sweet','Low')" class="build-sweet rounded-2xl bg-white dark:bg-ridgeDark border-2 border-ridgeNavy/10 p-3 text-xs font-black tap-scale">Low</button>
+                        <button id="build-sweet-Med" onclick="selectBuildPart('sweet','Med')" class="build-sweet rounded-2xl bg-white dark:bg-ridgeDark border-2 border-ridgeNavy/10 p-3 text-xs font-black tap-scale">Med</button>
+                        <button id="build-sweet-Sweet" onclick="selectBuildPart('sweet','Sweet')" class="build-sweet rounded-2xl bg-white dark:bg-ridgeDark border-2 border-ridgeNavy/10 p-3 text-xs font-black tap-scale">Sweet</button>
+                    </div>
+                </div>
+                <div>
+                    <label id="build-finish-label" class="block text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2">4. Milk / Finish</label>
+                    <div id="build-finish-options" class="grid grid-cols-2 gap-2">
+                        <div class="col-span-2 rounded-2xl bg-white/70 dark:bg-ridgeDark border-2 border-ridgeNavy/10 p-4 text-xs font-black text-center text-zinc-400">Finish options appear after choosing a style.</div>
+                    </div>
+                </div>
+            </div>
+            <button onclick="submitCustomDrink()" class="w-full mt-5 bg-ridgeNavy text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest tap-scale shadow-md flex items-center justify-center gap-2">
+                <i class="fa-brands fa-whatsapp"></i> Order This Cup
+            </button>
+        </div>
+    </div>
+
+    <div id="reviews-modal" class="modal-overlay fixed inset-0 z-[70] flex items-end justify-center px-4">
+        <div class="absolute inset-0 bg-black/65" onclick="closeModal('reviews-modal')"></div>
+        <div class="modal-panel bg-ridgePaper dark:bg-ridgeDarkCard w-full max-w-md rounded-t-[2.6rem] p-6 relative pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-2xl border-t-8 border-ridgeCrema">
+            <button onclick="closeModal('reviews-modal')" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-ridgeNavy/10 dark:bg-white/10"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-black font-playful">Community Reviews</h3>
+            <div class="mt-5 space-y-3">
+                <div class="bg-white dark:bg-ridgeDark p-4 rounded-2xl border border-ridgeNavy/10">
+                    <div class="text-amber-500 text-xs mb-1">★★★★★</div>
+                    <p class="text-sm font-semibold">"The best coffee in Dar — proper single-origin, roasted beautifully."</p>
+                </div>
+                <div class="bg-white dark:bg-ridgeDark p-4 rounded-2xl border border-ridgeNavy/10">
+                    <div class="text-amber-500 text-xs mb-1">★★★★★</div>
+                    <p class="text-sm font-semibold">"Cosy spot, strong WiFi, great for working. The cold brew is a must."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="order-modal" class="modal-overlay fixed inset-0 z-[80] flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/80" onclick="closeModal('order-modal')"></div>
+        <div class="order-modal-content bg-ridgePaper dark:bg-ridgeDark w-full max-w-md rounded-t-[2.45rem] relative flex flex-col" style="height:94vh;max-height:94vh;">
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-ridgeNavy/10 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-ridgeSky rounded-xl flex items-center justify-center text-lg">⛰️</div>
+                    <div>
+                        <h3 class="text-base font-black leading-none">Order</h3>
+                        <p class="text-[9px] text-ridgeNavy dark:text-ridgeSky uppercase tracking-widest font-black">The Ridge Cafe</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="step-dot active" id="sd1"></div>
+                    <div class="step-dot" id="sd2"></div>
+                    <div class="step-dot" id="sd3"></div>
+                    <div class="step-dot" id="sd4"></div>
+                </div>
+                <button onclick="closeModal('order-modal')" class="w-9 h-9 rounded-full bg-ridgeNavy/10 text-ridgeNavy dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto no-scrollbar px-5" id="order-body">
+                <div id="order-closed-notice" class="hidden mt-4 bg-rose-500/10 border-2 border-rose-500/20 rounded-2xl p-3.5 text-center">
+                    <p class="text-[11px] font-black text-rose-600 dark:text-rose-300 uppercase tracking-wider"></p>
+                </div>
+                <div id="screen-1" class="order-screen active pt-4 pb-4">
+                    <h4 class="text-2xl font-black font-playful mb-0.5">Pick your order</h4>
+                    <p class="text-zinc-400 text-xs font-black uppercase tracking-wider mb-4">Tap a card to add it</p>
+                    <div class="relative mb-4">
+                        <input type="text" id="menu-search" class="search-input" placeholder="Search latte, cold brew, panini..." oninput="handleSearch(this.value)" autocomplete="off" spellcheck="false">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-ridgeNavy/45"></i>
+                        <button class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-ridgeNavy/10 text-xs" id="search-clear-btn" onclick="clearSearch()" aria-label="Clear">×</button>
+                    </div>
+                    <div id="search-results" class="hidden"></div>
+                    <div id="browse-view">
+                        <div class="flex gap-2 overflow-x-auto no-scrollbar pb-3 mb-2" id="cat-pills"></div>
+                        <div id="item-grid" class="grid grid-cols-2 gap-3"></div>
+                    </div>
+                </div>
+
+                <div id="screen-2" class="order-screen pt-4 pb-4">
+                    <h4 class="text-2xl font-black font-playful mb-0.5">Your Order</h4>
+                    <p class="text-zinc-400 text-xs font-black uppercase tracking-wider mb-5">Adjust before checkout</p>
+                    <div id="cart-review-list"></div>
+                    <div class="mt-4 pt-4 border-t border-ridgeNavy/10 flex justify-between">
+                        <span class="text-xs font-black uppercase text-zinc-400 tracking-wider">Service</span>
+                        <span class="text-sm font-black text-ridgeTeal dark:text-ridgeSky">Confirm on WhatsApp</span>
+                    </div>
+                    <div class="flex justify-between mt-2">
+                        <span class="text-base font-black uppercase">Total</span>
+                        <span class="text-xl font-black text-ridgeNavy dark:text-ridgeSky" id="cart-total-2">TZS 0</span>
+                    </div>
+                </div>
+
+                <div id="screen-3" class="order-screen pt-4 pb-4">
+                    <h4 class="text-2xl font-black font-playful mb-0.5">Your Details</h4>
+                    <p class="text-zinc-400 text-xs font-black uppercase tracking-wider mb-5">So The Ridge can confirm</p>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Your Name</label>
+                            <input type="text" id="cust-name" placeholder="e.g. Amani Mushi" class="w-full bg-white dark:bg-ridgeDarkCard p-4 dark:text-white text-sm font-bold border-2 border-ridgeNavy/15 focus:border-ridgeNavy outline-none rounded-2xl transition-all">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Phone Number</label>
+                            <input type="tel" id="cust-phone" placeholder="e.g. 0672 263 333" class="w-full bg-white dark:bg-ridgeDarkCard p-4 dark:text-white text-sm font-bold border-2 border-ridgeNavy/15 focus:border-ridgeNavy outline-none rounded-2xl transition-all">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Dine-in, Delivery or Pickup?</label>
+                            <div class="flex gap-3">
+                                <button onclick="setOrderType('Delivery')" id="btn-delivery" class="flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-ridgeNavy bg-ridgeSky/25 text-ridgeNavy transition-all">Delivery</button>
+                                <button onclick="setOrderType('Pickup')" id="btn-pickup" class="flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-zinc-300 dark:border-zinc-700 text-zinc-400 transition-all">Pickup</button>
+                            </div>
+                        </div>
+                        <div id="addr-field">
+                            <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Delivery Address</label>
+                            <input type="text" id="cust-addr" placeholder="Area, street, landmark..." class="w-full bg-white dark:bg-ridgeDarkCard p-4 dark:text-white text-sm font-bold border-2 border-ridgeNavy/15 focus:border-ridgeNavy outline-none rounded-2xl transition-all">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Special Requests</label>
+                            <textarea id="cust-notes" placeholder="e.g. Oat milk, extra shot, less ice..." rows="2" class="w-full bg-white dark:bg-ridgeDarkCard p-4 dark:text-white text-sm font-bold border-2 border-ridgeNavy/15 focus:border-ridgeNavy outline-none rounded-2xl transition-all resize-none"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-3">Payment</label>
+                        <div class="pay-opt selected" id="pay-cash" onclick="selectPayment('cash')">
+                            <div class="radio-dot"></div><div class="text-3xl">💵</div>
+                            <div><div class="font-black text-sm">Cash / On Confirmation</div><div class="text-[10px] text-zinc-400 font-bold uppercase">Pay at the counter</div></div>
+                        </div>
+                        <div class="pay-opt mt-2" id="pay-mpesa" onclick="selectPayment('mpesa')">
+                            <div class="radio-dot"></div><div class="text-3xl">📱</div>
+                            <div><div class="font-black text-sm">M-Pesa</div><div class="text-[10px] text-zinc-400 font-bold uppercase">Request payment details</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="screen-4" class="order-screen pt-4 pb-4">
+                    <h4 class="text-2xl font-black font-playful mb-0.5">Review & Send</h4>
+                    <p class="text-zinc-400 text-xs font-black uppercase tracking-wider mb-5">WhatsApp opens with your order</p>
+                    <div class="bg-white dark:bg-ridgeDarkCard rounded-2xl p-5 mb-4 border-2 border-ridgeNavy/10">
+                        <div class="text-[10px] font-black uppercase text-zinc-400 tracking-wider mb-3">Order Summary</div>
+                        <div id="final-order-items"></div>
+                        <div class="flex justify-between mt-3 pt-3 border-t border-ridgeNavy/10">
+                            <span class="font-black uppercase text-sm">Total</span>
+                            <span class="font-black text-ridgeNavy dark:text-ridgeSky text-lg" id="final-total"></span>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-ridgeDarkCard rounded-2xl p-5 mb-4 border-2 border-ridgeNavy/10">
+                        <div class="text-[10px] font-black uppercase text-zinc-400 tracking-wider mb-3">Customer Details</div>
+                        <div id="final-customer-info"></div>
+                    </div>
+                    <div class="bg-green-500/10 border-2 border-green-500/20 rounded-2xl p-4 text-center">
+                        <p class="text-[11px] font-black text-green-700 dark:text-green-300 uppercase tracking-wider">Tap send order to open WhatsApp 🟢</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-shrink-0 px-5 py-4 border-t border-ridgeNavy/10">
+                <div id="footer-1" class="flex items-center justify-between gap-3">
+                    <div class="flex-1">
+                        <div class="text-[10px] text-zinc-400 font-black uppercase tracking-wider">Cart</div>
+                        <div class="font-black text-sm" id="cart-summary-pill">0 items · TZS 0</div>
+                    </div>
+                    <button onclick="goToScreen(2)" id="btn-to-cart" class="bg-ridgeNavy text-white font-black text-sm uppercase px-6 py-4 rounded-2xl tap-scale shadow-lg disabled:opacity-40 disabled:cursor-not-allowed" disabled>View Order →</button>
+                </div>
+                <div id="footer-2" class="hidden flex gap-3">
+                    <button onclick="goToScreen(1)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-ridgeNavy/25 tap-scale">← Edit</button>
+                    <button onclick="goToScreen(3)" class="flex-[2] bg-ridgeNavy text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale shadow-lg">Details →</button>
+                </div>
+                <div id="footer-3" class="hidden flex gap-3">
+                    <button onclick="goToScreen(2)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-ridgeNavy/25 tap-scale">← Back</button>
+                    <button onclick="goToScreen(4)" class="flex-[2] bg-ridgeNavy text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale shadow-lg">Review →</button>
+                </div>
+                <div id="footer-4" class="hidden flex gap-3">
+                    <button onclick="goToScreen(3)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-ridgeNavy/25 tap-scale">← Back</button>
+                    <button onclick="sendToWhatsApp()" class="flex-[2] bg-[#25D366] text-white font-black text-sm uppercase py-4 rounded-2xl tap-scale flex items-center justify-center gap-2 shadow-lg"><i class="fa-brands fa-whatsapp text-lg"></i> Send Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="closed-modal" class="modal-overlay fixed inset-0 z-[90] flex items-center justify-center px-5">
+        <div class="absolute inset-0 bg-black/80" onclick="cancelClosedModal()"></div>
+        <div class="modal-panel bg-ridgePaper dark:bg-ridgeDark w-full max-w-sm rounded-[2.2rem] relative p-6 shadow-2xl">
+            <div class="text-center">
+                <div class="text-5xl mb-3">😴</div>
+                <h3 class="text-2xl font-black font-playful mb-1">We're closed right now</h3>
+                <p id="closed-reason" class="text-sm font-bold text-zinc-500 dark:text-zinc-400 mb-5">We're closed at the moment.</p>
+            </div>
+            <div class="bg-white dark:bg-ridgeDarkCard rounded-2xl p-4 border-2 border-ridgeNavy/10">
+                <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-2">📅 Order in advance for another day</label>
+                <input type="date" id="schedule-date" onchange="validateScheduleDate()" class="w-full bg-ridgePaper dark:bg-ridgeDark p-3.5 dark:text-white text-sm font-bold border-2 border-ridgeNavy/15 focus:border-ridgeNavy outline-none rounded-xl transition-all">
+                <p id="schedule-hint" class="text-[11px] font-black mt-2"></p>
+            </div>
+            <div class="flex gap-3 mt-5">
+                <button onclick="cancelClosedModal()" class="flex-1 py-3.5 rounded-2xl font-black text-xs uppercase border-2 border-ridgeNavy/25 tap-scale">Not now</button>
+                <button id="closed-continue-btn" onclick="confirmScheduledOrder()" class="flex-[2] bg-ridgeNavy text-white font-black text-xs uppercase py-3.5 rounded-2xl tap-scale shadow-lg disabled:opacity-40 disabled:cursor-not-allowed">Continue Order →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: .1, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.getElementById('theme-icon').className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+        function openInNewTab(url) { window.open(url, '_blank', 'noopener,noreferrer'); }
+        function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = ''; }
+        function openTour() { openModal('tour-modal'); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { const active = document.querySelector('.modal-overlay.active'); if (active) closeModal(active.id); } });
+
+        const WA_NUMBER = '255672263333';
+
+        function showBanner(message) {
+            const existing = document.getElementById('ridge-banner');
+            if (existing) existing.remove();
+            const banner = document.createElement('div');
+            banner.id = 'ridge-banner';
+            banner.className = 'fixed top-6 left-1/2 -translate-x-1/2 z-[100] bg-ridgeNavy text-white font-black text-xs py-3 px-5 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2';
+            banner.innerHTML = `⛰️ <span>${message}</span>`;
+            document.body.appendChild(banner);
+            setTimeout(() => {
+                banner.style.opacity = '0';
+                banner.style.transform = 'translate(-50%, -10px)';
+                setTimeout(() => banner.remove(), 350);
+            }, 2800);
+        }
+
+        /* ---- Opening hours & Tanzania public-holiday awareness ---- */
+        const OPEN_FROM = 7.5, OPEN_TO = 19;       // café hours 7:30 – 19:00
+        const CLOSED_WEEKDAYS = [];                // open every day
+        const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        // Tanzania public holidays. UPDATE ONCE A YEAR. Islamic dates are best estimates — confirm yearly.
+        const PUBLIC_HOLIDAYS = {
+            '2026-01-01': "New Year's Day",
+            '2026-01-12': "Zanzibar Revolution Day",
+            '2026-03-20': "Eid al-Fitr",
+            '2026-04-03': "Good Friday",
+            '2026-04-06': "Easter Monday",
+            '2026-04-07': "Karume Day",
+            '2026-04-26': "Union Day",
+            '2026-05-01': "Workers' Day",
+            '2026-05-27': "Eid al-Adha",
+            '2026-07-07': "Saba Saba Day",
+            '2026-08-08': "Nane Nane Day",
+            '2026-08-25': "Maulid Day",
+            '2026-10-14': "Nyerere Day",
+            '2026-12-09': "Independence Day",
+            '2026-12-25': "Christmas Day",
+            '2026-12-26': "Boxing Day",
+            '2027-01-01': "New Year's Day",
+            '2027-01-12': "Zanzibar Revolution Day",
+            '2027-04-07': "Karume Day",
+            '2027-04-26': "Union Day",
+            '2027-05-01': "Workers' Day",
+            '2027-07-07': "Saba Saba Day",
+            '2027-08-08': "Nane Nane Day",
+            '2027-10-14': "Nyerere Day",
+            '2027-12-09': "Independence Day",
+            '2027-12-25': "Christmas Day",
+            '2027-12-26': "Boxing Day"
+        };
+
+        function toISODate(d) {
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${d.getFullYear()}-${m}-${day}`;
+        }
+        function getClosure(d) {
+            const holiday = PUBLIC_HOLIDAYS[toISODate(d)];
+            if (holiday) return { type: 'holiday', reason: holiday };
+            if (CLOSED_WEEKDAYS.includes(d.getDay())) return { type: 'weekly', reason: WEEKDAY_NAMES[d.getDay()] };
+            return null;
+        }
+        function nextOpenDay(from) {
+            const d = new Date(from);
+            d.setHours(0, 0, 0, 0);
+            do { d.setDate(d.getDate() + 1); } while (getClosure(d));
+            return d;
+        }
+        function dayLabel(d) { return d.toLocaleDateString('en-TZ', { weekday: 'short', day: '2-digit', month: 'short' }); }
+
+        function updateStoreStatus() {
+            const now = new Date();
+            const closure = getClosure(now);
+            const hour = now.getHours() + now.getMinutes() / 60;
+            const badge = document.getElementById('store-status-badge');
+            const note = document.getElementById('store-status-note');
+            let label, cls;
+            if (closure) { label = 'Closed Today'; cls = 'bg-rose-100 text-rose-600'; }
+            else if (hour >= OPEN_FROM && hour < OPEN_TO) { label = 'Open Now'; cls = 'bg-green-100 text-green-700'; }
+            else { label = 'Closed Now'; cls = 'bg-rose-100 text-rose-600'; }
+            badge.innerHTML = `<span class="px-3 py-1.5 rounded-full ${cls} text-[10px] font-black uppercase tracking-wider">${label}</span>`;
+            if (note) {
+                if (closure && closure.type === 'holiday') {
+                    note.textContent = `Closed today — ${closure.reason} 🇹🇿`;
+                    note.classList.remove('hidden');
+                } else { note.classList.add('hidden'); }
+            }
+        }
+        updateStoreStatus();
+
+        /* ---- Closed-day gate ---- */
+        let scheduledDate = null;
+        let pendingSender = null;
+        function requiresSchedule(sender) {
+            if (scheduledDate || !getClosure(new Date())) return false;
+            openClosedModal(sender);
+            return true;
+        }
+        function openClosedModal(sender) {
+            pendingSender = sender;
+            const closure = getClosure(new Date());
+            const reasonEl = document.getElementById('closed-reason');
+            if (closure) {
+                reasonEl.textContent = closure.type === 'holiday'
+                    ? `We're closed today for ${closure.reason}.`
+                    : `We're closed every ${closure.reason}.`;
+            }
+            const input = document.getElementById('schedule-date');
+            input.min = toISODate(new Date());
+            input.value = toISODate(nextOpenDay(new Date()));
+            validateScheduleDate();
+            openModal('closed-modal');
+        }
+        function validateScheduleDate() {
+            const input = document.getElementById('schedule-date');
+            const hint = document.getElementById('schedule-hint');
+            const btn = document.getElementById('closed-continue-btn');
+            if (!input.value) {
+                hint.textContent = 'Please choose a day.';
+                hint.className = 'text-[11px] font-black mt-2 text-rose-500';
+                btn.disabled = true; return;
+            }
+            const picked = new Date(input.value + 'T00:00:00');
+            const closure = getClosure(picked);
+            if (closure) {
+                hint.textContent = closure.type === 'holiday'
+                    ? `${closure.reason} — we're closed. Pick another day.`
+                    : `We're closed on ${closure.reason}s. Pick another day.`;
+                hint.className = 'text-[11px] font-black mt-2 text-rose-500';
+                btn.disabled = true;
+            } else {
+                hint.textContent = `Scheduled for ${dayLabel(picked)} ✓`;
+                hint.className = 'text-[11px] font-black mt-2 text-green-600';
+                btn.disabled = false;
+            }
+        }
+        function confirmScheduledOrder() {
+            const input = document.getElementById('schedule-date');
+            if (!input.value) return;
+            const picked = new Date(input.value + 'T00:00:00');
+            if (getClosure(picked)) return;
+            scheduledDate = dayLabel(picked);
+            closeModal('closed-modal');
+            const sender = pendingSender;
+            pendingSender = null;
+            if (typeof sender === 'function') sender();
+        }
+        function cancelClosedModal() { pendingSender = null; closeModal('closed-modal'); }
+
+        function handleSuggestion(e) {
+            e.preventDefault();
+            const form = document.getElementById('suggestion-form');
+            const feedback = document.getElementById('suggestion-feedback');
+            const submitBtn = document.getElementById('submit-btn');
+            const suggestion = document.getElementById('suggestion-text').value.trim();
+            if (!suggestion) return;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+            form.style.opacity = '0';
+            setTimeout(() => { form.classList.add('hidden'); feedback.classList.remove('hidden'); }, 250);
+            setTimeout(() => {
+                feedback.classList.add('hidden');
+                form.classList.remove('hidden');
+                form.style.opacity = '1';
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Submit Idea';
+                e.target.reset();
+            }, 4500);
+        }
+
+        /* ---- MENU (self-contained, emoji visuals) ---- */
+        const MENU = {
+            hot: {
+                label: 'Hot Coffee',
+                items: [
+                    { name: 'Espresso', price: 4000, emoji: '☕', desc: 'Single or double shot' },
+                    { name: 'Macchiato', price: 5000, emoji: '☕', desc: 'Espresso, dash of milk' },
+                    { name: 'Cortado', price: 6000, emoji: '☕', desc: 'Balanced milk & espresso' },
+                    { name: 'Flat White', price: 8000, emoji: '🥛', desc: 'Silky microfoam' },
+                    { name: 'Cappuccino', price: 8000, emoji: '☕', desc: 'Classic foamy cup' },
+                    { name: 'Café Latte', price: 9000, emoji: '🥛', desc: 'Smooth milky coffee' },
+                    { name: 'Café Mocha', price: 10000, emoji: '🍫', desc: 'Chocolate & espresso' },
+                    { name: 'Pour Over', price: 12000, emoji: '💧', desc: 'Single-origin filter' }
+                ]
+            },
+            cold: {
+                label: 'Cold Brew',
+                items: [
+                    { name: "Dar-Hot-Salaam Cold Brew", price: 10000, emoji: '🧊', desc: 'Signature 13-hr brew' },
+                    { name: 'Iced Latte', price: 10000, emoji: '🧋', desc: 'Chilled milky coffee' },
+                    { name: 'Iced Americano', price: 8000, emoji: '🧊', desc: 'Espresso over ice' },
+                    { name: 'Iced Mocha', price: 11000, emoji: '🍫', desc: 'Iced chocolate coffee' },
+                    { name: 'Affogato', price: 12000, emoji: '🍨', desc: 'Espresso over ice cream' }
+                ]
+            },
+            food: {
+                label: 'Food',
+                items: [
+                    { name: 'Chicken Sandwich', price: 15000, emoji: '🥪', desc: 'Grilled, fresh bread' },
+                    { name: 'Veggie Panini', price: 14000, emoji: '🥙', desc: 'Toasted & warm' },
+                    { name: 'Garden Salad', price: 16000, emoji: '🥗', desc: 'Crisp & seasonal' },
+                    { name: 'Butter Croissant', price: 7000, emoji: '🥐', desc: 'Flaky & fresh' },
+                    { name: 'Banana Bread', price: 6000, emoji: '🍞', desc: 'House baked slice' },
+                    { name: 'Granola Bowl', price: 12000, emoji: '🥣', desc: 'Yoghurt & fruit' }
+                ]
+            }
+        };
+
+        let activeCat = 'hot';
+        let cart = {};
+        let currentScreen = 1;
+        let orderType = 'Delivery';
+        let selectedPayment = 'cash';
+
+        function cartKey(cat, name) { return `${cat}||${name}`; }
+        function getCartTotal() { return Object.values(cart).reduce((sum, item) => sum + item.price * item.qty, 0); }
+        function getCartCount() { return Object.values(cart).reduce((sum, item) => sum + item.qty, 0); }
+        function money(value) { return `TZS ${value.toLocaleString()}`; }
+
+        function renderCategoryPills() {
+            document.getElementById('cat-pills').innerHTML = Object.entries(MENU).map(([key, data]) =>
+                `<button class="cat-pill ${key === activeCat ? 'active' : 'inactive'}" onclick="switchCat('${key}')">${data.label}</button>`
+            ).join('');
+        }
+        function switchCat(cat) {
+            activeCat = cat;
+            renderCategoryPills();
+            renderGrid(cat);
+            document.getElementById('order-body').scrollTop = 0;
+        }
+        function renderGrid(cat) {
+            document.getElementById('item-grid').innerHTML = MENU[cat].items.map(item => renderItemCard(cat, item)).join('');
+        }
+        function renderItemCard(cat, item) {
+            const key = cartKey(cat, item.name);
+            const inCart = cart[key];
+            const safeName = item.name.replace(/'/g, "\\'");
+            return `
+                <div class="item-card ${inCart ? 'in-cart' : ''}">
+                    <div class="item-visual">
+                        <div class="item-emoji">${item.emoji}</div>
+                        ${inCart ? `<span class="badge-cart">${inCart.qty}</span>` : ''}
+                    </div>
+                    <div class="item-card-body">
+                        <div class="font-black text-sm leading-tight">${item.name}</div>
+                        <div class="text-[10px] text-zinc-400 font-semibold mt-1 min-h-[28px]">${item.desc}</div>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="font-black text-xs text-ridgeNavy dark:text-ridgeSky">${money(item.price)}</span>
+                            ${inCart
+                                ? `<div class="qty-ctrl">
+                                    <button class="qty-btn" onclick="changeQty('${cat}','${safeName}',-1)">−</button>
+                                    <span class="qty-num">${inCart.qty}</span>
+                                    <button class="qty-btn" onclick="changeQty('${cat}','${safeName}',1)">+</button>
+                                   </div>`
+                                : `<button class="add-btn-card" onclick="addItem('${cat}','${safeName}',${item.price},'${item.emoji}','${item.desc.replace(/'/g, "\\'")}')">+</button>`
+                            }
+                        </div>
+                    </div>
+                </div>`;
+        }
+        function addItem(cat, name, price, emoji, desc) {
+            const key = cartKey(cat, name);
+            if (cart[key]) cart[key].qty += 1;
+            else cart[key] = { cat, name, price, emoji, desc, qty: 1 };
+            saveCart();
+            renderGrid(activeCat);
+            const searchVal = document.getElementById('menu-search')?.value || '';
+            if (searchVal) handleSearch(searchVal);
+        }
+        function changeQty(cat, name, delta) {
+            const key = cartKey(cat, name);
+            if (!cart[key]) return;
+            cart[key].qty = Math.max(0, cart[key].qty + delta);
+            if (cart[key].qty === 0) delete cart[key];
+            saveCart();
+            renderGrid(activeCat);
+            renderCartReview();
+            const searchVal = document.getElementById('menu-search')?.value || '';
+            if (searchVal) handleSearch(searchVal);
+        }
+        function saveCart() {
+            try { sessionStorage.setItem('ridge_cart', JSON.stringify(cart)); } catch(e) {}
+            updateCartSummary();
+            updateBadges();
+        }
+        function updateCartSummary() {
+            const count = getCartCount();
+            const total = getCartTotal();
+            const pill = document.getElementById('cart-summary-pill');
+            if (pill) pill.textContent = `${count} item${count !== 1 ? 's' : ''} · ${money(total)}`;
+            const button = document.getElementById('btn-to-cart');
+            if (button) button.disabled = count === 0;
+        }
+        function updateBadges() {
+            const count = getCartCount();
+            ['bottom-badge', 'cta-badge'].forEach(id => {
+                const badge = document.getElementById(id);
+                if (!badge) return;
+                if (count > 0) { badge.textContent = count; badge.classList.remove('hidden'); badge.classList.add('flex'); }
+                else { badge.classList.add('hidden'); badge.classList.remove('flex'); }
+            });
+        }
+        function renderCartReview() {
+            const list = document.getElementById('cart-review-list');
+            const entries = Object.entries(cart);
+            if (!list) return;
+            if (!entries.length) {
+                list.innerHTML = '<p class="text-zinc-400 text-sm text-center py-8 font-bold">Your cart is empty ☕</p>';
+            } else {
+                list.innerHTML = entries.map(([key, item]) => `
+                    <div class="flex items-center gap-3 py-3 border-b border-ridgeNavy/10">
+                        <div class="w-[3.25rem] h-[3.25rem] min-w-[3.25rem] rounded-2xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,rgba(18,160,160,.18),rgba(46,62,156,.14));">${item.emoji || '☕'}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-black text-sm leading-tight">${item.name}</div>
+                            <div class="text-[11px] font-black text-ridgeNavy dark:text-ridgeSky">${money(item.price)} each</div>
+                        </div>
+                        <div class="qty-ctrl">
+                            <button class="qty-btn" onclick="cartChangeQty('${key.replace(/'/g, "\\'")}',-1)">−</button>
+                            <span class="qty-num">${item.qty}</span>
+                            <button class="qty-btn" onclick="cartChangeQty('${key.replace(/'/g, "\\'")}',1)">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            const totalEl = document.getElementById('cart-total-2');
+            if (totalEl) totalEl.textContent = money(getCartTotal());
+        }
+        function cartChangeQty(key, delta) {
+            if (!cart[key]) return;
+            cart[key].qty = Math.max(0, cart[key].qty + delta);
+            if (cart[key].qty === 0) delete cart[key];
+            saveCart();
+            renderGrid(activeCat);
+            renderCartReview();
+        }
+        function goToScreen(n) {
+            if (n === 2 && getCartCount() === 0) return;
+            [1,2,3,4].forEach(i => {
+                document.getElementById(`screen-${i}`).classList.remove('active');
+                document.getElementById(`footer-${i}`).classList.add('hidden');
+                document.getElementById(`sd${i}`).className = `step-dot${i < n ? ' done' : i === n ? ' active' : ''}`;
+            });
+            document.getElementById(`screen-${n}`).classList.add('active');
+            document.getElementById(`footer-${n}`).classList.remove('hidden');
+            document.getElementById('order-body').scrollTop = 0;
+            currentScreen = n;
+            if (n === 1) updateCartSummary();
+            if (n === 2) renderCartReview();
+            if (n === 4) renderFinalReview();
+        }
+        function setOrderType(type) {
+            orderType = type;
+            const active = 'flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-ridgeNavy bg-ridgeSky/25 text-ridgeNavy transition-all';
+            const inactive = 'flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-zinc-300 dark:border-zinc-700 text-zinc-400 transition-all';
+            document.getElementById('btn-delivery').className = type === 'Delivery' ? active : inactive;
+            document.getElementById('btn-pickup').className = type === 'Pickup' ? active : inactive;
+            document.getElementById('addr-field').style.display = type === 'Delivery' ? 'block' : 'none';
+        }
+        function selectPayment(method) {
+            selectedPayment = method;
+            document.getElementById('pay-cash').className = `pay-opt${method === 'cash' ? ' selected' : ''}`;
+            document.getElementById('pay-mpesa').className = `pay-opt mt-2${method === 'mpesa' ? ' selected' : ''}`;
+        }
+        function renderFinalReview() {
+            const items = Object.values(cart);
+            document.getElementById('final-order-items').innerHTML = items.map(item =>
+                `<div class="summary-row"><span>${item.name} × ${item.qty}</span><span class="font-black">${money(item.price * item.qty)}</span></div>`
+            ).join('');
+            document.getElementById('final-total').textContent = money(getCartTotal());
+            const name = document.getElementById('cust-name').value || '—';
+            const phone = document.getElementById('cust-phone').value || '—';
+            const addr = document.getElementById('cust-addr').value || '';
+            const notes = document.getElementById('cust-notes').value || '';
+            const payLabel = selectedPayment === 'mpesa' ? 'M-Pesa - request payment details' : 'Cash / On Confirmation';
+            const locationText = addr || (orderType === 'Delivery' ? 'Not provided' : 'Pickup at café');
+            document.getElementById('final-customer-info').innerHTML = `
+                <div class="summary-row"><span class="text-zinc-400">Name</span><span class="font-black">${name}</span></div>
+                <div class="summary-row"><span class="text-zinc-400">Phone</span><span class="font-black">${phone}</span></div>
+                <div class="summary-row"><span class="text-zinc-400">Type</span><span class="font-black">${orderType}</span></div>
+                <div class="summary-row"><span class="text-zinc-400">Location</span><span class="font-black">${locationText}</span></div>
+                <div class="summary-row"><span class="text-zinc-400">Payment</span><span class="font-black">${payLabel}</span></div>
+                ${notes ? `<div class="summary-row"><span class="text-zinc-400">Notes</span><span class="font-black">${notes}</span></div>` : ''}`;
+        }
+        function generateOrderNumber() { return `RC-${Date.now().toString(36).toUpperCase().slice(-6)}`; }
+        function sendToWhatsApp() {
+            const items = Object.values(cart);
+            if (!items.length) return showBanner('Please add at least one item.');
+            if (requiresSchedule(sendToWhatsApp)) return;
+            const name = document.getElementById('cust-name').value.trim() || 'Customer';
+            const phone = document.getElementById('cust-phone').value.trim() || '-';
+            const addr = document.getElementById('cust-addr').value.trim();
+            const notes = document.getElementById('cust-notes').value.trim();
+            const payment = selectedPayment === 'mpesa' ? 'M-Pesa - please send payment details' : 'Cash / On Confirmation';
+            const locationText = addr || (orderType === 'Delivery' ? 'Not provided' : 'Pickup at café');
+            const orderNo = generateOrderNumber();
+            const now = new Date();
+            const timestamp = now.toLocaleDateString('en-TZ', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + now.toLocaleTimeString('en-TZ', { hour: '2-digit', minute: '2-digit' });
+
+            const pad = (value, length) => { const t = String(value); return t.length >= length ? t.slice(0, length) : t + ' '.repeat(length - t.length); };
+            const padLeft = (value, length) => { const t = String(value); return t.length >= length ? t.slice(-length) : ' '.repeat(length - t.length) + t; };
+            const divider = '--------------------------------';
+            const itemLines = items.map(item => `${pad(item.name, 20)} ${pad(`x${item.qty}`, 4)} ${padLeft((item.price * item.qty).toLocaleString(), 8)}`).join('\n');
+            const serviceLine = orderType;
+            const message =
+`☕ *THE RIDGE CAFE - NEW ORDER*
+
+🔖 Order: *#${orderNo}*
+🕐 Time: *${timestamp}*
+${scheduledDate ? `📅 Requested for: *${scheduledDate}*\n` : ''}
+👤 Name: *${name}*
+📱 Phone: *${phone}*
+📦 Type: *${orderType}*
+📍 Location: *${locationText}*
+💳 Payment: *${payment}*
+${notes ? `📝 Notes: _${notes}_\n` : ''}
+\`\`\`
+${divider}
+ITEM                 QTY  SUBTOTAL
+${divider}
+${itemLines}
+${divider}
+${pad(serviceLine, 23)}${padLeft('Confirm', 9)}
+${pad('TOTAL (TZS)', 23)}${padLeft(getCartTotal().toLocaleString(), 9)}
+${divider}
+\`\`\`
+
+🟢 *Please confirm this order*`;
+            openInNewTab(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`);
+            cart = {};
+            try { sessionStorage.removeItem('ridge_cart'); } catch(e) {}
+            saveCart();
+            clearSearch();
+            closeModal('order-modal');
+            scheduledDate = null;
+        }
+        function handleSearch(value) {
+            const query = value.trim().toLowerCase();
+            const clearBtn = document.getElementById('search-clear-btn');
+            const resultsEl = document.getElementById('search-results');
+            const browse = document.getElementById('browse-view');
+            if (!query) { clearSearch(); return; }
+            clearBtn.classList.remove('hidden');
+            resultsEl.classList.remove('hidden');
+            browse.classList.add('hidden');
+            const matches = [];
+            Object.entries(MENU).forEach(([cat, data]) => {
+                data.items.forEach(item => {
+                    if (`${item.name} ${item.desc} ${data.label}`.toLowerCase().includes(query)) matches.push({ cat, item });
+                });
+            });
+            if (!matches.length) {
+                resultsEl.innerHTML = `<div class="text-center py-10 text-zinc-400"><div class="text-4xl mb-2">🔍</div><p class="font-black text-sm">No items found for "${value}"</p></div>`;
+                return;
+            }
+            resultsEl.innerHTML = `<div class="grid grid-cols-2 gap-3">${matches.map(({cat, item}) => renderItemCard(cat, item)).join('')}</div>`;
+        }
+        function clearSearch() {
+            const input = document.getElementById('menu-search');
+            const clearBtn = document.getElementById('search-clear-btn');
+            const resultsEl = document.getElementById('search-results');
+            const browse = document.getElementById('browse-view');
+            if (input) input.value = '';
+            if (clearBtn) clearBtn.classList.add('hidden');
+            if (resultsEl) resultsEl.classList.add('hidden');
+            if (browse) browse.classList.remove('hidden');
+        }
+        function openOrderBot(category) {
+            if (category) activeCat = category;
+            openModal('order-modal');
+            renderCategoryPills();
+            renderGrid(activeCat);
+            updateCartSummary();
+            goToScreen(1);
+            const notice = document.getElementById('order-closed-notice');
+            const closure = getClosure(new Date());
+            if (closure) {
+                const next = dayLabel(nextOpenDay(new Date()));
+                notice.querySelector('p').textContent = closure.type === 'holiday'
+                    ? `Closed today (${closure.reason}) · order ahead for ${next}`
+                    : `Closed ${closure.reason}s · order ahead for ${next}`;
+                notice.classList.remove('hidden');
+            } else { notice.classList.add('hidden'); }
+        }
+
+        /* ---- Craft Your Coffee builder ---- */
+        const buildState = { category: '', drink: '', sweet: '', finish: '' };
+        const buildOptions = {
+            Hot: {
+                label: '2. Choose Hot Coffee',
+                drinks: [['Espresso', '☕'], ['Macchiato', '☕'], ['Cortado', '☕'], ['Flat White', '🥛'], ['Cappuccino', '☕'], ['Café Latte', '🥛'], ['Café Mocha', '🍫']],
+                finishes: [['Whole Milk', '🥛'], ['Oat Milk', '🌾'], ['Almond Milk', '🥜'], ['Extra Shot', '⚡']]
+            },
+            Cold: {
+                label: '2. Choose Cold Coffee',
+                drinks: [['Cold Brew', '🧊'], ['Iced Latte', '🧋'], ['Iced Americano', '🧊'], ['Iced Mocha', '🍫'], ['Affogato', '🍨']],
+                finishes: [['Normal Ice', '🧊'], ['Less Ice', '🧊'], ['Oat Milk', '🌾'], ['Extra Shot', '⚡']]
+            },
+            Pour: {
+                label: '2. Choose Pour Over',
+                drinks: [['Mbeya Single Origin', '⛰️'], ['House Filter', '💧'], ['Guest Roast', '✨']],
+                finishes: [['Black', '⚫'], ['Splash of Milk', '🥛'], ['With Water', '💧']]
+            }
+        };
+        const buildEmoji = {
+            Hot: '☕', Cold: '🧊', Pour: '💧',
+            None: '🚫', Low: '▫️', Med: '◽', Sweet: '🍯',
+            'Whole Milk': '🥛', 'Oat Milk': '🌾', 'Almond Milk': '🥜', 'Extra Shot': '⚡',
+            'Normal Ice': '🧊', 'Less Ice': '🧊', Black: '⚫', 'Splash of Milk': '🥛', 'With Water': '💧'
+        };
+        function safeId(value) { return value.replace(/[^a-zA-Z0-9]/g, '-'); }
+        function renderBuilderCategory(category) {
+            const config = buildOptions[category];
+            document.getElementById('build-flavor-label').textContent = config.label;
+            document.getElementById('build-flavor-options').innerHTML = config.drinks.map(([name, emoji]) =>
+                `<button id="build-drink-${safeId(name)}" onclick="selectBuildPart('drink','${name.replace(/'/g, "\\'")}')" class="build-drink rounded-2xl bg-white dark:bg-ridgeDark border-2 border-ridgeNavy/10 p-3 text-xs font-black tap-scale">${emoji} ${name}</button>`
+            ).join('');
+            document.getElementById('build-finish-label').textContent = `4. ${category} finish`;
+            document.getElementById('build-finish-options').innerHTML = config.finishes.map(([name, emoji]) =>
+                `<button id="build-finish-${safeId(name)}" onclick="selectBuildPart('finish','${name.replace(/'/g, "\\'")}')" class="build-finish rounded-2xl bg-white dark:bg-ridgeDark border-2 border-ridgeNavy/10 p-3 text-xs font-black tap-scale">${emoji} ${name}</button>`
+            ).join('');
+        }
+        function selectBuildPart(type, value) {
+            buildState[type] = value;
+            if (type === 'category') {
+                buildState.drink = '';
+                buildState.finish = '';
+                renderBuilderCategory(value);
+            }
+            document.querySelectorAll(`.build-${type}`).forEach(btn => btn.classList.remove('border-ridgeNavy', 'bg-ridgeSky/25'));
+            const selected = document.getElementById(`build-${type}-${safeId(value)}`) || document.getElementById(`build-${type}-${value}`);
+            if (selected) selected.classList.add('border-ridgeNavy', 'bg-ridgeSky/25');
+            updateBuilderPreview();
+        }
+        function updateBuilderPreview() {
+            const drinkEmoji = buildOptions[buildState.category]?.drinks.find(([name]) => name === buildState.drink)?.[1];
+            const parts = [buildState.category, buildState.drink, buildState.sweet, buildState.finish].filter(Boolean);
+            const visualParts = [buildEmoji[buildState.category], drinkEmoji, buildEmoji[buildState.sweet], buildEmoji[buildState.finish]].filter(Boolean);
+            document.getElementById('builder-visual').innerHTML = visualParts.length ? visualParts.join(' ') : '☕';
+            document.getElementById('mini-builder-preview').innerHTML = visualParts.length ? visualParts.join(' ') : '☕ 🥛 ✨';
+            document.getElementById('builder-summary').textContent = parts.length
+                ? `${buildState.drink || buildState.category} · ${buildState.sweet || 'Sweetness'} · ${buildState.finish || 'Finish'}`
+                : 'Choose your brew style';
+        }
+        function submitCustomDrink() {
+            if (!buildState.category || !buildState.drink || !buildState.sweet || !buildState.finish) {
+                showBanner('Please choose all cup options first.');
+                return;
+            }
+            if (requiresSchedule(submitCustomDrink)) return;
+            const message =
+`Hello The Ridge Cafe! ⛰️
+
+I'd like to order a custom cup:
+- Style: ${buildState.category}
+- Coffee: ${buildState.drink}
+- Sweetness: ${buildState.sweet}
+- Finish: ${buildState.finish}
+${scheduledDate ? `📅 Requested for: ${scheduledDate}\n` : ''}
+Please confirm the price and availability.`;
+            openInNewTab(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`);
+            closeModal('customizer-modal');
+            scheduledDate = null;
+        }
+
+        renderCategoryPills();
+        renderGrid(activeCat);
+        updateCartSummary();
+        updateBadges();
+        setOrderType('Delivery');
+        selectPayment('cash');
+        try {
+            const saved = sessionStorage.getItem('ridge_cart');
+            if (saved) { cart = JSON.parse(saved); updateCartSummary(); updateBadges(); }
+        } catch(e) {}
+    </script>
+</body>
+</html>
