@@ -1,0 +1,932 @@
+
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Le' Maraheb · Skani</title>
+    <meta name="theme-color" content="#8D512C">
+    <link rel="icon" href="assets/le-maraheb-logo.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        maraIvory: '#E3D9CB',
+                        maraPaper: '#F8F1E8',
+                        maraCream: '#FFF9F0',
+                        maraBrown: '#8D512C',
+                        maraDeep: '#2A1710',
+                        maraInk: '#3A2418',
+                        maraOlive: '#7C6C45',
+                        maraGold: '#C69B63',
+                        maraRose: '#B77866'
+                    },
+                    fontFamily: {
+                        display: ['Cormorant Garamond', 'serif'],
+                        sans: ['Inter', 'sans-serif']
+                    },
+                    animation: {
+                        float: 'float 4s ease-in-out infinite',
+                        glow: 'glow 3.2s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-8px)' } },
+                        glow: { '0%,100%': { boxShadow: '0 18px 45px rgba(141,81,44,.16)' }, '50%': { boxShadow: '0 22px 60px rgba(141,81,44,.28)' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            color: #3A2418;
+            background:
+                radial-gradient(circle at 18% 0%, rgba(198,155,99,.26), transparent 25rem),
+                radial-gradient(circle at 86% 12%, rgba(183,120,102,.18), transparent 22rem),
+                linear-gradient(180deg, #E3D9CB 0%, #F8F1E8 48%, #EADCCC 100%);
+            font-family: Inter, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .dark body {
+            color: #FFF9F0;
+            background:
+                radial-gradient(circle at 20% 0%, rgba(198,155,99,.18), transparent 26rem),
+                radial-gradient(circle at 88% 10%, rgba(183,120,102,.14), transparent 22rem),
+                linear-gradient(180deg, #1D100C 0%, #2A1710 52%, #160B08 100%);
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .22;
+            background-image:
+                linear-gradient(30deg, rgba(141,81,44,.13) 12%, transparent 12.5%, transparent 87%, rgba(141,81,44,.13) 87.5%, rgba(141,81,44,.13)),
+                linear-gradient(150deg, rgba(141,81,44,.13) 12%, transparent 12.5%, transparent 87%, rgba(141,81,44,.13) 87.5%, rgba(141,81,44,.13));
+            background-size: 36px 62px;
+        }
+        input, textarea, select { font-size: 16px !important; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .tap-scale { transition: transform .16s ease, box-shadow .22s ease, border-color .22s ease; }
+        .tap-scale:active { transform: scale(.96); }
+        .reveal { opacity: 0; transform: translateY(20px); transition: all .65s cubic-bezier(.16,1,.3,1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .glass {
+            background: rgba(255,249,240,.68);
+            border: 1px solid rgba(141,81,44,.14);
+            backdrop-filter: blur(18px);
+        }
+        .dark .glass {
+            background: rgba(42,23,16,.70);
+            border-color: rgba(255,249,240,.10);
+        }
+        .hero-card {
+            background:
+                linear-gradient(145deg, rgba(255,249,240,.88), rgba(227,217,203,.58)),
+                radial-gradient(circle at 85% 18%, rgba(198,155,99,.28), transparent 17rem);
+            border: 1px solid rgba(141,81,44,.18);
+            box-shadow: 0 25px 80px rgba(58,36,24,.18);
+        }
+        .dark .hero-card {
+            background:
+                linear-gradient(145deg, rgba(58,36,24,.94), rgba(42,23,16,.88)),
+                radial-gradient(circle at 82% 18%, rgba(198,155,99,.16), transparent 16rem);
+            box-shadow: 0 25px 80px rgba(0,0,0,.35);
+        }
+        .script-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(141,81,44,.7), transparent);
+        }
+        .modal-overlay { opacity: 0; visibility: hidden; transition: all .35s cubic-bezier(.16,1,.3,1); backdrop-filter: blur(0); }
+        .modal-overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(14px); }
+        .modal-panel, .order-modal-content { transform: translateY(100%); transition: transform .45s cubic-bezier(.16,1,.3,1); }
+        .modal-overlay.active .modal-panel, .modal-overlay.active .order-modal-content { transform: translateY(0); }
+        .cat-pill {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 8px 14px; border-radius: 999px; border: 1.5px solid transparent;
+            font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em;
+            white-space: nowrap; transition: all .2s;
+        }
+        .cat-pill.active { background: #8D512C; color: #FFF9F0; border-color: #8D512C; }
+        .cat-pill.inactive { background: rgba(255,249,240,.62); color: #8D512C; border-color: rgba(141,81,44,.18); }
+        .dark .cat-pill.inactive { background: rgba(255,249,240,.06); color: #E3D9CB; border-color: rgba(255,249,240,.12); }
+        .item-card {
+            background: rgba(255,249,240,.76);
+            border: 1px solid rgba(141,81,44,.14);
+            border-radius: 22px;
+            padding: 14px;
+            transition: all .18s ease;
+        }
+        .dark .item-card { background: rgba(255,249,240,.055); border-color: rgba(255,249,240,.10); }
+        .item-card.in-cart { border-color: #8D512C; box-shadow: 0 14px 35px rgba(141,81,44,.20); }
+        .add-btn, .qty-btn {
+            width: 34px; height: 34px; border-radius: 50%; border: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 900; transition: all .15s ease;
+        }
+        .add-btn { background: #8D512C; color: #FFF9F0; }
+        .qty-btn { background: rgba(141,81,44,.12); color: #8D512C; border: 1px solid rgba(141,81,44,.14); }
+        .dark .qty-btn { background: rgba(255,249,240,.10); color: #FFF9F0; }
+        .qty-ctrl { display: flex; align-items: center; gap: 8px; }
+        .qty-num { min-width: 20px; text-align: center; font-size: 13px; font-weight: 900; color: #8D512C; }
+        .dark .qty-num { color: #F8F1E8; }
+        .badge-cart {
+            min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: #C69B63; color: #2A1710; font-size: 10px; font-weight: 900;
+        }
+        .search-input {
+            width: 100%; border: 1.5px solid rgba(141,81,44,.18);
+            background: rgba(255,249,240,.76); color: #3A2418;
+            border-radius: 18px; padding: 14px 44px; outline: none; font-weight: 800;
+        }
+        .dark .search-input { background: rgba(255,249,240,.06); color: #fff; border-color: rgba(255,249,240,.12); }
+        .order-screen { display: none; }
+        .order-screen.active { display: block; }
+        .step-dot { width: 8px; height: 8px; border-radius: 999px; background: rgba(141,81,44,.25); transition: all .25s ease; }
+        .step-dot.done, .step-dot.active { background: #8D512C; }
+        .step-dot.active { width: 24px; }
+        .summary-row { display: flex; justify-content: space-between; gap: 14px; padding: 9px 0; border-bottom: 1px solid rgba(141,81,44,.12); font-size: 13px; }
+        .dark .summary-row { border-bottom-color: rgba(255,249,240,.08); }
+        .pay-opt {
+            display: flex; align-items: center; gap: 12px; padding: 14px;
+            border-radius: 18px; border: 1.5px solid rgba(141,81,44,.18);
+            cursor: pointer; transition: all .2s ease;
+        }
+        .pay-opt.selected { border-color: #8D512C; background: rgba(141,81,44,.10); }
+        .radio-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(141,81,44,.46); flex-shrink: 0; }
+        .pay-opt.selected .radio-dot { background: #8D512C; box-shadow: inset 0 0 0 4px #FFF9F0; }
+    </style>
+</head>
+<body class="transition-colors duration-300">
+    <div class="relative min-h-screen max-w-md mx-auto pb-40 px-5">
+        <header class="sticky top-0 z-40 -mx-5 px-5 pt-[calc(1rem+env(safe-area-inset-top))] pb-3 glass border-b">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-12 h-12 rounded-2xl overflow-hidden border border-maraBrown/20 bg-maraIvory shadow-lg">
+                        <img src="assets/le-maraheb-logo.png" alt="Le' Maraheb logo" class="w-full h-full object-cover">
+                    </div>
+                    <div class="min-w-0">
+                        <h1 class="font-display text-[1.55rem] font-bold leading-none tracking-wide text-maraBrown dark:text-maraGold">Le' Maraheb</h1>
+                        <p class="text-[9px] font-black uppercase tracking-[0.22em] text-maraOlive dark:text-maraIvory/70 mt-1">Restaurant & More</p>
+                    </div>
+                </div>
+                <button onclick="toggleTheme()" class="w-11 h-11 rounded-2xl bg-maraCream/80 dark:bg-white/10 border border-maraBrown/15 flex items-center justify-center text-maraBrown dark:text-maraGold shadow-sm tap-scale" aria-label="Toggle theme">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <section class="pt-6 reveal">
+                <div class="hero-card rounded-[2.4rem] p-6 relative overflow-hidden">
+                    <div class="absolute -right-14 -top-14 w-44 h-44 rounded-full bg-maraGold/20"></div>
+                    <div class="absolute -left-16 bottom-12 w-40 h-40 rounded-full border border-maraBrown/10"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start gap-4">
+                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-maraBrown text-maraCream text-[10px] font-black uppercase tracking-widest">
+                                <i class="fa-solid fa-utensils"></i> Lebanese · Grill · Seafood
+                            </span>
+                            <span class="text-4xl animate-float">🥘</span>
+                        </div>
+                        <div class="mt-12">
+                            <p class="font-display text-3xl leading-none text-maraBrown dark:text-maraGold">Welcome to</p>
+                            <h2 class="font-display text-[4.2rem] leading-[.78] font-bold text-maraInk dark:text-maraCream mt-1">Le'<br>Maraheb</h2>
+                            <div class="script-line my-5"></div>
+                            <p class="text-[11px] font-black uppercase tracking-[0.18em] text-maraOlive dark:text-maraIvory/70 leading-relaxed">
+                                Restaurant & More · Lebanese signatures, grills, seafood platters and desserts.
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 mt-6">
+                            <button onclick="openOrderBot('Appetizer')" class="tap-scale rounded-2xl bg-maraCream/70 dark:bg-white/8 border border-maraBrown/10 p-3 text-center">
+                                <div class="text-2xl">🧆</div>
+                                <div class="text-[9px] font-black uppercase mt-1">Mezze</div>
+                            </button>
+                            <button onclick="openOrderBot('On The Grill')" class="tap-scale rounded-2xl bg-maraCream/70 dark:bg-white/8 border border-maraBrown/10 p-3 text-center">
+                                <div class="text-2xl">🔥</div>
+                                <div class="text-[9px] font-black uppercase mt-1">Grill</div>
+                            </button>
+                            <button onclick="openOrderBot('Seafood')" class="tap-scale rounded-2xl bg-maraCream/70 dark:bg-white/8 border border-maraBrown/10 p-3 text-center">
+                                <div class="text-2xl">🦞</div>
+                                <div class="text-[9px] font-black uppercase mt-1">Seafood</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-2 gap-3.5 mt-5">
+                <button onclick="openOrderBot()" class="reveal tap-scale bg-maraBrown text-maraCream p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-lg animate-glow">
+                    <i class="fa-solid fa-book-open text-2xl mb-2"></i>
+                    <span class="font-display font-bold text-2xl leading-none">Menu</span>
+                    <span class="text-[9px] font-black opacity-75 uppercase tracking-wide">Browse dishes</span>
+                </button>
+                <button onclick="openModal('booking-modal')" class="reveal tap-scale glass p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm">
+                    <i class="fa-regular fa-calendar text-2xl mb-2 text-maraBrown dark:text-maraGold"></i>
+                    <span class="font-display font-bold text-2xl leading-none">Reserve</span>
+                    <span class="text-[9px] font-black opacity-60 uppercase tracking-wide">Book a table</span>
+                </button>
+                <a href="https://www.instagram.com/le_maraheb/?hl=en" target="_blank" rel="noopener noreferrer" class="reveal tap-scale glass p-5 rounded-[2rem] flex flex-col items-center justify-center text-center shadow-sm">
+                    <i class="fa-brands fa-instagram text-[#C13584] text-2xl mb-2"></i>
+                    <span class="font-display font-bold text-2xl leading-none">Instagram</span>
+                    <span class="text-[9px] font-black opacity-60 uppercase tracking-wide">See the style</span>
+                </a>
+                <a href="https://www.google.com/search?q=le+marhab" target="_blank" rel="noopener noreferrer" class="reveal tap-scale glass p-5 rounded-[2rem] flex flex-col items-center justify-center text-center shadow-sm">
+                    <i class="fa-regular fa-star text-2xl mb-2 text-maraGold"></i>
+                    <span class="font-display font-bold text-2xl leading-none">Reviews</span>
+                    <span class="text-[9px] font-black opacity-60 uppercase tracking-wide">Google listing</span>
+                </a>
+            </section>
+
+            <section class="mt-8 reveal">
+                <button onclick="openOrderBot()" class="w-full tap-scale rounded-[2.35rem] p-6 text-left text-maraCream relative overflow-hidden shadow-xl" style="background:linear-gradient(135deg,#8D512C,#2A1710);">
+                    <div class="absolute inset-0 opacity-[0.18]" style="background:radial-gradient(circle at 85% 35%,#F8F1E8,transparent 30%);"></div>
+                    <div class="relative flex items-center justify-between gap-4">
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-[0.22em] text-maraGold">Skani ordering</p>
+                            <h3 class="font-display text-4xl font-bold leading-none mt-1">Build your feast</h3>
+                            <p class="text-xs font-bold text-maraIvory/75 mt-2">Pick dishes, send your request, and let the team confirm availability.</p>
+                        </div>
+                        <div class="w-14 h-14 rounded-full bg-maraCream/12 flex items-center justify-center text-3xl">
+                            <i class="fa-solid fa-basket-shopping"></i>
+                        </div>
+                    </div>
+                </button>
+            </section>
+
+            <section class="mt-9">
+                <div class="flex items-end justify-between gap-4 mb-4">
+                    <div>
+                        <p class="reveal text-[10px] font-black uppercase tracking-[0.22em] text-maraBrown dark:text-maraGold">Signature paths</p>
+                        <h3 class="reveal font-display text-3xl font-bold leading-none">Explore the table</h3>
+                    </div>
+                    <span class="reveal text-3xl">🌿</span>
+                </div>
+                <div class="flex gap-4 overflow-x-auto no-scrollbar pb-3 px-1">
+                    <button onclick="openOrderBot('Appetizer')" class="reveal tap-scale min-w-[205px] text-left glass rounded-[2rem] p-4 shadow-sm">
+                        <div class="h-28 rounded-[1.4rem] flex items-center justify-center text-5xl bg-maraBrown/10 dark:bg-white/8">🧆</div>
+                        <div class="mt-3">
+                            <div class="font-display text-2xl font-bold leading-none">Appetizers</div>
+                            <div class="text-[10px] font-black uppercase tracking-wide text-maraOlive dark:text-maraIvory/60 mt-1">Hummus, fattoush, moutabel</div>
+                        </div>
+                    </button>
+                    <button onclick="openOrderBot('On The Grill')" class="reveal tap-scale min-w-[205px] text-left glass rounded-[2rem] p-4 shadow-sm">
+                        <div class="h-28 rounded-[1.4rem] flex items-center justify-center text-5xl bg-maraBrown/10 dark:bg-white/8">🔥</div>
+                        <div class="mt-3">
+                            <div class="font-display text-2xl font-bold leading-none">On The Grill</div>
+                            <div class="text-[10px] font-black uppercase tracking-wide text-maraOlive dark:text-maraIvory/60 mt-1">Mishkaki, steak, prawns</div>
+                        </div>
+                    </button>
+                    <button onclick="openOrderBot('Main Course')" class="reveal tap-scale min-w-[205px] text-left glass rounded-[2rem] p-4 shadow-sm">
+                        <div class="h-28 rounded-[1.4rem] flex items-center justify-center text-5xl bg-maraBrown/10 dark:bg-white/8">🍽️</div>
+                        <div class="mt-3">
+                            <div class="font-display text-2xl font-bold leading-none">Main Course</div>
+                            <div class="text-[10px] font-black uppercase tracking-wide text-maraOlive dark:text-maraIvory/60 mt-1">Golden steak, chicken, seafood</div>
+                        </div>
+                    </button>
+                </div>
+            </section>
+
+            <section class="mt-8 reveal">
+                <div class="glass rounded-[2.35rem] p-5 shadow-sm">
+                    <div class="flex items-end justify-between gap-4 mb-4">
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-[0.22em] text-maraBrown dark:text-maraGold">Connect</p>
+                            <h3 class="font-display text-3xl font-bold leading-none">Le' Maraheb links</h3>
+                        </div>
+                        <span class="text-3xl">✨</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="https://www.instagram.com/le_maraheb/?hl=en" target="_blank" rel="noopener noreferrer" class="tap-scale rounded-2xl bg-maraCream/70 dark:bg-white/8 border border-maraBrown/10 p-4 flex flex-col">
+                            <i class="fa-brands fa-instagram text-[#C13584] text-2xl mb-3"></i>
+                            <span class="font-black text-sm">Instagram</span>
+                            <span class="text-[9px] font-black uppercase tracking-wide text-maraOlive dark:text-maraIvory/55 mt-1">@le_maraheb</span>
+                        </a>
+                        <a href="https://www.google.com/search?q=le+marhab" target="_blank" rel="noopener noreferrer" class="tap-scale rounded-2xl bg-maraCream/70 dark:bg-white/8 border border-maraBrown/10 p-4 flex flex-col">
+                            <i class="fa-brands fa-google text-maraBrown dark:text-maraGold text-2xl mb-3"></i>
+                            <span class="font-black text-sm">Google</span>
+                            <span class="text-[9px] font-black uppercase tracking-wide text-maraOlive dark:text-maraIvory/55 mt-1">Search listing</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-8 mb-8 reveal">
+                <div class="bg-maraCream/66 dark:bg-white/6 rounded-[2.35rem] p-6 border-2 border-dashed border-maraBrown/20">
+                    <h3 class="font-display text-3xl font-bold leading-none mb-2">Guest note</h3>
+                    <p class="text-[10px] text-maraOlive dark:text-maraIvory/60 uppercase tracking-widest font-black mb-4">Share a dish request, event idea, or catering note.</p>
+                    <div id="suggestion-feedback" class="py-6 text-center hidden">
+                        <p class="text-maraBrown dark:text-maraGold font-black text-sm">Thank you. Your note has been captured.</p>
+                    </div>
+                    <form id="suggestion-form" onsubmit="handleSuggestion(event)" class="space-y-4">
+                        <textarea id="suggestion-text" name="suggestion" placeholder="Write your note here..." required class="w-full bg-maraCream dark:bg-maraDeep border border-maraBrown/15 focus:border-maraBrown rounded-2xl p-4 text-sm dark:text-white min-h-[92px] outline-none transition-all placeholder:text-maraOlive/60 shadow-sm"></textarea>
+                        <button type="submit" id="submit-btn" class="w-full bg-maraBrown text-maraCream py-4 rounded-2xl font-black text-xs uppercase tracking-widest tap-scale shadow-md">Submit Note</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <nav class="fixed bottom-0 left-0 right-0 z-50 p-4 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pointer-events-none">
+            <div class="max-w-md mx-auto bg-maraDeep/92 backdrop-blur-2xl rounded-[2rem] p-3 flex items-center gap-3 border border-white/10 shadow-[0_24px_55px_rgba(42,23,16,.34)] pointer-events-auto">
+                <button onclick="openOrderBot()" class="flex-[1.45] flex items-center justify-center gap-2 bg-maraGold text-maraDeep font-black text-[11px] uppercase py-4 rounded-[1.35rem] tap-scale relative">
+                    <i class="fa-solid fa-basket-shopping"></i> Order
+                    <span id="bottom-badge" class="hidden absolute -top-2 -right-1 bg-maraCream text-maraBrown text-[10px] font-black rounded-full min-w-[22px] h-[22px] items-center justify-center px-1.5"></span>
+                </button>
+                <button onclick="openModal('booking-modal')" class="flex-1 flex items-center justify-center gap-2 text-maraCream font-black text-[11px] uppercase py-4 rounded-[1.35rem] tap-scale">
+                    <i class="fa-regular fa-calendar text-maraGold"></i> Reserve
+                </button>
+            </div>
+            <div class="max-w-md mx-auto flex justify-end mt-2">
+                <a href="https://www.skani.space/" target="_blank" rel="noopener noreferrer" class="pointer-events-auto text-[7px] font-black uppercase tracking-[0.18em] text-maraIvory/70 bg-maraDeep/72 backdrop-blur-md border border-white/10 px-2.5 py-1 rounded-full shadow-lg opacity-55 hover:opacity-100">Powered by Skani.space</a>
+            </div>
+        </nav>
+    </div>
+
+    <div id="booking-modal" class="modal-overlay fixed inset-0 z-[70] flex items-end justify-center px-4">
+        <div class="absolute inset-0 bg-black/70" onclick="closeModal('booking-modal')"></div>
+        <div class="modal-panel bg-maraPaper dark:bg-maraDeep w-full max-w-md rounded-t-[2.6rem] p-6 relative pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-2xl border-t-8 border-maraGold">
+            <div class="w-12 h-1.5 bg-maraBrown/20 dark:bg-white/15 rounded-full mx-auto mb-5"></div>
+            <button onclick="closeModal('booking-modal')" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-maraBrown/10 dark:bg-white/10 text-maraBrown dark:text-maraCream tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-display text-4xl font-bold leading-none">Reserve a Table</h3>
+            <p class="text-[10px] font-black uppercase tracking-widest text-maraOlive dark:text-maraIvory/60 mt-2 mb-5">Send a reservation request</p>
+            <form onsubmit="handleBookingSubmit(event)" class="space-y-3">
+                <input type="text" id="book-name" required placeholder="Your name" class="w-full bg-maraCream dark:bg-black/20 p-4 dark:text-white text-sm font-bold border border-maraBrown/15 focus:border-maraBrown outline-none rounded-2xl transition-all">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="date" id="book-date" required class="w-full bg-maraCream dark:bg-black/20 p-4 dark:text-white text-sm font-bold border border-maraBrown/15 focus:border-maraBrown outline-none rounded-2xl transition-all">
+                    <input type="time" id="book-time" required class="w-full bg-maraCream dark:bg-black/20 p-4 dark:text-white text-sm font-bold border border-maraBrown/15 focus:border-maraBrown outline-none rounded-2xl transition-all">
+                </div>
+                <input type="number" id="book-people" required min="1" placeholder="Number of guests" class="w-full bg-maraCream dark:bg-black/20 p-4 dark:text-white text-sm font-bold border border-maraBrown/15 focus:border-maraBrown outline-none rounded-2xl transition-all">
+                <textarea id="book-notes" placeholder="Any notes..." rows="2" class="w-full bg-maraCream dark:bg-black/20 p-4 dark:text-white text-sm font-bold border border-maraBrown/15 focus:border-maraBrown outline-none rounded-2xl transition-all resize-none"></textarea>
+                <button type="submit" class="w-full bg-maraBrown text-maraCream py-4 rounded-2xl font-black text-xs uppercase tracking-widest tap-scale shadow-md">Prepare Request</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="order-modal" class="modal-overlay fixed inset-0 z-[80] flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/80" onclick="closeModal('order-modal')"></div>
+        <div class="order-modal-content bg-maraPaper dark:bg-maraDeep w-full max-w-md rounded-t-[2.45rem] relative flex flex-col" style="height:94vh;max-height:94vh;">
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-maraBrown/10 dark:border-white/10 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-maraGold rounded-xl flex items-center justify-center text-maraDeep"><i class="fa-solid fa-basket-shopping"></i></div>
+                    <div>
+                        <h3 class="text-base font-black leading-none">Order</h3>
+                        <p class="text-[9px] text-maraBrown dark:text-maraGold uppercase tracking-widest font-black">Le' Maraheb</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="step-dot active" id="sd1"></div>
+                    <div class="step-dot" id="sd2"></div>
+                    <div class="step-dot" id="sd3"></div>
+                    <div class="step-dot" id="sd4"></div>
+                </div>
+                <button onclick="closeModal('order-modal')" class="w-9 h-9 rounded-full bg-maraBrown/10 dark:bg-white/10 text-maraBrown dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto no-scrollbar px-5" id="order-body">
+                <div id="screen-1" class="order-screen active pt-4 pb-4">
+                    <h4 class="font-display text-4xl font-bold leading-none mb-1">Choose dishes</h4>
+                    <p class="text-maraOlive dark:text-maraIvory/60 text-xs font-black uppercase tracking-wider mb-4">Tap an item to add it to your request</p>
+                    <div class="relative mb-4">
+                        <input type="text" id="menu-search" class="search-input" placeholder="Search hummus, steak, seafood..." oninput="handleSearch(this.value)" autocomplete="off" spellcheck="false">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-maraBrown/45"></i>
+                        <button class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-maraBrown/10 text-xs" id="search-clear-btn" onclick="clearSearch()" aria-label="Clear">x</button>
+                    </div>
+                    <div id="search-results" class="hidden"></div>
+                    <div id="browse-view">
+                        <div class="flex gap-2 overflow-x-auto no-scrollbar pb-3 mb-2" id="cat-pills"></div>
+                        <div id="item-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <div id="screen-2" class="order-screen pt-4 pb-4">
+                    <h4 class="font-display text-4xl font-bold leading-none mb-1">Your request</h4>
+                    <p class="text-maraOlive dark:text-maraIvory/60 text-xs font-black uppercase tracking-wider mb-5">Adjust quantities before sending</p>
+                    <div id="cart-review-list"></div>
+                </div>
+
+                <div id="screen-3" class="order-screen pt-4 pb-4">
+                    <h4 class="font-display text-4xl font-bold leading-none mb-1">Your details</h4>
+                    <p class="text-maraOlive dark:text-maraIvory/60 text-xs font-black uppercase tracking-wider mb-5">So Le' Maraheb can confirm</p>
+                    <div class="space-y-3">
+                        <input type="text" id="cust-name" placeholder="Your name" class="w-full bg-maraCream dark:bg-black/20 p-4 dark:text-white text-sm font-bold border border-maraBrown/15 focus:border-maraBrown outline-none rounded-2xl transition-all">
+                        <input type="tel" id="cust-phone" placeholder="Phone number" class="w-full bg-maraCream dark:bg-black/20 p-4 dark:text-white text-sm font-bold border border-maraBrown/15 focus:border-maraBrown outline-none rounded-2xl transition-all">
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-maraOlive dark:text-maraIvory/60 tracking-wider block mb-2">Order Type</label>
+                            <div class="flex gap-3">
+                                <button onclick="setOrderType('Dine-in')" id="btn-dine" class="flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-maraBrown bg-maraBrown/10 text-maraBrown dark:text-maraGold transition-all">Dine-in</button>
+                                <button onclick="setOrderType('Pickup')" id="btn-pickup" class="flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-maraBrown/20 text-maraOlive dark:text-maraIvory/55 transition-all">Pickup</button>
+                                <button onclick="setOrderType('Delivery')" id="btn-delivery" class="flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-maraBrown/20 text-maraOlive dark:text-maraIvory/55 transition-all">Delivery</button>
+                            </div>
+                        </div>
+                        <input type="text" id="cust-addr" placeholder="Table, pickup time, or delivery address" class="w-full bg-maraCream dark:bg-black/20 p-4 dark:text-white text-sm font-bold border border-maraBrown/15 focus:border-maraBrown outline-none rounded-2xl transition-all">
+                        <textarea id="cust-notes" placeholder="Special requests..." rows="2" class="w-full bg-maraCream dark:bg-black/20 p-4 dark:text-white text-sm font-bold border border-maraBrown/15 focus:border-maraBrown outline-none rounded-2xl transition-all resize-none"></textarea>
+                    </div>
+                    <div class="mt-5">
+                        <label class="text-[10px] font-black uppercase text-maraOlive dark:text-maraIvory/60 tracking-wider block mb-3">Payment</label>
+                        <div class="pay-opt selected" id="pay-confirm" onclick="selectPayment('confirm')">
+                            <div class="radio-dot"></div><div class="text-3xl">🧾</div>
+                            <div><div class="font-black text-sm">Confirm with restaurant</div><div class="text-[10px] text-maraOlive dark:text-maraIvory/55 font-bold uppercase">Prices and payment confirmed by team</div></div>
+                        </div>
+                        <div class="pay-opt mt-2" id="pay-cash" onclick="selectPayment('cash')">
+                            <div class="radio-dot"></div><div class="text-3xl">💵</div>
+                            <div><div class="font-black text-sm">Cash / Card</div><div class="text-[10px] text-maraOlive dark:text-maraIvory/55 font-bold uppercase">Pay after confirmation</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="screen-4" class="order-screen pt-4 pb-4">
+                    <h4 class="font-display text-4xl font-bold leading-none mb-1">Review & send</h4>
+                    <p class="text-maraOlive dark:text-maraIvory/60 text-xs font-black uppercase tracking-wider mb-5">Copy the request or open Instagram</p>
+                    <div class="bg-maraCream dark:bg-black/20 rounded-2xl p-5 mb-4 border border-maraBrown/10">
+                        <div class="text-[10px] font-black uppercase text-maraOlive dark:text-maraIvory/60 tracking-wider mb-3">Order Summary</div>
+                        <div id="final-order-items"></div>
+                    </div>
+                    <div class="bg-maraCream dark:bg-black/20 rounded-2xl p-5 mb-4 border border-maraBrown/10">
+                        <div class="text-[10px] font-black uppercase text-maraOlive dark:text-maraIvory/60 tracking-wider mb-3">Customer Details</div>
+                        <div id="final-customer-info"></div>
+                    </div>
+                    <div class="bg-maraBrown/10 border border-maraBrown/15 rounded-2xl p-4 text-center">
+                        <p class="text-[11px] font-black text-maraBrown dark:text-maraGold uppercase tracking-wider">Menu prices are not shown here, so the restaurant should confirm availability and total.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-shrink-0 px-5 py-4 border-t border-maraBrown/10 dark:border-white/10">
+                <div id="footer-1" class="flex items-center justify-between gap-3">
+                    <div class="flex-1">
+                        <div class="text-[10px] text-maraOlive dark:text-maraIvory/60 font-black uppercase tracking-wider">Selection</div>
+                        <div class="font-black text-sm" id="cart-summary-pill">0 items</div>
+                    </div>
+                    <button onclick="goToScreen(2)" id="btn-to-cart" class="bg-maraBrown text-maraCream font-black text-sm uppercase px-6 py-4 rounded-2xl tap-scale shadow-lg disabled:opacity-40 disabled:cursor-not-allowed" disabled>Review</button>
+                </div>
+                <div id="footer-2" class="hidden flex gap-3">
+                    <button onclick="goToScreen(1)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-maraBrown/20 tap-scale">Back</button>
+                    <button onclick="goToScreen(3)" class="flex-[2] bg-maraBrown text-maraCream font-black text-sm uppercase py-4 rounded-2xl tap-scale shadow-lg">Details</button>
+                </div>
+                <div id="footer-3" class="hidden flex gap-3">
+                    <button onclick="goToScreen(2)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-maraBrown/20 tap-scale">Back</button>
+                    <button onclick="goToScreen(4)" class="flex-[2] bg-maraBrown text-maraCream font-black text-sm uppercase py-4 rounded-2xl tap-scale shadow-lg">Review</button>
+                </div>
+                <div id="footer-4" class="hidden flex gap-3">
+                    <button onclick="goToScreen(3)" class="flex-1 py-4 rounded-2xl font-black text-sm uppercase border-2 border-maraBrown/20 tap-scale">Back</button>
+                    <button onclick="sendOrder()" class="flex-[2] bg-maraGold text-maraDeep font-black text-sm uppercase py-4 rounded-2xl tap-scale flex items-center justify-center gap-2 shadow-lg"><i class="fa-solid fa-copy"></i> Copy & Open</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const INSTAGRAM_URL = 'https://www.instagram.com/le_maraheb/?hl=en';
+        const WHATSAPP_NUMBER = '';
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: .1, rootMargin: '0px 0px -30px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.getElementById('theme-icon').className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+        function openInNewTab(url) { window.open(url, '_blank', 'noopener,noreferrer'); }
+        function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = ''; }
+
+        function showBanner(message) {
+            const existing = document.getElementById('mara-banner');
+            if (existing) existing.remove();
+            const banner = document.createElement('div');
+            banner.id = 'mara-banner';
+            banner.className = 'fixed top-6 left-1/2 -translate-x-1/2 z-[100] bg-maraBrown text-maraCream font-black text-xs py-3 px-5 rounded-full shadow-2xl transition-all duration-300';
+            banner.textContent = message;
+            document.body.appendChild(banner);
+            setTimeout(() => {
+                banner.style.opacity = '0';
+                banner.style.transform = 'translate(-50%, -10px)';
+                setTimeout(() => banner.remove(), 350);
+            }, 2600);
+        }
+
+        const MENU = {
+            'Appetizer': {
+                emoji: '🧆',
+                items: [
+                    { name: 'Original Hummus', desc: 'Creamy, nutty, velvety homemade hummus.' },
+                    { name: 'Pink Hummus', desc: 'Vibrant beetroot hummus.' },
+                    { name: 'Fattoush Salad', desc: 'Lebanese salad with well-seasoned fried pita bread.' },
+                    { name: 'Creamy Mussel', desc: "Chef's secret creamy mussel specialty." },
+                    { name: 'Fried Mozarella Fingers', desc: 'Crispy cheese fingers.' },
+                    { name: 'Moutabel', desc: 'Smoky Middle Eastern eggplant dish.' }
+                ]
+            },
+            'Salads': {
+                emoji: '🥗',
+                items: [
+                    { name: "Le'maraheb Salad", desc: 'Potatoes, onions, red beans and avocado on red lettuce.' },
+                    { name: 'Chicken Ceaser Salad', desc: 'Classic chicken salad with creamy dressing.' },
+                    { name: 'Greek Salad', desc: 'Summer side dish with feta cheese.' },
+                    { name: 'Bbq Chicken Salad', desc: 'Chicken salad with corn, red onions and juicy tomatoes.' }
+                ]
+            },
+            'Soup': {
+                emoji: '🥣',
+                items: [
+                    { name: 'Lisan El Asfour', desc: 'Comforting soup option.' },
+                    { name: 'Porridge Of The Day', desc: "Today's porridge selection." }
+                ]
+            },
+            'On The Grill': {
+                emoji: '🔥',
+                items: [
+                    { name: 'Carven Whole Goat Stuffed', desc: 'Mbuzi choma.' },
+                    { name: 'Mishkaki', desc: 'Grilled skewers.' },
+                    { name: 'Grilled Steak', desc: 'Flame-grilled steak.' },
+                    { name: 'Grilled Prawns Tikka', desc: 'Prawns with tikka seasoning.' },
+                    { name: 'Tandoori Chicken', desc: 'Tandoori grilled chicken.' },
+                    { name: 'Lemon Chickens', desc: 'Lemon-marinated chicken.' },
+                    { name: 'Chicken Shish Kofia', desc: 'Chicken shish kofta.' },
+                    { name: 'Beef Shish Kofia', desc: 'Beef shish kofta.' }
+                ]
+            },
+            'Pasta Live Station': {
+                emoji: '🍝',
+                items: [
+                    { name: 'Chicken Pasta', desc: 'Prepared live.' },
+                    { name: 'Shrimps Pasta', desc: 'Prepared live.' },
+                    { name: 'Bolognese Pasta', desc: 'Prepared live.' }
+                ]
+            },
+            "Side's": {
+                emoji: '🥟',
+                items: [
+                    { name: 'Beef Sambusa', desc: 'Savory beef sambusa.' },
+                    { name: 'Chicken Shawarma', desc: 'Chicken shawarma side.' },
+                    { name: 'Creamy Butter Chicken', desc: 'Creamy butter chicken.' },
+                    { name: 'White Rice', desc: 'Classic side.' },
+                    { name: 'French Fries', desc: 'Crispy fries.' },
+                    { name: 'Assorted Bread', desc: 'Bread selection.' }
+                ]
+            },
+            'Desserts': {
+                emoji: '🍮',
+                items: [
+                    { name: 'Chocolate Fountain Dip&Dip It', desc: 'Chocolate fountain dessert experience.' },
+                    { name: 'Baklawa', desc: 'Sweet layered pastry.' },
+                    { name: 'Basbusa', desc: 'Classic semolina dessert.' },
+                    { name: 'Kalimati', desc: 'Sweet fried bites.' },
+                    { name: 'Azizia', desc: 'Dessert specialty.' },
+                    { name: 'Pastry & More Desserts', desc: 'Pastry selection.' },
+                    { name: "Le'maraheb Fruit Salad Table", desc: 'Fruit salad table.' }
+                ]
+            },
+            'Sandwich': {
+                emoji: '🌯',
+                items: [
+                    { name: 'Fajita Wrap', desc: 'Tender fajita chicken with chef secret spice.' },
+                    { name: 'Beef Wrap', desc: 'Juicy fajita beef wrapped with chef secret spice.' },
+                    { name: 'Paneer Tikka Fried', desc: 'Paneer tikka wrap, grilled and wrapped Indian style.' }
+                ]
+            },
+            'Burgers': {
+                emoji: '🍔',
+                items: [
+                    { name: 'Skillet Burger', desc: 'Beef patty with caramelized onion and cheese.' },
+                    { name: 'Zinger Chicken Burger', desc: 'Chicken zinger with spicy mayo sauce.' },
+                    { name: 'Veggie Burger', desc: 'Vegetarian patty with rich, soft flavor.' }
+                ]
+            },
+            'Main Course': {
+                emoji: '🍽️',
+                items: [
+                    { name: "Le'maraheb Golden Steak", desc: "250g grilled beef steak, chef's specialty, served with mash and greens." },
+                    { name: 'Italian Sirloin', desc: '250g sirloin steak, demi class sauce, jacket potatoes and greens.' },
+                    { name: 'Beef Medallion Champ Lion', desc: 'Beef fillet on mushroom sauce, stuffed brinjals and fries.' },
+                    { name: 'Butternut Grilled Chicken', desc: 'Half boneless chicken with butternut squash creamy sauce and rice.' },
+                    { name: 'Mango Grilled Chicken', desc: 'Chicken with mango sauce, chips and veg satay.' }
+                ]
+            },
+            'Seafood': {
+                emoji: '🦞',
+                items: [
+                    { name: "Le' King Fish", desc: 'Fried or grilled king fish with coconut rice and spicy coconut gravy.' },
+                    { name: 'Seafood Platter (2 People)', desc: 'Prawns, lobster, whole fish, calamari and fish finger with coconut rice and fries.' },
+                    { name: 'Seafood Platter (4 People)', desc: 'Fish cake, whole fish, calamari, shrimps, lobster, fish finger, mussel, crabs and octopus with rice.' }
+                ]
+            }
+        };
+
+        let activeCat = 'Appetizer';
+        let cart = {};
+        let currentScreen = 1;
+        let orderType = 'Dine-in';
+        let selectedPayment = 'confirm';
+
+        function cartKey(cat, name) { return `${cat}||${name}`; }
+        function getCartCount() { return Object.values(cart).reduce((sum, item) => sum + item.qty, 0); }
+        function escapeAttr(value) { return String(value).replace(/'/g, "\\'"); }
+
+        function renderCategoryPills() {
+            document.getElementById('cat-pills').innerHTML = Object.entries(MENU).map(([key, data]) =>
+                `<button class="cat-pill ${key === activeCat ? 'active' : 'inactive'}" onclick="switchCat('${escapeAttr(key)}')">${data.emoji} ${key}</button>`
+            ).join('');
+        }
+        function switchCat(cat) {
+            activeCat = cat;
+            renderCategoryPills();
+            renderList(cat);
+            document.getElementById('order-body').scrollTop = 0;
+        }
+        function renderList(cat) {
+            document.getElementById('item-list').innerHTML = MENU[cat].items.map(item => renderItemCard(cat, item)).join('');
+        }
+        function renderItemCard(cat, item) {
+            const key = cartKey(cat, item.name);
+            const inCart = cart[key];
+            return `
+                <div class="item-card ${inCart ? 'in-cart' : ''}">
+                    <div class="flex gap-3">
+                        <div class="w-12 h-12 min-w-12 rounded-2xl bg-maraBrown/10 dark:bg-white/8 flex items-center justify-center text-2xl">${MENU[cat].emoji}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <div class="font-black text-sm leading-tight">${item.name}</div>
+                                    <div class="text-[11px] text-maraOlive dark:text-maraIvory/58 font-semibold mt-1 leading-snug">${item.desc || 'Le Maraheb menu selection.'}</div>
+                                </div>
+                                ${inCart ? `<span class="badge-cart">${inCart.qty}</span>` : ''}
+                            </div>
+                            <div class="flex items-center justify-between mt-3">
+                                <span class="text-[10px] font-black uppercase tracking-wider text-maraBrown dark:text-maraGold">Confirm price</span>
+                                ${inCart
+                                    ? `<div class="qty-ctrl">
+                                        <button class="qty-btn" onclick="changeQty('${escapeAttr(cat)}','${escapeAttr(item.name)}',-1)">-</button>
+                                        <span class="qty-num">${inCart.qty}</span>
+                                        <button class="qty-btn" onclick="changeQty('${escapeAttr(cat)}','${escapeAttr(item.name)}',1)">+</button>
+                                       </div>`
+                                    : `<button class="add-btn" onclick="addItem('${escapeAttr(cat)}','${escapeAttr(item.name)}','${escapeAttr(item.desc || '')}')">+</button>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+        function addItem(cat, name, desc) {
+            const key = cartKey(cat, name);
+            if (cart[key]) cart[key].qty += 1;
+            else cart[key] = { cat, name, desc, qty: 1, emoji: MENU[cat].emoji };
+            saveCart();
+            renderList(activeCat);
+            const searchVal = document.getElementById('menu-search')?.value || '';
+            if (searchVal) handleSearch(searchVal);
+        }
+        function changeQty(cat, name, delta) {
+            const key = cartKey(cat, name);
+            if (!cart[key]) return;
+            cart[key].qty = Math.max(0, cart[key].qty + delta);
+            if (cart[key].qty === 0) delete cart[key];
+            saveCart();
+            renderList(activeCat);
+            renderCartReview();
+            const searchVal = document.getElementById('menu-search')?.value || '';
+            if (searchVal) handleSearch(searchVal);
+        }
+        function cartChangeQty(key, delta) {
+            if (!cart[key]) return;
+            cart[key].qty = Math.max(0, cart[key].qty + delta);
+            if (cart[key].qty === 0) delete cart[key];
+            saveCart();
+            renderList(activeCat);
+            renderCartReview();
+        }
+        function saveCart() {
+            try { sessionStorage.setItem('mara_cart', JSON.stringify(cart)); } catch(e) {}
+            updateCartSummary();
+            updateBadges();
+        }
+        function updateCartSummary() {
+            const count = getCartCount();
+            const pill = document.getElementById('cart-summary-pill');
+            if (pill) pill.textContent = `${count} item${count !== 1 ? 's' : ''}`;
+            const button = document.getElementById('btn-to-cart');
+            if (button) button.disabled = count === 0;
+        }
+        function updateBadges() {
+            const count = getCartCount();
+            const badge = document.getElementById('bottom-badge');
+            if (!badge) return;
+            if (count > 0) { badge.textContent = count; badge.classList.remove('hidden'); badge.classList.add('flex'); }
+            else { badge.classList.add('hidden'); badge.classList.remove('flex'); }
+        }
+        function renderCartReview() {
+            const list = document.getElementById('cart-review-list');
+            const entries = Object.entries(cart);
+            if (!list) return;
+            if (!entries.length) {
+                list.innerHTML = '<p class="text-maraOlive dark:text-maraIvory/55 text-sm text-center py-8 font-bold">Your selection is empty.</p>';
+            } else {
+                list.innerHTML = entries.map(([key, item]) => `
+                    <div class="flex items-center gap-3 py-3 border-b border-maraBrown/10 dark:border-white/10">
+                        <div class="w-12 h-12 min-w-12 rounded-2xl bg-maraBrown/10 dark:bg-white/8 flex items-center justify-center text-2xl">${item.emoji}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-black text-sm leading-tight">${item.name}</div>
+                            <div class="text-[10px] font-black text-maraOlive dark:text-maraIvory/55 uppercase">${item.cat}</div>
+                        </div>
+                        <div class="qty-ctrl">
+                            <button class="qty-btn" onclick="cartChangeQty('${escapeAttr(key)}',-1)">-</button>
+                            <span class="qty-num">${item.qty}</span>
+                            <button class="qty-btn" onclick="cartChangeQty('${escapeAttr(key)}',1)">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        function goToScreen(n) {
+            if (n === 2 && getCartCount() === 0) return;
+            [1,2,3,4].forEach(i => {
+                document.getElementById(`screen-${i}`).classList.remove('active');
+                document.getElementById(`footer-${i}`).classList.add('hidden');
+                document.getElementById(`sd${i}`).className = `step-dot${i < n ? ' done' : i === n ? ' active' : ''}`;
+            });
+            document.getElementById(`screen-${n}`).classList.add('active');
+            document.getElementById(`footer-${n}`).classList.remove('hidden');
+            document.getElementById('order-body').scrollTop = 0;
+            currentScreen = n;
+            if (n === 1) updateCartSummary();
+            if (n === 2) renderCartReview();
+            if (n === 4) renderFinalReview();
+        }
+        function setOrderType(type) {
+            orderType = type;
+            const active = 'flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-maraBrown bg-maraBrown/10 text-maraBrown dark:text-maraGold transition-all';
+            const inactive = 'flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-maraBrown/20 text-maraOlive dark:text-maraIvory/55 transition-all';
+            document.getElementById('btn-dine').className = type === 'Dine-in' ? active : inactive;
+            document.getElementById('btn-pickup').className = type === 'Pickup' ? active : inactive;
+            document.getElementById('btn-delivery').className = type === 'Delivery' ? active : inactive;
+        }
+        function selectPayment(method) {
+            selectedPayment = method;
+            document.getElementById('pay-confirm').className = `pay-opt${method === 'confirm' ? ' selected' : ''}`;
+            document.getElementById('pay-cash').className = `pay-opt mt-2${method === 'cash' ? ' selected' : ''}`;
+        }
+        function renderFinalReview() {
+            const items = Object.values(cart);
+            document.getElementById('final-order-items').innerHTML = items.map(item =>
+                `<div class="summary-row"><span>${item.emoji} ${item.name} x ${item.qty}</span><span class="font-black">${item.cat}</span></div>`
+            ).join('');
+            const name = document.getElementById('cust-name').value || '-';
+            const phone = document.getElementById('cust-phone').value || '-';
+            const addr = document.getElementById('cust-addr').value || '-';
+            const notes = document.getElementById('cust-notes').value || '';
+            const payLabel = selectedPayment === 'cash' ? 'Cash / Card after confirmation' : 'Confirm with restaurant';
+            document.getElementById('final-customer-info').innerHTML = `
+                <div class="summary-row"><span class="text-maraOlive dark:text-maraIvory/55">Name</span><span class="font-black">${name}</span></div>
+                <div class="summary-row"><span class="text-maraOlive dark:text-maraIvory/55">Phone</span><span class="font-black">${phone}</span></div>
+                <div class="summary-row"><span class="text-maraOlive dark:text-maraIvory/55">Type</span><span class="font-black">${orderType}</span></div>
+                <div class="summary-row"><span class="text-maraOlive dark:text-maraIvory/55">Location / Time</span><span class="font-black">${addr}</span></div>
+                <div class="summary-row"><span class="text-maraOlive dark:text-maraIvory/55">Payment</span><span class="font-black">${payLabel}</span></div>
+                ${notes ? `<div class="summary-row"><span class="text-maraOlive dark:text-maraIvory/55">Notes</span><span class="font-black">${notes}</span></div>` : ''}`;
+        }
+        function buildOrderMessage(prefix) {
+            const items = Object.values(cart);
+            const name = document.getElementById('cust-name')?.value.trim() || 'Guest';
+            const phone = document.getElementById('cust-phone')?.value.trim() || '-';
+            const addr = document.getElementById('cust-addr')?.value.trim() || '-';
+            const notes = document.getElementById('cust-notes')?.value.trim();
+            const itemLines = items.map(item => `- ${item.name} x ${item.qty} (${item.cat})`).join('\n');
+            return `${prefix}
+
+Name: ${name}
+Phone: ${phone}
+Type: ${orderType}
+Location / Time: ${addr}
+Payment: ${selectedPayment === 'cash' ? 'Cash / Card after confirmation' : 'Confirm with restaurant'}
+${notes ? `Notes: ${notes}\n` : ''}
+Items:
+${itemLines}
+
+Please confirm availability and total.`;
+        }
+        async function copyText(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showBanner('Request copied. Opening Le Maraheb.');
+            } catch(e) {
+                showBanner('Request ready. Copy it from the review screen.');
+            }
+        }
+        async function sendOrder() {
+            if (getCartCount() === 0) return showBanner('Please add at least one item.');
+            const message = buildOrderMessage("Hello Le' Maraheb, I would like to place this Skani order request:");
+            if (WHATSAPP_NUMBER) {
+                openInNewTab(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`);
+            } else {
+                await copyText(message);
+                openInNewTab(INSTAGRAM_URL);
+            }
+            cart = {};
+            try { sessionStorage.removeItem('mara_cart'); } catch(e) {}
+            saveCart();
+            clearSearch();
+            closeModal('order-modal');
+        }
+        function handleSearch(value) {
+            const query = value.trim().toLowerCase();
+            const clearBtn = document.getElementById('search-clear-btn');
+            const resultsEl = document.getElementById('search-results');
+            const browse = document.getElementById('browse-view');
+            if (!query) { clearSearch(); return; }
+            clearBtn.classList.remove('hidden');
+            resultsEl.classList.remove('hidden');
+            browse.classList.add('hidden');
+            const matches = [];
+            Object.entries(MENU).forEach(([cat, data]) => {
+                data.items.forEach(item => {
+                    if (`${item.name} ${item.desc} ${cat}`.toLowerCase().includes(query)) matches.push({ cat, item });
+                });
+            });
+            if (!matches.length) {
+                resultsEl.innerHTML = `<div class="text-center py-10 text-maraOlive dark:text-maraIvory/55"><div class="text-4xl mb-2">🔎</div><p class="font-black text-sm">No dishes found for "${value}"</p></div>`;
+                return;
+            }
+            resultsEl.innerHTML = `<div class="space-y-3">${matches.map(({cat, item}) => renderItemCard(cat, item)).join('')}</div>`;
+        }
+        function clearSearch() {
+            const input = document.getElementById('menu-search');
+            const clearBtn = document.getElementById('search-clear-btn');
+            const resultsEl = document.getElementById('search-results');
+            const browse = document.getElementById('browse-view');
+            if (input) input.value = '';
+            if (clearBtn) clearBtn.classList.add('hidden');
+            if (resultsEl) resultsEl.classList.add('hidden');
+            if (browse) browse.classList.remove('hidden');
+        }
+        function openOrderBot(category) {
+            if (category) activeCat = category;
+            openModal('order-modal');
+            renderCategoryPills();
+            renderList(activeCat);
+            updateCartSummary();
+            goToScreen(1);
+        }
+        function handleSuggestion(e) {
+            e.preventDefault();
+            const form = document.getElementById('suggestion-form');
+            const feedback = document.getElementById('suggestion-feedback');
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            form.style.opacity = '0';
+            setTimeout(() => { form.classList.add('hidden'); feedback.classList.remove('hidden'); }, 220);
+            setTimeout(() => {
+                feedback.classList.add('hidden');
+                form.classList.remove('hidden');
+                form.style.opacity = '1';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Note';
+                e.target.reset();
+            }, 4200);
+        }
+        async function handleBookingSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('book-name').value.trim();
+            const date = document.getElementById('book-date').value;
+            const time = document.getElementById('book-time').value;
+            const people = document.getElementById('book-people').value;
+            const notes = document.getElementById('book-notes').value.trim();
+            const message = `Hello Le' Maraheb, I would like to request a table reservation:
+
+Name: ${name}
+Date: ${date}
+Time: ${time}
+Guests: ${people}
+${notes ? `Notes: ${notes}\n` : ''}
+Please confirm availability.`;
+            await copyText(message);
+            openInNewTab(INSTAGRAM_URL);
+            closeModal('booking-modal');
+            e.target.reset();
+        }
+
+        renderCategoryPills();
+        renderList(activeCat);
+        updateCartSummary();
+        updateBadges();
+        setOrderType('Dine-in');
+        selectPayment('confirm');
+        try {
+            const saved = sessionStorage.getItem('mara_cart');
+            if (saved) { cart = JSON.parse(saved); updateCartSummary(); updateBadges(); }
+        } catch(e) {}
+    </script>
+</body>
+</html>
