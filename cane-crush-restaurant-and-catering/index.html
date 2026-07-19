@@ -244,9 +244,14 @@
                 </div>
             </div>
             
-            <button onclick="toggleTheme()" class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white dark:bg-caneDark text-caneAccent dark:text-canePrimary shadow-sm hover:shadow active:scale-95 transition-all border border-canePrimary/10">
-                <i id="theme-icon" class="fa-solid fa-sun text-lg"></i>
-            </button>
+            <div class="flex items-center gap-2">
+                <a href="https://www.skani.space/burhani-quality-center" class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white dark:bg-caneDark text-caneAccent dark:text-canePrimary shadow-sm hover:shadow active:scale-95 transition-all border border-canePrimary/10" aria-label="Back to Burhani Quality Center" title="Back to Burhani Quality Center">
+                    <i class="fa-solid fa-house text-lg"></i>
+                </a>
+                <button onclick="toggleTheme()" class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white dark:bg-caneDark text-caneAccent dark:text-canePrimary shadow-sm hover:shadow active:scale-95 transition-all border border-canePrimary/10">
+                    <i id="theme-icon" class="fa-solid fa-sun text-lg"></i>
+                </button>
+            </div>
         </header>
 
         <!-- 2. HERO SECTION -->
@@ -267,7 +272,7 @@
         <!-- 3. ACTION GRID SECTION -->
         <section class="grid grid-cols-2 gap-3.5 my-2">
             <!-- CARD 1 — MENU -->
-            <button onclick="openInNewTab('https://www.skani.space/cane-crush-restaurant-and-catering/cane-crush-menu.pdf')" 
+            <button onclick="openInNewTab('https://www.skani.space/cane-crush-restaurant-and-catering/cane-crush-2026.pdf')"
                 class="reveal tap-scale card-shimmer bg-canePrimary p-5 rounded-[2rem] flex flex-col items-center justify-center text-caneDark shadow-lg shadow-canePrimary/15 hover:shadow-xl transition-all border border-canePrimary">
                 <div class="w-11 h-11 bg-white/30 rounded-2xl flex items-center justify-center mb-2.5">
                     <i class="fa-solid fa-utensils text-xl text-caneDark animate-float"></i>
@@ -276,27 +281,14 @@
                 <span class="text-[9px] font-bold opacity-80 uppercase tracking-wide">Explore our dishes</span>
             </button>
 
-            <!-- CARD 2 — WIFI ACCESS -->
-            <button onclick="openModal('wifi-modal')" 
+            <!-- CARD 2 — 360° VIRTUAL TOUR -->
+            <button onclick="openModal('tour-modal')"
                 class="reveal tap-scale card-shimmer bg-white dark:bg-caneDark text-zinc-900 dark:text-white p-5 rounded-[2rem] flex flex-col items-center justify-center shadow-sm border border-canePrimary/10">
                 <div class="w-11 h-11 bg-canePrimary/10 dark:bg-white/10 rounded-2xl flex items-center justify-center mb-2.5">
-                    <i class="fa-solid fa-wifi text-xl text-canePrimary"></i>
+                    <i class="fa-solid fa-vr-cardboard text-xl text-canePrimary"></i>
                 </div>
-                <span class="font-extrabold text-base tracking-tight dark:text-white">WiFi Access</span>
-                <span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-400 uppercase tracking-wide">Instant Connection</span>
-            </button>
-
-            <!-- CARD — EXPLORE THE RESTAURANT IN 360 (FULL WIDTH) -->
-            <button onclick="openModal('tour-modal')" 
-                class="reveal tap-scale card-shimmer col-span-2 bg-gradient-to-r from-caneDark to-zinc-900 dark:from-caneDark dark:to-black p-5 rounded-[2rem] flex items-center gap-4 shadow-lg shadow-black/10 border border-canePrimary/20">
-                <div class="w-14 h-14 bg-canePrimary/15 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-vr-cardboard text-2xl text-canePrimary"></i>
-                </div>
-                <div class="flex-1 text-left min-w-0">
-                    <span class="font-extrabold text-base tracking-tight text-white block">Explore the Restaurant in 360°</span>
-                    <span class="text-[9px] font-bold text-zinc-400 uppercase tracking-wide">Take a virtual walkthrough</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-canePrimary/70 flex-shrink-0"></i>
+                <span class="font-extrabold text-base tracking-tight dark:text-white">360° Tour</span>
+                <span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-400 uppercase tracking-wide">Virtual walkthrough</span>
             </button>
 
             <!-- CARD 3 — REVIEWS -->
@@ -1134,7 +1126,7 @@
                 { n: "Puri Paratha", p: 2000 },
                 { n: "African Chapati", p: 1000 }
             ]},
-            "BBQ & Steaks": { emoji: "🔥", items: [
+            "BBQ": { emoji: "🔥", items: [
                 { header: "BBQ - Sururu" },
                 { n: "Sururu", p: 150 },
                 { n: "Gajjar Sururu", p: 150, spicy: true },
@@ -1173,7 +1165,9 @@
                 { n: "Fusion Vuruga Bowl", p: 18000 },
                 { n: "Chicken Poutine Bowl", p: 18000 },
                 { n: "Beef Poutine Bowl", p: 18000 },
-                { n: "Fusion Poutine Bowl", p: 18000 },
+                { n: "Fusion Poutine Bowl", p: 18000 }
+            ]},
+            "Steaks": { emoji: "🥩", items: [
                 { header: "Steaks", note: "Choose chicken or beef" },
                 { n: "Tornado Steak & Fries", from: 20000, opt: "steak" },
                 { n: "Pepper Steak & Fries", from: 20000, opt: "steak" },
@@ -1733,7 +1727,7 @@
             msg += `\nTotal: ${money(getCartTotal())}`;
             if (orderMode === 'Delivery') msg += `\n(Delivery charge may apply depending on location - please confirm.)`;
             msg += `\n${payLine}\n\nPlease confirm this order.`;
-            openInNewTab(`https://wa.me/255757249910?text=${encodeURIComponent(msg)}`);
+            openInNewTab(`https://wa.me/255713278622?text=${encodeURIComponent(msg)}`);
             cart = {};
             try { sessionStorage.removeItem('cc_cart'); } catch(e) {}
             updateBadges();
