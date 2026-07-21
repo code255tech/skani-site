@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" class="light">
 <head>
@@ -301,6 +302,19 @@
         .dark .fillall-chip { background: rgba(255,255,255,.05); color: #f2f2f2; border-color: rgba(255,255,255,.12); }
         .fillall-chip.active { border-color: #E1261C; background: rgba(225,38,28,.1); color: #E1261C; }
         .fillall-chip:active { transform: scale(.95); }
+        .hscroll-wrap { position: relative; }
+        .hscroll-arrow {
+            position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
+            width: 28px; height: 28px; border-radius: 999px; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            background: #17191B; color: #F4E600; font-size: 11px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2); transition: opacity .25s, transform .15s;
+        }
+        .dark .hscroll-arrow { background: #F4E600; color: #17191B; }
+        .hscroll-arrow:active { transform: translateY(-50%) scale(.9); }
+        .hscroll-arrow-left { left: -6px; }
+        .hscroll-arrow-right { right: -6px; }
+        .hscroll-arrow.at-edge { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body class="bg-anjariPaper dark:bg-anjariDark text-anjariInk dark:text-zinc-100 transition-colors duration-300">
@@ -557,9 +571,8 @@
             <h3 class="text-3xl font-display font-semibold leading-tight">Build Your Crate</h3>
             <p class="text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-1 mb-4">Mix &amp; match flavours in one crate 🧃</p>
 
-            <div class="grid grid-cols-2 gap-2 mb-4">
-                <button id="crate-type-rgb" onclick="setCrateType('rgb')" class="crate-type tap-scale">🍾 RGB Glass<div class="ct-sub">24 bottles / crate</div></button>
-                <button id="crate-type-pet" onclick="setCrateType('pet')" class="crate-type tap-scale">🧴 PET 350ml<div class="ct-sub">12 bottles / carton</div></button>
+            <div class="mb-4">
+                <div id="crate-type-rgb" class="crate-type active text-center">🍾 RGB Glass<div class="ct-sub">24 bottles / crate</div></div>
             </div>
 
             <div class="rounded-[1.6rem] bg-white dark:bg-anjariDark p-4 border border-anjariInk/10 mb-3">
@@ -585,7 +598,11 @@
 
             <div class="mb-3">
                 <div class="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1.5">Or fill the whole crate with one flavour</div>
-                <div id="crate-fillall" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                <div class="hscroll-wrap">
+                    <button type="button" class="hscroll-arrow hscroll-arrow-left at-edge" id="fillall-arrow-left" onclick="scrollFillAll(-1)" aria-label="Scroll flavours left"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div id="crate-fillall" class="flex gap-2 overflow-x-auto no-scrollbar pb-1 px-8" onscroll="updateFillAllArrows()"></div>
+                    <button type="button" class="hscroll-arrow hscroll-arrow-right" id="fillall-arrow-right" onclick="scrollFillAll(1)" aria-label="Scroll flavours right"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
             </div>
 
             <div id="crate-deposit" class="hidden mb-3 rounded-2xl bg-anjariCream/70 dark:bg-white/5 border border-anjariInk/10 p-3">
@@ -814,7 +831,7 @@
             icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
         }
         function openInNewTab(url) { window.open(url, '_blank', 'noopener,noreferrer'); }
-        function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; if (id === 'customizer-modal') setTimeout(updateFillAllArrows, 60); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = ''; }
         document.addEventListener('keydown', e => { if (e.key === 'Escape') { const active = document.querySelector('.modal-overlay.active'); if (active) closeModal(active.id); } });
 
@@ -1255,8 +1272,6 @@
             crateType = type;
             crateMix = {};
             crateQtyN = 1;
-            document.getElementById('crate-type-rgb').classList.toggle('active', type === 'rgb');
-            document.getElementById('crate-type-pet').classList.toggle('active', type === 'pet');
             renderFillAllChips();
             renderCrateFlavors();
             updateCrateDepositUI();
@@ -1267,6 +1282,23 @@
                 const active = (Object.keys(crateMix).length === 1 && crateMix[f] === crateCapacity());
                 return `<button class="fillall-chip ${active ? 'active' : ''}" onclick="crateFillAll('${f.replace(/'/g, "\\'")}')">${FLAVOR_EMOJI[f] || '🥤'} ${f}</button>`;
             }).join('');
+            updateFillAllArrows();
+        }
+        function updateFillAllArrows() {
+            const el = document.getElementById('crate-fillall');
+            if (!el) return;
+            const left = document.getElementById('fillall-arrow-left');
+            const right = document.getElementById('fillall-arrow-right');
+            const atStart = el.scrollLeft <= 6;
+            const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 6;
+            const noOverflow = el.scrollWidth <= el.clientWidth + 6;
+            if (left) left.classList.toggle('at-edge', atStart || noOverflow);
+            if (right) right.classList.toggle('at-edge', atEnd || noOverflow);
+        }
+        function scrollFillAll(dir) {
+            const el = document.getElementById('crate-fillall');
+            if (!el) return;
+            el.scrollBy({ left: dir * Math.max(140, el.clientWidth * 0.7), behavior: 'smooth' });
         }
         function renderCrateFlavors() {
             const flavors = CATEGORIES[crateType].flavors;
