@@ -123,19 +123,6 @@
         .choice.active i { color: #fff; }
         .choice i { color: #2E90FA; }
 
-        /* Photo dropzone */
-        .dropzone {
-            border: 2px dashed rgba(46,144,250,0.45);
-            background: rgba(46,144,250,0.05);
-            border-radius: 18px;
-            padding: 26px 16px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .dropzone:active { transform: scale(0.99); }
-        .dropzone:hover { background: rgba(46,144,250,0.09); border-color: rgba(46,144,250,0.7); }
-
         /* Modal */
         .modal-overlay {
             position: fixed; inset: 0; z-index: 80;
@@ -179,15 +166,15 @@
                 </div>
             </div>
 
-            <button onclick="toggleTheme()" class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white dark:bg-repairDark text-repairAccent dark:text-repairPrimary shadow-sm hover:shadow active:scale-95 transition-all border border-repairPrimary/10">
-                <i id="theme-icon" class="fa-solid fa-sun text-lg"></i>
-            </button>
+            <div class="flex items-center gap-2">
+                <a href="https://www.skani.space/burhani-quality-center" class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white dark:bg-repairDark text-repairAccent dark:text-repairPrimary shadow-sm hover:shadow active:scale-95 transition-all border border-repairPrimary/10" aria-label="Home — Burhani Quality Centre" title="Home">
+                    <i class="fa-solid fa-house text-lg"></i>
+                </a>
+                <button onclick="toggleTheme()" class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white dark:bg-repairDark text-repairAccent dark:text-repairPrimary shadow-sm hover:shadow active:scale-95 transition-all border border-repairPrimary/10" aria-label="Toggle theme">
+                    <i id="theme-icon" class="fa-solid fa-sun text-lg"></i>
+                </button>
+            </div>
         </header>
-
-        <!-- Back link -->
-        <a href="https://www.skani.space/burhani-quality-center" class="inline-flex items-center gap-1.5 mt-3 text-[11px] font-bold text-zinc-500 dark:text-zinc-400 hover:text-repairPrimary transition-colors">
-            <i class="fa-solid fa-chevron-left text-[9px]"></i> Back to Burhani Quality Centre
-        </a>
 
         <!-- 2. HERO -->
         <section class="py-6 reveal">
@@ -220,6 +207,10 @@
                         <label class="field-label" for="f-phone">Phone Number <span class="text-red-500">*</span></label>
                         <input id="f-phone" type="tel" inputmode="tel" class="field-input" placeholder="e.g. 0713 278 622" autocomplete="tel">
                     </div>
+                    <div>
+                        <label class="field-label" for="f-tin">TIN <span class="font-medium normal-case tracking-normal text-zinc-400">(optional)</span></label>
+                        <input id="f-tin" type="text" inputmode="numeric" class="field-input" placeholder="e.g. 123-456-789">
+                    </div>
                 </div>
             </section>
 
@@ -229,22 +220,11 @@
                     <span class="w-1.5 h-6 bg-repairPrimary rounded-full"></span> What Needs Repairing
                 </h3>
                 <div class="bg-white dark:bg-repairDark rounded-[1.6rem] p-5 border border-repairPrimary/10 shadow-sm space-y-4">
-                    <div>
-                        <label class="field-label">Category <span class="text-red-500">*</span></label>
-                        <div id="cat-choices" class="flex flex-wrap gap-2"></div>
-                    </div>
-                    <div>
-                        <label class="field-label" for="f-item">Item / Device <span class="text-red-500">*</span></label>
-                        <input id="f-item" type="text" class="field-input" placeholder="e.g. Samsung fridge, iPhone 12, office chair">
-                    </div>
-                    <div>
-                        <label class="field-label" for="f-brand">Brand / Model <span class="font-medium normal-case tracking-normal text-zinc-400">(optional)</span></label>
-                        <input id="f-brand" type="text" class="field-input" placeholder="e.g. LG, Bosch, Model XR-200">
-                    </div>
-                    <div>
-                        <label class="field-label" for="f-desc">Describe the Problem <span class="text-red-500">*</span></label>
-                        <textarea id="f-desc" class="field-input" placeholder="What's wrong? When did it start? Any details that help us prepare…"></textarea>
-                    </div>
+                    <div id="items-wrap" class="space-y-4"></div>
+                    <button type="button" onclick="addItem(true)" class="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-dashed border-repairPrimary/40 text-repairPrimary font-black text-xs uppercase tracking-wide tap-scale hover:bg-repairPrimary/5 transition-colors">
+                        <i class="fa-solid fa-plus"></i> Add another item
+                    </button>
+                    <p class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium text-center">Repairing more than one thing? Add each item separately.</p>
                 </div>
             </section>
 
@@ -259,8 +239,16 @@
                         <div id="svc-choices" class="flex flex-wrap gap-2"></div>
                     </div>
                     <div id="addr-wrap" class="hidden">
-                        <label class="field-label" for="f-address">Pickup / On-site Address</label>
+                        <label class="field-label" for="f-address">Pickup Address</label>
                         <input id="f-address" type="text" class="field-input" placeholder="Street, area, landmark…">
+                    </div>
+                    <div id="pickup-note" class="hidden">
+                        <div class="flex items-start gap-2.5 rounded-2xl bg-repairAccent/10 border border-repairAccent/25 p-3">
+                            <i class="fa-solid fa-truck text-repairAccent mt-0.5"></i>
+                            <p class="text-[11px] font-semibold text-amber-800 dark:text-amber-200 leading-snug">
+                                Heads up — <span class="font-black">transport charges may apply</span> for pickup, depending on your location. We'll confirm any cost with your quote.
+                            </p>
+                        </div>
                     </div>
                     <div>
                         <label class="field-label" for="f-when">Preferred Date / Time <span class="font-medium normal-case tracking-normal text-zinc-400">(optional)</span></label>
@@ -269,39 +257,47 @@
                 </div>
             </section>
 
-            <!-- Photo -->
+            <!-- Photo (guided attach — no upload) -->
             <section class="reveal">
                 <h3 class="text-lg font-black dark:text-white mb-4 uppercase tracking-tight italic flex items-center gap-2">
-                    <span class="w-1.5 h-6 bg-repairPrimary rounded-full"></span> Photo of the Item
+                    <span class="w-1.5 h-6 bg-repairPrimary rounded-full"></span> Snap The Damage
                 </h3>
-                <div class="bg-white dark:bg-repairDark rounded-[1.6rem] p-5 border border-repairPrimary/10 shadow-sm space-y-3">
-                    <input id="f-photo" type="file" accept="image/*" class="hidden" onchange="handlePhoto(this)">
+                <div class="relative overflow-hidden bg-gradient-to-br from-repairPrimary/10 via-white to-white dark:from-repairPrimary/15 dark:via-repairDark dark:to-repairDark rounded-[1.6rem] p-5 border border-repairPrimary/20 shadow-sm">
+                    <!-- decorative glow -->
+                    <div class="pointer-events-none absolute -top-8 -right-8 w-28 h-28 rounded-full bg-repairPrimary/10 blur-2xl"></div>
+                    <div class="pointer-events-none absolute -bottom-10 -left-6 w-24 h-24 rounded-full bg-repairAccent/10 blur-2xl"></div>
 
-                    <div id="photo-drop" class="dropzone" onclick="document.getElementById('f-photo').click()">
-                        <i class="fa-solid fa-camera text-3xl text-repairPrimary mb-3"></i>
-                        <p class="font-extrabold text-sm dark:text-white">Add a photo of what's broken</p>
-                        <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 font-medium">Tap to take a photo or choose from gallery</p>
-                    </div>
-
-                    <div id="photo-preview" class="hidden">
-                        <div class="relative rounded-2xl overflow-hidden border-2 border-repairPrimary/30">
-                            <img id="photo-img" src="" alt="Item preview" class="w-full max-h-64 object-cover">
-                            <button type="button" onclick="removePhoto()" class="absolute top-2 right-2 w-9 h-9 rounded-full bg-black/70 text-white flex items-center justify-center tap-scale">
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
-                            <div id="photo-name" class="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-[10px] font-bold px-3 py-1.5 truncate"></div>
+                    <!-- animated camera viewfinder -->
+                    <div class="relative flex justify-center mb-4">
+                        <div class="relative w-24 h-24 rounded-3xl bg-white/70 dark:bg-white/5 flex items-center justify-center animate-float">
+                            <i class="fa-solid fa-camera text-4xl text-repairPrimary"></i>
+                            <span class="absolute -top-1.5 -left-1.5 w-5 h-5 border-t-4 border-l-4 border-repairPrimary rounded-tl-lg"></span>
+                            <span class="absolute -top-1.5 -right-1.5 w-5 h-5 border-t-4 border-r-4 border-repairPrimary rounded-tr-lg"></span>
+                            <span class="absolute -bottom-1.5 -left-1.5 w-5 h-5 border-b-4 border-l-4 border-repairPrimary rounded-bl-lg"></span>
+                            <span class="absolute -bottom-1.5 -right-1.5 w-5 h-5 border-b-4 border-r-4 border-repairPrimary rounded-br-lg"></span>
+                            <span class="absolute -bottom-2.5 -right-2.5 w-9 h-9 rounded-full bg-repairAccent text-white flex items-center justify-center shadow-lg text-sm"><i class="fa-solid fa-paperclip"></i></span>
                         </div>
-                        <button type="button" onclick="document.getElementById('f-photo').click()" class="mt-2 text-[11px] font-black uppercase tracking-wide text-repairPrimary tap-scale">
-                            <i class="fa-solid fa-rotate"></i> Change photo
-                        </button>
                     </div>
 
-                    <!-- Attach reminder -->
-                    <div class="flex items-start gap-2.5 rounded-2xl bg-repairAccent/10 border border-repairAccent/25 p-3">
-                        <i class="fa-solid fa-circle-info text-repairAccent mt-0.5"></i>
-                        <p class="text-[11px] font-semibold text-amber-800 dark:text-amber-200 leading-snug">
-                            Photos can't be sent automatically through WhatsApp. After WhatsApp opens, please tap the <i class="fa-solid fa-paperclip"></i> attach button and send your photo in the same chat.
-                        </p>
+                    <h4 class="relative text-center text-xl font-black dark:text-white leading-tight">A photo speaks louder 📸</h4>
+                    <p class="relative text-center text-[12px] text-zinc-600 dark:text-zinc-300 mt-1.5 font-medium leading-relaxed max-w-xs mx-auto">
+                        One clear shot of the item means a faster, sharper quote. You'll add it right inside WhatsApp — here's the 10-second move:
+                    </p>
+
+                    <!-- 3 steps -->
+                    <div class="relative mt-4 space-y-2.5">
+                        <div class="flex items-center gap-3 rounded-2xl bg-white/70 dark:bg-white/5 border border-repairPrimary/10 p-3">
+                            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-repairPrimary text-white font-black text-xs flex items-center justify-center">1</span>
+                            <p class="text-[12px] font-bold dark:text-white">Hit <span class="text-[#25D366]">Send Request</span> below</p>
+                        </div>
+                        <div class="flex items-center gap-3 rounded-2xl bg-white/70 dark:bg-white/5 border border-repairPrimary/10 p-3">
+                            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-repairPrimary text-white font-black text-xs flex items-center justify-center">2</span>
+                            <p class="text-[12px] font-bold dark:text-white">WhatsApp opens with your details ready</p>
+                        </div>
+                        <div class="flex items-center gap-3 rounded-2xl bg-white/70 dark:bg-white/5 border border-repairPrimary/10 p-3">
+                            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-repairAccent text-white font-black text-xs flex items-center justify-center">3</span>
+                            <p class="text-[12px] font-bold dark:text-white">Tap <i class="fa-solid fa-paperclip text-repairAccent"></i> and snap or attach the item 🎯</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -331,6 +327,7 @@
             <button onclick="submitRequest()" class="w-full bg-[#25D366] text-white font-black text-sm uppercase tracking-wide py-4 rounded-2xl tap-scale flex items-center justify-center gap-2.5 shadow-lg shadow-green-600/25">
                 <i class="fa-brands fa-whatsapp text-xl"></i> Send Request on WhatsApp
             </button>
+            <p class="text-center text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 mt-2">Opens WhatsApp · +255 713 278 622</p>
         </div>
     </div>
 
@@ -342,9 +339,9 @@
             <div class="w-16 h-16 rounded-2xl bg-repairAccent/15 flex items-center justify-center mx-auto mb-4">
                 <i class="fa-solid fa-paperclip text-2xl text-repairAccent"></i>
             </div>
-            <h3 class="text-xl font-black text-center dark:text-white leading-tight">Don't forget your photo!</h3>
+            <h3 class="text-xl font-black text-center dark:text-white leading-tight">One last thing — the photo! 📸</h3>
             <p class="text-sm text-center text-zinc-600 dark:text-zinc-400 mt-2 leading-relaxed">
-                Your details are ready to send. Once WhatsApp opens, tap the <i class="fa-solid fa-paperclip text-repairPrimary"></i> attach icon and send the photo of your item in the same chat.
+                Your details are packed and ready. The second WhatsApp opens, tap the <i class="fa-solid fa-paperclip text-repairPrimary"></i> attach icon and drop in a photo of the item — that's what gets you the fastest quote.
             </p>
             <div class="mt-5 flex flex-col gap-2.5">
                 <button onclick="proceedToWhatsApp()" class="w-full bg-[#25D366] text-white font-black text-sm uppercase tracking-wide py-3.5 rounded-2xl tap-scale flex items-center justify-center gap-2">
@@ -381,23 +378,11 @@
         }, { threshold: 0.08 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        // ---- Choice groups ----
-        const CATEGORIES = [
-            { id: 'electronics', label: 'Electronics', icon: 'fa-tv' },
-            { id: 'appliance', label: 'Home Appliance', icon: 'fa-blender' },
-            { id: 'phone', label: 'Phone / Tablet', icon: 'fa-mobile-screen' },
-            { id: 'computer', label: 'Computer', icon: 'fa-laptop' },
-            { id: 'furniture', label: 'Furniture', icon: 'fa-chair' },
-            { id: 'ac', label: 'AC / Cooling', icon: 'fa-fan' },
-            { id: 'other', label: 'Other', icon: 'fa-screwdriver-wrench' }
-        ];
+        // ---- Service options ----
         const SERVICES = [
             { id: 'dropoff', label: 'I\'ll drop it off', icon: 'fa-store' },
-            { id: 'pickup', label: 'Pick it up from me', icon: 'fa-truck' },
-            { id: 'onsite', label: 'Repair at my place', icon: 'fa-house' }
+            { id: 'pickup', label: 'Pick it up from me', icon: 'fa-truck' }
         ];
-
-        let selectedCat = '';
         let selectedSvc = '';
 
         function renderChoices(containerId, list, getSel, onPick) {
@@ -406,41 +391,60 @@
                 `<button type="button" class="choice ${getSel() === c.id ? 'active' : ''}" data-id="${c.id}" onclick="${onPick}('${c.id}')"><i class="fa-solid ${c.icon}"></i> ${c.label}</button>`
             ).join('');
         }
-        function pickCat(id) {
-            selectedCat = id;
-            renderChoices('cat-choices', CATEGORIES, () => selectedCat, 'pickCat');
-        }
         function pickSvc(id) {
             selectedSvc = id;
             renderChoices('svc-choices', SERVICES, () => selectedSvc, 'pickSvc');
-            const addr = document.getElementById('addr-wrap');
-            addr.classList.toggle('hidden', id === 'dropoff');
+            const isPickup = id === 'pickup';
+            document.getElementById('addr-wrap').classList.toggle('hidden', !isPickup);
+            document.getElementById('pickup-note').classList.toggle('hidden', !isPickup);
         }
-        renderChoices('cat-choices', CATEGORIES, () => selectedCat, 'pickCat');
         renderChoices('svc-choices', SERVICES, () => selectedSvc, 'pickSvc');
 
-        // ---- Photo ----
-        let hasPhoto = false;
-        function handlePhoto(input) {
-            const file = input.files && input.files[0];
-            if (!file) return;
-            hasPhoto = true;
-            const reader = new FileReader();
-            reader.onload = e => {
-                document.getElementById('photo-img').src = e.target.result;
-                document.getElementById('photo-name').textContent = file.name;
-            };
-            reader.readAsDataURL(file);
-            document.getElementById('photo-drop').classList.add('hidden');
-            document.getElementById('photo-preview').classList.remove('hidden');
+        // ---- Repairable items (repeatable) ----
+        let itemSeq = 0;
+        function itemBlockHTML(seq) {
+            return `<div class="item-block rounded-2xl border border-repairPrimary/15 bg-repairPrimary/[0.03] dark:bg-white/[0.03] p-4 space-y-4" data-seq="${seq}">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-black uppercase tracking-wide text-repairPrimary"><i class="fa-solid fa-wrench"></i> Item <span class="item-num">1</span></span>
+                    <button type="button" class="item-remove hidden text-[11px] font-bold text-red-500 tap-scale" onclick="removeItem(${seq})"><i class="fa-solid fa-trash-can"></i> Remove</button>
+                </div>
+                <div>
+                    <label class="field-label" for="item-${seq}">Item / Device <span class="text-red-500">*</span></label>
+                    <input id="item-${seq}" type="text" class="field-input blk-item" placeholder="e.g. Samsung fridge, iPhone 12, office chair">
+                </div>
+                <div>
+                    <label class="field-label" for="brand-${seq}">Brand / Model <span class="font-medium normal-case tracking-normal text-zinc-400">(optional)</span></label>
+                    <input id="brand-${seq}" type="text" class="field-input blk-brand" placeholder="e.g. LG, Bosch, Model XR-200">
+                </div>
+                <div>
+                    <label class="field-label" for="desc-${seq}">Describe the Problem <span class="text-red-500">*</span></label>
+                    <textarea id="desc-${seq}" class="field-input blk-desc" placeholder="What's wrong? When did it start? Any details that help us prepare…"></textarea>
+                </div>
+            </div>`;
         }
-        function removePhoto() {
-            hasPhoto = false;
-            document.getElementById('f-photo').value = '';
-            document.getElementById('photo-img').src = '';
-            document.getElementById('photo-drop').classList.remove('hidden');
-            document.getElementById('photo-preview').classList.add('hidden');
+        function itemBlocks() { return [...document.querySelectorAll('.item-block')]; }
+        function renumberItems() {
+            const blocks = itemBlocks();
+            blocks.forEach((b, i) => {
+                b.querySelector('.item-num').textContent = i + 1;
+                b.querySelector('.item-remove').classList.toggle('hidden', blocks.length === 1);
+            });
         }
+        function addItem(focus) {
+            const seq = itemSeq++;
+            document.getElementById('items-wrap').insertAdjacentHTML('beforeend', itemBlockHTML(seq));
+            renumberItems();
+            if (focus) {
+                const el = document.getElementById('item-' + seq);
+                if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus({ preventScroll: true }); }
+            }
+        }
+        function removeItem(seq) {
+            const block = document.querySelector(`.item-block[data-seq="${seq}"]`);
+            if (block) block.remove();
+            renumberItems();
+        }
+        addItem(false); // start with one item
 
         // ---- Toast ----
         let toastTimer;
@@ -466,15 +470,34 @@
 
         function validate() {
             let firstBad = null;
-            const checks = [['f-name', !!val('f-name')], ['f-phone', val('f-phone').replace(/\D/g,'').length >= 9], ['f-item', !!val('f-item')], ['f-desc', !!val('f-desc')]];
-            checks.forEach(([id, ok]) => { markError(id, !ok); if (!ok && !firstBad) firstBad = id; });
+            const nameOk = !!val('f-name');
+            const phoneOk = val('f-phone').replace(/\D/g,'').length >= 9;
+            markError('f-name', !nameOk); if (!nameOk) firstBad = firstBad || 'f-name';
+            markError('f-phone', !phoneOk); if (!phoneOk) firstBad = firstBad || 'f-phone';
 
-            if (!selectedCat) { showToast('Please choose a category'); document.getElementById('cat-choices').scrollIntoView({behavior:'smooth', block:'center'}); return false; }
+            // Each item block needs an item name + a problem description (brand is optional)
+            let badItem = null;
+            itemBlocks().forEach(b => {
+                const itemEl = b.querySelector('.blk-item');
+                const descEl = b.querySelector('.blk-desc');
+                const itemOk = !!itemEl.value.trim();
+                const descOk = !!descEl.value.trim();
+                itemEl.classList.toggle('err', !itemOk);
+                descEl.classList.toggle('err', !descOk);
+                if (!itemOk && !badItem) badItem = itemEl;
+                if (!descOk && !badItem) badItem = descEl;
+            });
+
             if (firstBad) {
-                const map = { 'f-name': 'your name', 'f-phone': 'a valid phone number', 'f-item': 'the item to repair', 'f-desc': 'a problem description' };
+                const map = { 'f-name': 'your name', 'f-phone': 'a valid phone number' };
                 showToast('Please add ' + map[firstBad]);
-                document.getElementById(firstBad).scrollIntoView({behavior:'smooth', block:'center'});
-                document.getElementById(firstBad).focus({preventScroll:true});
+                const el = document.getElementById(firstBad);
+                el.scrollIntoView({behavior:'smooth', block:'center'}); el.focus({preventScroll:true});
+                return false;
+            }
+            if (badItem) {
+                showToast('Please complete each item — device + problem');
+                badItem.scrollIntoView({behavior:'smooth', block:'center'}); badItem.focus({preventScroll:true});
                 return false;
             }
             if (!selectedSvc) { showToast('Please choose a service preference'); document.getElementById('svc-choices').scrollIntoView({behavior:'smooth', block:'center'}); return false; }
@@ -483,29 +506,38 @@
 
         function submitRequest() {
             if (!validate()) return;
-            // Always remind about the photo before sending
+            // Always nudge the customer to attach a photo before WhatsApp opens
             openModal('reminder-modal');
         }
 
         function buildMessage() {
-            const catLabel = (CATEGORIES.find(c => c.id === selectedCat) || {}).label || '—';
             const svcLabel = (SERVICES.find(s => s.id === selectedSvc) || {}).label || '—';
-            const name = val('f-name'), phone = val('f-phone'), item = val('f-item');
-            const brand = val('f-brand'), desc = val('f-desc'), when = val('f-when');
-            const addr = val('f-address'), notes = val('f-notes');
+            const name = val('f-name'), phone = val('f-phone'), tin = val('f-tin');
+            const when = val('f-when'), addr = val('f-address'), notes = val('f-notes');
+            const blocks = itemBlocks();
 
             let m = `🔧 *NEW REPAIR REQUEST*\n_Burhani Repairing Services_\n\n`;
             m += `👤 Name: *${name}*\n`;
             m += `📱 Phone: *${phone}*\n`;
-            m += `\n🗂️ Category: *${catLabel}*\n`;
-            m += `🛠️ Item: *${item}*\n`;
-            if (brand) m += `🏷️ Brand/Model: *${brand}*\n`;
-            m += `\n📝 Problem:\n${desc}\n`;
-            m += `\n🚚 Service: *${svcLabel}*\n`;
-            if (addr && selectedSvc !== 'dropoff') m += `📍 Address: *${addr}*\n`;
+            if (tin) m += `🧾 TIN: *${tin}*\n`;
+
+            m += `\n🧰 *Items to repair (${blocks.length}):*\n`;
+            blocks.forEach((b, i) => {
+                const item = b.querySelector('.blk-item').value.trim();
+                const brand = b.querySelector('.blk-brand').value.trim();
+                const desc = b.querySelector('.blk-desc').value.trim();
+                m += `\n${blocks.length > 1 ? `*${i + 1}.* ` : ''}🛠️ *${item}*\n`;
+                if (brand) m += `   🏷️ Brand/Model: ${brand}\n`;
+                m += `   📝 Problem: ${desc}\n`;
+            });
+
+            m += `\n🚚 Service: *${svcLabel}*`;
+            if (selectedSvc === 'pickup') m += ` _(transport charges may apply)_`;
+            m += `\n`;
+            if (addr && selectedSvc === 'pickup') m += `📍 Address: *${addr}*\n`;
             if (when) m += `🗓️ Preferred time: *${when}*\n`;
             if (notes) m += `\n💬 Notes: _${notes}_\n`;
-            m += `\n📸 ${hasPhoto ? 'Photo attached below 👇 (I\'ll send it in this chat).' : 'I will attach a photo shortly.'}`;
+            m += `\n━━━━━━━━━━━━━\n📸 *One last thing →* I'm attaching a photo of the item right below 👇`;
             return m;
         }
 
