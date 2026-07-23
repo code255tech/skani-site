@@ -1,0 +1,519 @@
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Burhani Repairing Services | Skani</title>
+    <link rel="icon" href="https://www.skani.space/burhani-quality-center/burhani-logo.jpg" type="image/jpeg">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        repairPrimary: '#2E90FA',   // Trust blue — repair & engineering
+                        repairDark: '#0B2545',      // Deep navy panel
+                        repairDarkBg: '#071729',     // Rich dark background
+                        repairAccent: '#F5A524',     // Amber accent (tools)
+                        repairLight: '#EEF4FF',      // Cool light background
+                        repairInk: '#0F172A'
+                    },
+                    animation: {
+                        'float': 'float 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-8px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sab: env(safe-area-inset-bottom);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        input, textarea, select { font-size: 16px !important; }
+        .tap-scale { transition: transform 0.15s ease; }
+        .tap-scale:active { transform: scale(0.97); }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.7s cubic-bezier(0.21, 1.02, 0.43, 1.01);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Form fields */
+        .field-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            margin-bottom: 7px;
+        }
+        .dark .field-label { color: #94a3b8; }
+        .field-input {
+            width: 100%;
+            border-radius: 16px;
+            border: 2px solid rgba(15,23,42,0.10);
+            background: #ffffff;
+            color: #0F172A;
+            padding: 13px 15px;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .dark .field-input {
+            background: rgba(255,255,255,0.05);
+            color: #f1f5f9;
+            border-color: rgba(255,255,255,0.10);
+        }
+        .field-input::placeholder { color: #94a3b8; font-weight: 500; }
+        .field-input:focus {
+            border-color: #2E90FA;
+            box-shadow: 0 0 0 4px rgba(46,144,250,0.14);
+        }
+        textarea.field-input { resize: vertical; min-height: 96px; line-height: 1.5; }
+
+        .field-input.err { border-color: #ef4444; box-shadow: 0 0 0 4px rgba(239,68,68,0.12); }
+
+        /* Choice pills */
+        .choice {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 12.5px;
+            font-weight: 800;
+            cursor: pointer;
+            border: 2px solid rgba(15,23,42,0.12);
+            background: #ffffff;
+            color: #0F172A;
+            transition: all 0.18s;
+        }
+        .dark .choice { background: rgba(255,255,255,0.05); color: #e2e8f0; border-color: rgba(255,255,255,0.10); }
+        .choice.active { background: #2E90FA; color: #fff; border-color: #2E90FA; box-shadow: 0 8px 18px rgba(46,144,250,0.30); }
+        .choice.active i { color: #fff; }
+        .choice i { color: #2E90FA; }
+
+        /* Photo dropzone */
+        .dropzone {
+            border: 2px dashed rgba(46,144,250,0.45);
+            background: rgba(46,144,250,0.05);
+            border-radius: 18px;
+            padding: 26px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .dropzone:active { transform: scale(0.99); }
+        .dropzone:hover { background: rgba(46,144,250,0.09); border-color: rgba(46,144,250,0.7); }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 80;
+            display: flex; align-items: flex-end; justify-content: center;
+            padding: 16px;
+            opacity: 0; visibility: hidden;
+            transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+            backdrop-filter: blur(0);
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(10px); }
+        .modal-panel {
+            transform: translateY(100%);
+            transition: transform 0.45s cubic-bezier(0.16,1,0.3,1);
+            width: 100%; max-width: 28rem;
+        }
+        .modal-overlay.active .modal-panel { transform: translateY(0); }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-repairLight dark:bg-repairDarkBg text-zinc-900 dark:text-zinc-100 transition-colors duration-500">
+
+    <div class="min-h-screen max-w-md mx-auto relative px-4 sm:px-6 pb-32">
+
+        <!-- 1. HEADER -->
+        <header class="pt-[calc(1.25rem+env(safe-area-inset-top))] pb-4 sticky top-0 bg-repairLight/85 dark:bg-repairDarkBg/85 backdrop-blur-xl z-40 border-b border-repairPrimary/10 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-repairDark rounded-2xl overflow-hidden flex items-center justify-center shadow-lg border-2 border-repairPrimary/30 relative">
+                    <img
+                        src="https://www.skani.space/burhani-quality-center/burhani-logo.jpg"
+                        alt="Burhani Repairing Services Logo"
+                        class="w-full h-full object-cover"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    >
+                    <div class="hidden w-full h-full items-center justify-center text-repairPrimary"><i class="fa-solid fa-screwdriver-wrench text-lg"></i></div>
+                </div>
+                <div>
+                    <h1 class="text-sm font-black dark:text-white uppercase tracking-tight leading-none">Burhani Repairing</h1>
+                    <p class="text-[9px] text-repairAccent dark:text-repairPrimary uppercase tracking-[0.08em] font-bold mt-1">Dar es Salaam</p>
+                </div>
+            </div>
+
+            <button onclick="toggleTheme()" class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white dark:bg-repairDark text-repairAccent dark:text-repairPrimary shadow-sm hover:shadow active:scale-95 transition-all border border-repairPrimary/10">
+                <i id="theme-icon" class="fa-solid fa-sun text-lg"></i>
+            </button>
+        </header>
+
+        <!-- Back link -->
+        <a href="https://www.skani.space/burhani-quality-center" class="inline-flex items-center gap-1.5 mt-3 text-[11px] font-bold text-zinc-500 dark:text-zinc-400 hover:text-repairPrimary transition-colors">
+            <i class="fa-solid fa-chevron-left text-[9px]"></i> Back to Burhani Quality Centre
+        </a>
+
+        <!-- 2. HERO -->
+        <section class="py-6 reveal">
+            <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-repairPrimary/10 dark:bg-repairPrimary/20 text-repairDark dark:text-repairPrimary text-[10px] font-extrabold uppercase tracking-widest rounded-full mb-4 border border-repairPrimary/25">
+                <span class="w-2 h-2 rounded-full bg-repairPrimary animate-ping"></span>
+                Repair Request
+            </div>
+            <h2 class="text-4xl font-black text-zinc-900 dark:text-white leading-[1.05] tracking-tight">
+                Let's fix<br><span class="text-repairPrimary">what's broken.</span>
+            </h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mt-4 text-sm font-medium leading-relaxed">
+                Tell us what needs repairing and share a photo. We'll review your request on WhatsApp and get back to you with a quote.
+            </p>
+        </section>
+
+        <!-- 3. FORM -->
+        <form id="repair-form" onsubmit="return false;" class="space-y-6">
+
+            <!-- Your Details -->
+            <section class="reveal">
+                <h3 class="text-lg font-black dark:text-white mb-4 uppercase tracking-tight italic flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-repairPrimary rounded-full"></span> Your Details
+                </h3>
+                <div class="bg-white dark:bg-repairDark rounded-[1.6rem] p-5 border border-repairPrimary/10 shadow-sm space-y-4">
+                    <div>
+                        <label class="field-label" for="f-name">Full Name <span class="text-red-500">*</span></label>
+                        <input id="f-name" type="text" class="field-input" placeholder="e.g. Ali Hassan" autocomplete="name">
+                    </div>
+                    <div>
+                        <label class="field-label" for="f-phone">Phone Number <span class="text-red-500">*</span></label>
+                        <input id="f-phone" type="tel" inputmode="tel" class="field-input" placeholder="e.g. 0713 278 622" autocomplete="tel">
+                    </div>
+                </div>
+            </section>
+
+            <!-- What needs repairing -->
+            <section class="reveal">
+                <h3 class="text-lg font-black dark:text-white mb-4 uppercase tracking-tight italic flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-repairPrimary rounded-full"></span> What Needs Repairing
+                </h3>
+                <div class="bg-white dark:bg-repairDark rounded-[1.6rem] p-5 border border-repairPrimary/10 shadow-sm space-y-4">
+                    <div>
+                        <label class="field-label">Category <span class="text-red-500">*</span></label>
+                        <div id="cat-choices" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div>
+                        <label class="field-label" for="f-item">Item / Device <span class="text-red-500">*</span></label>
+                        <input id="f-item" type="text" class="field-input" placeholder="e.g. Samsung fridge, iPhone 12, office chair">
+                    </div>
+                    <div>
+                        <label class="field-label" for="f-brand">Brand / Model <span class="font-medium normal-case tracking-normal text-zinc-400">(optional)</span></label>
+                        <input id="f-brand" type="text" class="field-input" placeholder="e.g. LG, Bosch, Model XR-200">
+                    </div>
+                    <div>
+                        <label class="field-label" for="f-desc">Describe the Problem <span class="text-red-500">*</span></label>
+                        <textarea id="f-desc" class="field-input" placeholder="What's wrong? When did it start? Any details that help us prepare…"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Service preference -->
+            <section class="reveal">
+                <h3 class="text-lg font-black dark:text-white mb-4 uppercase tracking-tight italic flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-repairPrimary rounded-full"></span> How Should We Handle It
+                </h3>
+                <div class="bg-white dark:bg-repairDark rounded-[1.6rem] p-5 border border-repairPrimary/10 shadow-sm space-y-4">
+                    <div>
+                        <label class="field-label">Service Preference <span class="text-red-500">*</span></label>
+                        <div id="svc-choices" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div id="addr-wrap" class="hidden">
+                        <label class="field-label" for="f-address">Pickup / On-site Address</label>
+                        <input id="f-address" type="text" class="field-input" placeholder="Street, area, landmark…">
+                    </div>
+                    <div>
+                        <label class="field-label" for="f-when">Preferred Date / Time <span class="font-medium normal-case tracking-normal text-zinc-400">(optional)</span></label>
+                        <input id="f-when" type="text" class="field-input" placeholder="e.g. Tomorrow afternoon, Sat morning">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Photo -->
+            <section class="reveal">
+                <h3 class="text-lg font-black dark:text-white mb-4 uppercase tracking-tight italic flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-repairPrimary rounded-full"></span> Photo of the Item
+                </h3>
+                <div class="bg-white dark:bg-repairDark rounded-[1.6rem] p-5 border border-repairPrimary/10 shadow-sm space-y-3">
+                    <input id="f-photo" type="file" accept="image/*" class="hidden" onchange="handlePhoto(this)">
+
+                    <div id="photo-drop" class="dropzone" onclick="document.getElementById('f-photo').click()">
+                        <i class="fa-solid fa-camera text-3xl text-repairPrimary mb-3"></i>
+                        <p class="font-extrabold text-sm dark:text-white">Add a photo of what's broken</p>
+                        <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 font-medium">Tap to take a photo or choose from gallery</p>
+                    </div>
+
+                    <div id="photo-preview" class="hidden">
+                        <div class="relative rounded-2xl overflow-hidden border-2 border-repairPrimary/30">
+                            <img id="photo-img" src="" alt="Item preview" class="w-full max-h-64 object-cover">
+                            <button type="button" onclick="removePhoto()" class="absolute top-2 right-2 w-9 h-9 rounded-full bg-black/70 text-white flex items-center justify-center tap-scale">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                            <div id="photo-name" class="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-[10px] font-bold px-3 py-1.5 truncate"></div>
+                        </div>
+                        <button type="button" onclick="document.getElementById('f-photo').click()" class="mt-2 text-[11px] font-black uppercase tracking-wide text-repairPrimary tap-scale">
+                            <i class="fa-solid fa-rotate"></i> Change photo
+                        </button>
+                    </div>
+
+                    <!-- Attach reminder -->
+                    <div class="flex items-start gap-2.5 rounded-2xl bg-repairAccent/10 border border-repairAccent/25 p-3">
+                        <i class="fa-solid fa-circle-info text-repairAccent mt-0.5"></i>
+                        <p class="text-[11px] font-semibold text-amber-800 dark:text-amber-200 leading-snug">
+                            Photos can't be sent automatically through WhatsApp. After WhatsApp opens, please tap the <i class="fa-solid fa-paperclip"></i> attach button and send your photo in the same chat.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notes -->
+            <section class="reveal">
+                <div class="bg-white dark:bg-repairDark rounded-[1.6rem] p-5 border border-repairPrimary/10 shadow-sm">
+                    <label class="field-label" for="f-notes">Anything Else? <span class="font-medium normal-case tracking-normal text-zinc-400">(optional)</span></label>
+                    <textarea id="f-notes" class="field-input" placeholder="Budget, urgency, or anything we should know…" style="min-height:72px"></textarea>
+                </div>
+            </section>
+        </form>
+
+        <!-- Footer -->
+        <div class="mt-10 flex justify-center reveal">
+            <a href="https://www.skani.space/"
+                target="_blank" rel="noopener noreferrer"
+                class="text-[8px] font-black uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 bg-white/80 dark:bg-repairDark/80 backdrop-blur-md border border-repairPrimary/10 px-3 py-1.5 rounded-full shadow-lg opacity-60 hover:opacity-100 transition-opacity duration-300 hover:text-repairPrimary">
+                Powered by Skani.space
+            </a>
+        </div>
+    </div>
+
+    <!-- Sticky submit bar -->
+    <div class="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-repairLight via-repairLight/95 to-transparent dark:from-repairDarkBg dark:via-repairDarkBg/95 pt-6 pb-[calc(1rem+env(safe-area-inset-bottom))] px-4">
+        <div class="max-w-md mx-auto">
+            <button onclick="submitRequest()" class="w-full bg-[#25D366] text-white font-black text-sm uppercase tracking-wide py-4 rounded-2xl tap-scale flex items-center justify-center gap-2.5 shadow-lg shadow-green-600/25">
+                <i class="fa-brands fa-whatsapp text-xl"></i> Send Request on WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- Reminder modal (shown before opening WhatsApp) -->
+    <div id="reminder-modal" class="modal-overlay">
+        <div class="absolute inset-0 bg-black/60" onclick="closeModal('reminder-modal')"></div>
+        <div class="modal-panel bg-white dark:bg-repairDark rounded-[2rem] p-6 relative shadow-2xl border-t-4 border-repairPrimary">
+            <div class="w-12 h-1.5 bg-zinc-300 dark:bg-white/15 rounded-full mx-auto mb-5"></div>
+            <div class="w-16 h-16 rounded-2xl bg-repairAccent/15 flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-paperclip text-2xl text-repairAccent"></i>
+            </div>
+            <h3 class="text-xl font-black text-center dark:text-white leading-tight">Don't forget your photo!</h3>
+            <p class="text-sm text-center text-zinc-600 dark:text-zinc-400 mt-2 leading-relaxed">
+                Your details are ready to send. Once WhatsApp opens, tap the <i class="fa-solid fa-paperclip text-repairPrimary"></i> attach icon and send the photo of your item in the same chat.
+            </p>
+            <div class="mt-5 flex flex-col gap-2.5">
+                <button onclick="proceedToWhatsApp()" class="w-full bg-[#25D366] text-white font-black text-sm uppercase tracking-wide py-3.5 rounded-2xl tap-scale flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Got it — open WhatsApp
+                </button>
+                <button onclick="closeModal('reminder-modal')" class="w-full text-zinc-500 dark:text-zinc-400 font-bold text-xs uppercase tracking-wide py-2 tap-scale">
+                    Go back
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-28 z-[90] bg-red-500 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <script>
+        const WHATSAPP_NUMBER = '255713278622';
+
+        // ---- Theme ----
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            icon.classList.toggle('fa-sun', !isDark);
+            icon.classList.toggle('fa-moon', isDark);
+        }
+
+        // ---- Reveal on scroll ----
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+            });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // ---- Choice groups ----
+        const CATEGORIES = [
+            { id: 'electronics', label: 'Electronics', icon: 'fa-tv' },
+            { id: 'appliance', label: 'Home Appliance', icon: 'fa-blender' },
+            { id: 'phone', label: 'Phone / Tablet', icon: 'fa-mobile-screen' },
+            { id: 'computer', label: 'Computer', icon: 'fa-laptop' },
+            { id: 'furniture', label: 'Furniture', icon: 'fa-chair' },
+            { id: 'ac', label: 'AC / Cooling', icon: 'fa-fan' },
+            { id: 'other', label: 'Other', icon: 'fa-screwdriver-wrench' }
+        ];
+        const SERVICES = [
+            { id: 'dropoff', label: 'I\'ll drop it off', icon: 'fa-store' },
+            { id: 'pickup', label: 'Pick it up from me', icon: 'fa-truck' },
+            { id: 'onsite', label: 'Repair at my place', icon: 'fa-house' }
+        ];
+
+        let selectedCat = '';
+        let selectedSvc = '';
+
+        function renderChoices(containerId, list, getSel, onPick) {
+            const el = document.getElementById(containerId);
+            el.innerHTML = list.map(c =>
+                `<button type="button" class="choice ${getSel() === c.id ? 'active' : ''}" data-id="${c.id}" onclick="${onPick}('${c.id}')"><i class="fa-solid ${c.icon}"></i> ${c.label}</button>`
+            ).join('');
+        }
+        function pickCat(id) {
+            selectedCat = id;
+            renderChoices('cat-choices', CATEGORIES, () => selectedCat, 'pickCat');
+        }
+        function pickSvc(id) {
+            selectedSvc = id;
+            renderChoices('svc-choices', SERVICES, () => selectedSvc, 'pickSvc');
+            const addr = document.getElementById('addr-wrap');
+            addr.classList.toggle('hidden', id === 'dropoff');
+        }
+        renderChoices('cat-choices', CATEGORIES, () => selectedCat, 'pickCat');
+        renderChoices('svc-choices', SERVICES, () => selectedSvc, 'pickSvc');
+
+        // ---- Photo ----
+        let hasPhoto = false;
+        function handlePhoto(input) {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            hasPhoto = true;
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('photo-img').src = e.target.result;
+                document.getElementById('photo-name').textContent = file.name;
+            };
+            reader.readAsDataURL(file);
+            document.getElementById('photo-drop').classList.add('hidden');
+            document.getElementById('photo-preview').classList.remove('hidden');
+        }
+        function removePhoto() {
+            hasPhoto = false;
+            document.getElementById('f-photo').value = '';
+            document.getElementById('photo-img').src = '';
+            document.getElementById('photo-drop').classList.remove('hidden');
+            document.getElementById('photo-preview').classList.add('hidden');
+        }
+
+        // ---- Toast ----
+        let toastTimer;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.opacity = '1';
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { t.style.opacity = '0'; }, 2600);
+        }
+
+        // ---- Modal ----
+        function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = ''; }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal('reminder-modal'); });
+
+        // ---- Validation + submit ----
+        function markError(id, on) {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('err', on);
+        }
+        function val(id) { return document.getElementById(id).value.trim(); }
+
+        function validate() {
+            let firstBad = null;
+            const checks = [['f-name', !!val('f-name')], ['f-phone', val('f-phone').replace(/\D/g,'').length >= 9], ['f-item', !!val('f-item')], ['f-desc', !!val('f-desc')]];
+            checks.forEach(([id, ok]) => { markError(id, !ok); if (!ok && !firstBad) firstBad = id; });
+
+            if (!selectedCat) { showToast('Please choose a category'); document.getElementById('cat-choices').scrollIntoView({behavior:'smooth', block:'center'}); return false; }
+            if (firstBad) {
+                const map = { 'f-name': 'your name', 'f-phone': 'a valid phone number', 'f-item': 'the item to repair', 'f-desc': 'a problem description' };
+                showToast('Please add ' + map[firstBad]);
+                document.getElementById(firstBad).scrollIntoView({behavior:'smooth', block:'center'});
+                document.getElementById(firstBad).focus({preventScroll:true});
+                return false;
+            }
+            if (!selectedSvc) { showToast('Please choose a service preference'); document.getElementById('svc-choices').scrollIntoView({behavior:'smooth', block:'center'}); return false; }
+            return true;
+        }
+
+        function submitRequest() {
+            if (!validate()) return;
+            // Always remind about the photo before sending
+            openModal('reminder-modal');
+        }
+
+        function buildMessage() {
+            const catLabel = (CATEGORIES.find(c => c.id === selectedCat) || {}).label || '—';
+            const svcLabel = (SERVICES.find(s => s.id === selectedSvc) || {}).label || '—';
+            const name = val('f-name'), phone = val('f-phone'), item = val('f-item');
+            const brand = val('f-brand'), desc = val('f-desc'), when = val('f-when');
+            const addr = val('f-address'), notes = val('f-notes');
+
+            let m = `🔧 *NEW REPAIR REQUEST*\n_Burhani Repairing Services_\n\n`;
+            m += `👤 Name: *${name}*\n`;
+            m += `📱 Phone: *${phone}*\n`;
+            m += `\n🗂️ Category: *${catLabel}*\n`;
+            m += `🛠️ Item: *${item}*\n`;
+            if (brand) m += `🏷️ Brand/Model: *${brand}*\n`;
+            m += `\n📝 Problem:\n${desc}\n`;
+            m += `\n🚚 Service: *${svcLabel}*\n`;
+            if (addr && selectedSvc !== 'dropoff') m += `📍 Address: *${addr}*\n`;
+            if (when) m += `🗓️ Preferred time: *${when}*\n`;
+            if (notes) m += `\n💬 Notes: _${notes}_\n`;
+            m += `\n📸 ${hasPhoto ? 'Photo attached below 👇 (I\'ll send it in this chat).' : 'I will attach a photo shortly.'}`;
+            return m;
+        }
+
+        function proceedToWhatsApp() {
+            const message = buildMessage();
+            closeModal('reminder-modal');
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+        }
+    </script>
+</body>
+</html>
