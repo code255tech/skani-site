@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Burhani Quality Centre Skani Delivery</title>
+    <link rel="icon" href="https://www.skani.space/burhani-quality-center/burhani-logo.jpg" type="image/jpeg">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        bqcPrimary: '#A9CE1F',
+                        bqcDark: '#1C3629',
+                        bqcDarkBg: '#0b1611',
+                        bqcAccent: '#997918',
+                        bqcLight: '#E8FCF4',
+                        bqcRed: '#C1272D',
+                        bqcRedDark: '#3A0E10'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sab: env(safe-area-inset-bottom);
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        .tap-scale { transition: transform 0.15s ease; }
+        .tap-scale:active { transform: scale(0.96); }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-bqcLight dark:bg-bqcDarkBg text-zinc-900 dark:text-zinc-100 transition-colors duration-500">
+
+    <div class="min-h-screen pb-16">
+        <div class="max-w-md mx-auto px-6">
+
+            <!-- 1. HEADER -->
+            <header class="py-8 pt-[calc(2rem+env(safe-area-inset-top))] flex items-center justify-between gap-3">
+                <div class="flex items-center gap-4 min-w-0">
+                    <div class="w-14 h-14 bg-bqcDark rounded-[1.25rem] overflow-hidden flex items-center justify-center shadow-xl border-2 border-bqcPrimary/30 flex-shrink-0">
+                        <img src="https://www.skani.space/burhani-quality-center/burhani-logo.jpg"
+                             alt="Burhani Quality Centre Logo"
+                             class="w-full h-full object-cover"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="hidden w-full h-full items-center justify-center text-bqcPrimary font-black italic text-sm">BQC</div>
+                    </div>
+                    <div class="min-w-0">
+                        <h1 class="text-lg font-black dark:text-white leading-none tracking-tight">Burhani Quality Centre</h1>
+                        <p class="text-[10px] text-bqcAccent dark:text-bqcPrimary font-bold uppercase tracking-[0.16em] mt-1.5">Skani Delivery &amp; Owner Access</p>
+                    </div>
+                </div>
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-white dark:bg-bqcDark border border-bqcPrimary/15 flex items-center justify-center tap-scale text-bqcAccent dark:text-bqcPrimary flex-shrink-0">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+            </header>
+
+            <!-- 2. MAIN ACTION CARD -->
+            <div class="reveal">
+                <div class="bg-gradient-to-br from-bqcDark to-zinc-900 text-white p-7 rounded-[2.5rem] shadow-2xl border border-bqcPrimary/25 relative overflow-hidden">
+                    <span class="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.16em] text-bqcPrimary mb-4">
+                        <i class="fa-solid fa-circle-check"></i> Setup Ready
+                    </span>
+                    <h2 class="text-3xl font-black tracking-tight leading-[1.05] mb-3">Your Skani is live</h2>
+                    <p class="text-sm text-zinc-300 font-medium leading-relaxed mb-7">
+                        See exactly what your customers see when they scan — the Burhani hub with Cane Crush, Anjari and Repairing Services all in one place.
+                    </p>
+                    <a href="https://www.skani.space/burhani-quality-centre" target="_blank" rel="noopener noreferrer"
+                       class="w-full bg-bqcPrimary text-bqcDark py-5 rounded-2xl font-black text-sm uppercase tracking-[0.15em] tap-scale shadow-lg shadow-bqcPrimary/20 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Live Skani
+                    </a>
+                </div>
+            </div>
+
+            <!-- 3. LINK + FILES GRID -->
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div class="reveal bg-white dark:bg-bqcDark/60 p-6 rounded-[2.2rem] border border-bqcPrimary/15 flex flex-col justify-between" style="animation-delay: 0.1s">
+                    <div>
+                        <h3 class="text-[10px] font-black uppercase text-bqcAccent dark:text-bqcPrimary tracking-widest mb-2">Your Link</h3>
+                        <p class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 leading-tight mb-4">Use this anywhere — it works like your QR.</p>
+                    </div>
+                    <button onclick="copyToClipboard('https://www.skani.space/burhani-quality-centre', this)"
+                            class="w-full py-4 bg-zinc-100 dark:bg-white/10 text-black dark:text-white rounded-xl font-black text-[10px] uppercase tracking-widest tap-scale flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-link text-[10px]"></i> Copy Link
+                    </button>
+                </div>
+
+                <div class="reveal bg-white dark:bg-bqcDark/60 p-6 rounded-[2.2rem] border border-bqcPrimary/15 flex flex-col justify-between" style="animation-delay: 0.16s">
+                    <div>
+                        <h3 class="text-[10px] font-black uppercase text-bqcAccent dark:text-bqcPrimary tracking-widest mb-2">All Files</h3>
+                        <p class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 leading-tight mb-4">Access all your QR assets in one place.</p>
+                    </div>
+                    <button onclick="window.open('https://drive.google.com/drive/folders/1CeqfjiaLiBuz0-UwDbHV51HvHCNq3npv?usp=sharing', '_blank')"
+                            class="w-full py-4 bg-bqcPrimary/15 text-bqcAccent dark:text-bqcPrimary rounded-xl font-black text-[10px] uppercase tracking-widest tap-scale flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-folder-open text-[10px]"></i> Open Folder
+                    </button>
+                </div>
+            </div>
+
+            <!-- 4. LINKED SKANI -->
+            <div class="reveal mt-4" style="animation-delay: 0.22s">
+                <div class="bg-white dark:bg-bqcDark/60 p-7 rounded-[2.5rem] border border-bqcPrimary/15">
+                    <h3 class="text-[10px] font-black uppercase text-bqcAccent dark:text-bqcPrimary tracking-[0.2em] mb-2">Inside Your Skani</h3>
+                    <p class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 leading-tight mb-5">One QR opens the hub — customers reach all three from there.</p>
+                    <div class="space-y-3">
+                        <div onclick="window.open('https://www.skani.space/cane-crush-restaurant-and-catering', '_blank')"
+                             class="flex items-center justify-between gap-3 p-4 bg-zinc-50 dark:bg-white/5 rounded-2xl cursor-pointer tap-scale group">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="w-9 h-9 rounded-xl bg-bqcPrimary/15 text-bqcAccent dark:text-bqcPrimary grid place-items-center flex-shrink-0"><i class="fa-solid fa-utensils"></i></span>
+                                <div class="min-w-0">
+                                    <span class="text-sm font-bold dark:text-white block truncate">Cane Crush Restaurant &amp; Catering</span>
+                                    <span class="text-[9px] text-zinc-400 font-medium uppercase tracking-wide">Menu · Orders · Bookings</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-bqcPrimary text-sm opacity-50 group-hover:opacity-100 transition-opacity flex-shrink-0"></i>
+                        </div>
+
+                        <div onclick="window.open('https://www.skani.space/anjari/', '_blank')"
+                             class="flex items-center justify-between gap-3 p-4 bg-zinc-50 dark:bg-white/5 rounded-2xl cursor-pointer tap-scale group">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="w-9 h-9 rounded-xl bg-bqcRed/15 text-bqcRed grid place-items-center flex-shrink-0"><i class="fa-solid fa-bottle-water"></i></span>
+                                <div class="min-w-0">
+                                    <span class="text-sm font-bold dark:text-white block truncate">Anjari</span>
+                                    <span class="text-[9px] text-zinc-400 font-medium uppercase tracking-wide">Glass Soda · PET · Syrup</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-bqcPrimary text-sm opacity-50 group-hover:opacity-100 transition-opacity flex-shrink-0"></i>
+                        </div>
+
+                        <div onclick="window.open('https://www.skani.space/burhani-repairing-services', '_blank')"
+                             class="flex items-center justify-between gap-3 p-4 bg-zinc-50 dark:bg-white/5 rounded-2xl cursor-pointer tap-scale group">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="w-9 h-9 rounded-xl bg-bqcAccent/15 text-bqcAccent dark:text-bqcPrimary grid place-items-center flex-shrink-0"><i class="fa-solid fa-screwdriver-wrench"></i></span>
+                                <div class="min-w-0">
+                                    <span class="text-sm font-bold dark:text-white block truncate">Burhani Repairing Services</span>
+                                    <span class="text-[9px] text-zinc-400 font-medium uppercase tracking-wide">Repairs · Diagnostics · Fixes</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-bqcPrimary text-sm opacity-50 group-hover:opacity-100 transition-opacity flex-shrink-0"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. QR FILES -->
+            <div class="reveal mt-4" style="animation-delay: 0.28s">
+                <div class="bg-white dark:bg-bqcDark/60 p-7 rounded-[2.5rem] border border-bqcPrimary/15">
+                    <h3 class="text-[10px] font-black uppercase text-zinc-400 tracking-[0.25em] mb-5">Your QR Files</h3>
+                    <div class="space-y-3">
+                        <div onclick="window.open('https://drive.google.com/file/d/1qQP-SWeXt9QKfmesFONNOqBJ8VhGgg26/view?usp=sharing', '_blank')"
+                             class="flex items-center justify-between p-4 bg-zinc-50 dark:bg-white/5 rounded-2xl cursor-pointer tap-scale group">
+                            <div>
+                                <span class="text-sm font-bold dark:text-white block">PNG <span class="text-[10px] text-zinc-400 ml-1">(Quick Use)</span></span>
+                                <span class="text-[9px] text-zinc-400 font-medium">WhatsApp, Instagram, quick sharing</span>
+                            </div>
+                            <i class="fa-solid fa-circle-arrow-down text-bqcPrimary text-xl opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+
+                        <div onclick="window.open('https://drive.google.com/file/d/1y-wQQ024QfqY3DXFt4tGLYgAvd55Jze-/view?usp=sharing', '_blank')"
+                             class="flex items-center justify-between p-4 bg-zinc-50 dark:bg-white/5 rounded-2xl cursor-pointer tap-scale group">
+                            <div>
+                                <span class="text-sm font-bold dark:text-white block">PDF <span class="text-[10px] text-zinc-400 ml-1">(Print Ready)</span></span>
+                                <span class="text-[9px] text-zinc-400 font-medium">For print shops and branded boards</span>
+                            </div>
+                            <i class="fa-solid fa-circle-arrow-down text-bqcPrimary text-xl opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. QUICK TIPS -->
+            <div class="reveal mt-4" style="animation-delay: 0.34s">
+                <div class="bg-white dark:bg-bqcDark/60 p-7 rounded-[2.5rem] border border-bqcPrimary/15">
+                    <h3 class="text-[10px] font-black uppercase text-bqcAccent dark:text-bqcPrimary tracking-[0.2em] mb-5">Get the Best Results</h3>
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded-full bg-bqcPrimary/15 text-bqcAccent dark:text-bqcPrimary flex items-center justify-center shrink-0 text-[10px] font-black">1</div>
+                            <div>
+                                <h4 class="text-xs font-black dark:text-white uppercase mb-1">Place where customers pause</h4>
+                                <p class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed">Tables, counter, entrance, and waiting areas are the strongest scan points.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded-full bg-bqcPrimary/15 text-bqcAccent dark:text-bqcPrimary flex items-center justify-center shrink-0 text-[10px] font-black">2</div>
+                            <div>
+                                <h4 class="text-xs font-black dark:text-white uppercase mb-1">Make it easy to see and scan</h4>
+                                <p class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed">Avoid dark corners, glass glare, and very small prints — if it's hard to scan, people won't try twice.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded-full bg-bqcPrimary/15 text-bqcAccent dark:text-bqcPrimary flex items-center justify-center shrink-0 text-[10px] font-black">3</div>
+                            <div>
+                                <h4 class="text-xs font-black dark:text-white uppercase mb-1">Tell people what to expect</h4>
+                                <p class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed">Simple copy like "Scan to explore Cane Crush, Anjari &amp; more" gets far more scans.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded-full bg-bqcPrimary/15 text-bqcAccent dark:text-bqcPrimary flex items-center justify-center shrink-0 text-[10px] font-black">4</div>
+                            <div>
+                                <h4 class="text-xs font-black dark:text-white uppercase mb-1">Test before printing in bulk</h4>
+                                <p class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed">Scan with both Android and iPhone first, so you don't pay for a print run that doesn't work.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded-full bg-bqcPrimary/15 text-bqcAccent dark:text-bqcPrimary flex items-center justify-center shrink-0 text-[10px] font-black">5</div>
+                            <div>
+                                <h4 class="text-xs font-black dark:text-white uppercase mb-1">Use your link online too</h4>
+                                <p class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed">Add it to WhatsApp replies, Instagram bio, and Google Business for traffic beyond physical scans.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded-full bg-bqcPrimary/15 text-bqcAccent dark:text-bqcPrimary flex items-center justify-center shrink-0 text-[10px] font-black">6</div>
+                            <div>
+                                <h4 class="text-xs font-black dark:text-white uppercase mb-1">Keep your Skani updated</h4>
+                                <p class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed">Refresh menus, prices, and offers regularly — fresh content keeps customers coming back.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. PRINTING -->
+            <div class="reveal mt-8" style="animation-delay: 0.4s">
+                <div class="bg-zinc-100 dark:bg-bqcDark/40 p-8 rounded-[3rem] border-2 border-dashed border-bqcPrimary/25 text-center">
+                    <h3 class="text-xl font-black dark:text-white mb-3 italic tracking-tight uppercase">Need help with printing?</h3>
+                    <p class="text-xs font-bold text-zinc-500 dark:text-zinc-400 mb-8 leading-relaxed max-w-[240px] mx-auto uppercase">Polished and durable glass or acrylic QR boards, table stands, and branded displays.</p>
+                    <button onclick="window.open('https://wa.me/255757249910?text=Hello!%20I%20need%20help%20with%20printing%20the%20Burhani%20Quality%20Centre%20Skani%20QR%20board', '_blank')"
+                            class="w-full bg-bqcPrimary text-bqcDark py-5 rounded-2xl font-black text-sm uppercase tracking-widest tap-scale shadow-2xl">
+                        Request Printing
+                    </button>
+                </div>
+            </div>
+
+            <!-- 8. OWNER ACCESS -->
+            <div class="reveal mt-8 text-center" style="animation-delay: 0.46s">
+                <div class="inline-flex items-center px-6 py-4 bg-white dark:bg-bqcDark/60 rounded-[1.5rem] border border-bqcPrimary/15">
+                    <div class="text-left">
+                        <p class="text-[9px] font-black uppercase text-bqcAccent dark:text-bqcPrimary mb-1 leading-none">
+                            <i class="fa-solid fa-lock mr-1.5"></i> Owner Access
+                        </p>
+                        <p class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400">Keep this link safe. Do not display publicly.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. WANT MORE -->
+            <footer class="mt-16 text-center pb-12">
+                <p class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 dark:text-zinc-600 mb-6">Want More?</p>
+                <div class="flex flex-wrap justify-center gap-x-8 gap-y-4 text-[10px] font-black text-zinc-500 dark:text-zinc-500 uppercase tracking-widest">
+                    <a href="https://wa.me/255757249910?text=Hello!%20I'm%20interested%20in%20learning%20more%20about%20Virtual%20Tours%20for%20Burhani%20Quality%20Centre." target="_blank" rel="noopener noreferrer" class="hover:text-bqcPrimary transition-colors">Virtual Tours</a>
+                    <a href="https://wa.me/255757249910?text=Hello!%20I'd%20like%20to%20inquire%20about%20Website%20Development%20services%20for%20Burhani%20Quality%20Centre." target="_blank" rel="noopener noreferrer" class="hover:text-bqcPrimary transition-colors">Websites</a>
+                    <a href="https://wa.me/255757249910?text=Hello!%20I%20would%20like%20to%20book%20a%20Consultation." target="_blank" rel="noopener noreferrer" class="hover:text-bqcPrimary transition-colors">Consultation</a>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] bg-bqcDark text-white px-8 py-4 rounded-full text-xs font-black uppercase tracking-[0.2em] opacity-0 transition-all duration-300 pointer-events-none shadow-2xl">
+        Link Copied!
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            icon.classList.toggle('fa-moon', isDark);
+            icon.classList.toggle('fa-sun', !isDark);
+        }
+
+        function copyToClipboard(text, btn) {
+            const original = btn.innerHTML;
+            const done = () => {
+                const toast = document.getElementById('toast');
+                toast.style.opacity = '1';
+                setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+                setTimeout(() => { btn.innerHTML = original; }, 2000);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+            } else {
+                fallbackCopy(text, done);
+            }
+        }
+
+        function fallbackCopy(text, done) {
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            done();
+        }
+    </script>
+</body>
+</html>
