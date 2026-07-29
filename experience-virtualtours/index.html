@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#260235">
+  <meta name="description" content="Choose and explore immersive apartment experiences by 255VirtualTours.">
+  <title>255VirtualTours | Skani</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--primary:#690a92;--dark:#260235;--light:#f3e9fc;--secondary:#9652D1;--white:#fff;--safe:env(safe-area-inset-bottom)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}
+    body{margin:0;background:#e9e0ed;color:var(--dark);font-family:Manrope,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+    button,a{-webkit-tap-highlight-color:transparent}button{font:inherit}.hidden{display:none!important}
+    .app{width:min(100%,460px);min-height:100vh;margin:auto;padding:0 15px 125px;background:var(--light);overflow:hidden;box-shadow:0 0 55px rgba(38,2,53,.13)}
+    .topbar{position:sticky;top:0;z-index:30;margin:0 -15px;padding:calc(12px + env(safe-area-inset-top)) 16px 11px;display:flex;align-items:center;justify-content:space-between;background:rgba(243,233,252,.91);border-bottom:1px solid rgba(38,2,53,.07);backdrop-filter:blur(18px)}
+    .identity{display:flex;align-items:center;gap:10px}.logo{width:46px;height:46px;display:grid;place-items:center;border-radius:16px;color:white;background:var(--dark);box-shadow:0 9px 22px rgba(38,2,53,.2);font-size:12px;font-weight:800}
+    .identity strong,.identity small{display:block}.identity strong{font-size:13px;letter-spacing:-.03em}.identity small{margin-top:3px;color:var(--primary);font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.13em}
+    .head-icons{display:flex;gap:7px}.head-icon{width:39px;height:39px;display:grid;place-items:center;border:1px solid rgba(38,2,53,.08);border-radius:13px;color:var(--dark);background:white;text-decoration:none;font-size:15px}
+    .hero{position:relative;isolation:isolate;margin-top:15px;padding:24px 21px 21px;overflow:hidden;border-radius:29px;color:white;background:linear-gradient(145deg,var(--dark),var(--primary));box-shadow:0 18px 42px rgba(38,2,53,.22)}
+    .hero:before{content:"";position:absolute;z-index:-1;width:210px;height:210px;right:-125px;top:-100px;border:43px solid rgba(150,82,209,.25);border-radius:50%}
+    .hero:after{content:"";position:absolute;z-index:-1;width:130px;height:130px;left:-80px;bottom:-85px;background:rgba(150,82,209,.18);border-radius:50%}
+    .status{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid rgba(255,255,255,.12);border-radius:999px;color:rgba(255,255,255,.7);background:rgba(255,255,255,.07);font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.12em}.status i{width:6px;height:6px;border-radius:50%;background:#d8a5ff;box-shadow:0 0 0 5px rgba(216,165,255,.1)}
+    .hero h1,.section-title,.why h2,.steps h2,.sell h2{margin:0;font-family:"DM Serif Display",Georgia,serif;font-weight:400;letter-spacing:-.04em}
+    .hero h1{max-width:330px;margin:13px 0 10px;font-size:37px;line-height:1}.hero h1 em{color:#ca8cf4;font-weight:400}
+    .hero-copy{max-width:315px;margin:0;color:rgba(255,255,255,.67);font-size:10px;line-height:1.65}
+    .hero-actions{margin-top:19px;display:grid;grid-template-columns:1.2fr .8fr;gap:8px}
+    .btn{min-height:45px;padding:0 14px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;text-decoration:none;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;cursor:pointer}
+    .btn-primary{color:white;background:var(--secondary);box-shadow:0 10px 25px rgba(38,2,53,.2)}.btn-ghost{color:white;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12)}
+    .trust-row{margin-top:16px;padding-top:14px;display:flex;gap:13px;border-top:1px solid rgba(255,255,255,.11)}.trust-row span{display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.55);font-size:7px;font-weight:700}.trust-row b{color:#d9a7fb;font-size:10px}
+    .section-head{margin:28px 2px 14px}.section-head small{display:block;margin-bottom:5px;color:var(--primary);font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.14em}.section-title{font-size:28px;line-height:1}.section-head p{margin:8px 0 0;max-width:360px;font-size:9px;line-height:1.55;opacity:.5}
+    .experience-grid{display:grid;gap:10px}
+    .experience{position:relative;overflow:hidden;padding:17px;border:1px solid rgba(38,2,53,.07);border-radius:23px;background:white;box-shadow:0 11px 28px rgba(38,2,53,.07)}
+    .experience.featured{color:white;border-color:transparent;background:linear-gradient(135deg,var(--dark),var(--primary));box-shadow:0 15px 35px rgba(38,2,53,.2)}
+    .experience:after{content:"";position:absolute;width:105px;height:105px;right:-63px;top:-68px;border:23px solid rgba(150,82,209,.12);border-radius:50%}.experience.featured:after{border-color:rgba(150,82,209,.23)}
+    .experience-top{position:relative;z-index:2;display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:12px}
+    .experience-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:16px;color:var(--primary);background:var(--light)}
+    .experience-icon svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.featured .experience-icon{color:white;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12)}
+    .experience-title small{display:block;margin-bottom:4px;color:var(--primary);font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.11em}.featured .experience-title small{color:#dcaefa}
+    .experience-title h3{margin:0;font-family:"DM Serif Display",Georgia,serif;font-size:23px;font-weight:400;line-height:1}
+    .recommended{padding:6px 8px;border-radius:999px;color:var(--primary);background:var(--light);font-size:6px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+    .experience-copy{position:relative;z-index:2;margin:13px 0 0;color:rgba(38,2,53,.52);font-size:8px;line-height:1.55}.featured .experience-copy{color:rgba(255,255,255,.62)}
+    .explore-btn{position:relative;z-index:2;width:100%;min-height:43px;margin-top:13px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;border:0;border-radius:13px;color:white;background:var(--secondary);font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;cursor:pointer}.featured .explore-btn{color:var(--dark);background:var(--light)}.circle-arrow{width:24px;height:24px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.16);font-size:13px}.featured .circle-arrow{color:white;background:var(--secondary)}
+    .tip{margin-top:11px;padding:12px 14px;display:flex;align-items:center;gap:10px;border:1px solid rgba(105,10,146,.1);border-radius:16px;color:var(--primary);background:rgba(150,82,209,.08)}.tip b{font-size:16px}.tip span{font-size:8px;line-height:1.5}.tip strong{display:block;margin-bottom:2px;font-size:8px}
+    .why{margin-top:28px;padding:21px;border-radius:25px;color:white;background:var(--primary)}.why h2{font-size:28px}.why>p{margin:6px 0 17px;color:rgba(255,255,255,.64);font-size:9px;line-height:1.55}
+    .benefit-list{display:grid;gap:7px}.benefit{min-height:51px;padding:9px 11px;display:grid;grid-template-columns:31px 1fr;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.11);border-radius:15px;background:rgba(255,255,255,.07)}.benefit i{width:31px;height:31px;display:grid;place-items:center;border-radius:10px;color:var(--primary);background:var(--light);font-size:14px;font-style:normal}.benefit strong{display:block;font-size:8px}.benefit span{display:block;margin-top:2px;color:rgba(255,255,255,.5);font-size:7px;line-height:1.4}
+    .steps{margin-top:11px;padding:22px 20px;border:1px solid rgba(38,2,53,.07);border-radius:25px;background:white}.steps h2{font-size:27px}.steps>p{margin:5px 0 19px;font-size:9px;opacity:.5}
+    .journey{position:relative;display:grid;gap:0}.journey:before{content:"";position:absolute;left:22px;top:42px;bottom:42px;width:2px;background:linear-gradient(var(--secondary),rgba(150,82,209,.14))}
+    .journey-step{position:relative;display:grid;grid-template-columns:46px 1fr;gap:12px;align-items:start;padding:0 0 18px}.journey-step:last-child{padding-bottom:0}
+    .journey-icon{position:relative;z-index:2;width:46px;height:46px;display:grid;place-items:center;border:5px solid white;border-radius:17px;color:white;background:var(--primary);box-shadow:0 8px 19px rgba(105,10,146,.18)}.journey-step:nth-child(2) .journey-icon{background:var(--secondary)}.journey-step:nth-child(3) .journey-icon{color:var(--dark);background:var(--light);border-color:white}
+    .journey-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .journey-copy{padding:6px 0 0}.journey-copy small{display:block;margin-bottom:3px;color:var(--primary);font-size:6px;font-weight:800;text-transform:uppercase;letter-spacing:.12em}.journey-copy strong{display:block;font-family:"DM Serif Display",Georgia,serif;font-size:17px;font-weight:400}.journey-copy span{display:block;margin-top:4px;font-size:7px;line-height:1.5;opacity:.5}
+    .sell{margin-top:11px;padding:23px 20px;position:relative;overflow:hidden;border-radius:25px;text-align:center;color:white;background:var(--dark)}.sell:after{content:"";position:absolute;width:150px;height:150px;right:-100px;top:-70px;border:32px solid rgba(150,82,209,.18);border-radius:50%}
+    .sell small{position:relative;z-index:1;color:#d6a1f8;font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.13em}.sell h2{position:relative;z-index:1;margin-top:6px;font-size:28px;line-height:1}.sell p{position:relative;z-index:1;max-width:310px;margin:8px auto 17px;color:rgba(255,255,255,.58);font-size:8px;line-height:1.6}
+    .contact-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:8px}.contact-grid a,.contact-grid button{min-height:44px;display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid rgba(255,255,255,.14);border-radius:13px;color:white;background:rgba(255,255,255,.08);text-decoration:none;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;cursor:pointer}.contact-grid button:first-child{background:var(--secondary);border-color:var(--secondary)}
+    footer{padding:27px 5px 0;display:flex;align-items:center;justify-content:space-between}footer p{margin:0;font-size:7px;text-transform:uppercase;letter-spacing:.1em;opacity:.38}
+    .bottom-bar{position:fixed;z-index:50;left:50%;bottom:11px;width:min(calc(100% - 22px),438px);padding:7px;display:grid;grid-template-columns:.8fr 1.2fr;gap:6px;transform:translateX(-50%);border-radius:20px;background:rgba(38,2,53,.95);box-shadow:0 16px 40px rgba(38,2,53,.32);backdrop-filter:blur(18px)}
+    .bottom-bar button,.bottom-bar a{height:51px;border:0;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;cursor:pointer}.bottom-bar button{color:white;background:transparent}.bottom-bar .book-trigger{color:white;background:var(--secondary)}
+    .modal{position:fixed;inset:0;z-index:100;display:grid;grid-template-rows:70px 1fr auto;opacity:0;visibility:hidden;pointer-events:none;color:white;background:var(--dark);transition:.25s}.modal.active{opacity:1;visibility:visible;pointer-events:auto}
+    .modal-head{padding:11px 13px 11px 18px;display:flex;align-items:center;justify-content:space-between;background:var(--dark)}.modal-head small,.modal-head strong{display:block}.modal-head small{font-size:7px;text-transform:uppercase;letter-spacing:.13em;opacity:.5}.modal-head strong{margin-top:3px;font-family:"DM Serif Display",Georgia,serif;font-size:19px;font-weight:400}.modal-head button{width:42px;height:42px;border:1px solid rgba(255,255,255,.23);border-radius:50%;color:white;background:rgba(255,255,255,.08);font-size:23px;cursor:pointer}
+    .stage{position:relative;min-height:0}.stage iframe{position:relative;z-index:2;width:100%;height:100%;border:0}.loader{position:absolute;inset:0;display:grid;place-content:center;justify-items:center}.loader i{width:34px;height:34px;border:2px solid rgba(255,255,255,.15);border-top-color:var(--secondary);border-radius:50%;animation:spin .8s linear infinite}.loader span{margin-top:9px;font-size:7px;text-transform:uppercase;letter-spacing:.12em;opacity:.45}@keyframes spin{to{transform:rotate(360deg)}}
+    .modal-foot{padding:10px 12px calc(10px + var(--safe));display:flex;align-items:center;justify-content:space-between;gap:9px;background:var(--dark)}.modal-foot span{font-size:7px;opacity:.45}.modal-foot a{padding:12px 13px;border-radius:11px;color:white;background:var(--secondary);text-decoration:none;font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+    .booking-modal{position:fixed;inset:0;z-index:110;display:flex;align-items:flex-end;justify-content:center;opacity:0;visibility:hidden;pointer-events:none;background:rgba(20,1,28,.74);backdrop-filter:blur(8px);transition:.25s}.booking-modal.active{opacity:1;visibility:visible;pointer-events:auto}
+    .booking-sheet{width:min(100%,460px);max-height:92vh;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;transform:translateY(100%);overflow:hidden;border-radius:28px 28px 0 0;background:var(--light);box-shadow:0 -20px 60px rgba(38,2,53,.28);transition:transform .42s cubic-bezier(.16,1,.3,1)}.booking-modal.active .booking-sheet{transform:none}
+    .booking-head{padding:18px 18px 12px;display:flex;align-items:center;justify-content:space-between}.booking-head small{display:block;color:var(--primary);font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.13em}.booking-head strong{display:block;margin-top:4px;font-family:"DM Serif Display",Georgia,serif;font-size:24px;font-weight:400}.booking-head button{width:39px;height:39px;border:1px solid rgba(38,2,53,.08);border-radius:50%;color:var(--dark);background:white;font-size:21px;cursor:pointer}
+    .progress-wrap{padding:0 18px 13px}.progress-meta{display:flex;justify-content:space-between;margin-bottom:7px;color:rgba(38,2,53,.45);font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.09em}.progress-track{height:5px;overflow:hidden;border-radius:999px;background:rgba(150,82,209,.13)}.progress-bar{height:100%;width:25%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--secondary));transition:width .3s}
+    .booking-form{overflow-y:auto;padding:5px 18px 18px}.form-step{display:none}.form-step.active{display:block;animation:stepIn .25s ease}@keyframes stepIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
+    .step-title{margin:0;font-family:"DM Serif Display",Georgia,serif;font-size:27px;font-weight:400;line-height:1}.step-sub{margin:7px 0 18px;font-size:9px;line-height:1.55;opacity:.5}
+    .fields{display:grid;gap:12px}.field-group label,.field-label{display:block;margin:0 0 6px 3px;color:rgba(38,2,53,.52);font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.1em}
+    .field{width:100%;min-height:49px;padding:0 14px;border:1.5px solid rgba(38,2,53,.09);border-radius:15px;outline:0;color:var(--dark);background:white;font:600 10px Manrope,Arial,sans-serif}.field:focus{border-color:var(--secondary);box-shadow:0 0 0 3px rgba(150,82,209,.12)}textarea.field{min-height:83px;padding-top:13px;resize:none}
+    .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice{position:relative}.choice input{position:absolute;opacity:0;pointer-events:none}.choice span{min-height:49px;padding:9px 10px;display:flex;align-items:center;gap:8px;border:1.5px solid rgba(38,2,53,.08);border-radius:14px;color:rgba(38,2,53,.68);background:white;font-size:8px;font-weight:700;line-height:1.3}.choice input:checked+span{color:var(--primary);border-color:var(--secondary);background:rgba(150,82,209,.1);box-shadow:0 0 0 2px rgba(150,82,209,.08)}
+    .choice-icon{font-size:15px}.review{display:grid;gap:8px;padding:14px;border:1px solid rgba(38,2,53,.07);border-radius:18px;background:white}.review-row{padding-bottom:8px;display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(38,2,53,.06);font-size:8px}.review-row:last-child{padding-bottom:0;border:0}.review-row span{opacity:.45}.review-row strong{text-align:right;font-weight:800}
+    .booking-actions{padding:11px 18px calc(11px + var(--safe));display:grid;grid-template-columns:.8fr 1.2fr;gap:8px;border-top:1px solid rgba(38,2,53,.07);background:rgba(243,233,252,.96)}.booking-actions button{min-height:48px;border:0;border-radius:14px;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;cursor:pointer}.back-btn{color:var(--dark);background:white}.next-btn,.send-btn{color:white;background:var(--secondary)}.booking-note{margin:12px 2px 0;padding:11px 12px;border-radius:13px;color:rgba(38,2,53,.55);background:rgba(150,82,209,.08);font-size:7px;line-height:1.5}
+    @media(min-width:700px){.app{margin:22px auto;border-radius:31px}.bottom-bar{bottom:21px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="identity"><div class="logo">255</div><span><strong>255VirtualTours</strong><small>Experience places first</small></span></div>
+      <div class="head-icons">
+        <a class="head-icon" href="tel:+255757249910" aria-label="Call 255VirtualTours"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L8 9.73a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 22 16.92z"/></svg></a>
+        <a class="head-icon" href="https://virtualtours.space" target="_blank" rel="noopener" aria-label="Visit 255VirtualTours website"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"/></svg></a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <span class="status"><i></i> Interactive showroom</span>
+      <h1>See the space.<br><em>Feel the experience.</em></h1>
+      <p class="hero-copy">Walk through real apartments in 360° and discover how your guests can explore before they book.</p>
+      <div class="hero-actions"><button class="btn btn-primary" onclick="scrollTours()">🧭 Choose experience</button><button class="btn btn-ghost" onclick="openBooking()">💬 Book demo</button></div>
+      <div class="trust-row"><span><b>✓</b> Mobile friendly</span><span><b>✓</b> No app needed</span><span><b>✓</b> Open 24/7</span></div>
+    </section>
+
+    <div class="section-head" id="experiences"><small>Step 1 · Select a demo</small><h2 class="section-title">Choose an experience</h2><p>Start with the complete tour, or choose a focused demonstration below.</p></div>
+
+    <section class="experience-grid">
+      <article class="experience featured">
+        <div class="experience-top">
+          <span class="experience-icon"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M8 10h1M15 10h1"/></svg></span>
+          <span class="experience-title"><small>Complete property journey</small><h3>Interior + Exterior</h3></span>
+          <span class="recommended">Best first</span>
+        </div>
+        <p class="experience-copy">Walk through every room and continue outside to understand the complete property and its surroundings.</p>
+        <button class="explore-btn" onclick="openTour(0)"><span>Explore Now</span><span class="circle-arrow">→</span></button>
+      </article>
+
+      <article class="experience">
+        <div class="experience-top">
+          <span class="experience-icon"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8M5 10v11h14V10M9 21v-7h6v7"/></svg></span>
+          <span class="experience-title"><small>Rooms & layout</small><h3>Interior Only</h3></span>
+        </div>
+        <p class="experience-copy">Focus on the room flow, interior details, furnishings and overall atmosphere.</p>
+        <button class="explore-btn" onclick="openTour(1)"><span>Explore Now</span><span class="circle-arrow">→</span></button>
+      </article>
+
+      <article class="experience">
+        <div class="experience-top">
+          <span class="experience-icon"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 9l12-2"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+          <span class="experience-title"><small>Tour with sound</small><h3>Audio Experience</h3></span>
+        </div>
+        <p class="experience-copy">Experience how carefully chosen sound adds emotion, storytelling and atmosphere.</p>
+        <button class="explore-btn" onclick="openTour(2)"><span>Explore Now</span><span class="circle-arrow">→</span></button>
+      </article>
+    </section>
+
+    <div class="tip"><b>💡</b><span><strong>For the best experience</strong>Open a tour, rotate your phone and drag in any direction.</span></div>
+
+    <section class="why">
+      <h2>Why it works</h2><p>A clearer property experience helps guests move from curiosity to confidence.</p>
+      <div class="benefit-list">
+        <div class="benefit"><i>🤝</i><div><strong>Build Guest Confidence</strong><span>Show exactly what guests can expect.</span></div></div>
+        <div class="benefit"><i>📈</i><div><strong>Increase Direct Bookings</strong><span>Make decisions easier and faster.</span></div></div>
+        <div class="benefit"><i>🌍</i><div><strong>Explore From Anywhere</strong><span>Your property stays open worldwide, 24/7.</span></div></div>
+        <div class="benefit"><i>✨</i><div><strong>Stand Out Online</strong><span>Offer more than ordinary photos and video.</span></div></div>
+      </div>
+    </section>
+
+    <section class="steps">
+      <h2>How to get your own</h2><p>From physical space to digital experience.</p>
+      <div class="journey">
+        <div class="journey-step">
+          <span class="journey-icon"><svg viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3v-7a4 4 0 0 1-1-2.7V7a4 4 0 0 1 4-4h11a4 4 0 0 1 4 4z"/></svg></span>
+          <div class="journey-copy"><small>Discover</small><strong>Tell us about your property</strong><span>Share the location, property type and what you want the tour to achieve.</span></div>
+        </div>
+        <div class="journey-step">
+          <span class="journey-icon"><svg viewBox="0 0 24 24"><path d="M14.5 4h-5L8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-4z"/><circle cx="12" cy="13" r="4"/></svg></span>
+          <div class="journey-copy"><small>Capture</small><strong>We build the experience</strong><span>Our team captures the space and produces the interactive 360° walkthrough.</span></div>
+        </div>
+        <div class="journey-step">
+          <span class="journey-icon"><svg viewBox="0 0 24 24"><path d="M12 2v13M7 7l5-5 5 5M5 13v7h14v-7"/></svg></span>
+          <div class="journey-copy"><small>Launch</small><strong>Share it everywhere</strong><span>Receive one link and QR code for your website, listings and marketing.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sell">
+      <small>Step 2 · Showcase your space</small><h2>Ready for your own tour?</h2><p>Let 255VirtualTours build an immersive experience for your apartment, hotel or development.</p>
+      <div class="contact-grid"><button onclick="openBooking()">📝 Book a demo</button><a href="tel:+255757249910">📞 Call us</a></div>
+    </section>
+
+    <footer><div class="identity"><div class="logo">255</div><span><strong>255VirtualTours</strong><small>Powered by Skani</small></span></div><p>Code255</p></footer>
+  </main>
+
+  <nav class="bottom-bar" aria-label="Primary actions"><button onclick="scrollTours()">🧭 View demos</button><button class="book-trigger" onclick="openBooking()">💬 Book a demo</button></nav>
+
+  <div class="booking-modal" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+    <div class="booking-sheet">
+      <div class="booking-head">
+        <span><small>255VirtualTours request</small><strong id="bookingTitle">Book a Demo</strong></span>
+        <button type="button" onclick="closeBooking()" aria-label="Close booking form">×</button>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-meta"><span id="progressLabel">About you</span><span id="progressCount">1 of 4</span></div>
+        <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+      </div>
+      <form class="booking-form" id="demoForm" onsubmit="sendDemoRequest(event)">
+        <section class="form-step active" data-step="1">
+          <h3 class="step-title">Let’s start with you</h3>
+          <p class="step-sub">Tell us who we will be speaking with.</p>
+          <div class="fields">
+            <div class="field-group"><label for="fullName">Full name *</label><input class="field" id="fullName" required placeholder="Your full name"></div>
+            <div class="field-group"><label for="phone">Phone number *</label><input class="field" id="phone" type="tel" required placeholder="+255..."></div>
+            <div class="field-group"><label for="business">Business or property name</label><input class="field" id="business" placeholder="e.g. Sunset Apartments"></div>
+            <div><span class="field-label">Your role *</span><div class="choice-grid">
+              <label class="choice"><input type="radio" name="role" value="Owner" required><span><b class="choice-icon">🔑</b> Owner</span></label>
+              <label class="choice"><input type="radio" name="role" value="Property Manager"><span><b class="choice-icon">🧑‍💼</b> Manager</span></label>
+              <label class="choice"><input type="radio" name="role" value="Real Estate Agent"><span><b class="choice-icon">🤝</b> Agent</span></label>
+              <label class="choice"><input type="radio" name="role" value="Developer"><span><b class="choice-icon">🏗️</b> Developer</span></label>
+            </div></div>
+          </div>
+        </section>
+
+        <section class="form-step" data-step="2">
+          <h3 class="step-title">About the property</h3>
+          <p class="step-sub">Help us understand the space you want to showcase.</p>
+          <div class="fields">
+            <div class="field-group"><label for="propertyType">Property type *</label><select class="field" id="propertyType" required><option value="">Choose property type</option><option>Apartment</option><option>Airbnb</option><option>Hotel</option><option>Villa</option><option>Real Estate Development</option><option>Commercial Space</option><option>Other</option></select></div>
+            <div class="field-group"><label for="location">Property location *</label><input class="field" id="location" required placeholder="Area, city or region"></div>
+            <div class="field-group"><label for="areas">Rooms or areas to capture</label><input class="field" id="areas" type="number" min="1" placeholder="e.g. 6"></div>
+            <div><span class="field-label">Ready for filming? *</span><div class="choice-grid">
+              <label class="choice"><input type="radio" name="readiness" value="Ready for filming" required><span><b class="choice-icon">✅</b> Yes, ready</span></label>
+              <label class="choice"><input type="radio" name="readiness" value="Not ready yet"><span><b class="choice-icon">🕒</b> Not yet</span></label>
+              <label class="choice" style="grid-column:1/-1"><input type="radio" name="readiness" value="Needs guidance"><span><b class="choice-icon">💡</b> I need preparation guidance</span></label>
+            </div></div>
+          </div>
+        </section>
+
+        <section class="form-step" data-step="3">
+          <h3 class="step-title">What do you need?</h3>
+          <p class="step-sub">Select every feature that interests you.</p>
+          <div class="choice-grid">
+            <label class="choice"><input type="checkbox" name="features" value="Interior Tour"><span><b class="choice-icon">🏠</b> Interior tour</span></label>
+            <label class="choice"><input type="checkbox" name="features" value="Interior + Exterior"><span><b class="choice-icon">🏢</b> Interior + exterior</span></label>
+            <label class="choice"><input type="checkbox" name="features" value="Background Audio"><span><b class="choice-icon">🎵</b> Background audio</span></label>
+            <label class="choice"><input type="checkbox" name="features" value="Information Hotspots"><span><b class="choice-icon">📍</b> Info hotspots</span></label>
+            <label class="choice"><input type="checkbox" name="features" value="Booking Buttons"><span><b class="choice-icon">🔗</b> Booking buttons</span></label>
+            <label class="choice"><input type="checkbox" name="features" value="QR Code"><span><b class="choice-icon">▦</b> QR code</span></label>
+            <label class="choice" style="grid-column:1/-1"><input type="checkbox" name="features" value="Skani Experience Page"><span><b class="choice-icon">✨</b> Skani experience page</span></label>
+          </div>
+          <div class="fields" style="margin-top:14px">
+            <div class="field-group"><label for="captureDate">Preferred capture date</label><input class="field" id="captureDate" type="date"></div>
+            <div class="field-group"><label for="objective">Main objective *</label><select class="field" id="objective" required><option value="">Choose your objective</option><option>Increase Direct Bookings</option><option>Market a Property</option><option>Sell a Property</option><option>Attract Investors</option><option>Improve Guest Confidence</option><option>Other</option></select></div>
+            <div class="field-group"><label for="notes">Additional details</label><textarea class="field" id="notes" placeholder="Tell us anything else we should know"></textarea></div>
+          </div>
+        </section>
+
+        <section class="form-step" data-step="4">
+          <h3 class="step-title">Review your request</h3>
+          <p class="step-sub">Confirm the details below, then continue to WhatsApp.</p>
+          <div class="review" id="requestReview"></div>
+          <p class="booking-note">💬 WhatsApp will open with your completed request. Simply press send to submit it to the 255VirtualTours team.</p>
+        </section>
+      </form>
+      <div class="booking-actions">
+        <button class="back-btn hidden" id="backBtn" type="button" onclick="moveBooking(-1)">← Back</button>
+        <button class="next-btn" id="nextBtn" type="button" onclick="moveBooking(1)">Continue →</button>
+        <button class="send-btn hidden" id="sendBtn" type="submit" form="demoForm">💬 Send via WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="tourModal" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+    <div class="modal-head"><span><small>255VirtualTours experience</small><strong id="tourTitle">Virtual Tour</strong></span><button onclick="closeTour()" aria-label="Close tour">×</button></div>
+    <div class="stage"><div class="loader"><i></i><span>Preparing your experience</span></div><iframe id="tourFrame" src="about:blank" title="255VirtualTours experience" allow="fullscreen;autoplay;gyroscope;accelerometer" allowfullscreen></iframe></div>
+    <div class="modal-foot"><span>Drag to look around · Tap hotspots</span><a href="https://wa.me/255757249910?text=Hello%20255VirtualTours%2C%20I%20want%20this%20for%20my%20property." target="_blank" rel="noopener">💬 I want this</a></div>
+  </div>
+
+  <script>
+    const tours=[
+      {title:'Interior + Exterior',url:'https://255virtualtours.skani.space/Havana_Sinza.html'},
+      {title:'Interior Only',url:'https://255virtualtours.skani.space/Havana_Mikocheni.html'},
+      {title:'Audio Experience',url:'https://www.skani.space/255Apartment.html'}
+    ];
+    const modal=document.getElementById('tourModal'),frame=document.getElementById('tourFrame');
+    const bookingModal=document.getElementById('bookingModal');
+    const stepNames=['About you','Your property','Tour features','Review request'];
+    let bookingStep=1;
+    function scrollTours(){document.getElementById('experiences').scrollIntoView({behavior:'smooth'})}
+    function openTour(index){const tour=tours[index];document.getElementById('tourTitle').textContent=tour.title;frame.src=tour.url;modal.classList.add('active');document.body.style.overflow='hidden'}
+    function closeTour(){modal.classList.remove('active');frame.src='about:blank';document.body.style.overflow=''}
+    function openBooking(){
+      bookingStep=1;
+      updateBooking();
+      bookingModal.classList.add('active');
+      document.body.style.overflow='hidden';
+    }
+    function closeBooking(){bookingModal.classList.remove('active');document.body.style.overflow=''}
+    function checkedValue(name){return document.querySelector(`input[name="${name}"]:checked`)?.value||''}
+    function validateStep(){
+      const step=document.querySelector(`.form-step[data-step="${bookingStep}"]`);
+      for(const field of step.querySelectorAll('input[required],select[required],textarea[required]')){
+        if(!field.checkValidity()){field.reportValidity();return false}
+      }
+      if(bookingStep===3&&!document.querySelector('input[name="features"]:checked')){alert('Please select at least one feature.');return false}
+      return true;
+    }
+    function moveBooking(direction){
+      if(direction>0&&!validateStep())return;
+      bookingStep=Math.max(1,Math.min(4,bookingStep+direction));
+      if(bookingStep===4)renderReview();
+      updateBooking();
+    }
+    function updateBooking(){
+      document.querySelectorAll('.form-step').forEach(step=>step.classList.toggle('active',Number(step.dataset.step)===bookingStep));
+      document.getElementById('progressLabel').textContent=stepNames[bookingStep-1];
+      document.getElementById('progressCount').textContent=`${bookingStep} of 4`;
+      document.getElementById('progressBar').style.width=`${bookingStep*25}%`;
+      document.getElementById('backBtn').classList.toggle('hidden',bookingStep===1);
+      document.getElementById('nextBtn').classList.toggle('hidden',bookingStep===4);
+      document.getElementById('sendBtn').classList.toggle('hidden',bookingStep!==4);
+      document.querySelector('.booking-actions').style.gridTemplateColumns=bookingStep===1?'1fr':'.8fr 1.2fr';
+    }
+    function selectedFeatures(){return [...document.querySelectorAll('input[name="features"]:checked')].map(x=>x.value)}
+    function reviewRow(label,value){return `<div class="review-row"><span>${label}</span><strong>${value||'—'}</strong></div>`}
+    function renderReview(){
+      document.getElementById('requestReview').innerHTML=
+        reviewRow('Contact',document.getElementById('fullName').value)+
+        reviewRow('Phone',document.getElementById('phone').value)+
+        reviewRow('Property',`${document.getElementById('propertyType').value} · ${document.getElementById('location').value}`)+
+        reviewRow('Readiness',checkedValue('readiness'))+
+        reviewRow('Features',selectedFeatures().join(', '))+
+        reviewRow('Objective',document.getElementById('objective').value)+
+        reviewRow('Preferred date',document.getElementById('captureDate').value||'Flexible');
+    }
+    function sendDemoRequest(event){
+      event.preventDefault();
+      const features=selectedFeatures().map(x=>`✓ ${x}`).join('\n');
+      const msg=`🏠 *255VIRTUALTOURS — DEMO REQUEST*\n\n👤 *CONTACT*\nName: *${document.getElementById('fullName').value}*\nPhone: *${document.getElementById('phone').value}*\nBusiness/Property: ${document.getElementById('business').value||'Not provided'}\nRole: *${checkedValue('role')}*\n\n🏢 *PROPERTY*\nType: *${document.getElementById('propertyType').value}*\nLocation: *${document.getElementById('location').value}*\nRooms/Areas: ${document.getElementById('areas').value||'Not specified'}\nReadiness: *${checkedValue('readiness')}*\n\n✨ *REQUIRED FEATURES*\n${features}\n\n📅 *PREFERRED ARRANGEMENT*\nCapture date: *${document.getElementById('captureDate').value||'Flexible'}*\nObjective: *${document.getElementById('objective').value}*\n\n📝 *ADDITIONAL DETAILS*\n${document.getElementById('notes').value||'None'}\n\nPlease review my request and advise on the next steps and quotation.`;
+      window.open(`https://wa.me/255757249910?text=${encodeURIComponent(msg)}`,'_blank','noopener,noreferrer');
+    }
+    const today=new Date(),dateString=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
+    document.getElementById('captureDate').min=dateString;
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(modal.classList.contains('active'))closeTour();if(bookingModal.classList.contains('active'))closeBooking()}});
+  </script>
+</body>
+</html>
