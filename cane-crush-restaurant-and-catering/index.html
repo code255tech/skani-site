@@ -357,10 +357,52 @@
                             <h3 class="text-xl font-black tracking-tight dark:text-white">Order Now</h3>
                             <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">Delivery, Takeaway, or Pickup. Get your hot food and sweet cane juice brought right to you.</p>
                             
-                            <button onclick="openOrderBot()" 
+                            <button onclick="openOrderBot()"
                                 class="w-full mt-5 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:bg-zinc-800 font-black py-4 px-6 rounded-2xl text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all tap-scale">
                                 <i class="fa-solid fa-paper-plane"></i> Order via WhatsApp
                             </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TERTIARY CTA - DUKA DIRECT -->
+            <div class="reveal">
+                <div class="bg-white dark:bg-caneDark rounded-[2.5rem] p-6 shadow-md border-2 border-canePrimary/20 dark:border-canePrimary/10 relative overflow-hidden transition-all duration-300">
+                    <div class="absolute -right-12 -bottom-12 w-32 h-32 bg-canePrimary/10 dark:bg-canePrimary/5 rounded-full pointer-events-none"></div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 bg-gradient-to-br from-canePrimary/20 to-caneSecondary/10 dark:from-canePrimary/20 dark:to-transparent rounded-2xl flex items-center justify-center flex-shrink-0 shadow-inner border border-canePrimary/20">
+                            <i class="fa-solid fa-store text-2xl text-caneDark dark:text-canePrimary"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-xl font-black tracking-tight dark:text-white">Duka Direct</h3>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">Browse and order from our Duka Direct store — on the web or in the app.</p>
+
+                            <div class="mt-5 space-y-2.5">
+                                <button onclick="openInNewTab('https://web.duka.direct/61056622/')"
+                                    class="w-full flex items-center justify-between gap-3 p-3.5 bg-canePrimary/10 dark:bg-white/5 rounded-2xl border border-canePrimary/20 tap-scale transition-all">
+                                    <span class="flex items-center gap-2.5 min-w-0">
+                                        <i class="fa-solid fa-globe text-caneAccent dark:text-canePrimary"></i>
+                                        <span class="text-left min-w-0">
+                                            <span class="block text-xs font-black dark:text-white">Order on Web</span>
+                                            <span class="block text-[9px] font-bold text-zinc-400 uppercase tracking-wide">Opens in browser</span>
+                                        </span>
+                                    </span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs text-canePrimary flex-shrink-0"></i>
+                                </button>
+
+                                <button onclick="openInNewTab('https://s.duka.direct/nclrq')"
+                                    class="w-full flex items-center justify-between gap-3 p-3.5 bg-zinc-50 dark:bg-white/5 rounded-2xl border border-canePrimary/10 tap-scale transition-all">
+                                    <span class="flex items-center gap-2.5 min-w-0">
+                                        <i class="fa-solid fa-mobile-screen-button text-caneAccent dark:text-canePrimary"></i>
+                                        <span class="text-left min-w-0">
+                                            <span class="block text-xs font-black dark:text-white">Order in App</span>
+                                            <span class="block text-[9px] font-bold text-zinc-400 uppercase tracking-wide">Duka Direct app</span>
+                                        </span>
+                                    </span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs text-canePrimary flex-shrink-0"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -528,7 +570,7 @@
                 <div class="w-3"></div>
                 
                 <!-- ORDER NOW ACTION -->
-                <button onclick="openOrderBot()" class="flex-1 flex items-center justify-center gap-2 bg-zinc-100 text-zinc-900 font-black text-[11px] uppercase py-4 rounded-[1.5rem] tap-scale shadow border-t border-white/10 relative">
+                <button onclick="openModal('channel-modal')" class="flex-1 flex items-center justify-center gap-2 bg-zinc-100 text-zinc-900 font-black text-[11px] uppercase py-4 rounded-[1.5rem] tap-scale shadow border-t border-white/10 relative">
                     <i class="fa-solid fa-shopping-bag text-sm"></i> Order Now
                     <span id="bottom-cart-badge" class="hidden absolute -top-1 -right-1 bg-canePrimary text-zinc-950 text-[9px] font-black rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 border border-caneDark"></span>
                 </button>
@@ -595,6 +637,49 @@
                 </div>
                 <div class="flex-1 relative bg-black">
                     <iframe id="tour-iframe" src="" title="Cane Crush Restaurant Virtual Tour" class="absolute inset-0 w-full h-full border-0" allow="fullscreen; xr-spatial-tracking; gyroscope; accelerometer" allowfullscreen loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- A2. ORDER CHANNEL SHEET -->
+        <div id="channel-modal" class="modal-overlay fixed inset-0 z-[65] flex items-end sm:items-center justify-center px-4">
+            <div class="absolute inset-0 bg-black/75" onclick="closeModal('channel-modal')"></div>
+            <div class="modal-content bg-caneLight dark:bg-zinc-950 w-full max-w-sm rounded-t-[3rem] sm:rounded-[3rem] p-7 sm:p-8 relative border-t-8 border-canePrimary pb-[calc(1.75rem+env(safe-area-inset-bottom))] max-h-[90vh] overflow-y-auto no-scrollbar">
+                <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-800 rounded-full mx-auto mb-5 sm:hidden"></div>
+                <button onclick="closeModal('channel-modal')" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center bg-zinc-200/50 dark:bg-zinc-800 rounded-full dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+
+                <h3 class="text-2xl font-black dark:text-white mb-1 tracking-tight italic">How would you like to order?</h3>
+                <p class="text-zinc-500 text-[10px] font-bold uppercase mb-6 tracking-wider">Pick whichever is easiest for you</p>
+
+                <!-- PRIMARY -->
+                <button onclick="closeModal('channel-modal'); openOrderBot();"
+                    class="w-full text-left bg-canePrimary text-zinc-950 rounded-[1.75rem] p-5 tap-scale shadow-lg shadow-canePrimary/25 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-white/35 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <span class="block font-black text-base tracking-tight leading-none">Order Here</span>
+                        <span class="block text-[10px] font-bold opacity-75 uppercase tracking-wide mt-1.5">Build your cart · we confirm on WhatsApp</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-sm flex-shrink-0"></i>
+                </button>
+
+                <div class="flex items-center gap-3 my-5">
+                    <span class="flex-1 h-px bg-zinc-300 dark:bg-zinc-800"></span>
+                    <span class="text-[9px] font-black uppercase tracking-widest text-zinc-400">or</span>
+                    <span class="flex-1 h-px bg-zinc-300 dark:bg-zinc-800"></span>
+                </div>
+
+                <p class="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-3">Duka Direct Store</p>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button onclick="closeModal('channel-modal'); openInNewTab('https://web.duka.direct/61056622/');"
+                        class="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-white dark:bg-caneDark border border-canePrimary/20 text-zinc-900 dark:text-white font-black text-[11px] uppercase tracking-widest tap-scale">
+                        <i class="fa-solid fa-globe text-canePrimary"></i> Web
+                    </button>
+                    <button onclick="closeModal('channel-modal'); openInNewTab('https://s.duka.direct/nclrq');"
+                        class="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-white dark:bg-caneDark border border-canePrimary/20 text-zinc-900 dark:text-white font-black text-[11px] uppercase tracking-widest tap-scale">
+                        <i class="fa-solid fa-mobile-screen-button text-canePrimary"></i> App
+                    </button>
                 </div>
             </div>
         </div>
@@ -1084,6 +1169,9 @@
             tawa: { groups: [
                 { id: 'meat', label: 'Choose', choices: [{ l: 'Chicken', price: 13000 }, { l: 'Beef', price: 15000 }, { l: 'Fish', price: 20000 }, { l: 'Prawns', price: 24000 }] }
             ]},
+            friedRice: { groups: [
+                { id: 'style', label: 'Style', choices: [{ l: 'Plain' }, { l: 'Schezwan' }, { l: 'Manchurian' }] }
+            ]},
             steak: { groups: [
                 { id: 'meat', label: 'Choose meat', choices: [{ l: 'Chicken' }, { l: 'Beef' }] }
             ]}
@@ -1101,12 +1189,14 @@
             "Momos": { emoji: "🥟", surcharge: 500, items: [
                 { n: "Momos", from: 8000, opt: "momo", desc: "Chicken or beef · steamed or fried · 6 or 12 pcs" }
             ]},
-            "Tawa Rolls": { emoji: "🌯", surcharge: 500, items: [
-                { header: "Bombay Special Tawa Roll" },
+            "Bombay Tawa Specials": { emoji: "🌯", surcharge: 500, items: [
+                { header: "Tawa Rolls", note: "Bombay special" },
                 { n: "Chicken", p: 4000 },
                 { n: "Beef", p: 4000 },
                 { n: "Chicken & Cheese", p: 5000 },
-                { n: "Beef & Cheese", p: 5000 }
+                { n: "Beef & Cheese", p: 5000 },
+                { header: "Tawa Delight" },
+                { n: "Bombay Tawa Delight", from: 13000, opt: "tawa", nosur: true, desc: "Served with puri paratha · chicken, beef, fish or prawns" }
             ]},
             "Zege & Fries": { emoji: "🍳", items: [
                 { header: "Zege" },
@@ -1139,8 +1229,6 @@
                 { header: "BBQ - Sururu" },
                 { n: "Sururu", p: 150 },
                 { n: "Gajjar Sururu", p: 150, spicy: true },
-                { n: "Ndizi Choma", p: 1000 },
-                { n: "Ajam", p: 1000 },
                 { header: "BBQ" },
                 { n: "1/2 Sekela & Fries", p: 10000 },
                 { n: "1/2 Gajjar Chicken & Fries", p: 10000, spicy: true },
@@ -1198,9 +1286,6 @@
                 { n: "Chicken Schnitzel & Fries", p: 18000 },
                 { n: "Beef Schnitzel & Fries", p: 18000 }
             ]},
-            "Bombay Tawa": { emoji: "🍛", items: [
-                { n: "Bombay Tawa Delight", from: 13000, opt: "tawa", desc: "Served with puri paratha · chicken, beef, fish or prawns" }
-            ]},
             "Chinese": { emoji: "🥢", items: [
                 { header: "Non-Veg", note: "Available in chicken or beef" },
                 { n: "Manchurian", from: 15000, opt: "chineseNV" },
@@ -1218,10 +1303,8 @@
                 { n: "Crispy Delight (Seafood)", from: 20000, opt: "chineseSF" },
                 { header: "Rice & Noodles" },
                 { n: "Egg Fried Rice", p: 6000 },
-                { n: "Vegetable Fried Rice", p: 6000 },
-                { n: "Schezwan Fried Rice", p: 6000 },
-                { n: "Manchurian Fried Rice", p: 6000 },
-                { n: "Chicken Fried Rice", p: 10000 },
+                { n: "Vegetable Fried Rice", from: 6000, opt: "friedRice" },
+                { n: "Chicken Fried Rice", from: 10000, opt: "friedRice" },
                 { n: "Egg Hakka Noodles", p: 6000 },
                 { n: "Vegetable Hakka Noodles", p: 6000 },
                 { n: "Schezwan Hakka Noodles", p: 6000 },
@@ -1305,6 +1388,8 @@
         const money = (n) => 'TZS ' + n.toLocaleString();
         const takeawayActive = () => orderMode === 'Take Away' || orderMode === 'Delivery';
         const catSurcharge = (cat) => MENU[cat] && MENU[cat].surcharge ? MENU[cat].surcharge : 0;
+        // Items flagged `nosur` are exempt from their category's packing surcharge.
+        const itemSurcharge = (cat, item) => (item && item.nosur) ? 0 : catSurcharge(cat);
 
         function openOrderBot() {
             try { const s = sessionStorage.getItem('cc_cart'); if (s) cart = JSON.parse(s); } catch(e) { cart = {}; }
@@ -1392,7 +1477,8 @@
             const data = MENU[cat];
             let html = '';
             if (data.surcharge && takeawayActive()) {
-                html += `<div class="cat-banner"><i class="fa-solid fa-box"></i> +${money(data.surcharge)} packing per item is included in the prices below (${orderMode}).</div>`;
+                const someExempt = data.items.some(i => !i.header && i.nosur);
+                html += `<div class="cat-banner"><i class="fa-solid fa-box"></i> +${money(data.surcharge)} packing per item is included in the prices below (${orderMode})${someExempt ? ', where it applies' : ''}.</div>`;
             }
             html += data.items.map(item => {
                 if (item.header) return `<div class="cat-header">${item.header}</div>${item.note ? `<div class="cat-subnote">${item.note}</div>` : ''}`;
@@ -1401,8 +1487,8 @@
             document.getElementById('item-list').innerHTML = html;
         }
 
-        function priceTag(cat, food) {
-            const sur = (takeawayActive() ? catSurcharge(cat) : 0);
+        function priceTag(cat, food, item) {
+            const sur = (takeawayActive() ? itemSurcharge(cat, item) : 0);
             return money(food + sur);
         }
 
@@ -1415,13 +1501,13 @@
                 <div style="flex:1; min-width:0;">
                     <div class="font-black text-sm dark:text-white leading-tight">${nameHtml(item)}</div>
                     ${item.desc ? `<div class="text-[11px] text-zinc-500 mt-0.5 leading-tight">${item.desc}</div>` : ''}
-                    <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">${priceTag(cat, item.p)}</div>
+                    <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">${priceTag(cat, item.p, item)}</div>
                 </div>
                 ${inCart ? `<div class="qty-ctrl">
                     <button class="qty-btn" onclick='changeQty(${jsArg(key)},-1)'>-</button>
                     <span class="qty-num">${inCart.qty}</span>
                     <button class="qty-btn" onclick='changeQty(${jsArg(key)},1)'>+</button>
-                </div>` : `<button class="add-btn" onclick='addSimple(${jsArg(cat)},${jsArg(item.n)},${item.p})'>+</button>`}
+                </div>` : `<button class="add-btn" onclick='addSimple(${jsArg(cat)},${jsArg(item.n)},${item.p},${itemSurcharge(cat, item)})'>+</button>`}
             </div>`;
         }
 
@@ -1431,7 +1517,7 @@
                 <div style="flex:1; min-width:0;">
                     <div class="font-black text-sm dark:text-white leading-tight">${nameHtml(item)}</div>
                     ${item.desc ? `<div class="text-[11px] text-zinc-500 mt-0.5 leading-tight">${item.desc}</div>` : ''}
-                    <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">from ${priceTag(cat, item.from)}</div>
+                    <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">from ${priceTag(cat, item.from, item)}</div>
                 </div>
                 <button class="customize-btn" onclick='openOptSheet(${jsArg(cat)},${jsArg(item.n)})'>
                     <i class="fa-solid fa-sliders"></i> ${count ? `${count} added` : 'Choose'}
@@ -1439,9 +1525,9 @@
             </div>`;
         }
 
-        function addSimple(cat, name, price) {
+        function addSimple(cat, name, price, sur) {
             const key = `${cat}||${name}`;
-            cart[key] = { cat, name, base: price, label: name, qty: 1, sur: catSurcharge(cat) };
+            cart[key] = { cat, name, base: price, label: name, qty: 1, sur: sur != null ? sur : catSurcharge(cat) };
             saveCart();
             renderItems(activeCat);
             if (searchQuery) handleSearch(document.getElementById('menu-search').value);
@@ -1480,7 +1566,7 @@
                 <div class="opt-group">
                     <div class="opt-group-label">${g.label}</div>
                     <div class="opt-choices">
-                        ${g.choices.map((c, i) => `<button class="opt-choice ${sel[g.id] === i ? 'selected' : ''}" onclick='selectOpt(${jsArg(g.id)},${i})'>${c.l}${c.price ? ` · ${money(c.price + (takeawayActive() ? catSurcharge(pendingOpt.cat) : 0))}` : ''}</button>`).join('')}
+                        ${g.choices.map((c, i) => `<button class="opt-choice ${sel[g.id] === i ? 'selected' : ''}" onclick='selectOpt(${jsArg(g.id)},${i})'>${c.l}${c.price ? ` · ${money(c.price + (takeawayActive() ? itemSurcharge(pendingOpt.cat, item) : 0))}` : ''}</button>`).join('')}
                     </div>
                 </div>`).join('');
             updateOptPrice();
@@ -1514,7 +1600,7 @@
 
         function updateOptPrice() {
             const food = computeOptFood();
-            const unit = food + (takeawayActive() ? catSurcharge(pendingOpt.cat) : 0);
+            const unit = food + (takeawayActive() ? itemSurcharge(pendingOpt.cat, pendingOpt.item) : 0);
             document.getElementById('opt-add-price').textContent = '· ' + money(unit);
         }
 
@@ -1527,7 +1613,7 @@
             const key = `${cat}||${item.n}||${parts.join('|')}`;
             const food = computeOptFood();
             if (cart[key]) cart[key].qty += qty;
-            else cart[key] = { cat, name: item.n, base: food, label, qty, sur: catSurcharge(cat) };
+            else cart[key] = { cat, name: item.n, base: food, label, qty, sur: itemSurcharge(cat, item) };
             saveCart();
             closeOptSheet();
             renderItems(activeCat);
@@ -1697,7 +1783,7 @@
                 return `<div class="item-row">
                     <div style="flex:1;min-width:0;">
                         <div class="font-black text-sm dark:text-white">${nameHtml(item)}<span class="search-cat-label">${cat}</span></div>
-                        <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">from ${priceTag(cat, item.from)}</div>
+                        <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">from ${priceTag(cat, item.from, item)}</div>
                     </div>
                     <button class="customize-btn" onclick='openOptSheet(${jsArg(cat)},${jsArg(item.n)})'><i class="fa-solid fa-sliders"></i> ${count ? `${count} added` : 'Choose'}</button>
                 </div>`;
@@ -1708,9 +1794,9 @@
                 <div style="flex:1;min-width:0;">
                     <div class="font-black text-sm dark:text-white">${nameHtml(item)}<span class="search-cat-label">${cat}</span></div>
                     ${item.desc ? `<div class="text-[11px] text-zinc-500 mt-0.5">${item.desc}</div>` : ''}
-                    <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">${priceTag(cat, item.p)}</div>
+                    <div class="text-xs font-black text-caneAccent dark:text-canePrimary mt-1">${priceTag(cat, item.p, item)}</div>
                 </div>
-                ${inCart ? `<div class="qty-ctrl"><button class="qty-btn" onclick='changeQty(${jsArg(key)},-1)'>-</button><span class="qty-num">${inCart.qty}</span><button class="qty-btn" onclick='changeQty(${jsArg(key)},1)'>+</button></div>` : `<button class="add-btn" onclick='addSimple(${jsArg(cat)},${jsArg(item.n)},${item.p})'>+</button>`}
+                ${inCart ? `<div class="qty-ctrl"><button class="qty-btn" onclick='changeQty(${jsArg(key)},-1)'>-</button><span class="qty-num">${inCart.qty}</span><button class="qty-btn" onclick='changeQty(${jsArg(key)},1)'>+</button></div>` : `<button class="add-btn" onclick='addSimple(${jsArg(cat)},${jsArg(item.n)},${item.p},${itemSurcharge(cat, item)})'>+</button>`}
             </div>`;
         }
 
