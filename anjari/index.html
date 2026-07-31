@@ -435,6 +435,59 @@
 
             <section class="mt-9">
                 <h3 class="reveal text-xl font-display font-semibold uppercase tracking-tight flex items-center gap-2">
+                    <span class="w-1.5 h-6 rounded-full bg-anjariRed"></span> Duka Direct
+                </h3>
+                <p class="reveal text-xs font-semibold text-zinc-500 dark:text-zinc-400 mt-2 leading-relaxed">Order straight from our Duka Direct stores — pick reja reja or jumla, then open it on the web or in the app.</p>
+
+                <div class="mt-5 space-y-3.5">
+                    <!-- RETAIL / REJA REJA -->
+                    <div class="reveal rounded-[2.35rem] bg-white/82 dark:bg-anjariDarkCard border-2 border-anjariYellow/70 p-5 shadow-md relative overflow-hidden">
+                        <div class="absolute -right-10 -bottom-12 w-32 h-32 rounded-full bg-anjariYellow/25 pointer-events-none"></div>
+                        <div class="relative">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl bg-anjariYellow/40 flex items-center justify-center text-2xl shadow-inner flex-shrink-0">🛍️</div>
+                                <div class="min-w-0">
+                                    <span class="inline-flex px-2.5 py-1 rounded-full bg-anjariRed/15 text-anjariRed text-[9px] font-black uppercase tracking-widest">Reja Reja</span>
+                                    <h4 class="font-display font-semibold text-xl leading-tight mt-1">Retail Store</h4>
+                                </div>
+                            </div>
+                            <div class="mt-4 grid grid-cols-2 gap-2.5">
+                                <button onclick="openInNewTab('https://web.duka.direct/61056622/2')" class="tap-scale flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-anjariInk text-anjariYellow font-black text-[11px] uppercase tracking-widest shadow-md">
+                                    <i class="fa-solid fa-globe"></i> Web
+                                </button>
+                                <button onclick="openInNewTab('https://s.duka.direct/45h4o')" class="tap-scale flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-anjariYellow/60 dark:bg-white/10 text-anjariInk dark:text-anjariYellow font-black text-[11px] uppercase tracking-widest border border-anjariInk/10">
+                                    <i class="fa-solid fa-mobile-screen-button"></i> App
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WHOLESALE / JUMLA -->
+                    <div class="reveal rounded-[2.35rem] bg-white/82 dark:bg-anjariDarkCard border-2 border-anjariRed/45 p-5 shadow-md relative overflow-hidden">
+                        <div class="absolute -right-10 -bottom-12 w-32 h-32 rounded-full bg-anjariRed/15 pointer-events-none"></div>
+                        <div class="relative">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl bg-anjariRed/15 flex items-center justify-center text-2xl shadow-inner flex-shrink-0">📦</div>
+                                <div class="min-w-0">
+                                    <span class="inline-flex px-2.5 py-1 rounded-full bg-anjariRed/15 text-anjariRed text-[9px] font-black uppercase tracking-widest">Jumla</span>
+                                    <h4 class="font-display font-semibold text-xl leading-tight mt-1">Wholesale Store</h4>
+                                </div>
+                            </div>
+                            <div class="mt-4 grid grid-cols-2 gap-2.5">
+                                <button onclick="openInNewTab('https://web.duka.direct/61056622/3')" class="tap-scale flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-anjariRed text-white font-black text-[11px] uppercase tracking-widest shadow-md">
+                                    <i class="fa-solid fa-globe"></i> Web
+                                </button>
+                                <button onclick="openInNewTab('https://s.duka.direct/f8xoe')" class="tap-scale flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-anjariRed/12 dark:bg-white/10 text-anjariRed dark:text-anjariYellow font-black text-[11px] uppercase tracking-widest border border-anjariRed/25">
+                                    <i class="fa-solid fa-mobile-screen-button"></i> App
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-9">
+                <h3 class="reveal text-xl font-display font-semibold uppercase tracking-tight flex items-center gap-2">
                     <span class="w-1.5 h-6 rounded-full bg-anjariRed"></span> Our Range
                 </h3>
                 <div class="mt-5 flex gap-4 overflow-x-auto no-scrollbar pb-3 px-1">
@@ -543,12 +596,78 @@
                 <button onclick="openModal('customizer-modal')" class="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-white/10 text-anjariInk dark:text-white font-black text-[11px] uppercase py-4 rounded-[1.35rem] tap-scale border-2 border-anjariInk/12 dark:border-white/10">
                     <i class="fa-solid fa-box-open text-anjariRed"></i> Crate
                 </button>
-                <button onclick="openOrderBot()" class="flex-[1.35] flex items-center justify-center gap-2 bg-anjariInk text-anjariYellow font-black text-[11px] uppercase py-4 rounded-[1.35rem] tap-scale shadow-lg relative">
+                <button onclick="openModal('channel-modal')" class="flex-[1.35] flex items-center justify-center gap-2 bg-anjariInk text-anjariYellow font-black text-[11px] uppercase py-4 rounded-[1.35rem] tap-scale shadow-lg relative">
                     <span id="bottom-badge" class="hidden absolute -top-2 -right-1 bg-anjariRed text-white text-[10px] font-black rounded-full min-w-[22px] h-[22px] items-center justify-center px-1.5"></span>
                     <i class="fa-solid fa-cart-shopping"></i> Order Now
                 </button>
             </div>
         </nav>
+    </div>
+
+    <div id="channel-modal" class="modal-overlay fixed inset-0 z-[75] flex items-end justify-center px-4">
+        <div class="absolute inset-0 bg-black/65" onclick="closeModal('channel-modal')"></div>
+        <div class="modal-panel bg-anjariPaper dark:bg-anjariDarkCard w-full max-w-md rounded-t-[2.6rem] p-6 relative pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-2xl border-t-8 border-anjariYellow max-h-[90vh] overflow-y-auto no-scrollbar">
+            <div class="w-12 h-1.5 bg-anjariInk/20 dark:bg-white/15 rounded-full mx-auto mb-5"></div>
+            <button onclick="closeModal('channel-modal')" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-anjariInk/10 dark:bg-white/10 text-anjariInk dark:text-white tap-scale"><i class="fa-solid fa-xmark"></i></button>
+
+            <h3 class="text-3xl font-display font-semibold leading-tight">How would you like to order?</h3>
+            <p class="text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-1 mb-5">Pick whichever is easiest for you</p>
+
+            <!-- PRIMARY -->
+            <button onclick="closeModal('channel-modal'); openOrderBot();"
+                class="w-full text-left bg-anjariRed text-white rounded-[1.85rem] p-5 tap-scale shadow-xl shadow-anjariRed/25 flex items-center gap-4 relative overflow-hidden">
+                <div class="absolute inset-0 opacity-[0.16] bg-[radial-gradient(circle_at_85%_50%,#fff,transparent_30%)]"></div>
+                <div class="relative w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl flex-shrink-0">🛒</div>
+                <div class="relative min-w-0 flex-1">
+                    <span class="block font-display font-semibold text-xl leading-none">Order Here</span>
+                    <span class="block text-[10px] font-black uppercase tracking-widest text-white/80 mt-1.5">Build your cart · we confirm on WhatsApp</span>
+                </div>
+                <i class="fa-solid fa-chevron-right relative text-sm flex-shrink-0"></i>
+            </button>
+
+            <div class="flex items-center gap-3 my-5">
+                <span class="flex-1 h-px bg-anjariInk/15 dark:bg-white/10"></span>
+                <span class="text-[9px] font-black uppercase tracking-widest text-zinc-400">or</span>
+                <span class="flex-1 h-px bg-anjariInk/15 dark:bg-white/10"></span>
+            </div>
+
+            <p class="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-3">Duka Direct Stores</p>
+            <div class="space-y-2.5">
+                <div class="rounded-2xl border border-anjariInk/12 dark:border-white/10 bg-white/70 dark:bg-white/5 p-3.5">
+                    <div class="flex items-center gap-2 mb-2.5">
+                        <span class="text-lg">🛍️</span>
+                        <span class="font-display font-semibold text-sm">Retail · Reja Reja</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="closeModal('channel-modal'); openInNewTab('https://web.duka.direct/61056622/2');"
+                            class="flex items-center justify-center gap-2 py-3 rounded-xl bg-anjariInk text-anjariYellow font-black text-[10px] uppercase tracking-widest tap-scale">
+                            <i class="fa-solid fa-globe"></i> Web
+                        </button>
+                        <button onclick="closeModal('channel-modal'); openInNewTab('https://s.duka.direct/45h4o');"
+                            class="flex items-center justify-center gap-2 py-3 rounded-xl bg-anjariYellow/60 dark:bg-white/10 text-anjariInk dark:text-anjariYellow font-black text-[10px] uppercase tracking-widest tap-scale border border-anjariInk/10">
+                            <i class="fa-solid fa-mobile-screen-button"></i> App
+                        </button>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl border border-anjariRed/25 bg-white/70 dark:bg-white/5 p-3.5">
+                    <div class="flex items-center gap-2 mb-2.5">
+                        <span class="text-lg">📦</span>
+                        <span class="font-display font-semibold text-sm">Wholesale · Jumla</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="closeModal('channel-modal'); openInNewTab('https://web.duka.direct/61056622/3');"
+                            class="flex items-center justify-center gap-2 py-3 rounded-xl bg-anjariRed text-white font-black text-[10px] uppercase tracking-widest tap-scale">
+                            <i class="fa-solid fa-globe"></i> Web
+                        </button>
+                        <button onclick="closeModal('channel-modal'); openInNewTab('https://s.duka.direct/f8xoe');"
+                            class="flex items-center justify-center gap-2 py-3 rounded-xl bg-anjariRed/12 dark:bg-white/10 text-anjariRed dark:text-anjariYellow font-black text-[10px] uppercase tracking-widest tap-scale border border-anjariRed/25">
+                            <i class="fa-solid fa-mobile-screen-button"></i> App
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="pricelist-modal" class="modal-overlay fixed inset-0 z-[70] flex items-end justify-center px-4">
@@ -951,7 +1070,7 @@
                 label: 'RGB Glass 300ml', shortLabel: 'RGB Glass 300ml', sub: '24 bottles per crate', glass: true,
                 tiers: { retail: 1000, ctn: 12000, bulk: 11000 },
                 unit: { retail: 'per bottle', ctn: 'per crate', bulk: 'per crate' },
-                flavors: ['Healtho', 'Pineapple', 'Passion', 'Apple', 'Orange', 'Lemon', 'Club Soda', 'Rozah']
+                flavors: ['Healtho', 'Pineapple', 'Passion', 'Apple', 'Orange', 'Club Soda', 'Rozah']
             },
             pet: {
                 label: 'PET Bottle 350ml', shortLabel: 'PET 350ml', sub: '12 bottles per carton',
@@ -963,13 +1082,13 @@
                 label: 'Concentrated Syrup 1Ltr', shortLabel: 'Syrup 1L', sub: '12 bottles per carton',
                 tiers: { retail: 3000, ctn: 34000, bulk: 33000 },
                 unit: { retail: 'per bottle', ctn: 'per carton', bulk: 'per carton' },
-                flavors: ['Healtho', 'Pineapple', 'Passion', 'Rose Cola', 'Orange', 'Lemon', 'Strawberry']
+                flavors: ['Healtho', 'Pineapple', 'Passion', 'Rose Cola', 'Orange', 'Strawberry']
             },
             syrup3: {
                 label: 'Concentrated Syrup 3Ltr', shortLabel: 'Syrup 3L', sub: '4 bottles per carton',
                 tiers: { retail: 10000, ctn: 34000, bulk: 33000 },
                 unit: { retail: 'per bottle', ctn: 'per carton', bulk: 'per carton' },
-                flavors: ['Healtho', 'Cream', 'Pineapple', 'Passion', 'Rose Cola', 'Orange', 'Lemon', 'Strawberry']
+                flavors: ['Healtho', 'Cream', 'Pineapple', 'Passion', 'Rose Cola', 'Orange', 'Strawberry']
             }
         };
         const TIER_LABEL = { retail: 'Retail', ctn: '< 10 ctn/crates', bulk: '10+ ctn/crates' };
