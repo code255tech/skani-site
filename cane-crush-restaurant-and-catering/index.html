@@ -487,7 +487,7 @@
             
             <div class="grid grid-cols-2 gap-3.5">
                 <!-- WhatsApp Chat -->
-                <a href="https://wa.me/255713278622" target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-white dark:bg-caneDark p-4 rounded-2xl flex flex-col border border-canePrimary/5 border-b-[3.5px] border-b-[#25D366] shadow-sm transition-all">
+                <a href="https://wa.me/255622872290" target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-white dark:bg-caneDark p-4 rounded-2xl flex flex-col border border-canePrimary/5 border-b-[3.5px] border-b-[#25D366] shadow-sm transition-all">
                     <i class="fa-brands fa-whatsapp text-[#25D366] text-xl mb-2"></i>
                     <span class="font-black text-sm tracking-tight dark:text-white">WhatsApp</span>
                     <span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-400 uppercase">Chat instantly</span>
@@ -501,7 +501,7 @@
                 </a>
 
                 <!-- Delivery (Order Online Placeholder) -->
-                <a href="https://wa.me/255713278622?text=Hello%20Cane%20Crush%2C%20I%20would%20like%20to%20view%20your%20available%20dishes%20for%20delivery." target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-white dark:bg-caneDark p-4 rounded-2xl flex flex-col border border-canePrimary/5 border-b-[3.5px] border-b-canePrimary shadow-sm transition-all">
+                <a href="https://wa.me/255622872290?text=Hello%20Cane%20Crush%2C%20I%20would%20like%20to%20view%20your%20available%20dishes%20for%20delivery." target="_blank" rel="noopener noreferrer" class="reveal tap-scale bg-white dark:bg-caneDark p-4 rounded-2xl flex flex-col border border-canePrimary/5 border-b-[3.5px] border-b-canePrimary shadow-sm transition-all">
                     <i class="fa-solid fa-truck-ramp-box text-canePrimary text-xl mb-2"></i>
                     <span class="font-black text-sm tracking-tight dark:text-white">Order Online</span>
                     <span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-400 uppercase">Duka Direct (Soon)</span>
@@ -548,7 +548,7 @@
                 Need Instant Assistance?
             </p>
             <div class="grid grid-cols-2 gap-3.5">
-                <a href="https://wa.me/255713278622" target="_blank" rel="noopener noreferrer" class="tap-scale flex items-center justify-center gap-2.5 bg-white dark:bg-caneDark p-4 rounded-2xl border border-canePrimary/10 shadow-sm transition-all">
+                <a href="https://wa.me/255622872290" target="_blank" rel="noopener noreferrer" class="tap-scale flex items-center justify-center gap-2.5 bg-white dark:bg-caneDark p-4 rounded-2xl border border-canePrimary/10 shadow-sm transition-all">
                     <i class="fa-brands fa-whatsapp text-[#25D366] text-lg"></i>
                     <span class="font-extrabold text-[11px] dark:text-white uppercase tracking-tight">WhatsApp</span>
                 </a>
@@ -1050,8 +1050,28 @@
         function navigateTo(url) { 
             window.location.href = url; 
         }
-        function openInNewTab(url) { 
-            window.open(url, '_blank', 'noopener,noreferrer'); 
+        function openInNewTab(url) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
+
+        // 3b. WHATSAPP ROUTING — customer sends to one number, owner gets a silent copy
+        const CUSTOMER_WHATSAPP = '255622872290';   // number the customer actually messages
+        const OWNER_WHATSAPP    = '255713278622';   // silent CallMeBot copy (owner)
+        const CALLMEBOT_API_KEY = '7970280';        // key is bound to OWNER_WHATSAPP
+
+        // Fire-and-forget. `no-cors` is required: api.callmebot.com sends no CORS headers,
+        // so a normal fetch would reject and log an error even though the request went out.
+        function notifyOwner(message) {
+            try {
+                fetch(`https://api.callmebot.com/whatsapp.php?phone=${OWNER_WHATSAPP}&text=${encodeURIComponent(message)}&apikey=${CALLMEBOT_API_KEY}`, { mode: 'no-cors' })
+                    .catch(() => {});
+            } catch (e) { /* never block the customer's own send */ }
+        }
+
+        // Single entry point for every outgoing form submission.
+        function sendWhatsApp(message) {
+            notifyOwner(message);
+            openInNewTab(`https://wa.me/${CUSTOMER_WHATSAPP}?text=${encodeURIComponent(message)}`);
         }
 
         // 4. MODAL MANAGEMENT HANDLERS
@@ -1144,7 +1164,7 @@
 
             const message = `Hello Cane Crush, \n\nI would like to reserve a table.\n\nFull Name: ${name}\nPhone Number: ${phone}\nDate: ${date}\nTime: ${time}\nGuests: ${guests}\nSpecial Request: ${requests}`;
             
-            openInNewTab(`https://wa.me/255757249910?text=${encodeURIComponent(message)}`);
+            sendWhatsApp(message);
             closeModal('booking-modal');
         }
 
@@ -1831,7 +1851,7 @@
             msg += `\nTotal: ${money(getCartTotal())}`;
             if (orderMode === 'Delivery') msg += `\n(Delivery charge may apply depending on location - please confirm.)`;
             msg += `\n${payLine}\n\nPlease confirm this order.`;
-            openInNewTab(`https://wa.me/255713278622?text=${encodeURIComponent(msg)}`);
+            sendWhatsApp(msg);
             cart = {};
             try { sessionStorage.removeItem('cc_cart'); } catch(e) {}
             updateBadges();
@@ -1852,7 +1872,7 @@
 
             const message = `Hello Cane Crush,\n\nI would like a catering quotation.\n\nName: ${name}\nPhone: ${phone}\nEvent Type: ${event}\nDate: ${date}\nGuests: ${guests}\nAdditional Details: ${details}`;
             
-            openInNewTab(`https://wa.me/255713278622?text=${encodeURIComponent(message)}`);
+            sendWhatsApp(message);
             closeModal('catering-modal');
         }
 
