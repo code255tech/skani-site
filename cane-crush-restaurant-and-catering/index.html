@@ -713,7 +713,8 @@
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 pl-1">Time</label>
-                            <input type="time" id="book-time" required class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-3 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                            <input type="time" id="book-time" required oninput="updateTimePreview()" class="w-full bg-white dark:bg-caneDarkBg p-3.5 px-3 dark:text-white text-sm font-semibold border border-zinc-200 dark:border-zinc-800 focus:border-canePrimary dark:focus:border-canePrimary focus:ring-4 focus:ring-canePrimary/10 outline-none rounded-2xl transition-all shadow-sm">
+                            <p id="book-time-preview" class="hidden text-[10px] font-black uppercase tracking-wider text-caneAccent dark:text-canePrimary mt-1.5 pl-1"></p>
                         </div>
                     </div>
                     
@@ -1054,6 +1055,28 @@
             window.open(url, '_blank', 'noopener,noreferrer');
         }
 
+        // Times are shown in 12-hour am/pm everywhere. Formatted explicitly rather than via
+        // toLocaleTimeString so the output never varies with the visitor's locale.
+        function to12Hour(value) {                       // "19:05" -> "7:05 PM"
+            if (!value) return '';
+            const [h, m] = String(value).split(':').map(Number);
+            if (!Number.isFinite(h) || !Number.isFinite(m)) return value;
+            return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
+        }
+        function formatClock(date) {                     // Date -> "7:05 PM"
+            return to12Hour(`${date.getHours()}:${date.getMinutes()}`);
+        }
+
+        // The native time picker follows the device locale, so a 24h phone shows "19:00".
+        // Echo the am/pm reading back so the guest confirms the time we'll actually send.
+        function updateTimePreview() {
+            const preview = document.getElementById('book-time-preview');
+            const value = document.getElementById('book-time').value;
+            if (!preview) return;
+            preview.textContent = value ? `Booking for ${to12Hour(value)}` : '';
+            preview.classList.toggle('hidden', !value);
+        }
+
         // 3b. WHATSAPP ROUTING — customer sends to one number, owner gets a silent copy
         const CUSTOMER_WHATSAPP = '255622872290';   // Iddi — number the customer actually messages
         const OWNER_WHATSAPP    = '255713278622';   // silent CallMeBot copy (owner)
@@ -1162,7 +1185,7 @@
             const guests = document.getElementById('book-people').value;
             const requests = document.getElementById('book-requests').value || "None";
 
-            const message = `Hello Cane Crush, \n\nI would like to reserve a table.\n\nFull Name: ${name}\nPhone Number: ${phone}\nDate: ${date}\nTime: ${time}\nGuests: ${guests}\nSpecial Request: ${requests}`;
+            const message = `Hello Cane Crush, \n\nI would like to reserve a table.\n\nFull Name: ${name}\nPhone Number: ${phone}\nDate: ${date}\nTime: ${to12Hour(time)}\nGuests: ${guests}\nSpecial Request: ${requests}`;
             
             sendWhatsApp(message);
             closeModal('booking-modal');
