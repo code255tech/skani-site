@@ -1,656 +1,243 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skani | Product Experience</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #690A92;
-            --secondary: #c43ee2;
-            --dark-bg: #260234;
-            --card-dark: #350a45;
-            --light-bg: #fcfaff;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            transition: background-color 0.5s ease, color 0.5s ease;
-            -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden;
-        }
-
-        .dark { background-color: var(--dark-bg); color: white; }
-        .light { background-color: var(--light-bg); color: var(--dark-bg); }
-
-        .glass { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-
-        .screen {
-            display: none;
-            animation: slideIn 0.3s ease-out forwards;
-        }
-
-        .screen.active { display: block; }
-
-        @keyframes slideIn {
-            from { transform: translateX(20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes zoomIn {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .demo-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 100;
-            background: black;
-            animation: zoomIn 0.3s ease-out forwards;
-        }
-
-        .demo-overlay.active { display: flex; }
-
-        .gradient-text {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .btn-primary {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            box-shadow: 0 10px 15px -3px rgba(105, 10, 146, 0.3);
-        }
-
-        .theme-card { transition: all 0.2s ease; }
-        .theme-card:active { transform: scale(0.96); }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>SKANI — Interactive Business Experiences</title>
+  <meta name="description" content="Give your business one smart digital experience customers can open through a link or QR code.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root{
+      --paper:#f6f1ea;--paper-2:#fffdf9;--card:#fff;--ink:#241612;--muted:#756760;
+      --line:#e6ddd4;--brand:#7b3024;--brand-2:#63271f;--deep:#4a2019;--soft:#f4e7e2;
+      --sage:#e7f1e8;--sage-ink:#2f6d45;--sky:#e8f3f6;--sky-ink:#2a6c7d;
+      --rose:#f7e9ed;--rose-ink:#a54d64;--lilac:#efe9f8;--lilac-ink:#70549b;
+      --sand:#f4eadb;--shadow:0 18px 42px rgba(74,32,25,.13)
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#261713;color:var(--ink);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+    button,a,input,textarea{font:inherit}button,a{touch-action:manipulation}.app{width:min(100%,480px);min-height:100vh;margin:auto;background:var(--paper);box-shadow:0 0 64px rgba(0,0,0,.28);overflow:hidden;padding:0 14px 112px;position:relative}
+    .top{height:74px;position:sticky;top:0;z-index:40;margin:0 -14px;padding:calc(8px + env(safe-area-inset-top)) 16px 8px;background:rgba(246,241,234,.91);backdrop-filter:blur(18px);border-bottom:1px solid rgba(74,32,25,.08);display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}.brand-mark{width:42px;height:42px;border-radius:14px 14px 14px 5px;background:linear-gradient(145deg,var(--brand),var(--deep));color:#fff;display:grid;place-items:center;box-shadow:0 8px 18px rgba(74,32,25,.18);transform:rotate(-3deg)}
+    .brand b{font:800 17px Manrope;letter-spacing:-.04em;display:block}.brand small{font-size:6px;letter-spacing:.16em;font-weight:800;color:var(--brand);display:block;margin-top:1px}.tools{display:flex;gap:7px}.icon-btn{width:39px;height:39px;border-radius:13px;border:1px solid var(--line);background:var(--paper-2);color:var(--ink);display:grid;place-items:center;text-decoration:none;cursor:pointer}
+    .pass{margin-top:15px;border-radius:30px;background:linear-gradient(145deg,#7b3024 0%,#63271f 48%,#4a2019 100%);color:#fff;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+    .pass:before{content:"";position:absolute;inset:0;opacity:.18;background-image:radial-gradient(rgba(255,255,255,.42) .65px,transparent .65px);background-size:7px 7px}.pass:after{content:"";position:absolute;width:280px;height:280px;border:1px solid rgba(255,255,255,.11);border-radius:50%;right:-145px;top:-145px;box-shadow:0 0 0 28px rgba(255,255,255,.026),0 0 0 57px rgba(255,255,255,.018)}
+    .pass-main{padding:22px 20px 18px;position:relative;z-index:1}.pass-top{display:flex;align-items:center;justify-content:space-between}.live{display:inline-flex;align-items:center;gap:7px;padding:6px 9px;border:1px solid rgba(255,255,255,.16);border-radius:99px;background:rgba(255,255,255,.08);font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}.pulse{width:7px;height:7px;border-radius:50%;background:#a7e1b2;box-shadow:0 0 0 5px rgba(167,225,178,.12)}.pass-no{font-size:8px;color:#dfc7c0;letter-spacing:.1em}.pass h1{font:800 32px/.98 Manrope;letter-spacing:-.055em;margin:18px 0 8px}.pass h1 span{color:#efd5cc}.pass-copy{font-size:10px;line-height:1.55;color:#e2ccc6;margin:0;max-width:330px}
+    .experience-map{margin-top:18px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);border-radius:21px;padding:14px 12px 12px}.map-label{font-size:7px;letter-spacing:.12em;color:#d7bbb3;text-transform:uppercase;text-align:center;font-weight:800}.entry-row{display:grid;grid-template-columns:1fr 42px 1fr;align-items:center;margin-top:10px}.entry-point{text-align:center;border-radius:14px;padding:10px 6px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1)}.entry-point i{display:block;font-size:17px;color:#fff;margin-bottom:6px}.entry-point strong{display:block;font:800 9px Manrope}.entry-point small{font-size:7px;color:#cdb1aa}.skani-core{height:42px;width:42px;border-radius:50%;background:var(--paper-2);color:var(--brand);display:grid;place-items:center;position:relative;box-shadow:0 0 0 5px rgba(255,255,255,.08)}.skani-core:before,.skani-core:after{content:"";position:absolute;top:50%;width:12px;border-top:1px dashed rgba(255,255,255,.35)}.skani-core:before{right:100%}.skani-core:after{left:100%}
+    .destination{margin-top:10px;border-radius:15px;background:var(--paper-2);color:var(--ink);padding:11px 12px;display:flex;align-items:center;gap:10px}.destination-icon{width:35px;height:35px;border-radius:11px;background:var(--soft);color:var(--brand);display:grid;place-items:center}.destination b{font:800 10px Manrope;display:block}.destination small{font-size:7px;color:var(--muted);display:block;margin-top:2px}.micro-actions{margin-left:auto;display:flex;gap:4px}.micro-actions i{width:22px;height:22px;border-radius:7px;background:var(--paper);display:grid;place-items:center;font-size:8px;color:var(--brand)}
+    .perforation{height:1px;border-top:1px dashed rgba(255,255,255,.25);margin:0 17px;position:relative;z-index:1}.perforation:before,.perforation:after{content:"";position:absolute;top:-11px;width:20px;height:20px;border-radius:50%;background:var(--paper)}.perforation:before{left:-28px}.perforation:after{right:-28px}.pass-actions{padding:16px 20px 20px;display:grid;grid-template-columns:1.2fr .8fr;gap:9px;position:relative;z-index:1}
+    .btn{min-height:48px;border:0;border-radius:15px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;cursor:pointer;transition:.16s}.btn:active,.tap:active{transform:scale(.97)}.primary{background:var(--paper-2);color:var(--deep);box-shadow:0 9px 18px rgba(0,0,0,.12)}.secondary{background:var(--card);border:1px solid var(--line);color:var(--ink)}.pass .secondary{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.17);color:#fff}
+    .definition{margin-top:12px;border:1px solid var(--line);background:var(--paper-2);border-radius:21px;padding:16px}.definition-top{display:flex;gap:10px;align-items:flex-start}.definition-icon{width:37px;height:37px;flex:0 0 37px;border-radius:12px;background:var(--soft);color:var(--brand);display:grid;place-items:center}.definition strong{font:800 12px Manrope;display:block}.definition p{font-size:9px;line-height:1.55;color:var(--muted);margin:4px 0 0}.definition p b{color:var(--brand)}
+    .section{padding-top:30px}.eyebrow{font-size:8px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.15em}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:13px}.section h2{font:800 22px/1.08 Manrope;letter-spacing:-.045em;margin:6px 0 0}.section-head p{font-size:8px;color:var(--muted);margin:6px 0 0;line-height:1.45;max-width:330px}.hint{font-size:8px;color:var(--muted);white-space:nowrap}
+    .action-stage{border:1px solid var(--line);border-radius:26px;background:var(--paper-2);padding:12px}.action-lead{background:linear-gradient(145deg,var(--brand),var(--deep));color:#fff;border-radius:20px;padding:17px;display:flex;align-items:center;gap:13px}.action-lead-icon{width:48px;height:48px;border-radius:16px;background:rgba(255,255,255,.11);display:grid;place-items:center;font-size:20px}.action-lead b{font:800 15px Manrope;display:block}.action-lead small{font-size:8px;color:#dec5be}.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.action-card{min-height:112px;border:0;border-radius:18px;padding:13px;text-align:left;color:var(--ink);position:relative;overflow:hidden;cursor:pointer}.action-card i{width:35px;height:35px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.65);font-size:14px}.action-card b{display:block;font:800 11px Manrope;margin-top:13px}.action-card span{display:block;font-size:7px;line-height:1.45;margin-top:3px;opacity:.72}.action-card:after{content:"→";position:absolute;right:10px;bottom:10px;font-weight:800}.explore{background:var(--sage);color:var(--sage-ink)}.interact{background:var(--sky);color:var(--sky-ink)}.connect{background:var(--rose);color:var(--rose-ink)}.experience{background:var(--lilac);color:var(--lilac-ink)}
+    .business-tabs{display:flex;gap:7px;overflow:auto;scrollbar-width:none;padding:1px 1px 6px}.business-tabs::-webkit-scrollbar{display:none}.business-tab{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:99px;padding:9px 12px;font-size:8px;font-weight:800;cursor:pointer}.business-tab.on{background:var(--brand);color:#fff;border-color:var(--brand)}.business-demo{border-radius:26px;background:var(--sand);border:1px solid #eadbca;padding:17px;margin-top:7px;position:relative;overflow:hidden}.business-demo:after{content:"";position:absolute;width:120px;height:120px;border-radius:50%;right:-52px;bottom:-60px;background:rgba(123,48,36,.08)}.business-top{display:flex;align-items:center;gap:11px}.business-symbol{width:45px;height:45px;border-radius:15px 15px 15px 5px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:17px}.business-top small{font-size:7px;color:var(--brand);font-weight:800;letter-spacing:.1em}.business-top h3{font:800 15px Manrope;margin:3px 0 0}.journey{display:flex;align-items:center;gap:6px;overflow:auto;scrollbar-width:none;margin-top:17px;position:relative;z-index:1}.journey::-webkit-scrollbar{display:none}.journey span{flex:0 0 auto;background:var(--paper-2);border:1px solid rgba(123,48,36,.12);border-radius:11px;padding:9px 10px;font-size:8px;font-weight:800}.journey i{font-size:7px;color:var(--brand)}
+    .everywhere{border-radius:27px;background:var(--deep);color:#fff;padding:19px;position:relative;overflow:hidden}.everywhere:after{content:"";position:absolute;width:160px;height:160px;border:1px solid rgba(255,255,255,.08);border-radius:50%;right:-84px;bottom:-92px;box-shadow:0 0 0 25px rgba(255,255,255,.02)}.everywhere h3{font:800 20px/1.08 Manrope;margin:5px 0 7px;letter-spacing:-.04em}.everywhere p{font-size:9px;line-height:1.5;color:#d6bbb4;margin:0}.channels{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:15px;position:relative;z-index:1}.channel{min-height:65px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}.channel i{font-size:15px}.channel span{font-size:6px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+    .clients-shell{margin-top:30px;padding:21px 0 17px;background:linear-gradient(150deg,#7b3024 0%,#542219 100%);border-radius:29px;overflow:hidden;position:relative}.clients-shell:before{content:"";position:absolute;width:230px;height:230px;border-radius:50%;right:-130px;top:-150px;border:1px solid rgba(255,255,255,.1);box-shadow:0 0 0 30px rgba(255,255,255,.02)}.clients-shell .section-head{padding:0 18px;position:relative;z-index:1;align-items:start}.clients-shell .eyebrow,.clients-shell h2{color:#fff}.clients-shell .section-head p{color:#dfc7c0;max-width:310px}.clients-shell .hint{color:#e5cdc6;margin-top:4px}.client-badge{display:inline-flex;margin:0 18px 13px;padding:7px 9px;border-radius:99px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);color:#ead4ce;font-size:7px;font-weight:800;letter-spacing:.09em;position:relative;z-index:1}.cases{display:flex;gap:9px;overflow:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:1px 18px 6px}.cases::-webkit-scrollbar{display:none}.case{min-width:72%;min-height:194px;scroll-snap-align:start;border-radius:23px;background:linear-gradient(145deg,#fffdf9,#f3e5d8);color:var(--ink);border:1px solid rgba(255,255,255,.45);padding:15px;position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 13px 25px rgba(33,13,10,.18)}.case:before{content:"";position:absolute;width:105px;height:105px;border-radius:50%;right:-59px;top:-61px;border:1px solid rgba(123,48,36,.1);box-shadow:0 0 0 15px rgba(123,48,36,.025)}.case-head{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}.case-icon{width:42px;height:42px;border-radius:14px 14px 14px 5px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:15px}.case-index{font:800 7px Manrope;color:#a58f86;letter-spacing:.08em}.case>small{font-size:6.5px;font-weight:800;letter-spacing:.12em;color:var(--brand);display:block;margin-top:14px;position:relative;z-index:1}.case h3{font:800 19px/1.05 Manrope;letter-spacing:-.04em;margin:5px 0 8px;position:relative;z-index:1}.case>p{font-size:7px;line-height:1.45;color:var(--muted);margin:0;position:relative;z-index:1}.case button{margin-top:auto;width:max-content;min-height:36px;border:0;border-radius:11px;background:var(--brand);color:#fff;padding:9px 11px;font-size:7.5px;font-weight:800;cursor:pointer;position:relative;z-index:1;display:flex;align-items:center;gap:9px}.case button i{font-size:7px}
+    .about-section{padding-top:13px}.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.about-card{border-radius:20px;padding:15px;min-height:142px;position:relative;overflow:hidden;border:1px solid #eadfd6;text-align:left;cursor:pointer;background:linear-gradient(145deg,#fffdf9,#f7eee7);color:var(--ink)}.about-card.feature{grid-column:1/-1;min-height:176px;background:linear-gradient(145deg,#f2e3d3,var(--paper-2));border-color:#e6d2c0;color:var(--ink)}.about-card:after{content:"";position:absolute;width:106px;height:106px;border-radius:50%;right:-57px;top:-60px;border:1px solid rgba(123,48,36,.1);box-shadow:0 0 0 16px rgba(123,48,36,.025)}.about-card:before{content:"→";position:absolute;right:12px;bottom:11px;width:29px;height:29px;border-radius:10px;background:rgba(123,48,36,.08);color:var(--brand);display:grid;place-items:center;font-size:10px;font-weight:800;z-index:2}.about-card.feature:after{width:146px;height:146px;right:-72px;top:-82px;border-color:rgba(123,48,36,.12);box-shadow:0 0 0 20px rgba(123,48,36,.03)}.about-icon{width:40px;height:40px;border-radius:13px;background:rgba(123,48,36,.09);color:var(--brand);display:grid;place-items:center;font-size:14px;position:relative;z-index:1}.about-card small{display:block;font-size:7px;font-weight:800;letter-spacing:.12em;color:var(--brand);margin-top:13px;position:relative;z-index:1}.about-card h3{font:800 14px/1.08 Manrope;margin:5px 0 5px;letter-spacing:-.035em;max-width:145px;position:relative;z-index:1}.feature h3{font-size:22px;max-width:330px}.about-card p{font-size:7.5px;line-height:1.48;color:var(--muted);margin:0 24px 0 0;position:relative;z-index:1}.feature p{font-size:9px;max-width:330px}.about-actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:15px;position:relative;z-index:1}.about-actions span{border-radius:9px;background:rgba(123,48,36,.07);border:1px solid rgba(123,48,36,.09);color:var(--brand);padding:7px 8px;font-size:7px;font-weight:800}.discover-card,.interact-card,.connect-card,.experience-card{background:linear-gradient(145deg,#fffdf9,#f8f0e9);color:var(--ink)}
+    .process-card{border-radius:27px;background:var(--card);border:1px solid var(--line);overflow:hidden}.process-intro{padding:19px;background:var(--sand);position:relative}.process-intro:after{content:"S";position:absolute;right:12px;top:-19px;font:800 100px Manrope;color:rgba(123,48,36,.055)}.process-intro h3{font:800 20px/1.05 Manrope;letter-spacing:-.045em;margin:6px 0 7px;max-width:300px;position:relative;z-index:1}.process-intro p{font-size:9px;line-height:1.5;color:var(--muted);margin:0;max-width:330px;position:relative;z-index:1}.process-flow{padding:8px 17px 4px}.process-item{display:grid;grid-template-columns:42px 1fr;gap:12px;padding:12px 0;position:relative}.process-item:not(:last-child):after{content:"";position:absolute;left:20px;top:53px;height:calc(100% - 35px);border-left:1px dashed #cbaea5}.process-number{width:42px;height:42px;border-radius:14px;background:var(--brand);color:#fff;display:grid;place-items:center;font:800 10px Manrope;z-index:1}.process-item strong{font:800 12px Manrope;display:block;margin:2px 0 3px}.process-item>div>span{font-size:8px;color:var(--muted);line-height:1.45;display:block}.delivery{margin:4px 12px 12px;border-radius:17px;background:var(--deep);color:#fff;padding:13px;display:flex;align-items:center;gap:11px}.delivery i{width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.1);display:grid;place-items:center}.delivery b{font:800 9px Manrope;display:block}.delivery small{font-size:7px;color:#d9beb7}
+    .price-stack{display:grid;gap:8px}.subscription-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.price-card{border:1px solid var(--line);border-radius:20px;background:var(--card);padding:15px;display:grid;grid-template-columns:1fr auto;align-items:center}.subscription-grid .price-card{display:flex;min-height:182px;align-items:flex-start;justify-content:space-between;flex-direction:column;position:relative;overflow:hidden;background:linear-gradient(145deg,#f2e3d3,var(--paper-2));border-color:#e6d2c0}.subscription-grid .price-card:before{content:"";position:absolute;width:120px;height:120px;border-radius:50%;right:-58px;top:-60px;border:1px solid rgba(123,48,36,.12);box-shadow:0 0 0 18px rgba(123,48,36,.035)}.subscription-grid .price-card:after{content:"";position:absolute;width:42px;height:42px;border-radius:50%;right:17px;top:17px;background:rgba(123,48,36,.07)}.price-card.featured{background:linear-gradient(145deg,#8a382b,var(--deep));color:#fff;border-color:var(--brand)}.subscription-grid .featured:before{border-color:rgba(255,255,255,.15);box-shadow:0 0 0 18px rgba(255,255,255,.03)}.subscription-grid .featured:after{background:rgba(255,255,255,.09)}.plan-symbol{position:absolute;right:28px;top:28px;color:var(--brand);font-size:12px;z-index:2}.featured .plan-symbol{color:#fff}.price-card>div,.price-card>.price,.plan-note{position:relative;z-index:2}.price-card small{font-size:7px;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:var(--brand)}.featured small{color:#e9cec7}.price-card b{font:800 12px Manrope;display:block;margin-top:4px}.price-card p{font-size:7px;color:var(--muted);margin:3px 0 0;line-height:1.4}.featured p{color:#ddc2bb}.price{font:800 18px Manrope;letter-spacing:-.04em;text-align:right}.subscription-grid .price{text-align:left;margin-top:10px}.price span{font:700 6px DM Sans;display:block;letter-spacing:.04em}.plan-note{display:inline-flex;border-radius:99px;padding:6px 8px;background:rgba(123,48,36,.08);color:var(--brand);font-size:6px;font-weight:800}.featured .plan-note{background:rgba(255,255,255,.1);color:#f0d9d3}.included{border-radius:15px;background:var(--sage);color:var(--sage-ink);padding:11px 13px;font-size:8px;font-weight:800;display:flex;align-items:center;gap:8px}
+    .connect-panel{margin-top:30px;background:linear-gradient(145deg,var(--brand),var(--deep));color:#fff;border-radius:29px;padding:22px 18px;position:relative;overflow:hidden}.connect-panel:after{content:"S";position:absolute;right:-12px;bottom:-48px;font:800 150px Manrope;color:rgba(255,255,255,.035)}.connect-panel h2{font:800 25px/.98 Manrope;letter-spacing:-.055em;margin:8px 0 8px}.connect-panel>p{font-size:9px;line-height:1.5;color:#dec5be;margin:0;max-width:335px}.contact-main{margin-top:16px;min-height:68px;border-radius:18px;background:#fff;color:var(--deep);display:flex;align-items:center;gap:12px;padding:12px;text-decoration:none;position:relative;z-index:1}.contact-main>i{width:42px;height:42px;border-radius:14px;background:#e7f5eb;color:#1f9e60;display:grid;place-items:center;font-size:19px}.contact-main b{font:800 11px Manrope;display:block}.contact-main small{font-size:7px;color:var(--muted)}.contact-main .arrow{margin-left:auto;width:31px;height:31px;border-radius:10px;background:var(--soft);color:var(--brand);display:grid;place-items:center}.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px;position:relative;z-index:1}.contact-card{min-height:76px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-align:center}.contact-card i{font-size:16px}.contact-card span{font-size:7px;font-weight:800}.blueprint-link{margin-top:9px;width:100%;background:transparent;color:#efd8d1;border:1px dashed rgba(255,255,255,.25);position:relative;z-index:1}.footer{text-align:center;padding:26px 8px 0;color:var(--muted);font-size:8px}.footer-links{display:flex;justify-content:center;gap:14px;margin-top:9px}.footer a{color:var(--brand);text-decoration:none;font-weight:800}
+    .bottom{position:fixed;z-index:55;left:50%;bottom:0;transform:translateX(-50%);width:min(100%,480px);padding:10px 13px calc(10px + env(safe-area-inset-bottom));background:rgba(246,241,234,.94);backdrop-filter:blur(18px);border-top:1px solid var(--line);display:grid;grid-template-columns:.74fr 1.26fr;gap:9px}.bottom .primary{background:var(--brand);color:#fff}
+    .modal{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;pointer-events:none}.modal.open{visibility:visible;pointer-events:auto}.modal-backdrop{position:absolute;inset:0;background:rgba(36,22,18,.76);backdrop-filter:blur(5px);opacity:0;transition:.24s}.modal.open .modal-backdrop{opacity:1}.sheet{position:relative;z-index:2;width:min(100%,480px);max-height:94vh;overflow:auto;background:var(--paper);border-radius:30px 30px 0 0;padding:9px 17px calc(24px + env(safe-area-inset-bottom));transform:translateY(105%);transition:.36s cubic-bezier(.16,1,.3,1)}.modal.open .sheet{transform:translateY(0)}.grab{width:42px;height:4px;border-radius:99px;background:#d2c6bd;margin:2px auto 14px}.sheet-head{display:flex;gap:12px;justify-content:space-between}.sheet-head h2{font:800 22px/1.05 Manrope;letter-spacing:-.045em;margin:5px 0 5px}.sheet-head p{font-size:8px;line-height:1.45;color:var(--muted);margin:0;max-width:330px}.close{width:37px;height:37px;flex:0 0 37px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);cursor:pointer}.info-sheet{padding-bottom:calc(18px + env(safe-area-inset-bottom))}.info-hero{margin-top:15px;padding:17px;border-radius:22px;background:linear-gradient(145deg,#f2e3d3,var(--paper-2));border:1px solid #e6d2c0;color:var(--ink);position:relative;overflow:hidden}.info-hero:after{content:"";position:absolute;width:140px;height:140px;border-radius:50%;right:-75px;top:-80px;border:1px solid rgba(123,48,36,.12);box-shadow:0 0 0 22px rgba(123,48,36,.025)}.info-hero-icon{width:43px;height:43px;border-radius:14px 14px 14px 5px;background:rgba(123,48,36,.1);color:var(--brand);display:grid;place-items:center;font:800 15px Manrope;margin-bottom:17px}.info-hero small{font-size:7px;font-weight:800;letter-spacing:.12em;color:var(--brand)}.info-hero h3{font:800 19px/1.06 Manrope;letter-spacing:-.04em;margin:5px 0 6px;max-width:315px;position:relative;z-index:1}.info-hero p{font-size:8px;line-height:1.5;color:var(--muted);margin:0;max-width:340px;position:relative;z-index:1}.info-groups{display:grid;gap:8px;margin-top:9px}.info-group{border:1px solid var(--line);background:var(--card);border-radius:18px;padding:12px}.info-group h4{font:800 10px Manrope;margin:0 0 9px}.info-chip-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.info-chip{min-height:50px;border-radius:12px;background:#faf4ee;padding:8px;display:grid;grid-template-columns:27px 1fr;gap:7px;align-items:center}.info-chip i{width:27px;height:27px;border-radius:9px;background:var(--soft);color:var(--brand);display:grid;place-items:center;font-size:9px}.info-chip b{font:800 8px Manrope;display:block}.info-chip span{display:block;font-size:6.5px;line-height:1.35;color:var(--muted);margin-top:2px}.info-closing{margin-top:9px;border-radius:18px;background:var(--brand);color:#fff;padding:13px;display:flex;gap:10px;align-items:center}.info-closing i{width:34px;height:34px;flex:0 0 34px;border-radius:11px;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center}.info-closing b{font:800 9px/1.35 Manrope}.info-cta{display:grid;grid-template-columns:.72fr 1.28fr;gap:8px;margin-top:12px}.progress{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:17px 0}.progress i{height:4px;border-radius:99px;background:var(--line)}.progress i.on{background:var(--brand)}.step-label{font-size:7px;color:var(--brand);font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:11px}.form-step{display:none}.form-step.on{display:block}.field{margin-bottom:12px}.field label{font-size:8px;font-weight:800;display:block;margin-bottom:6px}.field input,.field textarea{width:100%;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);padding:13px 12px;font-size:16px;outline:none}.field input:focus,.field textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(123,48,36,.09)}.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice{border:1px solid var(--line);border-radius:15px;background:var(--card);color:var(--ink);padding:11px 10px;text-align:left;cursor:pointer}.choice i{color:var(--brand);margin-right:6px}.choice b{font-size:8px}.choice small{display:block;font-size:6.5px;color:var(--muted);margin:4px 0 0 19px}.choice.on{border-color:var(--brand);background:var(--soft)}.blueprint{border-radius:20px;background:var(--brand);color:#fff;padding:16px}.blueprint-top{display:flex;align-items:center;gap:9px}.blueprint-mark{width:37px;height:37px;border-radius:12px;background:rgba(255,255,255,.12);display:grid;place-items:center}.blueprint small{font-size:7px;color:#e1c5be}.blueprint h3{font:800 15px Manrope;margin:2px 0 0}.blueprint-route{display:flex;gap:5px;overflow:auto;scrollbar-width:none;margin-top:13px}.blueprint-route span{flex:0 0 auto;border-radius:9px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);padding:8px;font-size:7px;font-weight:800}.summary{margin-top:8px;border:1px solid var(--line);background:var(--card);border-radius:17px;padding:13px;font-size:8px;line-height:1.7;color:var(--muted)}.summary b{color:var(--ink)}.plan-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:9px}.plan{border:1px solid var(--line);background:var(--card);border-radius:13px;padding:10px 6px;text-align:center;cursor:pointer}.plan b{font:800 8px Manrope;display:block}.plan span{font-size:6px;color:var(--muted)}.plan.on{background:var(--soft);border-color:var(--brand);color:var(--brand)}.sheet-actions{display:grid;grid-template-columns:.72fr 1.28fr;gap:8px;margin-top:17px}.back{visibility:hidden}.success{text-align:center;padding:12px 2px}.success-icon{width:60px;height:60px;border-radius:20px;background:var(--sage);color:var(--sage-ink);display:grid;place-items:center;font-size:24px;margin:auto}.success h3{font:800 21px Manrope;letter-spacing:-.04em;margin:13px 0 5px}.success p{font-size:8px;color:var(--muted);margin:0 0 14px}.success-actions{display:grid;gap:8px}.whatsapp{background:#1f9e60;color:#fff;border:0}.copy{background:var(--card);border:1px solid var(--line);color:var(--ink)}.toast{position:fixed;z-index:130;left:50%;bottom:102px;transform:translate(-50%,18px);opacity:0;background:var(--deep);color:#fff;border-radius:12px;padding:11px 14px;font-size:8px;font-weight:800;transition:.2s;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:360px){.pass h1{font-size:28px}.channels{grid-template-columns:repeat(3,1fr)}.choice-grid{grid-template-columns:1fr}.plan-grid{grid-template-columns:1fr}.app{padding-left:12px;padding-right:12px}.top{margin-left:-12px;margin-right:-12px}.bottom{grid-template-columns:.68fr 1.32fr}}
+  </style>
 </head>
-<body class="dark">
+<body>
+<main class="app">
+  <header class="top">
+    <a class="brand" href="#top"><span class="brand-mark"><b>S</b></span><span><b>SKANI</b><small>INTERACTIVE BUSINESS EXPERIENCES</small></span></a>
+    <div class="tools"><a class="icon-btn" href="https://www.instagram.com/skani.space/" target="_blank" rel="noopener" aria-label="SKANI on Instagram"><i class="fa-brands fa-instagram"></i></a><a class="icon-btn" href="https://wa.me/255757249910" target="_blank" rel="noopener" aria-label="WhatsApp SKANI"><i class="fa-brands fa-whatsapp"></i></a></div>
+  </header>
 
-    <!-- Header -->
-    <header id="main-header" class="fixed top-0 w-full z-50 flex items-center justify-between px-5 h-16 glass border-b border-white/5 transition-colors">
-        <div class="flex items-center gap-3">
-            <div id="logo-container" class="w-8 h-8 bg-gradient-to-tr from-[#690A92] to-[#c43ee2] rounded-lg flex items-center justify-center shadow-lg">
-                <span class="text-sm font-bold text-white">S</span>
-            </div>
-            <span class="font-bold text-lg tracking-tight">Skani</span>
+  <section class="pass" id="top">
+    <div class="pass-main">
+      <div class="pass-top"><span class="live"><span class="pulse"></span> SKANI EXPERIENCE PASS</span><span class="pass-no">SK · 001</span></div>
+      <h1>Turn every tap or scan<br><span>into action.</span></h1>
+      <p class="pass-copy">Give your business one smart digital experience customers can open through a link or QR code.</p>
+      <div class="experience-map">
+        <div class="map-label">One experience · two ways in</div>
+        <div class="entry-row">
+          <div class="entry-point"><i class="fa-solid fa-link"></i><strong>LINK</strong><small>Tap to enter</small></div>
+          <div class="skani-core"><b>S</b></div>
+          <div class="entry-point"><i class="fa-solid fa-qrcode"></i><strong>QR CODE</strong><small>Scan to enter</small></div>
         </div>
-        <button id="theme-toggle" class="p-2 rounded-full bg-white/10 transition-all active:scale-90">
-            <i id="theme-icon" class="fa-solid fa-sun text-sm"></i>
-        </button>
-    </header>
-
-    <!-- Sub Navigation -->
-    <div id="sub-nav" class="hidden fixed top-16 left-0 w-full z-40 px-5 py-3 glass border-b border-white/5 bg-[#260234]/80 theme-sub-nav transition-colors">
-        <div class="max-w-md mx-auto">
-            <button id="back-btn" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/10 text-sm font-bold active:scale-95 transition-transform theme-back-btn">
-                <i class="fa-solid fa-arrow-left text-xs"></i>
-                <span>Back</span>
-            </button>
-        </div>
+        <div class="destination"><span class="destination-icon"><i class="fa-solid fa-store"></i></span><span><b>YOUR BUSINESS EXPERIENCE</b><small>Explore · interact · connect</small></span><span class="micro-actions"><i class="fa-solid fa-layer-group"></i><i class="fa-solid fa-calendar-check"></i><i class="fa-brands fa-whatsapp"></i></span></div>
+      </div>
     </div>
+    <div class="perforation"></div>
+    <div class="pass-actions"><button class="btn primary" onclick="openRequest()">Build My SKANI <i class="fa-solid fa-arrow-right"></i></button><button class="btn secondary" onclick="goTo('clients')">Our Clients</button></div>
+  </section>
 
-    <!-- Main Container -->
-    <main class="max-w-md mx-auto relative min-h-screen">
-        
-        <!-- HOME SCREEN -->
-        <section id="screen-home" class="screen active pt-24 pb-32 px-6">
-            <div class="mb-10">
-                <span class="text-4xl">Hello 👋</span>
-                <h2 class="text-4xl font-black mt-2 leading-tight">
-                    Just <span class="gradient-text">Skan</span> It.
-                </h2>
-                <p class="text-lg opacity-70 mt-4 font-medium">One scan is all your customer needs.</p>
-            </div>
-
-            <!-- Main Navigation Grid -->
-            <div class="grid grid-cols-1 gap-4 mb-8">
-                <button onclick="navTo('demo')" class="flex items-center justify-between p-5 rounded-3xl btn-primary text-white transition-all active:scale-[0.98] text-left">
-                    <div class="flex items-center gap-4">
-                        <div class="p-3 rounded-2xl bg-white/20">
-                            <i class="fa-solid fa-play text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg">Explore Demo</h3>
-                            <p class="text-xs text-purple-100">See it in action</p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right opacity-60"></i>
-                </button>
-
-                <button onclick="navTo('cases')" class="flex items-center justify-between p-5 rounded-3xl border border-white/5 bg-[#350a45] transition-all active:scale-[0.98] text-left theme-card">
-                    <div class="flex items-center gap-4">
-                        <div class="p-3 rounded-2xl bg-white/5 icon-bg">
-                            <i class="fa-solid fa-briefcase text-xl text-[#c43ee2]"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg">Use Cases</h3>
-                            <p class="text-xs opacity-70">Who is it for?</p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right opacity-40"></i>
-                </button>
-
-                <button onclick="navTo('pricing')" class="flex items-center justify-between p-5 rounded-3xl border border-white/5 bg-[#350a45] transition-all active:scale-[0.98] text-left theme-card">
-                    <div class="flex items-center gap-4">
-                        <div class="p-3 rounded-2xl bg-white/5 icon-bg">
-                            <i class="fa-solid fa-credit-card text-xl text-[#c43ee2]"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg">Pricing</h3>
-                            <p class="text-xs opacity-70">Simple investment</p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right opacity-40"></i>
-                </button>
-            </div>
-
-            <!-- 2x2 Grid Structure -->
-            <div class="grid grid-cols-2 gap-4 mb-8">
-                <button onclick="navTo('why')" class="flex flex-col gap-3 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card text-left">
-                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                        <i class="fa-solid fa-brain text-[#c43ee2]"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm">Why Skani</h4>
-                        <p class="text-[10px] opacity-50">See the value</p>
-                    </div>
-                </button>
-
-                <button onclick="navTo('about')" class="flex flex-col gap-3 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card text-left">
-                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                        <i class="fa-solid fa-book-open text-[#c43ee2]"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm">About Skani</h4>
-                        <p class="text-[10px] opacity-50">How it works</p>
-                    </div>
-                </button>
-
-                <button onclick="window.open('https://www.skani.space/', '_blank')" class="flex flex-col gap-3 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card text-left">
-                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                        <i class="fa-solid fa-globe text-[#c43ee2]"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm">Our Website</h4>
-                        <p class="text-[10px] opacity-50">Explore Skani</p>
-                    </div>
-                </button>
-
-                <button onclick="navTo('contact')" class="flex flex-col gap-3 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card text-left">
-                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                        <i class="fa-solid fa-phone text-[#c43ee2]"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm">Contact Us</h4>
-                        <p class="text-[10px] opacity-50">Let's talk</p>
-                    </div>
-                </button>
-            </div>
-
-            <button onclick="navTo('faq')" class="w-full flex items-center justify-center gap-2 p-4 rounded-2xl border-2 border-dashed border-white/10 opacity-50 theme-border-dash">
-                <i class="fa-solid fa-circle-question"></i>
-                <span class="font-bold text-sm uppercase tracking-widest">FAQ</span>
-            </button>
-        </section>
-
-        <!-- WHY SKANI SCREEN -->
-        <section id="screen-why" class="screen pt-36 pb-32 px-6">
-            <h2 class="text-3xl font-bold mb-6">👉 Why Skani</h2>
-            <div class="space-y-4 mb-8">
-                <div class="flex gap-4 items-start">
-                    <i class="fa-solid fa-bolt text-[#c43ee2] mt-1"></i>
-                    <p class="font-medium">Everything in one place</p>
-                </div>
-                <div class="flex gap-4 items-start">
-                    <i class="fa-solid fa-bolt text-[#c43ee2] mt-1"></i>
-                    <p class="font-medium">Faster access for customers</p>
-                </div>
-                <div class="flex gap-4 items-start">
-                    <i class="fa-solid fa-bolt text-[#c43ee2] mt-1"></i>
-                    <p class="font-medium">No apps required</p>
-                </div>
-                <div class="flex gap-4 items-start">
-                    <i class="fa-solid fa-bolt text-[#c43ee2] mt-1"></i>
-                    <p class="font-medium">Clean, modern experience</p>
-                </div>
-            </div>
-
-            <div class="rounded-3xl border border-white/10 overflow-hidden theme-border-solid">
-                <div class="p-4 bg-red-500/10 border-b border-white/5">
-                    <h4 class="text-red-500 font-bold text-xs uppercase mb-2">Before</h4>
-                    <ul class="text-xs space-y-1 opacity-70">
-                        <li>• Information scattered</li>
-                        <li>• Slow communication</li>
-                        <li>• Basic experience</li>
-                    </ul>
-                </div>
-                <div class="p-4 bg-green-500/10">
-                    <h4 class="text-green-500 font-bold text-xs uppercase mb-2">After</h4>
-                    <ul class="text-xs space-y-1 opacity-70">
-                        <li>• One scan access</li>
-                        <li>• Instant interaction</li>
-                        <li>• Premium feel</li>
-                    </ul>
-                </div>
-            </div>
-
-            <button onclick="navTo('pricing')" class="btn-primary mt-8 w-full p-5 text-white rounded-2xl font-bold active:scale-95 transition-transform">
-                👉 Get Skani
-            </button>
-        </section>
-
-        <!-- ABOUT SCREEN -->
-        <section id="screen-about" class="screen pt-36 pb-32 px-6">
-            <h2 class="text-3xl font-bold mb-6">👉 About Skani</h2>
-            <p class="text-lg leading-relaxed opacity-80 mb-8">
-                Skani is a smart QR system that connects everything your business offers into <span class="text-[#c43ee2] font-bold">one simple experience.</span>
-            </p>
-            
-            <div class="space-y-4 mb-10">
-                <div class="flex gap-3 items-center text-sm font-medium">
-                    <i class="fa-solid fa-circle-check text-green-500"></i>
-                    <span>Works with your existing tools</span>
-                </div>
-                <div class="flex gap-3 items-center text-sm font-medium">
-                    <i class="fa-solid fa-circle-check text-green-500"></i>
-                    <span>Fully customizable</span>
-                </div>
-                <div class="flex gap-3 items-center text-sm font-medium">
-                    <i class="fa-solid fa-circle-check text-green-500"></i>
-                    <span>Built for any business</span>
-                </div>
-                <div class="flex gap-3 items-center text-sm font-medium">
-                    <i class="fa-solid fa-circle-check text-green-500"></i>
-                    <span>Easy for customers to use</span>
-                </div>
-            </div>
-
-            <h4 class="font-bold text-xs uppercase opacity-40 mb-4 tracking-widest">How it works</h4>
-            <div class="flex justify-between items-center px-4 mb-12">
-                <div class="flex flex-col items-center gap-2">
-                    <div class="w-12 h-12 rounded-full bg-[#c43ee2]/10 flex items-center justify-center font-bold">1</div>
-                    <span class="text-[10px] font-bold uppercase">Scan</span>
-                </div>
-                <div class="h-[2px] flex-1 bg-white/5 mx-2"></div>
-                <div class="flex flex-col items-center gap-2">
-                    <div class="w-12 h-12 rounded-full bg-[#c43ee2]/10 flex items-center justify-center font-bold">2</div>
-                    <span class="text-[10px] font-bold uppercase">Access</span>
-                </div>
-                <div class="h-[2px] flex-1 bg-white/5 mx-2"></div>
-                <div class="flex flex-col items-center gap-2">
-                    <div class="w-12 h-12 rounded-full bg-[#c43ee2]/10 flex items-center justify-center font-bold">3</div>
-                    <span class="text-[10px] font-bold uppercase">Action</span>
-                </div>
-            </div>
-
-            <button onclick="navTo('demo')" class="btn-primary w-full p-5 text-white rounded-2xl font-bold active:scale-95 transition-transform">
-                👉 See Demo
-            </button>
-        </section>
-
-        <!-- CONTACT SCREEN -->
-        <section id="screen-contact" class="screen pt-36 pb-32 px-6">
-            <h2 class="text-3xl font-bold mb-2">Let's talk</h2>
-            <p class="opacity-60 mb-8">Choose your preferred way to reach us.</p>
-            
-            <div class="grid grid-cols-1 gap-4">
-                <button onclick="window.open('https://wa.me/255XXXXXXXXX', '_blank')" class="flex items-center gap-4 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
-                    <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-500">
-                        <i class="fa-brands fa-whatsapp text-2xl"></i>
-                    </div>
-                    <span class="font-bold">WhatsApp</span>
-                </button>
-                <button onclick="window.open('tel:+255XXXXXXXXX')" class="flex items-center gap-4 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
-                    <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-                        <i class="fa-solid fa-phone text-xl"></i>
-                    </div>
-                    <span class="font-bold">Normal Call</span>
-                </button>
-                <button onclick="window.open('https://instagram.com/code255', '_blank')" class="flex items-center gap-4 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
-                    <div class="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center text-pink-500">
-                        <i class="fa-brands fa-instagram text-2xl"></i>
-                    </div>
-                    <span class="font-bold">Instagram</span>
-                </button>
-                <button onclick="window.open('mailto:hello@code255.tech')" class="flex items-center gap-4 p-5 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
-                    <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-[#c43ee2]">
-                        <i class="fa-solid fa-envelope text-xl"></i>
-                    </div>
-                    <span class="font-bold">Email</span>
-                </button>
-            </div>
-        </section>
-
-        <!-- DEMO SELECTION SCREEN -->
-        <section id="screen-demo" class="screen pt-36 pb-32 px-6">
-            <h2 class="text-3xl font-bold mb-2">Explore Demo</h2>
-            <p class="opacity-60 mb-8">Select a mode to see how Skani adapts.</p>
-            <div class="space-y-4">
-                <button onclick="window.open('https://www.skani.space/Soulmeats%20Skani.html', '_blank')" class="w-full flex items-center gap-4 p-6 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
-                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-orange-500 text-white shadow-lg">
-                        <i class="fa-solid fa-utensils text-2xl"></i>
-                    </div>
-                    <div class="text-left">
-                        <h4 class="font-bold text-lg">Restaurant</h4>
-                        <p class="text-xs opacity-50">Tap to simulate scan</p>
-                    </div>
-                </button>
-                <button onclick="window.open('https://www.skani.space/kibada-white-villa-inside', '_blank')" class="w-full flex items-center gap-4 p-6 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
-                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-blue-500 text-white shadow-lg">
-                        <i class="fa-solid fa-hotel text-2xl"></i>
-                    </div>
-                    <div class="text-left">
-                        <h4 class="font-bold text-lg">Hotel / Villa</h4>
-                        <p class="text-xs opacity-50">Tap to simulate scan</p>
-                    </div>
-                </button>
-                <button onclick="window.open('https://www.skani.space/bloom-hub', '_blank')" class="w-full flex items-center gap-4 p-6 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
-                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-green-500 text-white shadow-lg">
-                        <i class="fa-solid fa-school text-2xl"></i>
-                    </div>
-                    <div class="text-left">
-                        <h4 class="font-bold text-lg">School</h4>
-                        <p class="text-xs opacity-50">Tap to simulate scan</p>
-                    </div>
-                </button>
-                <button onclick="openDemo('Business', 'fa-building', 'purple')" class="w-full flex items-center gap-4 p-6 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
-                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-purple-500 text-white shadow-lg">
-                        <i class="fa-solid fa-building text-2xl"></i>
-                    </div>
-                    <div class="text-left">
-                        <h4 class="font-bold text-lg">Business</h4>
-                        <p class="text-xs opacity-50">Tap to simulate scan</p>
-                    </div>
-                </button>
-            </div>
-        </section>
-
-        <!-- PRICING SCREEN -->
-        <section id="screen-pricing" class="screen pt-36 pb-32 px-6">
-            <h2 class="text-3xl font-bold mb-2">Simple Investment</h2>
-            <p class="opacity-60 mb-6">Starts from</p>
-
-            <div class="space-y-4 mb-6">
-                <div class="p-6 rounded-3xl border-2 border-[#c43ee2]/40 bg-[#350a45] theme-card">
-                    <div class="flex items-start justify-between gap-4">
-                        <div>
-                            <p class="text-xs font-bold uppercase tracking-widest opacity-50 mb-2">Monthly</p>
-                            <div class="flex items-end gap-1">
-                                <span class="text-xl font-bold opacity-60 mb-1">TZS</span>
-                                <span class="text-5xl font-black text-[#c43ee2] leading-none">35k</span>
-                                <span class="text-base opacity-60 mb-1">/mo</span>
-                            </div>
-                        </div>
-                        <div class="w-12 h-12 rounded-2xl bg-[#c43ee2]/10 flex items-center justify-center">
-                            <i class="fa-solid fa-calendar-days text-[#c43ee2] text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-6 rounded-3xl border border-white/5 bg-[#350a45] theme-card">
-                    <div class="flex items-start justify-between gap-4">
-                        <div>
-                            <div class="flex items-center gap-2 mb-2">
-                                <p class="text-xs font-bold uppercase tracking-widest opacity-50">Yearly</p>
-                                <span class="px-2 py-1 rounded-full bg-green-500/10 text-green-400 text-[10px] font-bold uppercase">2 Months Free</span>
-                            </div>
-                            <div class="flex items-end gap-1">
-                                <span class="text-lg font-bold opacity-60 mb-1">TZS</span>
-                                <span class="text-4xl font-black text-[#c43ee2] leading-none">350k</span>
-                                <span class="text-base opacity-60 mb-1">/year</span>
-                            </div>
-                        </div>
-                        <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center">
-                            <i class="fa-solid fa-circle-check text-green-400 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="p-6 rounded-3xl border border-white/5 bg-white/5 theme-card-lite">
-                <h3 class="font-bold mb-4">Included</h3>
-                <div class="grid grid-cols-1 gap-3">
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-check text-[#c43ee2] w-5"></i><span class="text-sm font-medium">Smart Digital Experience</span></div>
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-check text-[#c43ee2] w-5"></i><span class="text-sm font-medium">Hosted Experience</span></div>
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-check text-[#c43ee2] w-5"></i><span class="text-sm font-medium">Real-time Updates</span></div>
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-check text-[#c43ee2] w-5"></i><span class="text-sm font-medium">Priority Support</span></div>
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-check text-[#c43ee2] w-5"></i><span class="text-sm font-medium">Unlimited Access</span></div>
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-check text-[#c43ee2] w-5"></i><span class="text-sm font-medium">QR & Direct Link Sharing</span></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CASES SCREEN -->
-        <section id="screen-cases" class="screen pt-36 pb-32 px-6">
-            <h2 class="text-3xl font-bold mb-2">Use Cases</h2>
-            <p class="opacity-60 mb-6">One system. Multiple industries.</p>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="p-6 rounded-3xl flex flex-col items-center gap-3 border border-white/5 bg-white/5 theme-card-lite">
-                    <i class="fa-solid fa-utensils text-3xl text-[#c43ee2]"></i>
-                    <span class="text-sm font-bold text-center">Restaurants & Cafés</span>
-                </div>
-                <div class="p-6 rounded-3xl flex flex-col items-center gap-3 border border-white/5 bg-white/5 theme-card-lite">
-                    <i class="fa-solid fa-hotel text-3xl text-[#c43ee2]"></i>
-                    <span class="text-sm font-bold text-center">Hotels, Villas & Apartments</span>
-                </div>
-                <div class="p-6 rounded-3xl flex flex-col items-center gap-3 border border-white/5 bg-white/5 theme-card-lite">
-                    <i class="fa-solid fa-school text-3xl text-[#c43ee2]"></i>
-                    <span class="text-sm font-bold text-center">Schools & Education</span>
-                </div>
-                <div class="p-6 rounded-3xl flex flex-col items-center gap-3 border border-white/5 bg-white/5 theme-card-lite">
-                    <i class="fa-solid fa-store text-3xl text-[#c43ee2]"></i>
-                    <span class="text-sm font-bold text-center">Retail Stores & Shops</span>
-                </div>
-                <div class="p-6 rounded-3xl flex flex-col items-center gap-3 border border-white/5 bg-white/5 theme-card-lite">
-                    <i class="fa-solid fa-building text-3xl text-[#c43ee2]"></i>
-                    <span class="text-sm font-bold text-center">Offices & Businesses</span>
-                </div>
-                <div class="p-6 rounded-3xl flex flex-col items-center gap-3 border border-white/5 bg-white/5 theme-card-lite">
-                    <i class="fa-solid fa-users text-3xl text-[#c43ee2]"></i>
-                    <span class="text-sm font-bold text-center">Events & Exhibitions</span>
-                </div>
-                <div class="p-6 rounded-3xl flex flex-col items-center gap-3 border border-white/5 bg-white/5 theme-card-lite">
-                    <i class="fa-solid fa-user-pen text-3xl text-[#c43ee2]"></i>
-                    <span class="text-sm font-bold text-center">Personal Brands & Creators</span>
-                </div>
-                <div class="p-6 rounded-3xl flex flex-col items-center gap-3 border border-white/5 bg-white/5 theme-card-lite">
-                    <i class="fa-solid fa-briefcase-medical text-3xl text-[#c43ee2]"></i>
-                    <span class="text-sm font-bold text-center">Healthcare & Pharmacies</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ SCREEN -->
-        <section id="screen-faq" class="screen pt-36 pb-32 px-6 text-center">
-            <h2 class="text-3xl font-bold mb-6">FAQ</h2>
-            <div class="space-y-4 text-left">
-                <div class="p-5 rounded-2xl bg-white/5 theme-card-lite">
-                    <h4 class="font-bold mb-2">What is Skani?</h4>
-                    <p class="text-sm opacity-60">Skani is a smart system that connects real-world spaces to digital experiences, giving businesses a single place to showcase everything they offer.</p>
-                </div>
-                <div class="p-5 rounded-2xl bg-white/5 theme-card-lite">
-                    <h4 class="font-bold mb-2">Does Skani only work with QR codes?</h4>
-                    <p class="text-sm opacity-60">No. Skani can be accessed through a QR code, direct link, social media, websites, WhatsApp, and other digital channels.</p>
-                </div>
-                <div class="p-5 rounded-2xl bg-white/5 theme-card-lite">
-                    <h4 class="font-bold mb-2">What can I include in my Skani?</h4>
-                    <ul class="text-sm opacity-60 space-y-1">
-                        <li>Menus</li>
-                        <li>Products</li>
-                        <li>Virtual Tours</li>
-                        <li>Contact Information</li>
-                        <li>Booking Links</li>
-                        <li>Locations</li>
-                        <li>Reviews</li>
-                        <li>PDFs & Catalogues</li>
-                        <li>Social Media Links</li>
-                        <li>Custom Business Information</li>
-                    </ul>
-                </div>
-                <div class="p-5 rounded-2xl bg-white/5 theme-card-lite">
-                    <h4 class="font-bold mb-2">Which businesses can use Skani?</h4>
-                    <ul class="text-sm opacity-60 space-y-1">
-                        <li>Restaurants & Cafés</li>
-                        <li>Hotels, Villas & Apartments</li>
-                        <li>Schools & Education Centers</li>
-                        <li>Retail Stores</li>
-                        <li>Offices & Businesses</li>
-                        <li>Healthcare Facilities</li>
-                        <li>Events & Exhibitions</li>
-                        <li>Personal Brands & Creators</li>
-                    </ul>
-                </div>
-                <div class="p-5 rounded-2xl bg-white/5 theme-card-lite">
-                    <h4 class="font-bold mb-2">Can I update information later?</h4>
-                    <p class="text-sm opacity-60">Yes. Information can be updated whenever needed without changing the QR code or link.</p>
-                </div>
-                <div class="p-5 rounded-2xl bg-white/5 theme-card-lite">
-                    <h4 class="font-bold mb-2">Do I need a website to use Skani?</h4>
-                    <p class="text-sm opacity-60">No. Skani works independently and can serve as your digital business experience even if you don't have a website.</p>
-                </div>
-                <div class="p-5 rounded-2xl bg-white/5 theme-card-lite">
-                    <h4 class="font-bold mb-2">Can I add a Virtual Tour to my Skani?</h4>
-                    <p class="text-sm opacity-60">Yes. Skani can integrate Virtual Tours, allowing visitors to explore your space in 360° directly from the same experience.</p>
-                </div>
-                <div class="p-5 rounded-2xl bg-white/5 theme-card-lite">
-                    <h4 class="font-bold mb-2">How much does Skani cost?</h4>
-                    <p class="text-sm opacity-60">Plans start from TZS 35,000/month or TZS 350,000/year with 2 months free.</p>
-                </div>
-                <div class="p-5 rounded-2xl bg-white/5 theme-card-lite">
-                    <h4 class="font-bold mb-2">How long does setup take?</h4>
-                    <p class="text-sm opacity-60">Most Skani experiences can be prepared and activated within a few days depending on the content and requirements.</p>
-                </div>
-                <div class="p-5 rounded-2xl bg-white/5 theme-card-lite">
-                    <h4 class="font-bold mb-2">How do customers access my Skani?</h4>
-                    <p class="text-sm opacity-60">Customers can access it through a QR code, direct link, social media, WhatsApp, websites, printed materials, and marketing campaigns.</p>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Bottom Bar -->
-    <nav class="fixed bottom-6 left-0 w-full px-5 z-50">
-        <div class="max-w-xs mx-auto flex items-center justify-between p-2 rounded-full shadow-2xl glass border border-white/10 bg-purple-900/40 theme-nav transition-all">
-            <button onclick="window.open('https://wa.me/255XXXXXXXXX', '_blank')" class="flex items-center gap-2 px-5 py-3 rounded-full text-sm font-bold text-green-500 active:scale-95 transition-transform">
-                <i class="fa-brands fa-whatsapp text-xl"></i>
-                <span>WhatsApp</span>
-            </button>
-            <button onclick="navTo('pricing')" class="btn-primary flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white active:scale-95 transition-transform shadow-lg">
-                <i class="fa-solid fa-rocket"></i>
-                <span>Get Skani</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Demo Simulation Overlay -->
-    <div id="demo-overlay" class="demo-overlay flex-col items-center justify-center p-10 text-center text-white">
-        <div class="absolute top-6 right-6">
-            <button onclick="closeDemo()" class="p-3 bg-white/10 backdrop-blur-md rounded-full text-white active:scale-90 transition-transform">
-                <i class="fa-solid fa-xmark text-2xl"></i>
-            </button>
-        </div>
-        <i id="demo-icon" class="fa-solid fa-utensils text-6xl mb-6 text-[#c43ee2]"></i>
-        <h3 id="demo-title" class="text-3xl font-bold mb-2">Restaurant Mode</h3>
-        <p id="demo-desc" class="opacity-60 mb-8">Simulating the scan experience...</p>
-        <div class="w-full bg-white/10 rounded-3xl p-6 text-left border border-white/10">
-            <div class="h-4 w-2/3 bg-white/20 rounded mb-4"></div>
-            <div class="h-4 w-full bg-white/10 rounded mb-2"></div>
-            <div class="h-4 w-full bg-white/10 rounded mb-2"></div>
-            <div class="grid grid-cols-2 gap-4 mt-6">
-                <div class="h-20 bg-[#c43ee2]/20 rounded-2xl border border-[#c43ee2]/30"></div>
-                <div class="h-20 bg-white/5 rounded-2xl"></div>
-            </div>
-        </div>
-        <p class="mt-8 text-sm italic opacity-40">Interactive UI Mockup</p>
+  <section class="section about-section" id="about" aria-label="Explore SKANI">
+    <div class="about-grid">
+      <button type="button" class="about-card feature" onclick="openInfo('about')" aria-label="About SKANI — What is SKANI?"><span class="about-icon" aria-hidden="true"><b>S</b></span><small>ABOUT SKANI</small><h3>What is SKANI?</h3><p>More than a link. More than a QR code. SKANI is the experience behind them.</p><div class="about-actions"><span>ONE EXPERIENCE · EVERYWHERE</span></div></button>
+      <button type="button" class="about-card discover-card" onclick="openInfo('discover')" aria-label="01 — Discover: Everything customers need to know."><span class="about-icon" aria-hidden="true"><i class="fa-solid fa-compass"></i></span><small>01 — DISCOVER</small><h3>Everything customers need to know.</h3><p>About · Products · Services · Content</p></button>
+      <button type="button" class="about-card interact-card" onclick="openInfo('interact')" aria-label="02 — Interact: Don't just inform. Let customers act."><span class="about-icon" aria-hidden="true"><i class="fa-solid fa-hand-pointer"></i></span><small>02 — INTERACT</small><h3>Don't just inform. Let them act.</h3><p>Order · Book · Contact · Pay</p></button>
+      <button type="button" class="about-card connect-card" onclick="openInfo('connect')" aria-label="03 — Connect: One experience. Everywhere."><span class="about-icon" aria-hidden="true"><i class="fa-solid fa-share-nodes"></i></span><small>03 — CONNECT</small><h3>One experience. Everywhere.</h3><p>QR · Link · Instagram · WhatsApp</p></button>
+      <button type="button" class="about-card experience-card" onclick="openInfo('experience')" aria-label="04 — Experience: More than information."><span class="about-icon" aria-hidden="true"><i class="fa-solid fa-vr-cardboard"></i></span><small>04 — EXPERIENCE</small><h3>More than information.</h3><p>360° Tours · Photos · Video · Interactive</p></button>
     </div>
+  </section>
 
-    <script>
-        const body = document.body;
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-        const backBtn = document.getElementById('back-btn');
-        const subNav = document.getElementById('sub-nav');
-        const header = document.getElementById('main-header');
-        
-        let isDarkMode = true;
+  <section class="section clients-shell" id="clients">
+    <div class="section-head"><div><span class="eyebrow">Our clients & partners</span><h2>Different businesses.<br>Their own SKANI.</h2><p>Explore real experiences we have created for our clients.</p></div><span class="hint">Swipe →</span></div>
+    <span class="client-badge"><i class="fa-solid fa-circle-check"></i>&nbsp; REAL CLIENT EXPERIENCES</span>
+    <div class="cases">
+      <article class="case"><div class="case-head"><span class="case-icon"><i class="fa-solid fa-mug-hot"></i></span><span class="case-index">01 / 04</span></div><small>BAHARI CAFÉ</small><h3>SKANI for a Café</h3><p>Menu · Order · Location</p><button onclick="openCase('https://www.skani.space/bahari-cafe/')">Explore SKANI <i class="fa-solid fa-arrow-right"></i></button></article>
+      <article class="case"><div class="case-head"><span class="case-icon"><i class="fa-solid fa-building"></i></span><span class="case-index">02 / 04</span></div><small>HAVANA PROPERTIES</small><h3>SKANI for Real Estate</h3><p>Properties · Virtual Tours · Enquiries</p><button onclick="notify('Havana Properties client SKANI can be connected here')">Explore SKANI <i class="fa-solid fa-arrow-right"></i></button></article>
+      <article class="case"><div class="case-head"><span class="case-icon"><i class="fa-solid fa-plane-departure"></i></span><span class="case-index">03 / 04</span></div><small>FIKA GLOBAL</small><h3>SKANI for Travel</h3><p>Flights · Visa · Cargo</p><button onclick="notify('FIKA Global client SKANI can be connected here')">Explore SKANI <i class="fa-solid fa-arrow-right"></i></button></article>
+      <article class="case"><div class="case-head"><span class="case-icon"><i class="fa-solid fa-print"></i></span><span class="case-index">04 / 04</span></div><small>VISTA PRINTS</small><h3>SKANI for Printing</h3><p>Products · Customise · Quote</p><button onclick="notify('Vista Prints client SKANI can be connected here')">Explore SKANI <i class="fa-solid fa-arrow-right"></i></button></article>
+    </div>
+  </section>
 
-        themeToggle.addEventListener('click', () => {
-            isDarkMode = !isDarkMode;
-            if (isDarkMode) {
-                body.classList.remove('light'); body.classList.add('dark');
-                themeIcon.classList.replace('fa-moon', 'fa-sun');
-                header.classList.replace('bg-white/80', 'bg-[#260234]/80');
-                header.classList.replace('border-purple-100', 'border-white/5');
-                updateThemeClasses(true);
-            } else {
-                body.classList.remove('dark'); body.classList.add('light');
-                themeIcon.classList.replace('fa-sun', 'fa-moon');
-                header.classList.replace('bg-[#260234]/80', 'bg-white/80');
-                header.classList.replace('border-white/5', 'border-purple-100');
-                updateThemeClasses(false);
-            }
-        });
+  <section class="section">
+    <div class="section-head"><div><span class="eyebrow">Your business. Your SKANI.</span><h2>See the experience change.</h2><p>Choose a business to preview the customer journey SKANI could create.</p></div></div>
+    <div class="business-tabs">
+      <button class="business-tab on" onclick="setBusiness(this,'restaurant')">Restaurant</button><button class="business-tab" onclick="setBusiness(this,'hotel')">Hotel</button><button class="business-tab" onclick="setBusiness(this,'property')">Real Estate</button><button class="business-tab" onclick="setBusiness(this,'school')">School</button><button class="business-tab" onclick="setBusiness(this,'retail')">Retail</button>
+    </div>
+    <div class="business-demo"><div class="business-top"><span class="business-symbol" id="businessSymbol"><i class="fa-solid fa-utensils"></i></span><div><small id="businessLabel">RESTAURANT SKANI</small><h3 id="businessTitle">From appetite to action.</h3></div></div><div class="journey" id="journey"></div></div>
+  </section>
 
-        function updateThemeClasses(isDark) {
-            const cards = document.querySelectorAll('.theme-card');
-            const icons = document.querySelectorAll('.icon-bg');
-            const borderDash = document.querySelectorAll('.theme-border-dash');
-            const nav = document.querySelector('.theme-nav');
-            const liteCards = document.querySelectorAll('.theme-card-lite');
-            const pricing = document.querySelector('.theme-pricing-card');
-            const solidBorders = document.querySelectorAll('.theme-border-solid');
-            const subNavBar = document.querySelector('.theme-sub-nav');
-            const backButton = document.querySelector('.theme-back-btn');
+  <section class="section" id="everywhere">
+    <div class="everywhere"><span class="eyebrow" style="color:#e3c9c2">One SKANI. Everywhere.</span><h3>Wherever customers find you,<br>they enter the same experience.</h3><p>Your SKANI is not tied to its QR code. Share the same experience across every channel.</p><div class="channels"><div class="channel"><i class="fa-brands fa-instagram"></i><span>Instagram</span></div><div class="channel"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span></div><div class="channel"><i class="fa-brands fa-google"></i><span>Google</span></div><div class="channel"><i class="fa-solid fa-qrcode"></i><span>QR Code</span></div><div class="channel"><i class="fa-brands fa-facebook-f"></i><span>Facebook</span></div><div class="channel"><i class="fa-solid fa-envelope"></i><span>Email</span></div><div class="channel"><i class="fa-solid fa-link"></i><span>Direct Link</span></div><div class="channel"><i class="fa-solid fa-globe"></i><span>Website</span></div></div></div>
+  </section>
 
-            if (isDark) {
-                cards.forEach(c => { c.classList.replace('bg-white', 'bg-[#350a45]'); c.classList.replace('border-purple-100', 'border-white/5'); });
-                icons.forEach(i => i.classList.replace('bg-purple-50', 'bg-white/5'));
-                borderDash.forEach(b => b.classList.replace('border-purple-200', 'border-white/10'));
-                solidBorders.forEach(b => b.classList.replace('border-purple-100', 'border-white/10'));
-                nav.classList.replace('bg-white/90', 'bg-purple-900/40');
-                nav.classList.replace('border-purple-100', 'border-white/10');
-                liteCards.forEach(c => c.classList.replace('bg-white', 'bg-white/5'));
-                if(pricing) { pricing.classList.replace('bg-white', 'bg-[#350a45]'); pricing.classList.replace('border-purple-100', 'border-[#c43ee2]/30'); }
-                if(subNavBar) { subNavBar.classList.replace('bg-white/80', 'bg-[#260234]/80'); subNavBar.classList.replace('border-purple-100', 'border-white/5'); }
-                if(backButton) { backButton.classList.replace('bg-purple-50', 'bg-white/10'); backButton.classList.replace('border-purple-100', 'border-white/10'); }
-            } else {
-                cards.forEach(c => { c.classList.replace('bg-[#350a45]', 'bg-white'); c.classList.replace('border-white/5', 'border-purple-100'); });
-                icons.forEach(i => i.classList.replace('bg-white/5', 'bg-purple-50'));
-                borderDash.forEach(b => b.classList.replace('border-white/10', 'border-purple-200'));
-                solidBorders.forEach(b => b.classList.replace('border-white/10', 'border-purple-100'));
-                nav.classList.replace('bg-purple-900/40', 'bg-white/90');
-                nav.classList.replace('border-white/10', 'border-purple-100');
-                liteCards.forEach(c => c.classList.replace('bg-white/5', 'bg-white'));
-                if(pricing) { pricing.classList.replace('bg-[#350a45]', 'bg-white'); pricing.classList.replace('border-[#c43ee2]/30', 'border-purple-100'); }
-                if(subNavBar) { subNavBar.classList.replace('bg-[#260234]/80', 'bg-white/80'); subNavBar.classList.replace('border-white/5', 'border-purple-100'); }
-                if(backButton) { backButton.classList.replace('bg-white/10', 'bg-purple-50'); backButton.classList.replace('border-white/10', 'border-purple-100'); }
-            }
-        }
+  <section class="section">
+    <div class="section-head"><div><span class="eyebrow">How it works today</span><h2>We build it with you.</h2><p>SKANI is currently a managed service. We shape the right experience around your business, brand and customer actions.</p></div></div>
+    <div class="process-card">
+      <div class="process-intro"><span class="eyebrow">From idea to live SKANI</span><h3>You know the business.<br>We shape the experience.</h3><p>We work with you to understand what customers need, turn those needs into actions and publish one clear digital destination.</p></div>
+      <div class="process-flow">
+        <div class="process-item"><span class="process-number">01</span><div><strong>Discover the business</strong><span>We learn about your customers, offerings, existing channels and the actions that matter most.</span></div></div>
+        <div class="process-item"><span class="process-number">02</span><div><strong>Architect the experience</strong><span>We organise the right content, actions, cards and connections around your brand.</span></div></div>
+        <div class="process-item"><span class="process-number">03</span><div><strong>Publish your SKANI</strong><span>Your experience goes live, ready to share wherever customers already find you.</span></div></div>
+      </div>
+      <div class="delivery"><i class="fa-solid fa-box-open"></i><div><b>WHAT YOU RECEIVE</b><small>Your branded SKANI experience · direct link · QR code</small></div></div>
+    </div>
+  </section>
 
-        function navTo(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(`screen-${screenId}`).classList.add('active');
-            subNav.classList.toggle('hidden', screenId === 'home');
-            window.scrollTo(0, 0);
-        }
+  <section class="section">
+    <div class="section-head"><div><span class="eyebrow">Simple pricing</span><h2>One experience.<br>Clear investment.</h2></div></div>
+    <div class="price-stack">
+      <div class="price-card"><div><small>One-time setup</small><b>Creation & setup</b><p>Your branded SKANI built for you.</p></div><div class="price">200,000<span>TZS</span></div></div>
+      <div class="subscription-grid">
+        <div class="price-card"><span class="plan-symbol"><i class="fa-solid fa-calendar-check"></i></span><div><small>Monthly</small><b>Managed monthly</b><p>Stay active with ongoing management and support.</p></div><div class="price">35,000<span>TZS / MONTH</span></div><span class="plan-note">6-month minimum</span></div>
+        <div class="price-card featured"><span class="plan-symbol"><i class="fa-solid fa-star"></i></span><div><small>Best value</small><b>Managed yearly</b><p>One simple annual payment for your SKANI.</p></div><div class="price">360,000<span>TZS / YEAR</span></div><span class="plan-note">Save TZS 60,000 yearly</span></div>
+      </div>
+      <div class="included"><i class="fa-solid fa-link"></i> Your SKANI link and QR code are included. No separate QR fee.</div>
+    </div>
+  </section>
 
-        backBtn.addEventListener('click', () => navTo('home'));
+  <section class="connect-panel"><span class="eyebrow" style="color:#e3c9c2">Connect with SKANI</span><h2>Let’s talk about your business.</h2><p>Have a question or ready to create your SKANI? Start a conversation through the channel that works for you.</p>
+    <a class="contact-main" href="https://wa.me/255757249910" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i><span><b>Chat with the SKANI team</b><small>Usually the fastest way to reach us</small></span><span class="arrow"><i class="fa-solid fa-arrow-right"></i></span></a>
+    <div class="contact-grid"><a class="contact-card" href="https://www.instagram.com/skani.space/" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i><span>Instagram</span></a><a class="contact-card" href="https://skani.space" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i><span>Website</span></a><a class="contact-card" href="tel:+255757249910"><i class="fa-solid fa-phone"></i><span>Call us</span></a></div>
+    <button class="btn blueprint-link" onclick="openRequest()"><i class="fa-solid fa-shapes"></i> Or build your SKANI blueprint</button>
+  </section>
 
-        function openDemo(title, iconClass, colorName) {
-            document.getElementById('demo-title').innerText = `${title} Mode`;
-            document.getElementById('demo-desc').innerText = `Simulating the ${title.toLowerCase()} scan experience...`;
-            document.getElementById('demo-icon').className = `fa-solid ${iconClass} text-6xl mb-6 text-[#c43ee2]`;
-            document.getElementById('demo-overlay').classList.add('active');
-        }
+  <footer class="footer"><b>SKANI</b> · Interactive business experiences by Code255.<div class="footer-links"><a href="https://skani.space" target="_blank" rel="noopener">skani.space</a><a href="https://www.instagram.com/skani.space/" target="_blank" rel="noopener">@skani.space</a><a href="tel:+255757249910">+255 757 249 910</a></div></footer>
+  <nav class="bottom"><button class="btn secondary" onclick="openRequest()"><i class="fa-solid fa-shapes"></i> Build Blueprint</button><a class="btn primary" href="https://wa.me/255757249910" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp SKANI</a></nav>
+</main>
 
-        function closeDemo() { document.getElementById('demo-overlay').classList.remove('active'); }
-    </script>
+<div class="modal" id="infoModal" aria-hidden="true">
+  <div class="modal-backdrop" onclick="closeInfo()"></div>
+  <div class="sheet info-sheet" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+    <div class="grab"></div>
+    <div class="sheet-head"><div><span class="eyebrow" id="infoEyebrow">DISCOVER SKANI</span><h2 id="infoTitle">About SKANI</h2><p id="infoIntro"></p></div><button class="close" onclick="closeInfo()" aria-label="Close information"><i class="fa-solid fa-xmark"></i></button></div>
+    <div id="infoBody"></div>
+    <div class="info-cta"><button class="btn secondary" onclick="closeInfo()">Close</button><button class="btn" style="background:var(--brand);color:#fff" onclick="startFromInfo()">Build My SKANI <i class="fa-solid fa-arrow-right"></i></button></div>
+  </div>
+</div>
+
+<div class="modal" id="requestModal" aria-hidden="true">
+  <div class="modal-backdrop" onclick="closeRequest()"></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="grab"></div>
+    <div class="sheet-head"><div><span class="eyebrow">Build your first blueprint</span><h2 id="sheetTitle">Let’s design your SKANI.</h2><p>Answer three focused questions. We will turn them into a practical starting structure.</p></div><button class="close" onclick="closeRequest()" aria-label="Close request form"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="progress" id="progress"><i></i><i></i><i></i><i></i></div>
+    <section class="form-step" data-step="0"><div class="step-label">01 · Your business</div><div class="field"><label for="requestName">Business name</label><input id="requestName" placeholder="For example: Bahari Café"></div><div class="field"><label>What kind of business is it?</label><div class="choice-grid" id="typeChoices"></div></div></section>
+    <section class="form-step" data-step="1"><div class="step-label">02 · Customer actions</div><div class="field"><label>What should customers be able to do? Choose all that matter.</label><div class="choice-grid" id="actionChoices"></div></div></section>
+    <section class="form-step" data-step="2"><div class="step-label">03 · Where customers find you</div><div class="field"><label>Which channels do you already use?</label><div class="choice-grid" id="channelChoices"></div></div><div class="field"><label for="requestPhone">Your phone or WhatsApp number</label><input id="requestPhone" inputmode="tel" placeholder="+255 ..."></div><div class="field"><label for="requestNotes">Anything important we should know? <span style="font-weight:500;color:var(--muted)">(optional)</span></label><textarea id="requestNotes" rows="3" placeholder="Tell us about your products, services or current links..."></textarea></div></section>
+    <section class="form-step" data-step="3"><div class="step-label">04 · Your starting blueprint</div><div class="blueprint"><div class="blueprint-top"><span class="blueprint-mark"><b>S</b></span><div><small>RECOMMENDED SKANI</small><h3 id="blueprintName">Your Business</h3></div></div><div class="blueprint-route" id="blueprintRoute"></div></div><div class="summary" id="requestSummary"></div><div class="field" style="margin:12px 0 0"><label>Which payment option feels right?</label><div class="plan-grid"><button class="plan on" onclick="choosePlan(this,'Not sure yet')"><b>Guide me</b><span>Recommend one</span></button><button class="plan" onclick="choosePlan(this,'Monthly — TZS 35,000')"><b>Monthly</b><span>35,000 TZS</span></button><button class="plan" onclick="choosePlan(this,'Yearly — TZS 360,000')"><b>Yearly</b><span>360,000 TZS</span></button></div></div></section>
+    <section class="form-step" data-step="4"><div class="success"><span class="success-icon"><i class="fa-solid fa-check"></i></span><h3>Your SKANI request is ready.</h3><p>Continue on WhatsApp to share the blueprint with Code255.</p><div class="summary" id="finalRequest" style="text-align:left;white-space:pre-line"></div><div class="success-actions"><a class="btn whatsapp" id="whatsappLink" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Send to SKANI on WhatsApp</a><button class="btn copy" onclick="copyRequest()"><i class="fa-regular fa-copy"></i> Copy request</button></div></div></section>
+    <div class="sheet-actions" id="sheetActions"><button class="btn secondary back" id="backButton" onclick="previousStep()">Back</button><button class="btn" style="background:var(--brand);color:#fff" id="nextButton" onclick="nextStep()">Continue <i class="fa-solid fa-arrow-right"></i></button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+  const infoContent={
+    about:{
+      eyebrow:'ABOUT SKANI',title:'What is SKANI?',intro:'More than a link. More than a QR code.',icon:'S',heroLabel:'INTERACTIVE BUSINESS EXPERIENCE',heroTitle:'SKANI is the experience behind them.',heroText:'Give your business one smart digital experience where customers can discover, interact with and connect to your business.',
+      groups:[
+        {title:'One experience. Two ways in.',items:[['fa-qrcode','QR code','One way to enter.'],['fa-link','Direct link','Another way to enter.'],['fa-bolt','SKANI','The experience behind both.']]},
+        {title:'Not another website. Not another link page.',items:[['fa-window-maximize','Website','Built around pages.'],['fa-list','Link page','Built around links.'],['fa-bolt','SKANI','Built around what customers need to do.']]},
+        {title:'One SKANI. Everywhere.',items:[['fa-brands fa-instagram','Instagram','Add it to your bio.'],['fa-brands fa-whatsapp','WhatsApp','Share it directly.'],['fa-brands fa-google','Google','Connect from search.'],['fa-globe','Facebook, email & website','Use it wherever customers find you.']]}
+      ],closing:'Your business. One experience. Everywhere.'
+    },
+    discover:{
+      eyebrow:'01 — DISCOVER',title:'Discover your business',intro:'Everything your customers need to know.',icon:'fa-compass',heroLabel:'DISCOVER',heroTitle:'Give customers a clear way to explore your business.',heroText:'Show who you are, what you offer and what is happening—all organised in one experience.',
+      groups:[
+        {title:'Your business',items:[['fa-circle-info','About',''],['fa-book-open','Story',''],['fa-people-group','Team',''],['fa-location-dot','Locations','']]},
+        {title:'Your offerings',items:[['fa-box-open','Products',''],['fa-briefcase','Services',''],['fa-utensils','Menus',''],['fa-book','Catalogues','']]},
+        {title:'Your content',items:[['fa-images','Photos',''],['fa-circle-play','Videos',''],['fa-tags','Promotions',''],['fa-bullhorn','Updates','']]}
+      ],closing:'Everything organised into an experience built around your business.'
+    },
+    interact:{
+      eyebrow:'02 — INTERACT',title:'Let customers act',intro:'Don’t just inform. Let customers act.',icon:'fa-hand-pointer',heroLabel:'INTERACT',heroTitle:'SKANI is built around what customers want to do next.',heroText:'Customers can move from information to action without searching through pages.',
+      groups:[
+        {title:'Customer actions',items:[['fa-burger','Order','Let customers order directly.'],['fa-calendar-check','Book','Reservations, appointments and bookings.'],['fa-phone','Contact','Call, WhatsApp or email instantly.'],['fa-location-dot','Find','Open your location and directions.'],['fa-credit-card','Pay','Connect to payment options.'],['fa-star','Review','Make feedback easy.']]}
+      ],closing:'SKANI turns information into action.'
+    },
+    connect:{
+      eyebrow:'03 — CONNECT',title:'One experience. Everywhere.',intro:'Customers enter the same SKANI wherever they find you.',icon:'fa-share-nodes',heroLabel:'CONNECT',heroTitle:'The entry point changes. The experience doesn’t.',heroText:'A QR code and a direct link are simply ways into your SKANI.',
+      groups:[
+        {title:'Ways customers enter',items:[['fa-qrcode','QR code','Scan and open.'],['fa-link','Direct link','Share anywhere.'],['fa-brands fa-instagram','Instagram','Add it to your bio.'],['fa-brands fa-whatsapp','WhatsApp','Send it directly.'],['fa-brands fa-google','Google','Connect from search.'],['fa-globe','Facebook, email & web','Use SKANI wherever customers are.']]}
+      ],closing:'The entry point changes. The experience doesn’t.'
+    },
+    experience:{
+      eyebrow:'04 — EXPERIENCE',title:'Bring your business to life',intro:'More than information.',icon:'fa-vr-cardboard',heroLabel:'EXPERIENCE',heroTitle:'Your SKANI isn’t a page. It’s an experience.',heroText:'Use visual, interactive and immersive content to help customers experience your business.',
+      groups:[
+        {title:'Experience possibilities',items:[['fa-street-view','360° virtual tours','Explore spaces before visiting.'],['fa-photo-film','Photo & video','Showcase your business visually.'],['fa-wand-magic-sparkles','Interactive content','Make information engaging.'],['fa-arrow-up-right-from-square','External experiences','Connect booking, ordering and other platforms.']]}
+      ],closing:'Your SKANI isn’t a page. It’s an experience.'
+    }
+  };
+  function renderInfoIcon(icon){return icon==='S'?'<b>S</b>':'<i class="fa-solid '+icon+'"></i>'}
+  function infoIconClass(icon){return icon.includes('fa-brands')?icon:'fa-solid '+icon}
+  function openInfo(key){const item=infoContent[key];if(!item)return;infoEyebrow.textContent=item.eyebrow;infoTitle.textContent=item.title;infoIntro.textContent=item.intro;const groups=item.groups.map(function(group){const chips=group.items.map(function(entry){const detail=entry[2]?'<span>'+entry[2]+'</span>':'';return '<div class="info-chip"><i class="'+infoIconClass(entry[0])+'"></i><div><b>'+entry[1]+'</b>'+detail+'</div></div>'}).join('');return '<section class="info-group"><h4>'+group.title+'</h4><div class="info-chip-grid">'+chips+'</div></section>'}).join('');infoBody.innerHTML='<div class="info-hero"><span class="info-hero-icon">'+renderInfoIcon(item.icon)+'</span><small>'+item.heroLabel+'</small><h3>'+item.heroTitle+'</h3><p>'+item.heroText+'</p></div><div class="info-groups">'+groups+'</div><div class="info-closing"><i class="fa-solid fa-bolt"></i><b>'+item.closing+'</b></div>';infoModal.classList.add('open');infoModal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
+  function closeInfo(){infoModal.classList.remove('open');infoModal.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+  function startFromInfo(){closeInfo();openRequest()}
+  const businesses={
+    restaurant:{label:'RESTAURANT SKANI',title:'From appetite to action.',icon:'fa-utensils',route:['Menu','Order','Reserve','Location','Reviews']},
+    hotel:{label:'HOTEL SKANI',title:'From discovery to booking.',icon:'fa-hotel',route:['Rooms','Amenities','Virtual Tour','Booking','Contact']},
+    property:{label:'REAL ESTATE SKANI',title:'From interest to viewing.',icon:'fa-building',route:['Properties','Floor Plans','Virtual Tour','Viewing','Enquiry']},
+    school:{label:'SCHOOL SKANI',title:'From curiosity to admission.',icon:'fa-graduation-cap',route:['Admissions','Programs','Prospectus','Campus Tour','Contact']},
+    retail:{label:'RETAIL SKANI',title:'From browsing to buying.',icon:'fa-bag-shopping',route:['Products','Catalogue','Offers','Location','Contact']}
+  };
+  function setBusiness(button,key){document.querySelectorAll('.business-tab').forEach(function(x){x.classList.toggle('on',x===button)});const item=businesses[key];businessLabel.textContent=item.label;businessTitle.textContent=item.title;businessSymbol.innerHTML='<i class="fa-solid '+item.icon+'"></i>';journey.innerHTML=item.route.map(function(x,i){return '<span>'+x+'</span>'+(i<item.route.length-1?'<i class="fa-solid fa-chevron-right"></i>':'')}).join('')}
+  setBusiness(document.querySelector('.business-tab'),'restaurant');
+  function goTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+  function previewAction(name){notify(name+' actions become part of your SKANI')}
+  function openCase(url){window.open(url,'_blank','noopener')}
+
+  const types=[['Restaurant / Café','fa-utensils'],['Hotel / Hospitality','fa-hotel'],['Real Estate','fa-building'],['School / Education','fa-graduation-cap'],['Retail / Products','fa-bag-shopping'],['Professional Services','fa-briefcase']];
+  const actions=[['Browse products or services','fa-layer-group'],['Order or buy','fa-bag-shopping'],['Book or reserve','fa-calendar-check'],['WhatsApp or call','fa-comments'],['Find our location','fa-location-dot'],['Pay or leave a review','fa-credit-card'],['Take a virtual tour','fa-vr-cardboard'],['View offers or catalogues','fa-tags']];
+  const channels=[['Instagram','fa-brands fa-instagram'],['WhatsApp','fa-brands fa-whatsapp'],['Google','fa-brands fa-google'],['Facebook','fa-brands fa-facebook-f'],['Website','fa-solid fa-globe'],['Physical location / QR','fa-solid fa-qrcode']];
+  let formStep=0,selectedType='',selectedActions=new Set(),selectedChannels=new Set(),selectedPlan='Not sure yet',requestText='';
+  function choiceMarkup(items,kind){return items.map(function(item){const name=item[0],icon=item[1];const iconClass=icon.includes('fa-brands')||icon.includes('fa-solid')?icon:'fa-solid '+icon;const helper=kind==='type'?'Choose the closest fit':kind==='action'?'Customer can do this':'Customers find you here';return '<button class="choice" type="button" data-kind="'+kind+'" data-value="'+name+'"><i class="'+iconClass+'"></i><b>'+name+'</b><small>'+helper+'</small></button>'}).join('')}
+  typeChoices.innerHTML=choiceMarkup(types,'type');actionChoices.innerHTML=choiceMarkup(actions,'action');channelChoices.innerHTML=choiceMarkup(channels,'channel');
+  document.querySelectorAll('.choice').forEach(function(el){el.addEventListener('click',function(){toggleChoice(el,el.dataset.kind,el.dataset.value)})});
+  function toggleChoice(el,kind,value){if(kind==='type'){selectedType=value;el.parentElement.querySelectorAll('.choice').forEach(function(x){x.classList.toggle('on',x===el)});return}const target=kind==='action'?selectedActions:selectedChannels;if(target.has(value)){target.delete(value);el.classList.remove('on')}else{target.add(value);el.classList.add('on')}}
+  function openRequest(){formStep=0;selectedType='';selectedActions.clear();selectedChannels.clear();selectedPlan='Not sure yet';requestName.value='';requestPhone.value='';requestNotes.value='';document.querySelectorAll('.choice,.plan').forEach(function(x){x.classList.remove('on')});document.querySelector('.plan').classList.add('on');requestModal.classList.add('open');requestModal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';renderForm()}
+  function closeRequest(){requestModal.classList.remove('open');requestModal.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+  function recommendedRoute(){const typeMap={'Restaurant / Café':['Menu','Order','Reserve','Location','Reviews'],'Hotel / Hospitality':['Rooms','Amenities','Virtual Tour','Booking','Contact'],'Real Estate':['Properties','Virtual Tour','Viewing','Location','Enquiry'],'School / Education':['Programs','Admissions','Prospectus','Campus Tour','Contact'],'Retail / Products':['Products','Catalogue','Offers','Order','Contact'],'Professional Services':['Services','Portfolio','Booking','Reviews','Contact']};let route=(typeMap[selectedType]||['Explore','Services','Contact']).slice();const actionMap={'Browse products or services':'Explore','Order or buy':'Order','Book or reserve':'Book','WhatsApp or call':'WhatsApp','Find our location':'Location','Pay or leave a review':'Pay / Review','Take a virtual tour':'Virtual Tour','View offers or catalogues':'Offers'};selectedActions.forEach(function(x){const item=actionMap[x];if(item&&!route.includes(item))route.push(item)});return route.slice(0,6)}
+  function renderForm(){document.querySelectorAll('.form-step').forEach(function(x,i){x.classList.toggle('on',i===formStep)});document.querySelectorAll('#progress i').forEach(function(x,i){x.classList.toggle('on',i<=Math.min(formStep,3))});progress.style.display=formStep===4?'none':'grid';sheetActions.style.display=formStep===4?'none':'grid';backButton.style.visibility=formStep===0?'hidden':'visible';nextButton.innerHTML=formStep===3?'Prepare WhatsApp Request <i class="fa-brands fa-whatsapp"></i>':'Continue <i class="fa-solid fa-arrow-right"></i>';if(formStep===3){const route=recommendedRoute();blueprintName.textContent=requestName.value.trim()||'Your Business';blueprintRoute.innerHTML=route.map(function(x){return '<span>'+x+'</span>'}).join('');requestSummary.innerHTML='<b>Business type</b><br>'+selectedType+'<br><b>Customer actions</b><br>'+Array.from(selectedActions).join(' · ')+'<br><b>Existing channels</b><br>'+(Array.from(selectedChannels).join(' · ')||'To be discussed')+'<br><b>Included entry points</b><br>Direct SKANI link + QR code'}if(formStep===4){const route=recommendedRoute();requestText='Hello SKANI team,\n\nI would like to request a SKANI for my business.\n\nBusiness: '+requestName.value.trim()+'\nBusiness type: '+selectedType+'\nRecommended starting structure: '+route.join(' → ')+'\nCustomer actions: '+Array.from(selectedActions).join(', ')+'\nCurrent channels: '+(Array.from(selectedChannels).join(', ')||'Not provided')+'\nPhone / WhatsApp: '+(requestPhone.value.trim()||'Not provided')+'\nPreferred payment option: '+selectedPlan+'\nAdditional notes: '+(requestNotes.value.trim()||'None')+'\n\nPlease help me shape the best SKANI experience for this business.';finalRequest.textContent=requestText;whatsappLink.href='https://wa.me/255757249910?text='+encodeURIComponent(requestText)}}
+  function nextStep(){if(formStep===0&&!requestName.value.trim())return notify('Add your business name');if(formStep===0&&!selectedType)return notify('Choose your business type');if(formStep===1&&!selectedActions.size)return notify('Choose at least one customer action');if(formStep===2&&!requestPhone.value.trim())return notify('Add your phone or WhatsApp number');if(formStep<4){formStep++;renderForm()}}
+  function previousStep(){if(formStep>0){formStep--;renderForm()}}
+  function choosePlan(el,value){selectedPlan=value;document.querySelectorAll('.plan').forEach(function(x){x.classList.toggle('on',x===el)})}
+  async function copyRequest(){try{await navigator.clipboard.writeText(requestText);notify('SKANI request copied')}catch(e){notify('Select the request text to copy')}}
+  function notify(text){toast.textContent=text;toast.classList.add('show');setTimeout(function(){toast.classList.remove('show')},1800)}
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeInfo();closeRequest()}});
+</script>
 </body>
 </html>
