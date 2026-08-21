@@ -1217,6 +1217,9 @@
             ]},
             steak: { groups: [
                 { id: 'meat', label: 'Choose meat', choices: [{ l: 'Chicken' }, { l: 'Beef' }] }
+            ]},
+            lunchSide: { groups: [
+                { id: 'side', label: 'Choose 1 side', choices: [{ l: 'Rice' }, { l: 'Ugali' }, { l: '2 pcs African Chapati' }] }
             ]}
         };
 
@@ -1384,21 +1387,21 @@
                 { n: "Masala Prawns & Puri Paratha", p: 25000 }
             ]},
             "All Day Lunch": { emoji: "🍽️", items: [
-                { header: "All Day Lunch", note: "Served with rice, ugali, fries, or 2 pcs African chapati" },
-                { n: "Chicken Makange", p: 15000 },
-                { n: "Chicken Stew", p: 15000 },
-                { n: "Chicken Curry", p: 15000 },
-                { n: "1/2 Fried Chicken w/ Fries (KFC)", p: 15000 },
-                { n: "Beef Makange", p: 15000 },
-                { n: "Beef Stew", p: 15000 },
-                { n: "Beef Curry", p: 15000 },
-                { n: "Maini Roast", p: 15000 },
-                { n: "Fish (Samaki) Makange", p: 23000 },
-                { n: "Fish (Samaki) Curry", p: 23000 },
-                { header: "Chef's Special", note: "Served with rice, ugali, fries, or 2 pcs African chapati" },
-                { n: "Kuku (Chicken) wa Kupaka", p: 15000 },
-                { n: "Beef (Nyama) wa Kupaka", p: 15000 },
-                { n: "Samaki (Fish) wa Kupaka", p: 23000 }
+                { header: "All Day Lunch", note: "Choose 1 side: rice, ugali, or 2 pcs African chapati" },
+                { n: "Chicken Makange", from: 15000, opt: "lunchSide", desc: "Choose 1 side" },
+                { n: "Chicken Stew", from: 15000, opt: "lunchSide", desc: "Choose 1 side" },
+                { n: "Chicken Curry", from: 15000, opt: "lunchSide", desc: "Choose 1 side" },
+                { n: "1/2 Fried Chicken w/ Fries (KFC)", from: 15000, opt: "lunchSide", desc: "Choose 1 side" },
+                { n: "Beef Makange", from: 15000, opt: "lunchSide", desc: "Choose 1 side" },
+                { n: "Beef Stew", from: 15000, opt: "lunchSide", desc: "Choose 1 side" },
+                { n: "Beef Curry", from: 15000, opt: "lunchSide", desc: "Choose 1 side" },
+                { n: "Maini Roast", from: 15000, opt: "lunchSide", desc: "Choose 1 side" },
+                { n: "Fish (Samaki) Makange", from: 23000, opt: "lunchSide", desc: "Choose 1 side" },
+                { n: "Fish (Samaki) Curry", from: 23000, opt: "lunchSide", desc: "Choose 1 side" },
+                { header: "Chef's Special", note: "Choose 1 side: rice, ugali, or 2 pcs African chapati" },
+                { n: "Kuku (Chicken) wa Kupaka", from: 15000, opt: "lunchSide", desc: "Choose 1 side" },
+                { n: "Beef (Nyama) wa Kupaka", from: 15000, opt: "lunchSide", desc: "Choose 1 side" },
+                { n: "Samaki (Fish) wa Kupaka", from: 23000, opt: "lunchSide", desc: "Choose 1 side" }
             ]},
             "Beverages": { emoji: "🥤", items: [
                 { header: "Cold Beverages" },
