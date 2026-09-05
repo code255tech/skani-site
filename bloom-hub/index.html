@@ -1118,6 +1118,233 @@
             border: 0;
         }
 
+        .workshop-section h3 .animate-ping {
+            display: none;
+        }
+
+        .workshop-section h3 .relative.inline-flex {
+            background: #EACC55;
+        }
+
+        .workshop-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.9rem;
+        }
+
+        .workshop-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            height: 100%;
+            padding: 0.62rem;
+            border-radius: 1.45rem;
+            background: rgba(255,255,255,0.82);
+            border: 1px solid rgba(142, 109, 172, 0.13);
+            box-shadow: 0 14px 32px rgba(86, 67, 113, 0.08);
+        }
+
+        .workshop-thumb {
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            border-radius: 1.1rem;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: #F7F3FF;
+            border: 1px solid rgba(255,255,255,0.78);
+            box-shadow: inset 0 0 0 999px rgba(255,255,255,0.06);
+        }
+
+        .workshop-copy {
+            min-width: 0;
+        }
+
+        .workshop-copy span {
+            display: block;
+            margin-bottom: 0.18rem;
+            color: rgba(48, 40, 66, 0.46);
+            font-size: 0.52rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .workshop-copy h4 {
+            margin: 0;
+            color: var(--ink);
+            font-size: 0.82rem;
+            line-height: 1.08;
+        }
+
+        .workshop-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+
+        .workshop-meta i {
+            font-style: normal;
+            padding: 0.2rem 0.45rem;
+            border-radius: 999px;
+            border: 1px solid rgba(142, 109, 172, 0.12);
+            background: rgba(117, 216, 232, 0.18);
+            color: rgba(48, 40, 66, 0.72);
+            font-size: 0.48rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .workshop-meta i.is-fee {
+            background: rgba(234, 204, 85, 0.28);
+            color: rgba(48, 40, 66, 0.82);
+        }
+
+        .workshop-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.42rem;
+            margin-top: auto;
+        }
+
+        .workshop-actions button {
+            min-height: 2rem;
+            border-radius: 999px;
+            border: 1px solid rgba(142, 109, 172, 0.13);
+            background: rgba(246, 241, 255, 0.76);
+            color: var(--ink);
+            font-size: 0.52rem;
+            font-weight: 950;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .workshop-actions button:last-child {
+            background: linear-gradient(135deg, #8E6DAC, #75D8E8);
+            color: white;
+            border: 0;
+        }
+
+        /* --- Workshop poster + contact modals --- */
+        .workshop-poster-frame {
+            display: block;
+            width: 100%;
+            padding: 0;
+            border: 1px solid rgba(142, 109, 172, 0.16);
+            border-radius: 1.25rem;
+            background: #F7F3FF;
+            overflow: hidden;
+            position: relative;
+            cursor: zoom-in;
+        }
+
+        .workshop-poster-frame img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .workshop-poster-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            margin: 0.55rem 0 0;
+            color: rgba(48, 40, 66, 0.5);
+            font-size: 0.56rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .workshop-modal-btn {
+            min-height: 3.15rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            border-radius: 999px;
+            font-size: 0.64rem;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .workshop-modal-btn:active { transform: scale(0.97); }
+
+        .workshop-modal-btn.is-ghost {
+            border: 1px solid rgba(142, 109, 172, 0.22);
+            background: rgba(246, 241, 255, 0.8);
+            color: var(--ink);
+        }
+
+        .workshop-modal-btn.is-primary {
+            border: 0;
+            background: linear-gradient(135deg, #8E6DAC, #75D8E8);
+            color: #fff;
+            box-shadow: 0 10px 24px rgba(142, 109, 172, 0.28);
+        }
+
+        .contact-action {
+            width: 100%;
+            min-height: 3.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            padding: 0 1.1rem;
+            border-radius: 1.25rem;
+            border: 1px solid rgba(142, 109, 172, 0.16);
+            background: rgba(255, 255, 255, 0.72);
+            color: var(--ink);
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .contact-action:active { transform: scale(0.98); }
+
+        .contact-action .contact-action-icon {
+            width: 2.6rem;
+            height: 2.6rem;
+            flex-shrink: 0;
+            border-radius: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .contact-action.is-whatsapp .contact-action-icon { background: #25D366; }
+        .contact-action.is-call .contact-action-icon {
+            background: linear-gradient(135deg, #8E6DAC, #75D8E8);
+        }
+
+        .contact-action strong {
+            display: block;
+            font-size: 0.76rem;
+            font-weight: 950;
+            line-height: 1.15;
+        }
+
+        .contact-action small {
+            display: block;
+            margin-top: 0.1rem;
+            font-size: 0.6rem;
+            font-weight: 700;
+            opacity: 0.55;
+        }
+
+        .contact-action .fa-chevron-right {
+            margin-left: auto;
+            opacity: 0.3;
+            font-size: 0.7rem;
+        }
+
         .program-banner-stack {
             display: grid;
             gap: 0.85rem;
@@ -1609,6 +1836,87 @@
             </div>
         </section>
 
+        <!-- SEPTEMBER WORKSHOPS -->
+        <section class="mb-10 workshop-section">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-[#00ABCC] mb-4 px-1 flex items-center gap-2">
+                <span class="flex h-2 w-2 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                </span>
+                September Workshops
+            </h3>
+
+            <div class="workshop-list">
+                <article class="workshop-card">
+                    <div class="workshop-thumb" style="background-image: url('https://www.skani.space/bloom-hub/assets/python-lab.jpeg');"></div>
+                    <div class="workshop-copy">
+                        <span>Coding</span>
+                        <h4>Python Code Lab</h4>
+                    </div>
+                    <div class="workshop-meta">
+                        <i>23 Sep &ndash; 7 Nov</i>
+                        <i>Age 10&ndash;16</i>
+                        <i class="is-fee">TSH 340,000</i>
+                    </div>
+                    <div class="workshop-actions">
+                        <button onclick="openWorkshop('python-lab')">Learn</button>
+                        <button onclick="openWorkshopContact('python-lab', 'register')">Register</button>
+                    </div>
+                </article>
+
+                <article class="workshop-card">
+                    <div class="workshop-thumb" style="background-image: url('https://www.skani.space/bloom-hub/assets/python-machine-learning.jpeg');"></div>
+                    <div class="workshop-copy">
+                        <span>Bootcamp</span>
+                        <h4>Python + Machine Learning</h4>
+                    </div>
+                    <div class="workshop-meta">
+                        <i>23 Sep &ndash; 7 Nov</i>
+                        <i>Grade 7 Leavers</i>
+                        <i class="is-fee">TSH 300,000</i>
+                    </div>
+                    <div class="workshop-actions">
+                        <button onclick="openWorkshop('python-ml')">Learn</button>
+                        <button onclick="openWorkshopContact('python-ml', 'register')">Register</button>
+                    </div>
+                </article>
+
+                <article class="workshop-card">
+                    <div class="workshop-thumb" style="background-image: url('https://www.skani.space/bloom-hub/assets/anything-can-be-a-controller.jpeg');"></div>
+                    <div class="workshop-copy">
+                        <span>STEM Workshop</span>
+                        <h4>Anything Can Be a Controller</h4>
+                    </div>
+                    <div class="workshop-meta">
+                        <i>12 Sep &middot; 2&ndash;4 PM</i>
+                        <i>Age 7&ndash;10</i>
+                        <i class="is-fee">TSH 30,000</i>
+                    </div>
+                    <div class="workshop-actions">
+                        <button onclick="openWorkshop('controller')">Learn</button>
+                        <button onclick="openWorkshopContact('controller', 'register')">Register</button>
+                    </div>
+                </article>
+
+                <article class="workshop-card">
+                    <div class="workshop-thumb" style="background-image: url('https://www.skani.space/bloom-hub/assets/sun&amp;sea-paper-quilling.jpeg');"></div>
+                    <div class="workshop-copy">
+                        <span>Art Workshop</span>
+                        <h4>Sun &amp; Sea Paper Quilling</h4>
+                    </div>
+                    <div class="workshop-meta">
+                        <i>26 Sep &middot; 12&ndash;1:30 PM</i>
+                        <i>Age 5&ndash;12</i>
+                        <i class="is-fee">TSH 35,000</i>
+                    </div>
+                    <div class="workshop-actions">
+                        <button onclick="openWorkshop('paper-quilling')">Learn</button>
+                        <button onclick="openWorkshopContact('paper-quilling', 'register')">Register</button>
+                    </div>
+                </article>
+            </div>
+        </section>
+
         <!-- PAYMENT METHODS CTA SECTION -->
         <section class="mb-10">
             <div onclick="showModal('payments')" class="payment-card p-6 rounded-[32px] flex items-center justify-between cursor-pointer active:scale-98 transition-all shadow-xl">
@@ -1618,7 +1926,7 @@
                     </div>
                     <div>
                         <h4 class="font-black text-sm uppercase text-[#29213F]">Payment Options</h4>
-                        <p class="text-[10px] text-[#29213F]/70 uppercase font-bold tracking-wider">Selcom, Lipa Namba & Bank details</p>
+                        <p class="text-[10px] text-[#29213F]/70 uppercase font-bold tracking-wider">Lipa Namba, Bank &amp; M-Pesa details</p>
                         <div class="flex gap-1.5 mt-2">
                             <span class="payment-mini-chip text-[8px] font-black uppercase px-2 py-0.5 rounded-full">Copy</span>
                             <span class="payment-mini-chip text-[8px] font-black uppercase px-2 py-0.5 rounded-full">Pay</span>
@@ -2040,6 +2348,10 @@ confidence soar!
                             <option>Pickleball Classes</option>
                             <option>Football Camp</option>
                             <option>Summer Camp</option>
+                            <option>Python Code Lab</option>
+                            <option>Python + Machine Learning Bootcamp</option>
+                            <option>Anything Can Be a Controller</option>
+                            <option>Sun &amp; Sea Paper Quilling</option>
                         </select>
                         <i class="fa-solid fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 opacity-30 text-xs"></i>
                     </div>
@@ -2177,6 +2489,69 @@ confidence soar!
     </div>
 
     <!-- Payment Methods Modal -->
+    <!-- WORKSHOP POSTER MODAL -->
+    <div id="modal-workshop" class="modal-overlay" onclick="closeModal('workshop')">
+        <div class="modal-content p-6 max-h-[92vh] flex flex-col" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-start gap-3 mb-4 flex-shrink-0">
+                <div class="min-w-0">
+                    <p id="wsTag" class="text-[9px] text-[#00ABCC] font-black uppercase tracking-wider mb-1"></p>
+                    <h3 id="wsTitle" class="text-lg font-black text-white leading-tight"></h3>
+                    <p id="wsMeta" class="text-[10px] opacity-60 mt-1 leading-snug"></p>
+                </div>
+                <button onclick="closeModal('workshop')" class="w-9 h-9 flex-shrink-0 bg-white/5 rounded-full flex items-center justify-center text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto hide-scrollbar mb-4 -mx-1 px-1">
+                <button class="workshop-poster-frame" onclick="openWorkshopPoster()">
+                    <img id="wsPoster" src="" alt="">
+                </button>
+                <p class="workshop-poster-hint"><i class="fa-solid fa-up-right-and-down-left-from-center"></i> Tap the poster to open it full size</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 flex-shrink-0">
+                <button onclick="closeModal('workshop')" class="workshop-modal-btn is-ghost"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                <button onclick="openWorkshopContact(null, 'learn')" class="workshop-modal-btn is-primary">Learn More</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- WORKSHOP CONTACT MODAL (Learn More / Register) -->
+    <div id="modal-contact" class="modal-overlay" onclick="closeModal('contact')">
+        <div class="modal-content p-8" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-start gap-3 mb-2">
+                <div class="min-w-0">
+                    <p id="ctTag" class="text-[9px] text-[#00ABCC] font-black uppercase tracking-wider mb-1"></p>
+                    <h3 id="ctTitle" class="text-xl font-black text-white leading-tight"></h3>
+                </div>
+                <button onclick="closeModal('contact')" class="w-9 h-9 flex-shrink-0 bg-white/5 rounded-full flex items-center justify-center text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <p id="ctSub" class="text-[11px] opacity-65 leading-relaxed mb-6"></p>
+
+            <div class="space-y-3">
+                <button onclick="workshopContactVia('whatsapp')" class="contact-action is-whatsapp">
+                    <span class="contact-action-icon"><i class="fa-brands fa-whatsapp"></i></span>
+                    <span class="min-w-0">
+                        <strong>Chat on WhatsApp</strong>
+                        <small>Fastest reply &middot; +255 753 227 064</small>
+                    </span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+
+                <button onclick="workshopContactVia('call')" class="contact-action is-call">
+                    <span class="contact-action-icon"><i class="fa-solid fa-phone"></i></span>
+                    <span class="min-w-0">
+                        <strong>Call Us</strong>
+                        <small>+255 753 227 064</small>
+                    </span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <button id="ctBack" onclick="workshopContactBack()" class="workshop-modal-btn is-ghost w-full mt-5"><i class="fa-solid fa-arrow-left"></i> <span id="ctBackLabel">Back</span></button>
+        </div>
+    </div>
+
     <div id="modal-payments" class="modal-overlay" onclick="closeModal('payments')">
         <div class="modal-content p-8 max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-6 flex-shrink-0">
@@ -2192,14 +2567,6 @@ confidence soar!
                 <div class="p-3 bg-teal-500/10 border border-teal-500/20 rounded-xl text-left flex items-start gap-2.5">
                     <i class="fa-solid fa-circle-info text-[#00ABCC] text-xs mt-0.5"></i>
                     <p class="text-[10px] text-slate-300 leading-relaxed">Click any card below to copy the payment number automatically.</p>
-                </div>
-
-                <!-- Selcom -->
-                <div onclick="copyTextToClipboard('60971934', 'Selcom Number')" class="p-4 rounded-2xl bg-white/5 border border-white/5 text-left cursor-pointer active:scale-[0.99] hover:bg-white/10 transition-all relative group">
-                    <span class="text-[9px] text-[#00ABCC] font-bold uppercase tracking-wider">Selcom Pay</span>
-                    <p class="text-base font-black text-white mt-1">60971934</p>
-                    <p class="text-[10px] opacity-60">FD360 Tanzania Ltd</p>
-                    <i class="fa-solid fa-copy absolute right-4 top-1/2 -translate-y-1/2 opacity-30 group-hover:opacity-100 transition-opacity text-xs"></i>
                 </div>
 
                 <!-- Lipa Namba -->
@@ -2263,6 +2630,98 @@ confidence soar!
         function showModal(id) {
             document.getElementById(`modal-${id}`).classList.add('active');
             document.body.style.overflow = 'hidden';
+        }
+
+        /* ---------- September workshops ---------- */
+        const BLOOM_WORKSHOPS = {
+            'python-lab': {
+                tag: 'Coding',
+                title: 'Python Code Lab',
+                meta: '23 Sep – 7 Nov · 12 sessions · Ages 10–16 · TSH 340,000',
+                poster: 'https://www.skani.space/bloom-hub/assets/python-lab.jpeg'
+            },
+            'python-ml': {
+                tag: 'Bootcamp',
+                title: 'Python + Machine Learning Bootcamp',
+                meta: '23 Sep – 7 Nov · Grade 7 leavers · TSH 300,000',
+                poster: 'https://www.skani.space/bloom-hub/assets/python-machine-learning.jpeg'
+            },
+            'controller': {
+                tag: 'STEM Workshop',
+                title: 'Anything Can Be a Controller',
+                meta: '12 Sep · 2:00–4:00 PM · Ages 7–10 · TSH 30,000',
+                poster: 'https://www.skani.space/bloom-hub/assets/anything-can-be-a-controller.jpeg'
+            },
+            'paper-quilling': {
+                tag: 'Art Workshop',
+                title: 'Sun & Sea Paper Quilling',
+                meta: '26 Sep · 12:00–1:30 PM · Ages 5–12 · TSH 35,000',
+                poster: 'https://www.skani.space/bloom-hub/assets/sun&sea-paper-quilling.jpeg'
+            }
+        };
+
+        const BLOOM_PHONE = '255753227064';
+
+        let activeWorkshop = null;
+        let workshopContactMode = 'register';
+        let workshopContactBackTo = null;
+
+        function openWorkshop(key) {
+            const w = BLOOM_WORKSHOPS[key];
+            if (!w) return;
+            activeWorkshop = key;
+            document.getElementById('wsTag').textContent = w.tag;
+            document.getElementById('wsTitle').textContent = w.title;
+            document.getElementById('wsMeta').textContent = w.meta;
+            const img = document.getElementById('wsPoster');
+            img.src = w.poster;
+            img.alt = w.title + ' workshop poster';
+            showModal('workshop');
+        }
+
+        // Opens the untouched poster file in a new tab for a true full-size view.
+        function openWorkshopPoster() {
+            const w = BLOOM_WORKSHOPS[activeWorkshop];
+            if (w) window.open(w.poster, '_blank');
+        }
+
+        function openWorkshopContact(key, mode) {
+            if (key) activeWorkshop = key;
+            const w = BLOOM_WORKSHOPS[activeWorkshop];
+            if (!w) return;
+
+            workshopContactMode = mode === 'learn' ? 'learn' : 'register';
+            const fromPoster = document.getElementById('modal-workshop').classList.contains('active');
+            workshopContactBackTo = fromPoster ? 'workshop' : null;
+            if (fromPoster) closeModal('workshop');
+
+            const isLearn = workshopContactMode === 'learn';
+            document.getElementById('ctTag').textContent = isLearn ? 'Learn More' : 'Register';
+            document.getElementById('ctTitle').textContent = w.title;
+            document.getElementById('ctSub').textContent = isLearn
+                ? 'Ask us anything about this workshop — schedule, what your child will build, or what to bring. Pick how you would like to reach us.'
+                : 'Reserve a spot for your child in this workshop. Send us a message or give us a call and we will confirm the booking.';
+            document.getElementById('ctBackLabel').textContent = workshopContactBackTo ? 'Back to Poster' : 'Back';
+
+            showModal('contact');
+        }
+
+        function workshopContactBack() {
+            closeModal('contact');
+            if (workshopContactBackTo === 'workshop') showModal('workshop');
+        }
+
+        function workshopContactVia(channel) {
+            if (channel === 'call') {
+                window.location.href = 'tel:+' + BLOOM_PHONE;
+                return;
+            }
+            const w = BLOOM_WORKSHOPS[activeWorkshop];
+            const name = w ? w.title : 'your September workshops';
+            const msg = workshopContactMode === 'learn'
+                ? 'Hello Bloom Hub, I would like to know more about the ' + name + ' workshop.'
+                : 'Hello Bloom Hub, I would like to register my child for the ' + name + ' workshop.';
+            window.open('https://wa.me/' + BLOOM_PHONE + '?text=' + encodeURIComponent(msg), '_blank');
         }
 
         function openEnroll(programName) {
