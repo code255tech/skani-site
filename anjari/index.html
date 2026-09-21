@@ -875,6 +875,7 @@
                             </div>
                         </div>
                         <div id="addr-field">
+                            <p class="text-xs font-bold text-anjariRed mb-3">Minimum delivery charges may apply.</p>
                             <label class="text-[10px] font-black uppercase text-zinc-400 tracking-wider block mb-1">Delivery Address</label>
                             <input type="text" id="cust-addr" placeholder="Area, street, landmark..." class="w-full bg-white dark:bg-anjariDarkCard p-4 dark:text-white text-sm font-bold border-2 border-anjariInk/15 focus:border-anjariRed outline-none rounded-2xl transition-all">
                         </div>
@@ -951,6 +952,18 @@
         }
         function openInNewTab(url) { window.open(url, '_blank', 'noopener,noreferrer'); }
 
+        // Times are shown in 12-hour am/pm everywhere. Formatted explicitly rather than via
+        // toLocaleTimeString so the output never varies with the visitor's locale.
+        function to12Hour(value) {                       // "19:05" -> "7:05 PM"
+            if (!value) return '';
+            const [h, m] = String(value).split(':').map(Number);
+            if (!Number.isFinite(h) || !Number.isFinite(m)) return value;
+            return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
+        }
+        function formatClock(date) {                     // Date -> "7:05 PM"
+            return to12Hour(`${date.getHours()}:${date.getMinutes()}`);
+        }
+
         // WHATSAPP ROUTING — customer sends to one number, owner gets a silent copy
         const CUSTOMER_WHATSAPP = '255758028161';   // Rashidi — number the customer actually messages
         const OWNER_WHATSAPP    = '255713278622';   // silent CallMeBot copy (owner)
@@ -1011,12 +1024,14 @@
 
         // ---------- Product data ----------
         const FLAVOR_EMOJI = {
+            'Cream Soda': '🥛',
             'Healtho': '🌿', 'Cream': '🥛', 'Pineapple': '🍍', 'Passion': '💜',
             'Apple': '🍏', 'Orange': '🍊', 'Club Soda': '🫧', 'Rozah': '🌹',
             'Rose': '🌹', 'Strawberry': '🍓', 'Deposit': '📦',
             'Lime': '🍋', 'Soda Water': '💦', 'Lemon': '🍋', 'Rose Cola': '🥤'
         };
         const FLAVOR_COLOR = {
+            'Cream Soda': '#D9A441',
             'Healtho': '#3E8E5A', 'Cream': '#D9A441', 'Pineapple': '#F2B705', 'Passion': '#8E44AD',
             'Apple': '#5FA052', 'Orange': '#F2790C', 'Club Soda': '#3AA6D8', 'Rozah': '#D9527A',
             'Rose': '#D9527A', 'Strawberry': '#E1304A', 'Deposit': '#6B7280',
@@ -1040,6 +1055,7 @@
         const PRODUCT_IMAGE = {
             rgb: {
                 'Apple': 'Glass Apple.jpg.jpeg',
+                'Cream Soda': 'cream-soda.png',
                 'Club Soda': 'Glass Club Soda.jpg.jpeg',
                 'Healtho': 'Glass Healtho.jpg',
                 'Lemon': 'Glass Lemon.jpg',
@@ -1090,7 +1106,7 @@
                 label: 'RGB Glass 300ml', shortLabel: 'RGB Glass 300ml', sub: '24 bottles per crate', glass: true,
                 tiers: { retail: 1000, ctn: 12000, bulk: 11000 },
                 unit: { retail: 'per bottle', ctn: 'per crate', bulk: 'per crate' },
-                flavors: ['Healtho', 'Pineapple', 'Passion', 'Apple', 'Orange', 'Club Soda', 'Rozah']
+                flavors: ['Healtho', 'Cream Soda', 'Pineapple', 'Passion', 'Apple', 'Orange', 'Club Soda', 'Rozah']
             },
             pet: {
                 label: 'PET Bottle 350ml', shortLabel: 'PET 350ml', sub: '12 bottles per carton',
@@ -1690,7 +1706,7 @@
             const locationText = addr || (orderType === 'Delivery' ? 'Not provided' : 'Pickup');
             const orderNo = generateOrderNumber();
             const now = new Date();
-            const timestamp = now.toLocaleDateString('en-TZ', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + now.toLocaleTimeString('en-TZ', { hour: '2-digit', minute: '2-digit' });
+            const timestamp = now.toLocaleDateString('en-TZ', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + formatClock(now);
 
             const pad = (value, length) => {
                 const text = String(value);
