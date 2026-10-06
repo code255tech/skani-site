@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0d2743" />
+  <title>Tumaini Thomasi Mtei — Infinity Group</title>
+  <meta name="description" content="Connect with Tumaini Thomasi Mtei and explore Infinity Group." />
+  <style>
+    :root{
+      --navy:#18365D;
+      --navy-2:#102D4E;
+      --navy-deep:#0B223B;
+      --gold:#D4AF37;
+      --gold-soft:#E2C367;
+      --ivory:#F7F3EA;
+      --paper:#FCFAF6;
+      --white:#fff;
+      --ink:#102640;
+      --muted:#6F7780;
+      --line:#E8E0D2;
+      --shadow:0 14px 38px rgba(10,34,59,.10);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:#ece8df}
+    body{margin:0;background:#ece8df;color:var(--ink);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+    a{color:inherit;text-decoration:none}
+    button,a{font:inherit}
+    button{border:0;background:none;color:inherit;cursor:pointer}
+    .app{width:min(100%,470px);margin:0 auto;background:var(--paper);min-height:100vh;box-shadow:0 0 80px rgba(12,35,58,.10);position:relative;overflow:hidden}
+
+    /* HERO */
+    .hero{height:430px;position:relative;background:#102a49;overflow:hidden;color:#fff}
+    .hero-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:54% 34%;filter:saturate(.96) contrast(1.02)}
+    .hero::before{content:"";position:absolute;inset:0;z-index:1;background:
+      linear-gradient(180deg,rgba(8,26,45,.55) 0%,rgba(8,26,45,.10) 29%,rgba(8,26,45,.06) 48%,rgba(8,26,45,.72) 76%,rgba(8,26,45,.98) 100%),
+      linear-gradient(90deg,rgba(8,26,45,.23),transparent 62%)}
+    .hero::after{content:"";position:absolute;inset:auto -90px -80px auto;width:260px;height:260px;border:1px solid rgba(212,175,55,.18);border-radius:50%;z-index:1;box-shadow:0 0 0 30px rgba(212,175,55,.04),0 0 0 62px rgba(212,175,55,.025)}
+    .hero-top{position:absolute;top:0;left:0;right:0;z-index:3;padding:18px;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:9px;padding:7px 10px 7px 8px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(8,27,46,.24);backdrop-filter:blur(12px)}
+    .brand-logo{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:rgba(212,175,55,.16);border:1px solid rgba(226,195,103,.34)}
+    .brand-text{font-size:10px;letter-spacing:.17em;text-transform:uppercase;font-weight:800;color:rgba(255,255,255,.91)}
+    .share{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:rgba(8,27,46,.24);border:1px solid rgba(255,255,255,.17);backdrop-filter:blur(12px)}
+    .hero-copy{position:absolute;left:18px;right:18px;bottom:25px;z-index:3}
+    .identity-chip{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;background:rgba(212,175,55,.15);border:1px solid rgba(226,195,103,.30);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:850;color:#F6D97B;margin-bottom:11px}
+    .identity-chip i{width:5px;height:5px;border-radius:50%;background:#F6D97B;box-shadow:0 0 0 4px rgba(246,217,123,.09)}
+    .name{margin:0;font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:39px;line-height:.96;letter-spacing:-.025em;text-wrap:balance;max-width:370px;text-shadow:0 3px 20px rgba(0,0,0,.20)}
+    .role{margin:10px 0 0;font-size:11px;letter-spacing:.17em;text-transform:uppercase;color:rgba(255,255,255,.77);font-weight:750}
+    .hero-note{margin:10px 0 0;max-width:360px;font-size:12.2px;line-height:1.52;color:rgba(255,255,255,.78)}
+    .gold-line{width:54px;height:2px;background:linear-gradient(90deg,#F0CF6C,#AF8A2D);border-radius:999px;margin-top:14px}
+
+    /* WELCOME / ACTION DOCK */
+    .main{position:relative;z-index:4;margin-top:-1px;padding:0 16px 112px}
+    .action-dock{margin-top:-1px;transform:translateY(-1px);background:#fff;border:1px solid var(--line);border-radius:22px;padding:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;box-shadow:0 18px 40px rgba(10,34,59,.13)}
+    .quick{min-height:72px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;background:#F8F5EF;border:1px solid #EEE7DB;transition:.18s transform,.18s background}
+    .quick:active{transform:scale(.97)}
+    .quick-icon{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;background:#fff;color:var(--navy-deep);box-shadow:0 4px 12px rgba(10,34,59,.05)}
+    .quick strong{font-size:10.5px;font-weight:850}
+    .welcome{padding:21px 3px 18px;border-bottom:1px solid #EEE7DC}
+    .kicker{font-size:9px;letter-spacing:.17em;text-transform:uppercase;font-weight:850;color:#A88430;margin-bottom:6px}
+    .welcome h2{margin:0;font-family:Georgia,serif;font-size:24px;line-height:1.15;font-weight:600;color:var(--navy-deep)}
+    .welcome p{margin:8px 0 0;font-size:12.3px;line-height:1.58;color:var(--muted);max-width:410px}
+
+    /* GROUP */
+    .section{padding-top:18px}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:0 3px 12px}
+    .section-head h3{margin:0;font-family:Georgia,serif;font-size:25px;font-weight:600;letter-spacing:-.015em}
+    .section-head span{font-size:9px;letter-spacing:.13em;text-transform:uppercase;font-weight:850;color:#9A8B75;white-space:nowrap;padding-bottom:3px}
+    .group-card{position:relative;overflow:hidden;border-radius:24px;padding:19px;background:linear-gradient(145deg,#17385F 0%,#102B49 66%,#0B223A 100%);color:#fff;margin-bottom:12px;box-shadow:0 12px 30px rgba(11,34,59,.12)}
+    .group-card::after{content:"∞";position:absolute;right:-9px;bottom:-38px;font-family:Georgia,serif;font-size:130px;color:rgba(212,175,55,.09)}
+    .group-card small{font-size:9px;letter-spacing:.17em;text-transform:uppercase;font-weight:850;color:#E9CB6B}
+    .group-card h4{margin:7px 0 6px;font-family:Georgia,serif;font-weight:500;font-size:24px}
+    .group-card p{margin:0;max-width:350px;font-size:11.7px;line-height:1.55;color:rgba(255,255,255,.72)}
+    .pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:13px;position:relative;z-index:2}
+    .pill-row span{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.055);border-radius:999px;padding:6px 8px;font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;color:rgba(255,255,255,.80)}
+
+    /* COMPANIES */
+    .company-list{display:grid;gap:10px}
+    .company{width:100%;position:relative;display:grid;grid-template-columns:56px 1fr 34px;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:20px;background:#fff;text-align:left;box-shadow:0 7px 22px rgba(16,38,64,.045);overflow:hidden;transition:.18s transform,.18s box-shadow}
+    .company:active{transform:scale(.987)}
+    .company::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,#C8A33D)}
+    .company-icon{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;color:var(--navy);background:var(--iconbg,#F5EFE3)}
+    .company-name{margin:0 0 4px;font-size:13.7px;line-height:1.2;font-weight:880;color:var(--navy-deep)}
+    .company-desc{margin:0;font-size:10.4px;line-height:1.4;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .company-tag{margin-top:5px;font-size:8px;letter-spacing:.12em;text-transform:uppercase;font-weight:850;color:#9B8042}
+    .arrow{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:#F8F6F1;color:var(--navy)}
+
+    .connect{margin-top:18px;border-radius:24px;padding:19px;background:#F1E9D9;border:1px solid #E2D4B8}
+    .connect small{font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:850;color:#A88430}
+    .connect h4{font-family:Georgia,serif;font-size:22px;margin:6px 0 5px;font-weight:600}
+    .connect p{font-size:11.5px;line-height:1.53;color:#6B665E;margin:0 0 14px}
+    .connect-actions{display:flex;gap:8px}
+    .btn{height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:11px;font-weight:850}
+    .btn.primary{flex:1;background:var(--navy-deep);color:#fff;box-shadow:0 7px 18px rgba(11,34,59,.16)}
+    .btn.secondary{width:54px;background:#fff;border:1px solid #DACCAA}
+    .footer{text-align:center;padding:22px 0 0;color:#938A7C;font-size:9.5px;line-height:1.55}
+    .footer strong{display:block;color:var(--navy);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:2px}
+
+    /* STICKY CTA */
+    .sticky{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);width:min(calc(100% - 22px),448px);z-index:20;display:flex;gap:8px;padding:8px;border-radius:20px;background:rgba(255,255,255,.88);border:1px solid rgba(226,217,204,.92);box-shadow:0 15px 38px rgba(10,34,59,.16);backdrop-filter:blur(16px)}
+    .sticky a{height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:11.5px;font-weight:850}
+    .sticky .main-cta{flex:1;background:var(--navy-deep);color:#fff}
+    .sticky .call{width:54px;background:#F3EEE4;color:var(--navy-deep)}
+
+    /* MODAL */
+    .backdrop{position:fixed;inset:0;z-index:40;background:rgba(5,19,32,.48);opacity:0;pointer-events:none;transition:.22s opacity;backdrop-filter:blur(4px)}
+    .backdrop.open{opacity:1;pointer-events:auto}
+    .sheet{position:absolute;left:50%;bottom:0;transform:translate(-50%,105%);width:min(100%,470px);background:var(--paper);border-radius:28px 28px 0 0;padding:10px 18px calc(19px + env(safe-area-inset-bottom));box-shadow:0 -22px 65px rgba(0,0,0,.20);transition:.30s cubic-bezier(.22,.9,.3,1);max-height:88vh;overflow:auto}
+    .backdrop.open .sheet{transform:translate(-50%,0)}
+    .grab{width:43px;height:4px;border-radius:999px;background:#D9D1C5;margin:3px auto 14px}
+    .sheet-head{position:relative;overflow:hidden;border-radius:21px;padding:20px;background:linear-gradient(145deg,#17395F,#0D2743);color:#fff;min-height:142px;display:flex;align-items:flex-end}
+    .sheet-head::after{content:"∞";position:absolute;right:-5px;top:-47px;font-family:Georgia,serif;font-size:145px;color:rgba(212,175,55,.10)}
+    .modal-icon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);margin-right:12px;flex:0 0 auto;position:relative;z-index:2}
+    .sheet-head-copy{position:relative;z-index:2}
+    .sheet-head small{display:block;font-size:9px;letter-spacing:.17em;text-transform:uppercase;color:#E8CA6C;font-weight:850;margin-bottom:5px}
+    .sheet-head h4{margin:0;font-size:21px;line-height:1.12;font-family:Georgia,serif;font-weight:600;max-width:300px}
+    .sheet-body{padding:17px 2px 0}
+    .sheet-body p{margin:0;font-size:12.5px;line-height:1.62;color:#646C75}
+    .facts{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 17px}
+    .facts span{font-size:9px;font-weight:800;padding:7px 9px;border-radius:999px;background:#F1ECE2;border:1px solid #E3DACB;color:#776B58}
+    .modal-actions{display:flex;gap:8px}
+    .ig{flex:1;height:45px;border-radius:14px;background:var(--navy-deep);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:11.5px;font-weight:850}
+    .close{width:45px;height:45px;border-radius:14px;background:#F0EBE2;display:grid;place-items:center;color:var(--navy-deep)}
+
+    @media (max-width:380px){
+      .hero{height:405px}.name{font-size:34px}.hero-note{font-size:11.7px}.main{padding-left:13px;padding-right:13px}.company{grid-template-columns:52px 1fr 32px}.company-icon{width:52px;height:52px}.section-head h3{font-size:23px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <img class="hero-photo" src="https://www.skani.space/tumaini-thomasi-mtei/PHOTO_3.jpg.jpeg" alt="Tumaini Thomasi Mtei" />
+      <div class="hero-top">
+        <div class="brand" aria-label="Infinity Group">
+          <div class="brand-logo" aria-hidden="true">
+            <svg width="19" height="19" viewBox="0 0 36 26" fill="none"><path d="M2 13c4.2-7.3 8.4-7.3 12.7 0S23.2 20.3 34 5.5" stroke="#E8C965" stroke-width="2.3" stroke-linecap="round"/><path d="M21.5 11.2 27.7 5l6.2 6.2" stroke="#E8C965" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 10.8h5.1v7.1" stroke="#E8C965" stroke-width="2.3" stroke-linecap="round"/></svg>
+          </div>
+          <div class="brand-text">Infinity Group</div>
+        </div>
+        <button class="share" onclick="sharePage()" aria-label="Share this profile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 12.5 16.7 7M8 11.5l8.7 5.5" stroke="white" stroke-width="1.7" stroke-linecap="round"/><circle cx="6" cy="12" r="2.4" stroke="white" stroke-width="1.7"/><circle cx="18" cy="6" r="2.4" stroke="white" stroke-width="1.7"/><circle cx="18" cy="18" r="2.4" stroke="white" stroke-width="1.7"/></svg>
+        </button>
+      </div>
+      <div class="hero-copy">
+        <div class="identity-chip"><i></i> Founder Profile</div>
+        <h1 class="name">Tumaini Thomasi Mtei</h1>
+        <div class="role">Founder &amp; Managing Director</div>
+        <p class="hero-note">Building and growing businesses across real estate, finance, hospitality and investments.</p>
+        <div class="gold-line"></div>
+      </div>
+    </header>
+
+    <section class="main">
+      <div class="action-dock" aria-label="Quick actions">
+        <a class="quick" href="https://wa.me/255767865054?text=Hello%20Mr.%20Mtei%2C%20I%20found%20you%20through%20your%20SKANI." target="_blank" rel="noopener">
+          <div class="quick-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 11.6a8 8 0 0 1-11.8 7L4 20l1.4-4A8 8 0 1 1 20 11.6Z" stroke="currentColor" stroke-width="1.7"/><path d="M9.1 8.2c.5 2.7 2.4 4.8 5.2 5.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+          <strong>WhatsApp</strong>
+        </a>
+        <a class="quick" href="tel:+255767865054">
+          <div class="quick-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M7 4.5 9.1 8c.3.5.2 1.1-.2 1.5l-1.3 1.3c1.1 2.5 3.1 4.5 5.6 5.6l1.3-1.3c.4-.4 1-.5 1.5-.2l3.5 2.1c.5.3.7.9.5 1.4-.5 1.2-1.7 2-3 2-7.3 0-13.4-6.1-13.4-13.4 0-1.3.8-2.5 2-3 .5-.2 1.1 0 1.4.5Z" stroke="currentColor" stroke-width="1.6"/></svg></div>
+          <strong>Call</strong>
+        </a>
+        <button class="quick" onclick="saveContact()">
+          <div class="quick-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 19c.8-3.1 2.7-4.8 5.5-4.8s4.7 1.7 5.5 4.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+          <strong>Save Contact</strong>
+        </button>
+      </div>
+
+      <div class="welcome">
+        <div class="kicker">Welcome</div>
+        <h2>One profile. Four businesses.</h2>
+        <p>Connect with Mtei directly, or explore the companies he leads under Infinity Group. Tap any business to learn what it does before continuing to its Instagram.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>Infinity Group</h3>
+          <span>Explore the group</span>
+        </div>
+
+        <div class="group-card">
+          <small>One vision · multiple ventures</small>
+          <h4>Built across sectors.</h4>
+          <p>Infinity Group brings together businesses spanning property, finance, accommodation and hospitality in Dodoma.</p>
+          <div class="pill-row"><span>Real Estate</span><span>Finance</span><span>Hospitality</span><span>Investments</span></div>
+        </div>
+
+        <div class="company-list">
+          <button class="company" style="--accent:#C9A63C;--iconbg:#F4EFE2" onclick="openCompany('realestate')">
+            <div class="company-icon"><svg width="25" height="25" viewBox="0 0 24 24" fill="none"><path d="m4 11 8-6 8 6v8H4v-8Z" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/><path d="M9 19v-5h6v5" stroke="currentColor" stroke-width="1.65"/></svg></div>
+            <div><p class="company-name">Infinity Real Estate Dodoma</p><p class="company-desc">Land, housing &amp; property consultancy</p><div class="company-tag">Real Estate</div></div>
+            <div class="arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+
+          <button class="company" style="--accent:#AD8E45;--iconbg:#F3ECDF" onclick="openCompany('homes')">
+            <div class="company-icon"><svg width="25" height="25" viewBox="0 0 24 24" fill="none"><path d="M5 10.5 12 5l7 5.5V19H5v-8.5Z" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/><path d="M8 19v-4h8v4M9 9.5h6" stroke="currentColor" stroke-width="1.65"/></svg></div>
+            <div><p class="company-name">Infinity Homes</p><p class="company-desc">Comfortable stays in Dodoma</p><div class="company-tag">Hospitality</div></div>
+            <div class="arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+
+          <button class="company" style="--accent:#B79A51;--iconbg:#F5F0E2" onclick="openCompany('microfinance')">
+            <div class="company-icon"><svg width="25" height="25" viewBox="0 0 24 24" fill="none"><path d="M4 9h16M5 9l7-5 7 5M6 9v8m4-8v8m4-8v8m4-8v8M4 20h16" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div><p class="company-name">Infinity Microfinance Limited</p><p class="company-desc">Microfinance services in Dodoma</p><div class="company-tag">Finance</div></div>
+            <div class="arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+
+          <button class="company" style="--accent:#B9783D;--iconbg:#F4E9DE" onclick="openCompany('porkjoint')">
+            <div class="company-icon"><svg width="25" height="25" viewBox="0 0 24 24" fill="none"><path d="M6 4v7m0 0c-1.7 0-3-1.3-3-3V4m3 7v9m0-16v7m3-7v4c0 1.7-1.3 3-3 3M16 4v16m0-7c2.8 0 5-2.2 5-5V4c-2.8 0-5 2.2-5 5v4Z" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div><p class="company-name">Pork Joint</p><p class="company-desc">Pork, grills &amp; good times in Dodoma</p><div class="company-tag">Food &amp; Lifestyle</div></div>
+            <div class="arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+        </div>
+      </div>
+
+      <div class="connect">
+        <small>Direct contact</small>
+        <h4>Connect with Mtei</h4>
+        <p>For business, partnerships, property or general enquiries, reach out directly.</p>
+        <div class="connect-actions">
+          <a class="btn primary" href="https://wa.me/255767865054?text=Hello%20Mr.%20Mtei%2C%20I%20found%20you%20through%20your%20SKANI." target="_blank" rel="noopener">Message on WhatsApp</a>
+          <a class="btn secondary" href="tel:+255767865054" aria-label="Call Mtei"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M7 4.5 9.1 8c.3.5.2 1.1-.2 1.5l-1.3 1.3c1.1 2.5 3.1 4.5 5.6 5.6l1.3-1.3c.4-.4 1-.5 1.5-.2l3.5 2.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+
+      <div class="footer"><strong>Infinity Group</strong>Real Estate · Finance · Hospitality · Investments<br><span>Powered by SKANI</span></div>
+    </section>
+  </main>
+
+  <div class="sticky" aria-label="Contact actions">
+    <a class="main-cta" href="https://wa.me/255767865054?text=Hello%20Mr.%20Mtei%2C%20I%20found%20you%20through%20your%20SKANI." target="_blank" rel="noopener">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 11.6a8 8 0 0 1-11.8 7L4 20l1.4-4A8 8 0 1 1 20 11.6Z" stroke="white" stroke-width="1.7"/></svg>
+      Connect with Mtei
+    </a>
+    <a class="call" href="tel:+255767865054" aria-label="Call Mtei"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M7 4.5 9.1 8c.3.5.2 1.1-.2 1.5l-1.3 1.3c1.1 2.5 3.1 4.5 5.6 5.6l1.3-1.3c.4-.4 1-.5 1.5-.2l3.5 2.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></a>
+  </div>
+
+  <div class="backdrop" id="modal" onclick="backdropClose(event)">
+    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="modalName">
+      <div class="grab"></div>
+      <div class="sheet-head">
+        <div class="modal-icon" id="modalIcon"></div>
+        <div class="sheet-head-copy"><small id="modalSector"></small><h4 id="modalName"></h4></div>
+      </div>
+      <div class="sheet-body">
+        <p id="modalText"></p>
+        <div class="facts" id="modalFacts"></div>
+        <div class="modal-actions">
+          <a class="ig" id="modalInstagram" href="#" target="_blank" rel="noopener">View on Instagram <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M8 5h11v11M19 5 5 19" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <button class="close" onclick="closeModal()" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const companies={
+      realestate:{name:'Infinity Real Estate Dodoma',sector:'Real Estate',text:'Infinity Real Estate is a Dodoma-based real estate business focused on land, housing and property opportunities, helping clients discover and navigate suitable real estate options.',facts:['Dodoma','Land & Housing','Property'],instagram:'https://www.instagram.com/infinity_real_estate_dodoma?stkn=OTM5d2RnNDZ3MGNn',icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="m4 11 8-6 8 6v8H4v-8Z" stroke="white" stroke-width="1.65"/><path d="M9 19v-5h6v5" stroke="white" stroke-width="1.65"/></svg>'},
+      homes:{name:'Infinity Homes',sector:'Hospitality',text:'Infinity Homes offers accommodation in Dodoma with an emphasis on comfort, privacy and an easy home-away-from-home stay for guests visiting the capital.',facts:['Dodoma','Accommodation','Comfort & Privacy'],instagram:'https://www.instagram.com/infinityhomes_dodoma?stkn=Nm5iaXFleHZ6OWMw',icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 10.5 12 5l7 5.5V19H5v-8.5Z" stroke="white" stroke-width="1.65"/><path d="M8 19v-4h8v4" stroke="white" stroke-width="1.65"/></svg>'},
+      microfinance:{name:'Infinity Microfinance Limited',sector:'Finance',text:'Infinity Microfinance Limited is Infinity Group’s financial-services arm in Dodoma, providing microfinance services designed around practical access to finance.',facts:['Dodoma','Microfinance','Financial Services'],instagram:'https://www.instagram.com/infinitymicrofinance_dodoma?stkn=MXJ6YjhydHo5aWw4aQ==',icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 9h16M5 9l7-5 7 5M6 9v8m4-8v8m4-8v8m4-8v8M4 20h16" stroke="white" stroke-width="1.5"/></svg>'},
+      porkjoint:{name:'Pork Joint',sector:'Food & Lifestyle',text:'Pork Joint is a Dodoma food and social spot centred on pork dishes, grilled favourites and a relaxed atmosphere for eating, drinks and time with friends.',facts:['Dodoma','Pork & Grills','Food & Social'],instagram:'https://www.instagram.com/porkjoint?stkn=MXM3bDQxMWxhZjFwbQ==',icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 4v7m0 0c-1.7 0-3-1.3-3-3V4m3 7v9m0-16v7m3-7v4c0 1.7-1.3 3-3 3M16 4v16m0-7c2.8 0 5-2.2 5-5V4c-2.8 0-5 2.2-5 5v4Z" stroke="white" stroke-width="1.5"/></svg>'}
+    };
+    function openCompany(key){const c=companies[key];document.getElementById('modalName').textContent=c.name;document.getElementById('modalSector').textContent=c.sector;document.getElementById('modalText').textContent=c.text;document.getElementById('modalInstagram').href=c.instagram;document.getElementById('modalIcon').innerHTML=c.icon;document.getElementById('modalFacts').innerHTML=c.facts.map(f=>`<span>${f}</span>`).join('');document.getElementById('modal').classList.add('open');document.body.style.overflow='hidden'}
+    function closeModal(){document.getElementById('modal').classList.remove('open');document.body.style.overflow=''}
+    function backdropClose(e){if(e.target.id==='modal')closeModal()}
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+    function saveContact(){const v=`BEGIN:VCARD\nVERSION:3.0\nN:Mtei;Tumaini Thomasi;;;\nFN:Tumaini Thomasi Mtei\nORG:Infinity Group\nTITLE:Founder & Managing Director\nTEL;TYPE=CELL:+255767865054\nNOTE:Infinity Group — Real Estate, Finance, Hospitality & Investments\nEND:VCARD`;const blob=new Blob([v],{type:'text/vcard'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Tumaini-Thomasi-Mtei.vcf';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+    async function sharePage(){const data={title:'Tumaini Thomasi Mtei — Infinity Group',text:'Connect with Tumaini Thomasi Mtei and explore Infinity Group.',url:location.href};try{if(navigator.share){await navigator.share(data)}else{await navigator.clipboard.writeText(location.href);alert('Link copied')}}catch(e){}}
+  </script>
+</body>
+</html>
