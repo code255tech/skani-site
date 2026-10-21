@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <html lang="en" class="light">
 <head>
@@ -1787,13 +1786,13 @@
             
             <div class="active-catalogue-list">
                 <article class="active-catalogue-card">
-                    <div class="active-catalogue-thumb" style="background-image: url('https://www.skani.space/bloom-hub/assets/bloom-hub-catalogue.jpg');"></div>
+                    <div class="active-catalogue-thumb" style="background-image: url('https://www.skani.space/bloom-hub/assets/bloom-hub-catalogue-preview.jpg');"></div>
                     <div class="active-catalogue-copy">
                         <span>Catalogue</span>
                         <h4>Regular Catalogue</h4>
                     </div>
                     <div class="active-catalogue-actions">
-                        <button onclick="window.open('https://www.skani.space/bloom-hub/assets/Bloom Hub Catalogue.pdf', '_blank')">Learn</button>
+                        <button onclick="window.open('https://www.skani.space/bloom-hub/assets/bloom-hub-catalogue.pdf', '_blank')">Learn</button>
                         <button onclick="openEnroll('Regular Catalogue Classes')">Register</button>
                     </div>
                 </article>
@@ -1843,10 +1842,27 @@
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
                 </span>
-                September Workshops
+                Workshops
             </h3>
 
             <div class="workshop-list">
+                <article class="workshop-card">
+                    <div class="workshop-thumb" style="background-image: url('https://www.skani.space/bloom-hub/assets/halloween-workshop.jpeg');"></div>
+                    <div class="workshop-copy">
+                        <span>Halloween Workshop</span>
+                        <h4>Spooky Science Lab</h4>
+                    </div>
+                    <div class="workshop-meta">
+                        <i>31 Oct &middot; 11 AM&ndash;1:30 PM</i>
+                        <i>Age 5&ndash;12</i>
+                        <i class="is-fee">TSH 35,000</i>
+                    </div>
+                    <div class="workshop-actions">
+                        <button onclick="openWorkshop('halloween')">Learn</button>
+                        <button onclick="openWorkshopContact('halloween', 'register')">Register</button>
+                    </div>
+                </article>
+
                 <article class="workshop-card">
                     <div class="workshop-thumb" style="background-image: url('https://www.skani.space/bloom-hub/assets/python-lab.jpeg');"></div>
                     <div class="workshop-copy">
@@ -2632,8 +2648,14 @@ confidence soar!
             document.body.style.overflow = 'hidden';
         }
 
-        /* ---------- September workshops ---------- */
+        /* ---------- Workshops ---------- */
         const BLOOM_WORKSHOPS = {
+            'halloween': {
+                tag: 'Halloween Workshop',
+                title: 'Spooky Science Lab',
+                meta: '31 Oct · 11:00 AM–1:30 PM · Ages 5–12 · TSH 35,000',
+                poster: 'https://www.skani.space/bloom-hub/assets/halloween-workshop.jpeg'
+            },
             'python-lab': {
                 tag: 'Coding',
                 title: 'Python Code Lab',
@@ -2717,7 +2739,7 @@ confidence soar!
                 return;
             }
             const w = BLOOM_WORKSHOPS[activeWorkshop];
-            const name = w ? w.title : 'your September workshops';
+            const name = w ? w.title : 'your workshops';
             const msg = workshopContactMode === 'learn'
                 ? 'Hello Bloom Hub, I would like to know more about the ' + name + ' workshop.'
                 : 'Hello Bloom Hub, I would like to register my child for the ' + name + ' workshop.';
